@@ -5,7 +5,6 @@ import LoginCard from '../components/login/login_card/LoginCard.jsx';
 function Login (){
   return (
     <div>
-      <h1>Login Page</h1>
       <LoginNavbar />
       <LoginCard />
     </div>
