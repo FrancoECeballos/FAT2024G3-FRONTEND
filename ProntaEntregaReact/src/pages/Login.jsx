@@ -1,10 +1,12 @@
 import React from 'react';
-import LoginCard from '../components/login/login_card/LoginCard'
+import LoginNavbar from '../components/login/login_nav/LoginNavbar.jsx';
+import LoginCard from '../components/login/login_card/LoginCard.jsx';
 
-const Login = () => {
+function Login (){
   return (
     <div>
       <h1>Login Page</h1>
+      <LoginNavbar />
       <LoginCard />
     </div>
   );
