@@ -8,11 +8,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const LoginCard = () => {
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
-      <Card style={{ width: '500px', height: '600px' }}>
+      <Card style={{ width: '35rem', height: '60vh' , borderRadius:'20px', boxShadow:'0px 5px 10px',}}>
         <Card.Body>
           <Form>
+            <h1 style={{textAlign:"center", padding: ''}}>Log In</h1>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email</Form.Label>
+              <Form.Label style={{display: 'block', marginBottom: ''}}>Email</Form.Label>
               <Form.Control type="email" placeholder="Ingrese su email" />
               <Form.Text className="text-muted">
               </Form.Text>

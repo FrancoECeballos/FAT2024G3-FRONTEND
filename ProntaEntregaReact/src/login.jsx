@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import Login from './pages/Login'
-import './pages/login.css'
+import './pages/login.scss'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
