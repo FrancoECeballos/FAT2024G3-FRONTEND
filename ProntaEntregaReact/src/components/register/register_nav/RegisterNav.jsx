@@ -13,7 +13,7 @@ const RegisterNavbar = () => {
         >
             <Container fluid>
                 <Navbar.Brand>
-                    <a>
+                    <a href="login.html">
                         <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} />
                     </a>
                 </Navbar.Brand>
