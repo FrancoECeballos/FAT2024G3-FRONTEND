@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -6,35 +6,35 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
+import './RegisterCard.scss';
+import defaultImage from '../../../assets/user_default.png';
 
 const RegisterCard = () => {
+  const [imageSrc, setImageSrc] = useState(defaultImage);
   const fileInputRef = useRef(null);
 
   const handleFileButtonClick = () => {
     fileInputRef.current.click();
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageSrc(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <>
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
-
-          .font-rubik {
-            font-family: 'Rubik', sans-serif;
-          }
-          
-          .hidden-file-input {
-            display: none;
-          }
-        `}
-      </style>
-
-      <Container className="d-flex justify-content-center align-items-center" style={{ marginTop: '7rem', width: '100%', maxWidth: '60rem', borderRadius: '1rem', boxShadow: '0 2rem 5rem rgba(0, 0, 0, 0.1)' }}>
+      <Container className="d-flex justify-content-center align-items-center register-container">
         <Card style={{ width: '100%' }}>
           <Card.Body>
             <Row>
-              <Col md={8}>
+              <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
                 <Form>
                   <Form.Group className='mb-2' controlId='title'>
                     <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Register:</Form.Label>
@@ -84,13 +84,15 @@ const RegisterCard = () => {
                   </Form.Group>
                 </Form>
               </Col>
-              <Col md={4} className="d-flex flex-column justify-content-end align-items-end">
+              <Col xs={4} sm={4} md={4} lg={4} xl={4} xxl={4} className="d-flex flex-column justify-content-end align-items-end">
                 <div className="flex-grow-1">
+                  <img src={imageSrc} alt="Uploaded file" style={{ width: '15rem', marginBottom: '2%' }} />
                   <Form.Group className="mb-2" controlId="formFile">
                     <input 
                       type="file" 
                       ref={fileInputRef} 
                       className="hidden-file-input"
+                      onChange={handleFileChange}
                     />
                     <Button variant="secondary" onClick={handleFileButtonClick}>
                       Upload File

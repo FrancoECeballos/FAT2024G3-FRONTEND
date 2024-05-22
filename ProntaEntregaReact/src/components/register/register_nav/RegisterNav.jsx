@@ -7,7 +7,7 @@ const RegisterNavbar = () => {
     return (
         <Navbar 
             id="register-navbar" 
-            expand="lg" 
+            expand="sm" 
             fixed="top" 
             style={{ backgroundColor: '#A11818', color: 'white' }}
         >
