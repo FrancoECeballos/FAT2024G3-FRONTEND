@@ -9,7 +9,7 @@ const LoginNavbar = () => {
       id="register-navbar" 
       expand="lg" 
       fixed="top" 
-      style={{ backgroundColor: '#A11818', color: 'white' }}
+      style={{ backgroundColor: '#A11818', color: 'white'}}
   >
       <Container fluid>
           <Navbar.Brand>
