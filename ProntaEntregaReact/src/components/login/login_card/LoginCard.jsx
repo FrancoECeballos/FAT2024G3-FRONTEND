@@ -11,7 +11,7 @@ const LoginCard = () => {
       <Card style={{ width: '30rem',borderRadius:'1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
         <Card.Body>
           <Form>
-            <h1 style={{textAlign:"center",margin:'2.8rem'}}>Log In</h1>
+            <h1 style={{textAlign:"center",margin:'2.8rem'}}>Iniciar Sesion</h1>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label style={{display: 'block', marginBottom: '0rem', marginLeft:'1.5rem'}}>Email</Form.Label>
               <Form.Control style={{ width: '70%', height: '4.5vh', borderRadius:'10rem', marginLeft:'1.5rem', backgroundColor: '#F5F5F5',boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} type="email" placeholder="Ingrese su email" />
