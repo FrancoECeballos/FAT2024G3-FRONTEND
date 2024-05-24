@@ -5,6 +5,20 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
+
+//
+//
+//
+//
+// TE FALTO PONER LA FONT, FIJATE COMO LO HICE YO EN EL REGISTER CARD
+//  Y NO SE ADAPTA BIEN LA NAVBAR A LA PANTALLA, FIJATE DE HACER LO QUE HICE YO EN EL REGISTER NAV
+//  Y PONELE COLORCITO AL FONDO
+//
+//
+//
+//
+
 const LoginCard = () => {
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
