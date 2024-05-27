@@ -5,20 +5,20 @@ import Logo from '../../../assets/Logo.png';
 
 const LoginNavbar = () => {
     return (
-      <Navbar 
-      id="register-navbar" 
-      expand="lg" 
-      fixed="top" 
-      style={{ backgroundColor: '#A11818', color: 'white'}}
-  >
-      <Container fluid>
-          <Navbar.Brand>
-              <a>
-                  <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} />
-              </a>
-          </Navbar.Brand>
-      </Container>
-  </Navbar>
+        <Navbar 
+        id="register-navbar" 
+        expand="sm" 
+        fixed="top" 
+        style={{ backgroundColor: '#A11818', color: 'white'}}
+    >
+        <Container fluid>
+            <Navbar.Brand>
+                <a href="login.html">
+                    <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} />
+                </a>
+            </Navbar.Brand>
+        </Container>
+    </Navbar>
     );
 };
 export default LoginNavbar;
