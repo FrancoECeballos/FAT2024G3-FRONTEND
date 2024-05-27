@@ -1,11 +1,11 @@
 import React from 'react';
 import RegisterCard from '../components/register/register_card/RegisterCard.jsx';
-import RegisterNavbar from '../components/register/register_nav/RegisterNav.jsx';
+import BaseNavbar from '../components/navbar/base_navbar/base_navbar.jsx';
 
 function Register (){
   return (
     <div>
-      <RegisterNavbar />
+      <BaseNavbar />
       <RegisterCard />
     </div>
   );

@@ -3,10 +3,10 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Logo from '../../../assets/Logo.png';
 
-const RegisterNavbar = () => {
+export default function BaseNavbar({}) {
     return (
         <Navbar 
-            id="register-navbar" 
+            id="base-navbar" 
             expand="sm" 
             fixed="top" 
             style={{ backgroundColor: '#A11818', color: 'white' }}
@@ -21,5 +21,3 @@ const RegisterNavbar = () => {
         </Navbar>
     );
 };
-
-export default RegisterNavbar;

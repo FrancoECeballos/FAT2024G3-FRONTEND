@@ -10,6 +10,9 @@ import './RegisterCard.scss';
 import defaultImage from '../../../assets/user_default.png';
 import uploadImage from '../../../assets/upload.png';
 
+//Components
+import SendButton from '../../buttons/send_button/send_button.jsx';
+
 const RegisterCard = () => {
   const [imageSrc, setImageSrc] = useState(defaultImage);
   const [imageSrc2, setImageSrc2] = useState(uploadImage);
@@ -120,16 +123,13 @@ const RegisterCard = () => {
                       className="hidden-file-input"
                       onChange={handleFileChange}
                     />
-                    <Button variant="secondary" onClick={handleFileButtonClick} className="mt-2" style={{borderRadius:'1rem', textAlign:'center', backgroundColor: '#D9D9D9', borderColor:'#D9D9D9', color:'black', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}d>
-                      Seleccionar Archivoㅤ
-                      <img src={uploadImage} style={{width:'1.5rem'}}/>
-                    </Button>
+                    <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivoㅤ" wide="15">
+                      <img src={uploadImage} alt="upload" style={{width:'1.5rem'}}/>
+                    </SendButton>
                   </Form.Group>
                 </div>
                 <div className="d-flex justify-content-end w-100">
-                <Button style={{borderRadius:'1rem', textAlign:'center',width: '10rem', backgroundColor: '#D9D9D9', borderColor:'#D9D9D9', color:'black', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} variant="primary" type="submit">
-                  Ingresar
-                </Button>
+                  <SendButton onClick="none" text="Registrar" wide="15"/>
                 </div>
               </Col>
             </Row>
