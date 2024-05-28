@@ -9,8 +9,8 @@ import './LoginCard.scss';
 
 const LoginCard = () => {
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100 login-container">
-      <Card style={{ width: '30rem',borderRadius:'1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
+    <Container style={{display: 'flex'}} className="d-flex justify-content-center align-items-center vh-100 login-container">
+      <Card style={{position: 'relative', width: '30rem',borderRadius:'1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
         <Card.Body>
           <Form>
             <h1 className="font-rubik" style={{textAlign:"center",margin:'2.8rem'}}>Iniciar Sesion</h1>
