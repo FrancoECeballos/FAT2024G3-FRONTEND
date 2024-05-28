@@ -1,6 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
 
+//importacion de los renders
+import BaseNavbar from '../components/navbar/base_navbar/base_navbar'
+
 function Main (){
   const url = 'http://localhost:8000';
 

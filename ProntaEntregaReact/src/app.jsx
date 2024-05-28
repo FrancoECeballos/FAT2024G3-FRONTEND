@@ -1,13 +1,12 @@
 import React from 'react'
 
-//importacion de los componentes
-import Login from '../src/components/Login'
-import './App.css'
+//importacion de los renders
+import Main from './pages/Main'
 
 function App() {
   return (
   <div>
-
+    <Main />
   </div>
   )
 }
