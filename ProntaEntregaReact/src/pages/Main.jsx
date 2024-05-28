@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react'
 
 //importacion de los renders
-import BaseNavbar from '../components/navbar/base_navbar/base_navbar'
+import FullNavbar from '../components/navbar/full_navbar/FullNavbar'
 
 function Main (){
   const url = 'http://localhost:8000';
@@ -21,10 +21,7 @@ function Main (){
 
   return (
     <div>
-        <BaseNavbar />
-        <div>
-            {result}
-        </div>
+        <FullNavbar />
     </div>
   );
 };

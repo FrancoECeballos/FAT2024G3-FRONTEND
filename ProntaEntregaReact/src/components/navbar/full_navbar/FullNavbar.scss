@@ -1,0 +1,29 @@
+.pages-nav{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 40%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1.1rem;
+}
+
+.white{
+    color: white;
+}
+
+.vertical-divider {
+    width: 1px;
+    height: 100%;
+    background-color: #ffffff;
+}
+
+.pages-nav a {
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.pages-nav a:hover {
+    background-color: rgb(131, 0, 0);
+}
