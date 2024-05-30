@@ -1,29 +1,64 @@
-.pages-nav{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 40%;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-size: 1.1rem;
+.pages-nav {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	font-size: 1.1rem;
 }
 
-.white{
-    color: white;
+.white {
+	color: white;
 }
 
 .vertical-divider {
-    width: 1px;
-    height: 100%;
-    background-color: #ffffff;
+	width: 1px;
+	height: 2rem; /* Height set to 2rem to match the text height */
+	background-color: #ffffff;
+	margin: 0 0.5rem;
 }
 
 .pages-nav a {
-    text-decoration: none;
-    color: white;
-    transition: background-color 0.3s ease;
+	text-decoration: none;
+	color: white;
+	transition: background-color 0.3s ease;
 }
 
 .pages-nav a:hover {
-    background-color: rgb(131, 0, 0);
+	background-color: rgb(131, 0, 0);
+}
+
+.col-right {
+	margin-left: 0;
+}
+
+/* Responsive adjustments */
+@media (min-width: 576px) {
+	.col-right {
+		margin-left: -1rem; /* Adjust this value as needed */
+	}
+}
+
+@media (min-width: 768px) {
+	.col-right {
+		margin-left: -2rem; /* Adjust this value as needed */
+	}
+}
+
+@media (min-width: 992px) {
+	.col-right {
+		margin-left: -2.5rem; /* Adjust this value as needed */
+	}
+}
+
+@media (min-width: 1200px) {
+	.col-right {
+		margin-left: -3rem; /* Adjust this value as needed */
+	}
+}
+
+@media (min-width: 1400px) {
+	.col-right {
+		margin-left: -3.5rem; /* Adjust this value as needed */
+	}
 }
