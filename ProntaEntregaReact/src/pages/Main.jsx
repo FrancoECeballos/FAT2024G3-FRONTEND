@@ -5,23 +5,22 @@ import { useState, useEffect } from 'react'
 import FullNavbar from '../components/navbar/full_navbar/FullNavbar'
 
 function Main (){
-  const url = 'http://localhost:8000';
-
-  useEffect(() => {
+  /*useEffect(() => {
     init()
   } ,[])
 
   const init = async() => {
-    let full_url = `${url}/user/`;
+    let full_url = `${import.meta.env.VITE_API_URL}/user/`;
     let result = await fetch(full_url);
     result = await result.json();
 
     console.log(`result`, result);
-  }
+  } */
 
   return (
     <div>
         <FullNavbar />
+        
     </div>
   );
 };

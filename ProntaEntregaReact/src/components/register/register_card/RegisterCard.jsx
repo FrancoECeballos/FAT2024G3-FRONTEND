@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -10,10 +10,22 @@ import './RegisterCard.scss';
 import defaultImage from '../../../assets/user_default.png';
 import uploadImage from '../../../assets/upload.png';
 
+import { useNavigate } from 'react-router-dom';
+import fetchData from '../../../functions/fetchData';
+
 // Components
 import SendButton from '../../buttons/send_button/send_button.jsx';
 
 const RegisterCard = () => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetchData('/tipo_documento/').then((result) => {
+      setData(result);
+    });
+  }, []);
+  const [selectedData, setSelectedData] = useState(null);
+  const navigate = useNavigate();
+
   const [imageSrc, setImageSrc] = useState(defaultImage);
   const [imageSrc2, setImageSrc2] = useState(uploadImage);
   const fileInputRef = useRef(null);
@@ -61,10 +73,10 @@ const RegisterCard = () => {
                       <InputGroup className="mb-2">
                         <Form.Control aria-label="Text input with dropdown button" className="unified-input-left" />
                         <Form.Select aria-label="Default select example" className="unified-input-right">
-                          <option>Seleccione un tipo de documento</option>
-                          <option value="1">DNI</option>
-                          <option value="2">Pasaporte</option>
-                          <option value="3">Carnet de extranjeria</option>
+                          <option autoFocus hidden>Seleccione un tipo de documento</option>
+                          {data.map((item) => (
+                            <option key={item.id} value={item.id}>{item.nombre}</option>
+                          ))}
                         </Form.Select>
                       </InputGroup>
                     </div>
@@ -131,7 +143,7 @@ const RegisterCard = () => {
               </Col>
               <Col xs={12} className="d-flex justify-content-end w-100 move-to-bottom">
                 <div style={{marginTop: '5%'}}>
-                  <SendButton onClick="none" text="Registrar" wide="15" />
+                  <SendButton onClick={() => navigate("/")} text="Registrar" wide="15" />
                 </div>
               </Col>
             </Row>

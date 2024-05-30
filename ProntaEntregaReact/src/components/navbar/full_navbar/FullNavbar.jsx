@@ -12,8 +12,10 @@ import NotifBell from '../../../assets/notification_bell.png';
 import UserInApp from '../../../assets/user_in_app.png';
 import SideBar from '../../../assets/side_bar.png';
 
-export default function FullNavbar({}) {
+import { useNavigate } from 'react-router-dom';
 
+export default function FullNavbar({}) {
+	const navigate = useNavigate();
 	const [show, setShow] = useState(false);
 
 	const handleClose = () => setShow(false);
@@ -59,7 +61,10 @@ export default function FullNavbar({}) {
 						<Offcanvas.Title>Offcanvas</Offcanvas.Title>
 						</Offcanvas.Header>
 						<Offcanvas.Body>
-						I will not close if you click outside of me.
+							<button onClick={() => navigate("/register")}>
+								Registro
+							</button>
+						I will NOT close if you click outside of me.
 						</Offcanvas.Body>
 					</Offcanvas>
 				</Nav>
