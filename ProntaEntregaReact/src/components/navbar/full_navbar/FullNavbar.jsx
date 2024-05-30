@@ -11,7 +11,9 @@ import NotifBell from '../../../assets/notification_bell.png';
 import UserInApp from '../../../assets/user_in_app.png';
 import SideBar from '../../../assets/side_bar.png';
 
-export default function FullNavbar() {
+import { useNavigate } from 'react-router-dom';
+
+export default function FullNavbar({}) {
 
 	const [show, setShow] = useState(false);
 
@@ -46,24 +48,23 @@ export default function FullNavbar() {
 						<div className="vertical-divider"></div>
 					</div>
 				</Nav>
-				<div className="ml-auto d-lg-flex align-items-center">
-					<Nav>
-						<img src={NotifBell} style={{ width: '2.5rem', marginRight: '1rem' }}/>
-						<img src={UserInApp} style={{ width: '2.5rem', marginRight: '1rem' }}/>
-						<Button onClick={handleShow} style={{ width: '2.5rem' }}>
-							<img src={SideBar} style={{ width: '2.5rem' }}/>
-						</Button>
-						<Offcanvas show={show} onHide={handleClose} backdrop="static">
-							<Offcanvas.Header closeButton>
-								<Offcanvas.Title>Offcanvas</Offcanvas.Title>
-							</Offcanvas.Header>
-							<Offcanvas.Body>
-								I will not close if you click outside of me.
-							</Offcanvas.Body>
-						</Offcanvas>
-					</Nav>
-				</div>
-			</Container>
-		</Navbar>
-	);
+				<Nav style={{width: '20%'}}>
+					<img src={NotifBell} style={{width: '2.5rem', marginRight:'5rem'}}/>
+					<img src={UserInApp} style={{width: '2.5rem', marginRight:'5rem'}}/>
+					<Button onClick={handleShow} style={{width: '2.5rem', paddingRight:'10rem'}}>
+						<img src={SideBar} style={{width:'2.5rem'}}/>
+					</Button>
+
+					<Offcanvas show={show} onHide={handleClose} backdrop="static">
+						<Offcanvas.Header closeButton>
+						<Offcanvas.Title>Offcanvas</Offcanvas.Title>
+						</Offcanvas.Header>
+						<Offcanvas.Body>
+						I will not close if you click outside of me.
+						</Offcanvas.Body>
+					</Offcanvas>
+				</Nav>
+            </Container>
+        </Navbar>
+    );
 };

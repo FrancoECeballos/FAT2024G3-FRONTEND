@@ -1,11 +1,11 @@
 import React from 'react';
-import LoginNavbar from '../components/login/login_nav/LoginNavbar.jsx';
+import BaseNavbar from '../components/navbar/base_navbar/BaseNavbar.jsx';
 import LoginCard from '../components/login/login_card/LoginCard.jsx';
 
 function Login (){
   return (
     <div>
-      <LoginNavbar />
+      <BaseNavbar />
       <LoginCard />
     </div>
   );
