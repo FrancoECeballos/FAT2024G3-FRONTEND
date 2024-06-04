@@ -7,6 +7,10 @@
 	font-size: 1.1rem;
 }
 
+.sidebutton{
+	background-color: 'none';
+}
+
 .white {
 	color: white;
 }
@@ -62,3 +66,24 @@
 		margin-left: -3.5rem; /* Adjust this value as needed */
 	}
 }
+
+.vertical-divider {
+	border-right: 1px solid white;
+	height: 50px; /* Altura del Navbar */
+	margin: 0 10px; /* Espacio entre los enlaces y los dividers */
+	padding-top: 0%;
+}
+
+  
+  .sidebutton {
+	width: 50px;
+	padding-right: 50px;
+	color: red($color: #000000);
+  }
+  
+  @media (max-width: 768px) {
+	.vertical-divider {
+	  display: none; /* Ocultar los dividers en dispositivos móviles */
+	}
+  }
+  
