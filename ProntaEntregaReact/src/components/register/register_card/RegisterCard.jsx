@@ -12,6 +12,7 @@ import uploadImage from '../../../assets/upload.png';
 
 import { useNavigate } from 'react-router-dom';
 import fetchData from '../../../functions/fetchData';
+import postData from '../../../functions/postData.jsx';
 
 // Components
 import SendButton from '../../buttons/send_button/send_button.jsx';
@@ -23,7 +24,7 @@ const RegisterCard = () => {
       setData(result);
     });
   }, []);
-  const [selectedData, setSelectedData] = useState(null);
+  
   const navigate = useNavigate();
 
   const [imageSrc, setImageSrc] = useState(defaultImage);
@@ -45,6 +46,63 @@ const RegisterCard = () => {
     }
   };
 
+  const [formData, setFormData] = useState({
+    "nombre": "",
+    "apellido": "",
+    "nombreusuario": "",
+    "password": "",
+    "documento": "",
+    "telefono": "",
+    "email": "",
+    "genero": "",
+    "id_direccion": 1,
+    "id_tipousuario": 2,
+    "id_tipodocumento": ""
+  });
+
+  const generateUsername = (nombre, apellido, documento) => {
+    if (nombre && apellido && documento) {
+      return `${nombre.toLowerCase()}.${apellido.toLowerCase()}${documento.slice(5, 8)}`;
+    }
+    return '';
+  };
+  const generatePhone = (cai, telnum) => {
+    if (cai && telnum) {
+      return `${cai} ${telnum}`;
+    }
+    return '';
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) =>  {
+      let updatedValue = value;
+      if (name === "genero" || name === "id_direccion" || name === "id_tipousuario" || name === "id_tipodocumento") {
+        updatedValue = parseInt(value, 10);
+      }
+      const updatedData = { ...prevData, [name]: updatedValue };
+      if (name === "nombre" || name === "apellido" || name === "documento") {
+        const { nombre, apellido, documento } = updatedData;
+        updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
+      }
+      if (name === "cai" || name === "telnum") {
+        const { cai, telnum } = updatedData;
+        updatedData.telefono = generatePhone(cai, telnum);
+      }
+      const { cai, telnum, ...finalData } = updatedData;
+      console.log(finalData);
+      return finalData;
+    });
+  };
+
+  const handleSendData = async(event) => {
+    event.preventDefault();
+    const url = '/register/';
+    const body = formData;
+    const result = await postData(url, body);
+    console.log(result);
+  };
+
   return (
     <>
       <Container className="d-flex justify-content-center align-items-center register-container">
@@ -58,21 +116,26 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicUser">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre de usuario</Form.Label>
-                    <Form.Control type="text" placeholder="Ingrese su nombre de usuario" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido</Form.Label>
+                    <div className="unified-input">
+                      <InputGroup className="mb-2">
+                        <Form.Control name="nombre" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre" className="unified-input-left"/>
+                        <Form.Control name="apellido" type="text" onChange={handleInputChange} placeholder="Ingrese su apellido" className="unified-input-right"/>
+                      </InputGroup>
+                    </div>
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicEmail">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email</Form.Label>
-                    <Form.Control type="email" placeholder="Ingrese su email" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicDocumento">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
-                        <Form.Control aria-label="Text input with dropdown button" className="unified-input-left" />
-                        <Form.Select aria-label="Default select example" className="unified-input-right">
+                        <Form.Control name="documento" onChange={handleInputChange} aria-label="Text input with dropdown button" className="unified-input-left" />
+                        <Form.Select name="id_tipodocumento" onChange={handleInputChange} aria-label="Default select example" className="unified-input-right">
                           <option autoFocus hidden>Seleccione un tipo de documento</option>
                           {data.map((item) => (
                             <option key={item.id} value={item.id}>{item.nombre}</option>
@@ -86,8 +149,8 @@ const RegisterCard = () => {
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
-                        <Form.Control type="text" placeholder="CAI (Codigo de acceso internacional) Ej: +54" className="unified-input-left" />
-                        <Form.Control type="text" placeholder="Ingrese su telefono" className="unified-input-right" />
+                        <Form.Control name="cai" type="text" onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" className="unified-input-left" />
+                        <Form.Control name="telnum" type="text" onChange={handleInputChange} placeholder="Ingrese su telefono" className="unified-input-right" />
                       </InputGroup>
                     </div>
                   </Form.Group>
@@ -96,17 +159,17 @@ const RegisterCard = () => {
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
-                        <Form.Control type="text" placeholder="Ingrese su Localidad" className="unified-input-left" />
-                        <Form.Control type="text" placeholder="Ingrese su Calle" style={{ backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
-                        <Form.Control type="text" placeholder="Ingrese su Numero" className="unified-input-right" />
+                        <Form.Control name="" type="text" placeholder="Ingrese su Localidad" className="unified-input-left" />
+                        <Form.Control name="" type="text" placeholder="Ingrese su Calle" style={{ backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                        <Form.Control name="" type="text" placeholder="Ingrese su Numero" className="unified-input-right" />
                       </InputGroup>
                     </div>
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicGenero">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero</Form.Label>
-                    <Form.Select aria-label="Default select example" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
-                      <option>Seleccione un genero</option>
+                    <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
+                      <option autoFocus hidden>Seleccione un genero</option>
                       <option value="1">Masculino</option>
                       <option value="2">Femenino</option>
                       <option value="3">Prefiero no decir</option>
@@ -115,7 +178,7 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" controlId="formBasicPassword">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña</Form.Label>
-                    <Form.Control type="password" placeholder="Ingrese su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicPasswordConfirm">
@@ -131,6 +194,7 @@ const RegisterCard = () => {
                   <Form.Group className="mb-2" controlId="formFile">
                     <input
                       type="file"
+                      name="imagen"
                       ref={fileInputRef}
                       className="hidden-file-input"
                       onChange={handleFileChange}
@@ -143,7 +207,7 @@ const RegisterCard = () => {
               </Col>
               <Col xs={12} className="d-flex justify-content-end w-100 move-to-bottom">
                 <div style={{marginTop: '5%'}}>
-                  <SendButton onClick={() => navigate("/")} text="Registrar" wide="15" />
+                  <SendButton onClick={handleSendData} text="Registrar" wide="15" />
                 </div>
               </Col>
             </Row>
