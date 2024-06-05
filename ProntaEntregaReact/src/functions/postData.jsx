@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const fetchData = async(url) => {
+const postData = async(url, body) => {
     const endpoint = `${import.meta.env.VITE_API_URL}`+ url;
     try {
-        const response = await axios.get(endpoint);
+        const response = await axios.post(endpoint, body);
         const result = response.data;
         console.log('Data: ', result);
         return result;
@@ -12,5 +12,4 @@ const fetchData = async(url) => {
     }
 };
 
-export default fetchData;
-    
+export default postData;
