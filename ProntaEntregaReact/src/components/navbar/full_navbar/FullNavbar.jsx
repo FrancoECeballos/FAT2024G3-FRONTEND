@@ -25,7 +25,7 @@ export default function FullNavbar() {
       >
         <Container fluid>
           <Navbar.Brand href="#home">
-            <img src={logo} alt="Logo" style={{ width: '50px', height: '50px' }} />
+            <img src={logo} alt="Logo" style={{ width: '4rem'}} />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -42,8 +42,8 @@ export default function FullNavbar() {
               <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
 			  <div className="vertical-divider"></div>
             </Nav>
-            <Button class='sidebutton' onClick={handleShow} style={{ width: '50px', paddingRight: '50px',backgroundColor:'#A11818'  }}>
-              <img src={SideBar} style={{ width: '40px',backgroundColor: '#A11818' }}/>
+            <Button onClick={handleShow} style={{backgroundColor: 'transparent', border:'none'}}>
+              <img src={SideBar} style={{ width: '3rem'}}/>
             </Button>
           </Navbar.Collapse>
         </Container>
