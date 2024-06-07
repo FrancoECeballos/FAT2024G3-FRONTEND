@@ -7,6 +7,10 @@ import './ChangePasswordCard.scss';
 import UserDefault from '../../../assets/user_default.png';
 import SendButton from '../../buttons/send_button/send_button.jsx';
 
+// Necesito:
+// GET imagen de perfil y nombre de usuario
+// UPDATE contraseña
+
 
 const ChangePasswordCard = () => {
     return (
@@ -24,7 +28,7 @@ const ChangePasswordCard = () => {
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' , marginTop: '2rem'}}>Repetir Contraseña</Form.Label>
                         <Form.Control type="text" style={{ width:'60%', borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                         <div className="d-flex justify-content-end" style={{marginTop: '2rem'}}>
-                        <SendButton text="Canfirmar Cambio" />
+                        <SendButton text="Confirmar Cambio" />
                         </div>
                     </Form>
                 </Card.Body>

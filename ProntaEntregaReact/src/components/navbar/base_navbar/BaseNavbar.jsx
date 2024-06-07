@@ -15,7 +15,7 @@ export default function BaseNavbar({}) {
         >
             <Container fluid>
                 <Navbar.Brand>
-                    <a href="login.html">
+                    <a href="/login">
                         <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} />
                     </a>
                 </Navbar.Brand>

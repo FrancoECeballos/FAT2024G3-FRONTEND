@@ -131,6 +131,12 @@ const RegisterCard = () => {
 
   const handleSendData = async(event) => {
     event.preventDefault();
+    
+    if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email || !formData.genero || !formData.id_tipodocumento) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
     let id_direccion = null;
 
     const existingDireccion = direc.find(
@@ -155,9 +161,7 @@ const RegisterCard = () => {
     const url = '/register/';
     const body = updatedFormData;
     const result = await postData(url, body);
-
-    const token = result.token;
-    Cookies.set('token', token, { expires: 7, secure: true });
+    console.log(result);
   };
   
   return (

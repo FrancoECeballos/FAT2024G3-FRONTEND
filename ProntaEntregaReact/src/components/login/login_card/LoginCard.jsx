@@ -35,7 +35,7 @@ const LoginCard = () => {
             </div>
           </Form>
           <div style={{ justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column', marginTop:'1rem' }}>
-          <a href="register.html">¿No tienes cuenta?</a>
+          <a href="/register">¿No tienes cuenta?</a>
           <a href="">¿Olvidaste tu contraseña?</a>
           </div>
         </Card.Body>
