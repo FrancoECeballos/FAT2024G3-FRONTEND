@@ -97,10 +97,18 @@ const RegisterCard = () => {
 
   const handleSendData = async(event) => {
     event.preventDefault();
+
+    if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email || !formData.genero || !formData.id_tipodocumento) {
+      alert("Please fill in all required fields.");
+      return;
+  }
+
     const url = '/register/';
     const body = formData;
     const result = await postData(url, body);
     console.log(result);
+
+
   };
 
   return (

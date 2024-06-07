@@ -43,7 +43,7 @@ export default function FullNavbar() {
 			  <div className="vertical-divider"></div>
             </Nav>
             <Button onClick={handleShow} style={{backgroundColor: 'transparent', border:'none'}}>
-              <img src={SideBar} style={{ width: '3rem'}}/>
+              <img src={SideBar} style={{ width: '2.5rem'}}/>
             </Button>
           </Navbar.Collapse>
         </Container>
@@ -51,16 +51,17 @@ export default function FullNavbar() {
 
       <Offcanvas show={show} onHide={handleClose} placement="end">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Menú Lateral</Offcanvas.Title>
+          <Offcanvas.Title className=''>Menú Lateral</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Nav>
+            <div>
             <Nav.Link href="#novedades">Novedades</Nav.Link>
-	        <Nav.Link href="#stock">Stock</Nav.Link>
+	          <Nav.Link href="#stock">Stock</Nav.Link>
             <Nav.Link href="#entregas">Entregas</Nav.Link>
             <Nav.Link href="#pedidos">Pedidos</Nav.Link>
             <Nav.Link href="#ofertas">Ofertas</Nav.Link>
-			<div className="vertical-divider"></div>
+            </div>
           </Nav>
         </Offcanvas.Body>
       </Offcanvas>
