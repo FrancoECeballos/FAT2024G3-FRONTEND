@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 
+import Cookies from 'js-cookie';
+
 // Components
 import SendButton from '../../buttons/send_button/send_button.jsx';
 
@@ -22,6 +24,13 @@ const RegisterCard = () => {
   useEffect(() => {
     fetchData('/tipo_documento/').then((result) => {
       setData(result);
+    });
+  }, []);
+
+  const [direc, setDirec] = useState([]);
+  useEffect(() => {
+    fetchData('/direcciones/').then((result) => {
+      setDirec(result);
     });
   }, []);
   
@@ -43,6 +52,12 @@ const RegisterCard = () => {
         setImageSrc(reader.result);
       };
       reader.readAsDataURL(file);
+      const { name, value } = event.target;
+      setFormData((prevData) =>  {
+        const updatedData = { ...prevData, [name]: value };
+        console.log(updatedData);
+        return updatedData;
+      });
     }
   };
 
@@ -55,10 +70,31 @@ const RegisterCard = () => {
     "telefono": "",
     "email": "",
     "genero": "",
-    "id_direccion": 1,
+    "id_direccion": "",
     "id_tipousuario": 2,
     "id_tipodocumento": ""
+  }); useEffect(() => {
+    const { cai, telnum, ...finalData } = formData;
+    console.log(finalData);
+  }, [formData]);
+
+  const [direcFormData, setDirecFormData] = useState({
+    "calle": "",
+    "numero": "",
+    "localidad": ""
   });
+
+  const handleDirecChange = (event) => {
+    const { name, value } = event.target;
+    setDirecFormData((prevData) =>  {
+      let updatedValue = value;
+      if (name === "numero") {
+        updatedValue = parseInt(value, 10);
+      }
+      const updatedData = { ...prevData, [name]: updatedValue };
+      return updatedData;
+    })
+  };
 
   const generateUsername = (nombre, apellido, documento) => {
     if (nombre && apellido && documento) {
@@ -89,20 +125,41 @@ const RegisterCard = () => {
         const { cai, telnum } = updatedData;
         updatedData.telefono = generatePhone(cai, telnum);
       }
-      const { cai, telnum, ...finalData } = updatedData;
-      console.log(finalData);
-      return finalData;
+      return updatedData;
     });
   };
 
   const handleSendData = async(event) => {
     event.preventDefault();
-    const url = '/register/';
-    const body = formData;
-    const result = await postData(url, body);
-    console.log(result);
-  };
+    let id_direccion = null;
 
+    const existingDireccion = direc.find(
+      (d) =>
+        d.calle === direcFormData.calle &&
+        d.numero === direcFormData.numero &&
+        d.localidad === direcFormData.localidad
+    );
+
+    if (!existingDireccion) {
+      const url = '/crear_direccion/';
+      const body = direcFormData;
+      const result = await postData(url, body);
+      id_direccion = result.id_direccion;
+    } else {
+      id_direccion = existingDireccion.id_direccion;
+    };
+
+    const updatedFormData = { ...formData, id_direccion };
+    setFormData(updatedFormData);
+
+    const url = '/register/';
+    const body = updatedFormData;
+    const result = await postData(url, body);
+
+    const token = result.token;
+    Cookies.set('token', token, { expires: 7, secure: true });
+  };
+  
   return (
     <>
       <Container className="d-flex justify-content-center align-items-center register-container">
@@ -159,9 +216,9 @@ const RegisterCard = () => {
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
-                        <Form.Control name="" type="text" placeholder="Ingrese su Localidad" className="unified-input-left" />
-                        <Form.Control name="" type="text" placeholder="Ingrese su Calle" style={{ backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
-                        <Form.Control name="" type="text" placeholder="Ingrese su Numero" className="unified-input-right" />
+                        <Form.Control name="localidad" type="text" onChange={handleDirecChange} placeholder="Ingrese su Localidad" className="unified-input-left" />
+                        <Form.Control name="calle" type="text" onChange={handleDirecChange} placeholder="Ingrese su Calle" style={{ backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                        <Form.Control name="numero" type="number" onChange={handleDirecChange} placeholder="Ingrese su Numero" className="unified-input-right" />
                       </InputGroup>
                     </div>
                   </Form.Group>
