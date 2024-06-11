@@ -75,7 +75,6 @@ const RegisterCard = () => {
     "id_tipodocumento": ""
   }); useEffect(() => {
     const { cai, telnum, ...finalData } = formData;
-    console.log(finalData);
   }, [formData]);
 
   const [direcFormData, setDirecFormData] = useState({
@@ -136,7 +135,6 @@ const RegisterCard = () => {
       alert("Please fill in all required fields.");
       return;
     }
-
     let id_direccion = null;
 
     const existingDireccion = direc.find(
@@ -162,6 +160,9 @@ const RegisterCard = () => {
     const body = updatedFormData;
     const result = await postData(url, body);
     console.log(result);
+    fetchData('/direcciones/').then((result) => {
+      setDirec(result);
+    });
   };
   
   return (
