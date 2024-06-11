@@ -178,7 +178,7 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicUser">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
                         <Form.Control name="nombre" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre" className="unified-input-left"/>
@@ -188,12 +188,12 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicEmail">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
                     <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicDocumento">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
                         <Form.Control name="documento" onChange={handleInputChange} aria-label="Text input with dropdown button" className="unified-input-left" />
@@ -208,7 +208,7 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicTelefono">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
                         <Form.Control name="cai" type="text" onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" className="unified-input-left" />
@@ -218,7 +218,7 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicDireccion">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
                         <Form.Control name="localidad" type="text" onChange={handleDirecChange} placeholder="Ingrese su Localidad" className="unified-input-left" />
@@ -229,7 +229,7 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicGenero">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
                     <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
                       <option autoFocus hidden>Seleccione un genero</option>
                       <option value="1">Masculino</option>
@@ -239,12 +239,12 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicPassword">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña (*)</Form.Label>
                     <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicPasswordConfirm">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
                     <Form.Control type="password" placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
                 </Form>

@@ -2,7 +2,7 @@ import React from 'react'
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ChangePassword from './pages/ChangePassword.jsx';
-import Perfil from './pages/Perfil.jsx';
+import MiCuenta from './pages/MiCuenta.jsx';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //importacion de los renders
@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/change_password" element={<ChangePassword />} />
-        <Route path="/profile" element={<Perfil />} />
+        <Route path="/perfil/micuenta" element={<MiCuenta />} />
       </Routes>
     </BrowserRouter>
   )
