@@ -3,6 +3,7 @@ import fetchData from '../../../functions/fetchData';
 import Cookies from 'js-cookie';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
+import './cuenta.scss';
 
 const Cuenta = () => {
     const navigate = useNavigate();
@@ -33,21 +34,35 @@ const Cuenta = () => {
         });
     }, [token]);
 
-    const handleLogout = () => {
-        Cookies.remove('token');
-        navigate('/login');
-    };
 
     return (
-        <div>
-            <h1 style={{marginTop: '15rem', marginLeft: '30rem'}}>
-                {`Hello, ${userData.nombreusuario}!`}
-            </h1>
-
-            <Button className="btn btn-danger" style={{marginTop: '15rem', marginLeft: '30rem'}} onClick={handleLogout}>
-                Logout
-            </Button>
-        </div>
+    <div className='micuenta'>
+        <h1>Pedrito Me Electrocutaste</h1>
+        <form>
+            <div>
+                <label htmlFor="nombre">{`Nombre: ${userData.nombre}!`}</label>
+            </div>
+            <div>
+                <label htmlFor="apellido">{`Apellido: ${userData.apellido}!`}</label>
+            </div>
+            <div>
+                <label htmlFor="email">{`Email: ${userData.email}!`}</label>
+            </div>
+            <div>
+                <label htmlFor="telefono">{`Telefono: ${userData.telefono}!`}</label>
+            </div>
+            <div>
+                <label htmlFor="direccion">{`Direccion: ${userData.id_direccion}!`}</label>
+            </div>
+            <div>
+                <label htmlFor="genero">{`Genero: ${userData.genero}!`}</label>
+            </div>
+            <button type="submit">Editar</button>
+        </form>
+        <Button className="btn btn-danger" style={{marginTop: '15rem', marginLeft: '30rem'}} onClick={handleLogout}>
+            Logout
+        </Button>
+    </div>
     );
 };
 
