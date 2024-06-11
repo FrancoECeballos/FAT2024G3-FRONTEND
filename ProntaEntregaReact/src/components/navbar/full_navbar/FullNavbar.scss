@@ -8,7 +8,7 @@
 }
 
 .sidebutton{
-	background-color: 'none';
+	background-color: 'RED';
 }
 
 .white {
@@ -84,6 +84,72 @@
   @media (max-width: 768px) {
 	.vertical-divider {
 	  display: none; /* Ocultar los dividers en dispositivos móviles */
+	}
+  }
+  @media (max-width: 768px) {
+	.sidebutton{
+	  display: none; 	}
+  }
+  
+  #base-navbar {
+	.vertical-divider {
+	  width: 1px;
+	  background-color: white;
+	  height: 40px;
+	  margin: auto 15px;
+	}
+  
+	.sidebutton {
+	  img {
+		filter: invert(1); // Esto invertirá los colores del ícono para que contraste mejor
+	  }
+	}
+  }
+  
+  .offcanvas {
+	background-color: #333;
+	color: white;
+  
+	.nav-link {
+	  color: white;
+  
+	  &:hover {
+		color: #A11818;
+	  }
+	}
+  }
+  
+  // Ocultar el botón de menú lateral en pantallas grandes
+  @media (min-width: 992px) {
+	.sidebutton.d-lg-none {
+	  display: none;
+	}
+  }
+  #base-navbar {
+	.vertical-divider {
+	  width: 1px;
+	  background-color: white;
+	  height: 40px;
+	  margin: auto 15px;
+	}
+  
+	.sidebutton {
+	  img {
+		filter: invert(1); // Esto invertirá los colores del ícono para que contraste mejor
+	  }
+	}
+  }
+  
+  .offcanvas {
+	background-color: #333;
+	color: white;
+  
+	.nav-link {
+	  color: white;
+  
+	  &:hover {
+		color: #A11818;
+	  }
 	}
   }
   
