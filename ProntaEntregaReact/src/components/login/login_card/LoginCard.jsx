@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginCard.scss';
 
 import { useNavigate } from 'react-router-dom';
-import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 
 const LoginCard = () => {
@@ -28,8 +27,9 @@ const LoginCard = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const response = await postData('/login/', formData);
+    console.log(response);
     if (response) {
-      navigate('/profile');
+      navigate('/profile', {state: response.user});
     } else {
       alert('Usuario o contraseña incorrectos');
     }
