@@ -39,33 +39,29 @@ const Cuenta = () => {
     };
 
     return (
-        <div className="micuenta">
-            <h1>Pedrito Me Electrocutaste</h1>
-            <form>
-                <div>
-                    <label htmlFor="nombre">{`Nombre: ${userData.nombre}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="apellido">{`Apellido: ${userData.apellido}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="email">{`Email: ${userData.email}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="telefono">{`Telefono: ${userData.telefono}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="direccion">{`Direccion: ${userData.id_direccion}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="genero">{`Genero: ${userData.genero}`}</label>
-                </div>
-                <Button type="submit">Editar</Button>
-            </form>
-            <Button className="btn btn-danger" style={{ marginTop: '15rem', marginLeft: '30rem' }} onClick={handleLogout}>
-                Logout
-            </Button>
-        </div>
+
+    <div className='micuenta'>
+      <h1>Pedrito Me Electrocutaste</h1>
+      <form>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre"/>
+
+      <label for="apellido">Apellido:</label>
+      <input type="text" id="apellido"/>
+
+      <label for="email">Correo electrónico:</label>
+      <input type="email" id="email"/>
+
+      <label for="telefono">Teléfono:</label>
+      <input type="tel" id="telefono"/>
+
+      <label for="direccion">Dirección:</label>
+      <input type="text" id="direccion"/>
+
+      <label for="fechaNacimiento">Fecha de nacimiento:</label>
+      <input type="date" id="fechaNacimiento"/>
+      </form>
+    </div>
     );
 };
 

@@ -41,8 +41,8 @@ export default function FullNavbar() {
               <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
               <div className="vertical-divider"></div>
             </Nav>
-            <Button class='sidebutton' onClick={handleShow} style={{ width: '50px', paddingRight: '50px',backgroundColor:'#A11818'  }}>
-              <img src={SideBar} style={{ width: '40px',backgroundColor: '#A11818' }}/>
+            <Button onClick={handleShow} style={{backgroundColor: 'transparent', border:'none'}}>
+              <img src={SideBar} style={{ width: '2.5rem'}}/>
             </Button>
           </Navbar.Collapse>
         </Container>
