@@ -1,9 +1,12 @@
 import React from "react";
+import "./selectable_button.scss";
 
-import "./SelectableButton.scss";
-
-const SelectableButton = ({texto, href}) => {
-    <li><a href={href}>{texto}</a></li>
-}
+const SelectableButton = ({ texto, link }) => {
+  return (
+    <li className="SelectableButton">
+      <a href={link}>{texto}</a>
+    </li>
+  );
+};
 
 export default SelectableButton;

@@ -12,28 +12,3 @@
     list-style: none;
     padding: 0rem;
   }
-  
-  .sidebar li {
-    
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-  
-  .sidebar a {
-    font-size: larger;
-    font-family: 'Rubik', sans-serif;
-    display: block;
-    padding: 1rem;
-    text-decoration: none;
-    color: white;
-  }
-
-  .sidebar a:active {
-    border-radius: 10rem;
-    background: rgba(0, 0, 0, 0.25)
-  }
-
-  .sidebar a:hover {
-    border-radius: 10rem;
-    background-color: rgba(0, 0, 0, 0.25)
-  }
