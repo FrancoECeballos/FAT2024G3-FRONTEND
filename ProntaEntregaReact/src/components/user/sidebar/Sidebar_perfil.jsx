@@ -6,10 +6,10 @@ const Sidebar = () => {
     return (
       <div className="sidebar">
       <ul>
-        <SelectableButton texto="Mi cuenta" link="/perfil"/>
-        <SelectableButton texto="Mi cuenta" link="/perfil"/>
-        <SelectableButton texto="Mi cuenta" link="/perfil"/>
-        <SelectableButton texto="Mi cuenta" link="/perfil"/>
+        <SelectableButton texto="Mi cuenta" link="/Perfil/micuenta"/>
+        <SelectableButton texto="Seguridad y Privacidad" link="/Perfil/micuenta"/>
+        <SelectableButton texto="Datos Personales" link="/Perfil/micuenta"/>
+        <SelectableButton texto="Casas" link="/Perfil/micuenta"/>
       </ul>
       </div>
     );

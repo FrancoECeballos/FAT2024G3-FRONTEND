@@ -6,9 +6,28 @@
     height: 100%;
     top: 0;
     left: 0;
-  }
+}
   
   .sidebar ul {
     list-style: none;
     padding: 0rem;
   }
+
+@media only screen and (max-width: 768px) {
+/* Styles for mobile devices */
+.sidebar {
+  position: static; /* Remove absolute positioning */
+  width: 100%; /* Make sidebar full-width on mobile */
+  padding-top: 0; /* Remove top padding */
+  background-color: inherit; /* Inherit background color from parent element (optional) */
+}
+
+.sidebar ul {
+  margin: 0 auto; /* Center the list horizontally on mobile */
+
+  .SelectableButton li {
+    display: block; /* Make list items stack vertically */
+  }
+}
+}
+
