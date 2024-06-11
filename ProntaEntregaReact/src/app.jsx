@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/change_password" element={<ChangePassword />} />
-        <Route path="/profile/micuenta" element={<MiCuenta />} />
+        <Route path="/perfil/micuenta" element={<MiCuenta />} />
       </Routes>
     </BrowserRouter>
   )
