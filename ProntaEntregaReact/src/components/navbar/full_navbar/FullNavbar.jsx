@@ -20,11 +20,17 @@ function OffcanvasExample() {
           <img src={logo} alt="Logo" className="navbar-logo" />
           
         </Navbar.Brand>
-                      <Nav.Link href="#novedades" style={{ color: 'white' }}>Novedades</Nav.Link>
-              <Nav.Link href="#stock" style={{ color: 'white' }}>Stock</Nav.Link>
-              <Nav.Link href="#entregas" style={{ color: 'white' }}>Entregas</Nav.Link>
-              <Nav.Link href="#pedidos" style={{ color: 'white' }}>Pedidos</Nav.Link>
-              <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
+  <div className="vertical-divider"></div>
+            <Nav.Link href="#novedades" style={{ color: 'white' }}>Novedades</Nav.Link>
+            <div className="vertical-divider"></div>
+            <Nav.Link href="#stock" style={{ color: 'white' }}>Stock</Nav.Link>
+            <div className="vertical-divider"></div>
+            <Nav.Link href="#entregas" style={{ color: 'white' }}>Entregas</Nav.Link>
+            <div className="vertical-divider"></div>
+            <Nav.Link href="#pedidos" style={{ color: 'white' }}>Pedidos</Nav.Link>
+            <div className="vertical-divider"></div>
+            <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
+            <div className="vertical-divider"></div>
 
         <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
         <Navbar.Offcanvas
