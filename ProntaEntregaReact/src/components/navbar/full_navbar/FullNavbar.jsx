@@ -24,7 +24,7 @@ export default function FullNavbar() {
       >
         <Container fluid>
           <Navbar.Brand href="#home">
-            <img src={logo} alt="Logo" style={{ width: '3rem', height: '3rem' }} />
+            <img src={logo} alt="Logo" style={{ width: '4rem'}} />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -48,19 +48,22 @@ export default function FullNavbar() {
         </Container>
       </Navbar>
 
-      <Offcanvas show={show} onHide={handleClose} placement="end" style={{ backgroundColor: 'rgb(131, 0, 0)' }}>
+      <Offcanvas show={show} onHide={handleClose} placement="end" style={{ backgroundColor: 'rgb(131, 0, 0' }}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title className=''>Menú Lateral</Offcanvas.Title>
+          <Offcanvas.Title>Menú Lateral</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
+          
           <Nav>
-            <Nav.Link href="#novedades">Novedades</Nav.Link>
-	        <Nav.Link href="#stock">Stock</Nav.Link>
-            <Nav.Link href="#entregas">Entregas</Nav.Link>
-            <Nav.Link href="#pedidos">Pedidos</Nav.Link>
-            <Nav.Link href="#ofertas">Ofertas</Nav.Link>
-			<div className="vertical-divider"></div>
+            <div>
+            <Nav.Link href="#novedades" style={{ color: 'white' }}>Novedades</Nav.Link>
+            <Nav.Link href="#stock" style={{ color: 'white' }}>Stock</Nav.Link>
+            <Nav.Link href="#entregas" style={{ color: 'white' }}>Entregas</Nav.Link>
+            <Nav.Link href="#pedidos" style={{ color: 'white' }}>Pedidos</Nav.Link>
+            <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
+            </div>          
           </Nav>
+          
         </Offcanvas.Body>
       </Offcanvas>
     </>
