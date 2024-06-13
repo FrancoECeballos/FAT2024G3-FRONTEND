@@ -260,7 +260,7 @@ const RegisterCard = () => {
                       className="hidden-file-input"
                       onChange={handleFileChange}
                     />
-                    <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivoㅤ" wide="8">
+                    <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivo" wide="8">
                       <img src={uploadImage} alt="upload" style={{ width: '1.5rem' }} className='upload'/>
                     </SendButton>
                   </Form.Group>

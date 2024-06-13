@@ -5,6 +5,12 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import './cuenta.scss';
 
+const GENDER_CHOICES = {
+    0: 'Hombre',
+    1: 'Mujer',
+    2: 'Prefiero no decirlo'
+};
+
 const Cuenta = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -40,7 +46,7 @@ const Cuenta = () => {
 
     return (
         <div className="micuenta">
-            <h1>Pedrito Me Electrocutaste</h1>
+            <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
             <form>
                 <div>
                     <label htmlFor="nombre">{`Nombre: ${userData.nombre}`}</label>
@@ -55,10 +61,10 @@ const Cuenta = () => {
                     <label htmlFor="telefono">{`Telefono: ${userData.telefono}`}</label>
                 </div>
                 <div>
-                    <label htmlFor="direccion">{`Direccion: ${userData.id_direccion}`}</label>
+                    <label htmlFor="direccion">{`Direccion: ${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`}</label>
                 </div>
                 <div>
-                    <label htmlFor="genero">{`Genero: ${userData.genero}`}</label>
+                    <label htmlFor="genero">{`Genero: ${GENDER_CHOICES[userData.genero]}`}</label>
                 </div>
                 <Button type="submit">Editar</Button>
             </form>
