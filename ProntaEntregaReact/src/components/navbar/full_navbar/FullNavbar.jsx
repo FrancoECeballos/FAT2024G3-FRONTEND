@@ -24,7 +24,7 @@ export default function FullNavbar() {
       >
         <Container fluid>
           <Navbar.Brand href="#home">
-            <img src={logo} alt="Logo" style={{ width: '3rem', height: '3rem' }} />
+            <img src={logo} alt="Logo" style={{ width: '4rem'}} />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
