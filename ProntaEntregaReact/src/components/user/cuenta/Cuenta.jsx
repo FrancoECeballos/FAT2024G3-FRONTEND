@@ -50,25 +50,25 @@ const Cuenta = () => {
         <h2>Información personal</h2>
         <div>
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" value={`${userData.nombre}`} readonly/>
+            <input type="text" id="nombre" value={`${userData.nombre}`} disabled/>
 
             <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" value={`${userData.apellido}`} readonly/>
+            <input type="text" id="apellido" value={`${userData.apellido}`} disabled/>
 
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" value={`${userData.email}`} readonly/>
+            <input type="email" id="email" value={`${userData.email}`} disabled/>
 
             <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" value={`${userData.telefono}`} readonly/>
+            <input type="tel" id="telefono" value={`${userData.telefono}`} disabled/>
 
             <label for="direccion">Dirección:</label>
-            <input type="text" id="direccion" value={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} readonly/>
+            <input type="text" id="direccion" value={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} disabled/>
                 
             <label for="genero">Genero:</label>
-            <input type="text" id="genero" value={`${GENDER_CHOICES[userData.genero]}`} readonly/>
+            <input type="text" id="genero" value={`${GENDER_CHOICES[userData.genero]}`} disabled/>
             
             <label for="fechaNacimiento">Fecha de nacimiento:</label>
-            <input type="date" id="fechaNacimiento" readonly/>
+            <input type="date" id="fechaNacimiento" disabled/>
         </div>
       </form>
     </div>
