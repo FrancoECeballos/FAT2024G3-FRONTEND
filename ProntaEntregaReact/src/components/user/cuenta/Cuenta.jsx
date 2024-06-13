@@ -84,6 +84,7 @@ const Cuenta = () => {
                 <input type="text" id="genero" defaultValue={userData.genero in GENDER_CHOICES ? GENDER_CHOICES[userData.genero] : ''} disabled={!isEditing}/>
                 
                 <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
+                <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'green', borderColor:'green', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Guardar</Button>
             </div>
         </div>
         </form>
