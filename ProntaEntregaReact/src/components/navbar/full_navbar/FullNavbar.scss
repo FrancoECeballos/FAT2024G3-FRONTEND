@@ -7,11 +7,6 @@
 	}
   }
   
-  .navbar-logo {
-	width: 3rem;
-	height: 3rem;
-  }
-  
   .navbar-link {
 	color: '#A11818';
 	padding: 0 1rem;
@@ -56,7 +51,6 @@
 
 .vertical-divider {
 	border-right: 1px solid white;
-	height: 50px; /* Altura del Navbar */
-	margin: -10rem; /* Espacio entre los enlaces y los dividers */
+	height: 1rem;
 	padding-top: 0%;
 }

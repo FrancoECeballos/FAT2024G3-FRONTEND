@@ -1,20 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
+import {InputGroup, Col, Row, Form, Container, Card} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
+//Assets and style
 import './RegisterCard.scss';
 import defaultImage from '../../../assets/user_default.png';
 import uploadImage from '../../../assets/upload.png';
 
-import { useNavigate } from 'react-router-dom';
+//Functions
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
-
-import Cookies from 'js-cookie';
 
 // Components
 import SendButton from '../../buttons/send_button/send_button.jsx';
