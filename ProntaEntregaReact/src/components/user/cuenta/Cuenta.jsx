@@ -70,7 +70,7 @@ const Cuenta = () => {
 
             <label for="email">Correo electrónico:</label>
             <input type="email" id="email" defaultValue={`${userData.email}`} disabled ={!isEditing}/>
-            <Button style={{marginTop:"1rem"}} onClick={handleLogout}>Cerrar sesión</Button>
+            <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>
         </div>
 
         <div class="columna">
@@ -83,11 +83,10 @@ const Cuenta = () => {
                 <label for="genero">Genero:</label>
                 <input type="text" id="genero" defaultValue={userData.genero in GENDER_CHOICES ? GENDER_CHOICES[userData.genero] : ''} disabled={!isEditing}/>
                 
-                <Button id="editButton" style={{borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
+                <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
             </div>
         </div>
         </form>
-        <Button onClick={handleLogout}>Cerrar sesión</Button>
     </div>
     );
 };
