@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import fetchData from '../../../functions/fetchData';
 import Cookies from 'js-cookie';
-import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import './cuenta.scss';
 
@@ -45,10 +44,11 @@ const Cuenta = () => {
     };
 
     return (
-
     <div className='micuenta'>
       <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
       <form>
+      <h2>Información personal</h2>
+      <div>
       <label for="nombre">Nombre:</label>
       <input type="text" id="nombre" value={`Nombre: ${userData.nombre}`}/>
 
@@ -69,6 +69,7 @@ const Cuenta = () => {
     
       <label for="fechaNacimiento">Fecha de nacimiento:</label>
       <input type="date" id="fechaNacimiento"/>
+      </div>
       </form>
     </div>
     );
