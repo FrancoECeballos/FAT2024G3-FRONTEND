@@ -3,6 +3,7 @@ import fetchData from '../../../functions/fetchData';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import './cuenta.scss';
+import Button from 'react-bootstrap/Button';
 
 const GENDER_CHOICES = {
     0: 'Hombre',
@@ -13,6 +14,7 @@ const GENDER_CHOICES = {
 const Cuenta = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
+    const [isEditing, setIsEditing] = useState(false);
 
     const [userData, setUserData] = useState({
         nombre: "",
@@ -43,6 +45,14 @@ const Cuenta = () => {
         navigate('/login');
     };
 
+    const handleEdit = () => {
+        if (isEditing) {  
+            setIsEditing(false);
+        } else {
+            setIsEditing(true);
+        }
+    };
+
     return (
     <div className='micuenta'>
       <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
@@ -50,25 +60,24 @@ const Cuenta = () => {
         <h2>Información personal</h2>
         <div>
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" value={`${userData.nombre}`} disabled/>
+            <input type="text" id="nombre" defaultValue={`${userData.nombre}`} disabled={!isEditing}/>
 
             <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" value={`${userData.apellido}`} disabled/>
+            <input type="text" id="apellido" defaultValue={`${userData.apellido}`} disabled={!isEditing}/>
 
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" value={`${userData.email}`} disabled/>
+            <input type="email" id="email" defaultValue={`${userData.email}`} disabled={!isEditing}/>
 
             <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" value={`${userData.telefono}`} disabled/>
+            <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} disabled={!isEditing}/>
 
             <label for="direccion">Dirección:</label>
-            <input type="text" id="direccion" value={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} disabled/>
+            <input type="text" id="direccion" defaultValue={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} disabled={!isEditing}/>
                 
             <label for="genero">Genero:</label>
-            <input type="text" id="genero" value={`${GENDER_CHOICES[userData.genero]}`} disabled/>
+            <input type="text" id="genero" defaultValue={`${GENDER_CHOICES[userData.genero]}`} disabled={!isEditing}/>
             
-            <label for="fechaNacimiento">Fecha de nacimiento:</label>
-            <input type="date" id="fechaNacimiento" disabled/>
+            <Button onClick={handleEdit}>Editar</Button>
         </div>
       </form>
     </div>
