@@ -45,33 +45,32 @@ const Cuenta = () => {
     };
 
     return (
-        <div className="micuenta">
-            <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
-            <form>
-                <div>
-                    <label htmlFor="nombre">{`Nombre: ${userData.nombre}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="apellido">{`Apellido: ${userData.apellido}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="email">{`Email: ${userData.email}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="telefono">{`Telefono: ${userData.telefono}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="direccion">{`Direccion: ${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`}</label>
-                </div>
-                <div>
-                    <label htmlFor="genero">{`Genero: ${GENDER_CHOICES[userData.genero]}`}</label>
-                </div>
-                <Button type="submit">Editar</Button>
-            </form>
-            <Button className="btn btn-danger" style={{ marginTop: '15rem', marginLeft: '30rem' }} onClick={handleLogout}>
-                Logout
-            </Button>
-        </div>
+
+    <div className='micuenta'>
+      <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
+      <form>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" value={`Nombre: ${userData.nombre}`}/>
+
+      <label for="apellido">Apellido:</label>
+      <input type="text" id="apellido" value={`Apellido: ${userData.apellido}`}/>
+
+      <label for="email">Correo electrónico:</label>
+      <input type="email" id="email" value={`Email: ${userData.email}`}/>
+
+      <label for="telefono">Teléfono:</label>
+      <input type="tel" id="telefono" value={`Telefono: ${userData.telefono}`}/>
+
+      <label for="direccion">Dirección:</label>
+      <input type="text" id="direccion" value={`Direccion: ${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`}/>
+        
+      <label for="genero">Genero:</label>
+      <input type="text" id="genero" value={`Genero: ${GENDER_CHOICES[userData.genero]}`}/>
+    
+      <label for="fechaNacimiento">Fecha de nacimiento:</label>
+      <input type="date" id="fechaNacimiento"/>
+      </form>
+    </div>
     );
 };
 
