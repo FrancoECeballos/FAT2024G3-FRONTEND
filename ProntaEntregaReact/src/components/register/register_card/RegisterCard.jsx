@@ -55,7 +55,6 @@ const RegisterCard = () => {
       const { name, value } = event.target;
       setFormData((prevData) =>  {
         const updatedData = { ...prevData, [name]: value };
-        console.log(updatedData);
         return updatedData;
       });
     }
@@ -159,7 +158,7 @@ const RegisterCard = () => {
     const url = '/register/';
     const body = updatedFormData;
     const result = await postData(url, body);
-    console.log(result);
+    Cookies.set('token', response.token, { expires: 7, secure: true });
     fetchData('/direcciones/').then((result) => {
       setDirec(result);
     });
@@ -261,7 +260,7 @@ const RegisterCard = () => {
                       className="hidden-file-input"
                       onChange={handleFileChange}
                     />
-                    <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivoㅤ" wide="8">
+                    <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivo" wide="8">
                       <img src={uploadImage} alt="upload" style={{ width: '1.5rem' }} className='upload'/>
                     </SendButton>
                   </Form.Group>

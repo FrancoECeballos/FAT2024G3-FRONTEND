@@ -6,30 +6,24 @@
   /* Estilos del formulario */
   
   .micuenta form {
+    display: flex; /* Permite que las secciones se ordenen en fila */
+    flex-direction: column; /* Las secciones se ordenan de arriba a abajo */
     width: 500px;
     margin: 0 auto;
     padding: 20px;
     border-radius: 5px;
   }
-  
+
   .micuenta label {
     display: block;
-    margin-bottom: 5px;
+    margin-top: 0.2rem;
+    margin-bottom: 1rem;
   }
   
-  .micuenta input,
-  .micuenta select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  .micuenta button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
+  .micuenta input{
+    width: 25rem;
+    padding: 0.5rem;
     border: none;
-    border-radius: 3px;
-    cursor: pointer;
+    border-radius: 90px;
   }
+  
