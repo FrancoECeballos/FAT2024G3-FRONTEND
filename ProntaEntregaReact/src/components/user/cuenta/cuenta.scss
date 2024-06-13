@@ -3,7 +3,11 @@
     margin-top: 200px;
   }
 
-  h2 {
+  .micuenta {
+    width: 100%;
+  }
+
+  .micuenta h2 {
     text-align: center;
     margin-bottom: 20px;
   }
@@ -11,6 +15,8 @@
   .micuenta form {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center; /* Centrar el contenido horizontalmente */
+    align-items: center;
   }
 
   .contenedor-inputs {
@@ -21,7 +27,7 @@
 
   .columna {
     width: calc(33.33% - 20px); /* 33.33% de ancho - 20px de margen */
-    margin: 10px; /* Margen entre columnas */
+    margin: 2rem; /* Margen entre columnas */
   }
 
   .micuenta label {
