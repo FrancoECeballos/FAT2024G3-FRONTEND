@@ -48,8 +48,10 @@ const Cuenta = () => {
     const handleEdit = () => {
         if (isEditing) {  
             setIsEditing(false);
+            document.getElementById("editButton").innerText = "Editar";
         } else {
             setIsEditing(true);
+            document.getElementById("editButton").innerText = "Cancelar";
         }
     };
 
@@ -68,6 +70,7 @@ const Cuenta = () => {
 
             <label for="email">Correo electrónico:</label>
             <input type="email" id="email" defaultValue={`${userData.email}`} disabled ={!isEditing}/>
+            <Button style={{marginTop:"1rem"}} onClick={handleLogout}>Cerrar sesión</Button>
         </div>
 
         <div class="columna">
@@ -75,16 +78,15 @@ const Cuenta = () => {
             <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} disabled ={!isEditing}/>
 
                 <label for="direccion">Dirección:</label>
-                <input type="text" id="direccion" defaultValue={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} disabled={!isEditing}/>
+                <input type="text" id="direccion" defaultValue={userData.id_direccion ? `${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}` : ''} disabled={!isEditing}/>
                     
                 <label for="genero">Genero:</label>
-                <input type="text" id="genero" defaultValue={`${GENDER_CHOICES[userData.genero]}`} disabled={!isEditing}/>
+                <input type="text" id="genero" defaultValue={userData.genero in GENDER_CHOICES ? GENDER_CHOICES[userData.genero] : ''} disabled={!isEditing}/>
                 
-                <Button onClick={handleEdit}>Editar</Button>
+                <Button style={{marginTop:"1rem"}} id="editButton" onClick={handleEdit}>Editar</Button>
             </div>
         </div>
         </form>
-        <Button onClick={handleLogout}>Cerrar sesión</Button>
     </div>
     );
 };
