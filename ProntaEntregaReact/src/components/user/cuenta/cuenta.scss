@@ -2,28 +2,45 @@
     text-align: center;
     margin-top: 200px;
   }
-  
-  /* Estilos del formulario */
+
+  .micuenta {
+    width: 100%;
+  }
+
+  .micuenta h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
   
   .micuenta form {
-    display: flex; /* Permite que las secciones se ordenen en fila */
-    flex-direction: column; /* Las secciones se ordenan de arriba a abajo */
-    width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrar el contenido horizontalmente */
+    align-items: center;
+  }
+
+  .contenedor-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .columna {
+    width: calc(33.33% - 5rem); /* 33.33% de ancho - 20px de margen */
+    margin: 2rem; /* Margen entre columnas */
   }
 
   .micuenta label {
     display: block;
-    margin-top: 0.2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
   }
-  
+
   .micuenta input{
+    background-color: white;
     width: 25rem;
     padding: 0.5rem;
     border: none;
-    border-radius: 90px;
+    border-radius: 20rem;
+    color: black;
   }
-  

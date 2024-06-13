@@ -3,6 +3,7 @@ import fetchData from '../../../functions/fetchData';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import './cuenta.scss';
+import Button from 'react-bootstrap/Button';
 
 const GENDER_CHOICES = {
     0: 'Hombre',
@@ -13,6 +14,7 @@ const GENDER_CHOICES = {
 const Cuenta = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
+    const [isEditing, setIsEditing] = useState(false);
 
     const [userData, setUserData] = useState({
         nombre: "",
@@ -43,34 +45,49 @@ const Cuenta = () => {
         navigate('/login');
     };
 
+    const handleEdit = () => {
+        if (isEditing) {  
+            setIsEditing(false);
+            document.getElementById("editButton").innerText = "Editar";
+        } else {
+            setIsEditing(true);
+            document.getElementById("editButton").innerText = "Cancelar";
+        }
+    };
+
     return (
-    <div className='micuenta'>
-      <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
-      <form>
-        <h2>Información personal</h2>
-        <div>
+    <div class="micuenta">
+    <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
+    <h2>Información personal</h2>
+    <form>
+        <div class="contenedor-inputs">
+        <div class="columna">
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" value={`${userData.nombre}`} readonly/>
+            <input type="text" id="nombre" defaultValue={`${userData.nombre}`} disabled ={!isEditing}/>
 
             <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" value={`${userData.apellido}`} readonly/>
+            <input type="text" id="apellido" defaultValue={`${userData.apellido}`} disabled ={!isEditing}/>
 
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" value={`${userData.email}`} readonly/>
-
-            <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" value={`${userData.telefono}`} readonly/>
-
-            <label for="direccion">Dirección:</label>
-            <input type="text" id="direccion" value={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} readonly/>
-                
-            <label for="genero">Genero:</label>
-            <input type="text" id="genero" value={`${GENDER_CHOICES[userData.genero]}`} readonly/>
-            
-            <label for="fechaNacimiento">Fecha de nacimiento:</label>
-            <input type="date" id="fechaNacimiento" readonly/>
+            <input type="email" id="email" defaultValue={`${userData.email}`} disabled ={!isEditing}/>
+            <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>
         </div>
-      </form>
+
+        <div class="columna">
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} disabled ={!isEditing}/>
+
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" defaultValue={userData.id_direccion ? `${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}` : ''} disabled={!isEditing}/>
+                    
+                <label for="genero">Genero:</label>
+                <input type="text" id="genero" defaultValue={userData.genero in GENDER_CHOICES ? GENDER_CHOICES[userData.genero] : ''} disabled={!isEditing}/>
+                
+                <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
+                <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'green', borderColor:'green', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Guardar</Button>
+            </div>
+        </div>
+        </form>
     </div>
     );
 };
