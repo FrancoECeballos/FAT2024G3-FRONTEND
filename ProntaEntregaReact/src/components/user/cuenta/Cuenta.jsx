@@ -47,29 +47,29 @@ const Cuenta = () => {
     <div className='micuenta'>
       <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
       <form>
-      <h2>Información personal</h2>
-      <div>
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" value={`Nombre: ${userData.nombre}`}/>
+        <h2>Información personal</h2>
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" value={`${userData.nombre}`} readonly/>
 
-      <label for="apellido">Apellido:</label>
-      <input type="text" id="apellido" value={`Apellido: ${userData.apellido}`}/>
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" value={`${userData.apellido}`} readonly/>
 
-      <label for="email">Correo electrónico:</label>
-      <input type="email" id="email" value={`Email: ${userData.email}`}/>
+            <label for="email">Correo electrónico:</label>
+            <input type="email" id="email" value={`${userData.email}`} readonly/>
 
-      <label for="telefono">Teléfono:</label>
-      <input type="tel" id="telefono" value={`Telefono: ${userData.telefono}`}/>
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" value={`${userData.telefono}`} readonly/>
 
-      <label for="direccion">Dirección:</label>
-      <input type="text" id="direccion" value={`Direccion: ${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`}/>
-        
-      <label for="genero">Genero:</label>
-      <input type="text" id="genero" value={`Genero: ${GENDER_CHOICES[userData.genero]}`}/>
-    
-      <label for="fechaNacimiento">Fecha de nacimiento:</label>
-      <input type="date" id="fechaNacimiento"/>
-      </div>
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" value={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} readonly/>
+                
+            <label for="genero">Genero:</label>
+            <input type="text" id="genero" value={`${GENDER_CHOICES[userData.genero]}`} readonly/>
+            
+            <label for="fechaNacimiento">Fecha de nacimiento:</label>
+            <input type="date" id="fechaNacimiento" readonly/>
+        </div>
       </form>
     </div>
     );
