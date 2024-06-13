@@ -26,13 +26,14 @@
   }
 
   .columna {
-    width: calc(33.33% - 20px); /* 33.33% de ancho - 20px de margen */
+    width: calc(33.33% - 5rem); /* 33.33% de ancho - 20px de margen */
     margin: 2rem; /* Margen entre columnas */
   }
 
   .micuenta label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
   }
 
   .micuenta input{

@@ -80,10 +80,10 @@ const Cuenta = () => {
                 <label for="genero">Genero:</label>
                 <input type="text" id="genero" defaultValue={`${GENDER_CHOICES[userData.genero]}`} disabled={!isEditing}/>
                 
-                <Button onClick={handleEdit}>Editar</Button>
             </div>
         </div>
         </form>
+        <Button style={{borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
         <Button onClick={handleLogout}>Cerrar sesión</Button>
     </div>
     );
