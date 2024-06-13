@@ -41,26 +41,29 @@ export default function FullNavbar() {
               <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
               <div className="vertical-divider"></div>
             </Nav>
-            <Button class='sidebutton' onClick={handleShow} style={{ width: '50px', paddingRight: '50px',backgroundColor:'#A11818'  }}>
-              <img src={SideBar} style={{ width: '40px',backgroundColor: '#A11818' }}/>
+            <Button onClick={handleShow} style={{backgroundColor: 'transparent', border:'none'}}>
+              <img src={SideBar} style={{ width: '2.5rem'}}/>
             </Button>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      <Offcanvas show={show} onHide={handleClose} placement="end" style={{ backgroundColor: 'rgb(131, 0, 0)' }}>
+      <Offcanvas show={show} onHide={handleClose} placement="end" style={{ backgroundColor: 'rgb(131, 0, 0' }}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title className=''>Menú Lateral</Offcanvas.Title>
+          <Offcanvas.Title>Menú Lateral</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
+          
           <Nav>
-            <Nav.Link href="#novedades">Novedades</Nav.Link>
-	        <Nav.Link href="#stock">Stock</Nav.Link>
-            <Nav.Link href="#entregas">Entregas</Nav.Link>
-            <Nav.Link href="#pedidos">Pedidos</Nav.Link>
-            <Nav.Link href="#ofertas">Ofertas</Nav.Link>
-			<div className="vertical-divider"></div>
+            <div>
+            <Nav.Link href="#novedades" style={{ color: 'white' }}>Novedades</Nav.Link>
+            <Nav.Link href="#stock" style={{ color: 'white' }}>Stock</Nav.Link>
+            <Nav.Link href="#entregas" style={{ color: 'white' }}>Entregas</Nav.Link>
+            <Nav.Link href="#pedidos" style={{ color: 'white' }}>Pedidos</Nav.Link>
+            <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
+            </div>          
           </Nav>
+          
         </Offcanvas.Body>
       </Offcanvas>
     </>
