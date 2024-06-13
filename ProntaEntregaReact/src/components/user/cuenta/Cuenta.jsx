@@ -54,32 +54,37 @@ const Cuenta = () => {
     };
 
     return (
-    <div className='micuenta'>
-      <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
-      <form>
-        <h2>Información personal</h2>
-        <div>
+    <div class="micuenta">
+    <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
+    <h2>Información personal</h2>
+    <form>
+        <div class="contenedor-inputs">
+        <div class="columna">
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" defaultValue={`${userData.nombre}`} disabled={!isEditing}/>
+            <input type="text" id="nombre" defaultValue={`${userData.nombre}`} disabled ={!isEditing}/>
 
             <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" defaultValue={`${userData.apellido}`} disabled={!isEditing}/>
+            <input type="text" id="apellido" defaultValue={`${userData.apellido}`} disabled ={!isEditing}/>
 
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" defaultValue={`${userData.email}`} disabled={!isEditing}/>
-
-            <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} disabled={!isEditing}/>
-
-            <label for="direccion">Dirección:</label>
-            <input type="text" id="direccion" defaultValue={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} disabled={!isEditing}/>
-                
-            <label for="genero">Genero:</label>
-            <input type="text" id="genero" defaultValue={`${GENDER_CHOICES[userData.genero]}`} disabled={!isEditing}/>
-            
-            <Button onClick={handleEdit}>Editar</Button>
+            <input type="email" id="email" defaultValue={`${userData.email}`} disabled ={!isEditing}/>
         </div>
-      </form>
+
+        <div class="columna">
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} disabled ={!isEditing}/>
+
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" defaultValue={`${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}`} disabled={!isEditing}/>
+                    
+                <label for="genero">Genero:</label>
+                <input type="text" id="genero" defaultValue={`${GENDER_CHOICES[userData.genero]}`} disabled={!isEditing}/>
+                
+                <Button onClick={handleEdit}>Editar</Button>
+            </div>
+        </div>
+        </form>
+        <Button onClick={handleLogout}>Cerrar sesión</Button>
     </div>
     );
 };
