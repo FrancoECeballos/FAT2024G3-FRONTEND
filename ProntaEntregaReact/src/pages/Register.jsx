@@ -5,7 +5,7 @@ import BaseNavbar from '../components/navbar/base_navbar/BaseNavbar.jsx';
 
 function Register (){
   return (
-    <div>
+    <div style={{backgroundColor: '#ECECEC'}}>
       <BaseNavbar />
       <RegisterCard />
     </div>

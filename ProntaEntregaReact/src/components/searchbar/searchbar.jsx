@@ -3,11 +3,12 @@ import { Dropdown } from 'react-bootstrap';
 
 function SearchBar() {
     return (
-        <div style={{display:'flex', marginLeft: '3rem'}}>
-        <input type="text" placeholder="Search.." name="search" style={{width: '60rem', marginRight: '2rem'}}/>
+        <div style={{display:'flex', justifyContent: 'center'}}>
+        <input type="text" name="search" style={{border:'0px',borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '80%', marginRight: '2rem'}}>
+        </input>
         <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Dropdown Button
+            <Dropdown.Toggle id="dropdown-basic" style={{border:'0px',color: 'black' ,borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
+                Ordenar Por
             </Dropdown.Toggle>
 
             <Dropdown.Menu>

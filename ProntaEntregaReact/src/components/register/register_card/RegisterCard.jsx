@@ -33,7 +33,6 @@ const RegisterCard = () => {
   const navigate = useNavigate();
 
   const [imageSrc, setImageSrc] = useState(defaultImage);
-  const [imageSrc2, setImageSrc2] = useState(uploadImage);
   const fileInputRef = useRef(null);
 
   const handleFileButtonClick = () => {

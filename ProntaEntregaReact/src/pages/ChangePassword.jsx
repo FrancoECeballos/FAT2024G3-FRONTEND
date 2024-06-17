@@ -4,7 +4,7 @@ import ChangePasswordCard from '../components/change_password/change_password_ca
 
 function ChangePassword (){
     return (
-        <div>
+        <div style={{backgroundColor: '#ECECEC'}}>
             <BaseNavbar />
             <ChangePasswordCard />
         </div>

@@ -5,7 +5,7 @@ import Sidebar from '../components/user/sidebar/Sidebar_perfil';
 
 function MiCuenta(){
     return (
-        <div>
+        <div style={{backgroundColor: '#ECECEC'}}>
             <FullNavbar/>
             <Sidebar/>
             <Cuenta/>

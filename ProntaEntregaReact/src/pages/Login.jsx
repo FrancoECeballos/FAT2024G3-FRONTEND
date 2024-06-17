@@ -4,7 +4,7 @@ import LoginCard from '../components/login/login_card/LoginCard.jsx';
 
 function Login (){
   return (
-    <div>
+    <div style={{backgroundColor: '#ECECEC'}}>
       <BaseNavbar />
       <LoginCard />
     </div>
