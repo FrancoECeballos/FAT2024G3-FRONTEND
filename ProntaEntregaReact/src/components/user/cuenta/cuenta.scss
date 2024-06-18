@@ -1,6 +1,6 @@
 .micuenta h1 {
     text-align: center;
-    margin-top: 200px;
+    margin-top: 10rem;
   }
 
   .micuenta {
@@ -9,7 +9,7 @@
 
   .micuenta h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
   }
   
   .micuenta form {
@@ -35,11 +35,31 @@
     margin-top: 2rem;
   }
 
+  .mb-2 input{
+    display: inline-block;
+    width: auto;
+  }
+
   .micuenta input{
-    background-color: white;
+    background-color: #ffffff;
+    box-shadow: none;
     width: 25rem;
     padding: 0.5rem;
     border: none;
     border-radius: 20rem;
     color: black;
+  }
+
+  .InputGroup.mb-2 {
+    display: flex; /* Habilitar flexbox para el InputGroup */
+    width: 24rem; /* Ancho total del InputGroup (384px en rems) */
+  }
+  
+  .InputGroup.mb-2 input {
+    width: 8rem;
+    flex: 1; /* Distribuir el espacio disponible equitativamente */
+    border-right: 0; /* Eliminar borde derecho del input intermedio */
+    &:last-child { /* Eliminar borde derecho del último input */
+      border-right: 1px solid #ccc; /* Agregar borde derecho al último input */
+    }
   }
