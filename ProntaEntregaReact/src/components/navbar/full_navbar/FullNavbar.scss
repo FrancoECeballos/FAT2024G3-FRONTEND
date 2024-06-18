@@ -1,5 +1,6 @@
 .full-navbar {
 	background-color: '#A11818';
+  
 	.navbar-nav {
 	  display: flex;
 	  justify-content: center;
@@ -24,33 +25,40 @@
 	}
   }
   
- 
-  
   .vertical-divider {
 	width: 1px;
-	height: 2rem; /* Height set to 2rem to match the text height */
+	height: 30px; /* Height set to 2rem to match the text height */
 	background-color: #ffffff;
-	margin: 0 0.5rem;
-}
-
-.pages-nav a {
+	margin: 0 1rem; /* Increased margin for more space */
+  }
+  
+  .pages-nav a {
 	text-decoration: none;
 	color: white;
 	transition: background-color 0.3s ease;
-}
-
-.pages-nav a:hover {
+  }
+  
+  .pages-nav a:hover {
 	background-color: rgb(131, 0, 0);
-}
-
-.col-right {
+  }
+  
+  .col-right {
 	margin-left: 0;
-}
-
-
-
-.vertical-divider {
+  }
+  
+  .vertical-divider {
 	border-right: 1px solid white;
-	height: 1rem;
+	height: 55px;
 	padding-top: 0%;
-}
+  }
+  
+  // Personalización del Offcanvas para que salga del lado derecho
+  .offcanvas-end {
+	transform: translateX(100%);
+	transition: transform 0.3s ease-in-out;
+  
+	&.show {
+	  transform: translateX(0);
+	}
+  }
+  
