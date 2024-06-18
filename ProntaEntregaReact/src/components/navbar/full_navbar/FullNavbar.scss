@@ -8,6 +8,8 @@
   
 	.logo {
 	  width: 4rem;
+	  right: 0;
+	  align-items: left;
 	}
   
 	.nav-link {
@@ -24,18 +26,14 @@
 	  }
 	}
   
-	.vertical-divider {
-	  width: 1px;
-	  height: 50%; /* Ocupa todo el largo del navbar */
-	  background-color: #ffffff;
-	  margin: 0 1rem;
-	}
+	
 	.vertical-divider {
 		width: 1px;
-		height: 30px; 
+		height: 3rem; 
 		background-color: #ffffff;
-		margin: 0 1rem; 
+		margin: 0.5rem; 
 	}
+	
 	.pages-nav a {
 	  text-decoration: none;
 	  color: white;

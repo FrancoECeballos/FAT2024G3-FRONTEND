@@ -22,15 +22,15 @@ function FullNavbar() {
         </Navbar.Brand>
         <Nav className="mx-auto">
         <div className="vertical-divider"></div>
-          <Nav.Link href="#novedades" className="nav-link">Novedades</Nav.Link>
+          <Nav.Link href="#novedades" className="nav-link" style={{alignContent: 'center'}}>Novedades</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#stock" className="nav-link">Stock</Nav.Link>
+          <Nav.Link href="#stock" className="nav-link"  style={{alignContent: 'center'}}>Stock</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#entregas" className="nav-link">Entregas</Nav.Link>
+          <Nav.Link href="#entregas" className="nav-link" style={{alignContent: 'center'}}>Entregas</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#pedidos" className="nav-link">Pedidos</Nav.Link>
+          <Nav.Link href="#pedidos" className="nav-link" style={{alignContent: 'center'}}>Pedidos</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#ofertas" className="nav-link">Ofertas</Nav.Link>
+          <Nav.Link href="#ofertas" className="nav-link" style={{alignContent: 'center'}}>Ofertas</Nav.Link>
           <div className="vertical-divider"></div>
         </Nav>
         <Button className="side-button" onClick={handleShow}>
@@ -42,9 +42,7 @@ function FullNavbar() {
         <Offcanvas.Title>Offcanvas</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>
-      <div className="vertical-divider"></div>
         <Nav.Link href="#novedades" style={{ color: 'white' }}>Novedades</Nav.Link>
-        <div className="vertical-divider"></div>
         <Nav.Link href="#stock" style={{ color: 'white' }}>Stock</Nav.Link>
         <Nav.Link href="#entregas" style={{ color: 'white' }}>Entregas</Nav.Link>
         <Nav.Link href="#pedidos" style={{ color: 'white' }}>Pedidos</Nav.Link>
