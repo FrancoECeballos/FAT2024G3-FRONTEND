@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import './cuenta.scss';
 import { Button, Form } from 'react-bootstrap';
+import { InputGroup } from "react-bootstrap";
 
 const GENDER_CHOICES = {
     0: 'Hombre',
@@ -122,8 +123,12 @@ const Cuenta = () => {
             <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} ref={telefonoRef} disabled ={!isEditing}/>
 
                 <label for="direccion">Dirección:</label>
-                <input type="text" id="direccion" defaultValue={userData.id_direccion ? `${userData.id_direccion.localidad}, ${userData.id_direccion.calle} ${userData.id_direccion.numero}` : ''} ref={direccionRef} disabled={!isEditing}/>
-                    
+                <InputGroup className="mb-2">
+                        <input disabled={!isEditing} name="localidad" type="text"  className="unified-input-left" />
+                        <input disabled={!isEditing} name="calle" type="text" />
+                        <input disabled={!isEditing} name="numero" type="number" className="unified-input-right" />
+                </InputGroup>  
+
                 <label for="genero">Genero:</label>
                 <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}`} onChange={handleInputChange} aria-label="Default select example" ref={generoRef} disabled={!isEditing}>
                     <option value="0">Masculino</option>

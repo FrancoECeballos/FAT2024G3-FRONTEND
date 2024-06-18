@@ -1,58 +1,82 @@
 .micuenta h1 {
-    text-align: center;
-    margin-top: 200px;
-  }
+  text-align: center;
+  margin-top: 10rem;
+}
 
-  .micuenta {
-    align-items: center;
-  }
+.micuenta {
+  align-items: center;
+}
 
-  .micuenta h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .micuenta form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Centrar el contenido horizontalmente */
-    align-items: center;
-  }
+.micuenta h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
 
-  .contenedor-inputs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
+.micuenta form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centrar el contenido horizontalmente */
+  align-items: center;
+}
 
-  .columna {
-    width: calc(20%); /* 20% de ancho*/ 
-  }
+.contenedor-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 
-  .micuenta label {
-    display: block;
-    margin-bottom: 0.5rem;
-    margin-top: 2rem;
-  }
+.columna {
+  width: calc(20%); /* 20% de ancho*/ 
+}
 
-  .micuenta input{
-    background-color: white;
-    width: 25rem;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 20rem;
-    color: black;
-  }
+.micuenta label {
+  display: block;
+  margin-bottom: 0.5rem;
+  margin-top: 2rem;
+}
 
-  .genero {
-    background-color: white;
-    width: 25rem;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 20rem;
-    color: black;
-  }
+.mb-2 input{
+  display: inline-block;
+  width: auto;
+}
+
+.micuenta input{
+  background-color: #ffffff;
+  box-shadow: none;
+  width: 25rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 20rem;
+  color: black;
+}
+
+.mb-2 input{
+width: 8.5rem;
+}
+
+.input-group{
+display: flex;
+flex-wrap: nowrap;
+}
+
+.genero {
+  background-color: white;
+  width: 25rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 20rem;
+  color: black;
+}
+
+.mb-2 input{
+width: 8.5rem;
+}
+
+.input-group{
+display: flex;
+flex-wrap: nowrap;
+}
 
 .form-select:disabled{
-  background-color: white;
+background-color: white;
 }
