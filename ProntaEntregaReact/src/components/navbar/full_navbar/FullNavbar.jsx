@@ -7,6 +7,8 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import logo from '../../../assets/Logo.png';
 import './FullNavbar.scss';
 import side from '../../../assets/side_bar.png';
+import noti from '../../../assets/notification_bell.png';
+import  user from '../../../assets/user_in_app.png';
 
 function FullNavbar() {
   const [show, setShow] = useState(false);
@@ -33,6 +35,12 @@ function FullNavbar() {
           <Nav.Link href="#ofertas" className="nav-link" style={{alignContent: 'center'}}>Ofertas</Nav.Link>
           <div className="vertical-divider"></div>
         </Nav>
+        <Navbar.Brand href="#home">
+          <img src={noti} alt="Noti" className="noti" style={{ width: '3rem' }} />
+        </Navbar.Brand>
+        <Navbar.Brand href="#home">
+          <img src={user} alt="User" className="user" style={{ width: '3rem' }}  />
+        </Navbar.Brand>
         <Button className="side-button" onClick={handleShow}>
           <img src={side} alt="side" className="side-icon" />
         </Button>
