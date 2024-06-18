@@ -50,16 +50,11 @@
     color: black;
   }
 
-  .InputGroup.mb-2 {
-    display: flex; /* Habilitar flexbox para el InputGroup */
-    width: 24rem; /* Ancho total del InputGroup (384px en rems) */
-  }
-  
-  .InputGroup.mb-2 input {
-    width: 8rem;
-    flex: 1; /* Distribuir el espacio disponible equitativamente */
-    border-right: 0; /* Eliminar borde derecho del input intermedio */
-    &:last-child { /* Eliminar borde derecho del último input */
-      border-right: 1px solid #ccc; /* Agregar borde derecho al último input */
-    }
-  }
+.mb-2 input{
+width: 8.5rem;
+}
+
+.input-group{
+display: flex;
+flex-wrap: nowrap;
+}
