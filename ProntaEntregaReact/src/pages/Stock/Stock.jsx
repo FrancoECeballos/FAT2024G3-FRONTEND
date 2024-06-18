@@ -2,6 +2,7 @@ import React from 'react';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
+import GenericCard from '../../components/cards/GenericCard.jsx';
 
 import './Stock.scss';
 
@@ -11,7 +12,7 @@ function Stock (){
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar />
-                <h1>Stock</h1>
+                <GenericCard />
             </div>
         </div>
     );
