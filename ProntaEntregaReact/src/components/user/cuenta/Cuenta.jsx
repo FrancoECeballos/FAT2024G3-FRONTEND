@@ -1,16 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import fetchData from '../../../functions/fetchData';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import './cuenta.scss';
 import { Button, Form } from 'react-bootstrap';
 import { InputGroup } from "react-bootstrap";
-
-const GENDER_CHOICES = {
-    0: 'Hombre',
-    1: 'Mujer',
-    2: 'Prefiero no decirlo'
-};
 
 const Cuenta = () => {
     const navigate = useNavigate();
@@ -26,16 +20,34 @@ const Cuenta = () => {
         "telefono": "",
         "email": "",
         "genero": "",
-        "id_direccion": "",
+        "id_direccion": {
+            "localidad": "",
+            "calle": "",
+            "numero": "",
+        },
         "id_tipodocumento": ""
-    });
+    }); useEffect(() => {
+        const { cai, telnum, ...finalData } = userData;
+    }, [userData]);
 
-    const nombreRef = useRef();
-    const apellidoRef = useRef();
-    const emailRef = useRef();
-    const telefonoRef = useRef();
-    const direccionRef = useRef();
-    const generoRef = useRef();
+    const [userDataDefault, setUserDataDefault] = useState({
+        "nombre": "",
+        "apellido": "",
+        "nombreusuario": "",
+        "password": "",
+        "documento": "",
+        "telefono": "",
+        "email": "",
+        "genero": "",
+        "id_direccion": {
+            "localidad": "",
+            "calle": "",
+            "numero": "",
+        },
+        "id_tipodocumento": ""
+    }); useEffect(() => {
+        const { cai, telnum, ...finalData } = userDataDefault;
+    }, [userDataDefault]);
 
     useEffect(() => {
         if (!token) {
@@ -43,7 +55,8 @@ const Cuenta = () => {
             return;
         }
         fetchData(`/userToken/${token}`).then((result) => {
-            setUserData(result);
+            setUserData(result)
+            setUserDataDefault(result);
         });
     }, [token]);
 
@@ -59,12 +72,7 @@ const Cuenta = () => {
             editButton.style.backgroundColor = 'blue';
             editButton.style.borderColor = 'blue';
             editButton.style.color = 'white';
-            if (nombreRef.current) nombreRef.current.value = nombreRef.current.defaultValue;
-            if (apellidoRef.current) apellidoRef.current.value = apellidoRef.current.defaultValue;
-            if (emailRef.current) emailRef.current.value = emailRef.current.defaultValue;
-            if (telefonoRef.current) telefonoRef.current.value = telefonoRef.current.defaultValue;
-            if (direccionRef.current) direccionRef.current.value = direccionRef.current.defaultValue;
-            if (generoRef.current) generoRef.current.value = generoRef.current.defaultValue;
+            setUserData(userDataDefault);
         } else {
             setIsEditing(true);
             document.getElementById("editButton").innerText = "Cancelar";
@@ -73,64 +81,86 @@ const Cuenta = () => {
             editButton.style.color = 'black';
         }
     };
+
+    const generateUsername = (nombre, apellido, documento) => {
+        if (nombre && apellido && documento) {
+          return `${nombre.toLowerCase()}.${apellido.toLowerCase()}${documento.slice(5, 8)}`;
+        }
+        return '';
+    };
+      const generatePhone = (cai, telnum) => {
+        if (cai && telnum) {
+          return `${cai} ${telnum}`;
+        }
+        return '';
+    };
     
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setUserData((prevData) =>  {
-            const updatedData = { ...prevData, [name]: value };
-            return updatedData;
-        });
-    };
-
-    const [direcFormData, setDirecFormData] = useState({
-        "calle": "",
-        "numero": "",
-        "localidad": ""
-    });
-
-    const handleDirecChange = (event) => {
-        const { name, value } = event.target;
-        setDirecFormData((prevData) =>  {
-            let updatedValue = value;
-            if (name === "numero") {
+        const [field, subfield] = name.split('.');
+        console.log(name);
+        console.log(field);
+        console.log(subfield);
+      
+        setUserData((prevData) => {
+          let updatedValue = value;
+          if (subfield){
+            if (subfield === "numero") {
                 updatedValue = parseInt(value, 10);
             }
-            const updatedData = { ...prevData, [name]: updatedValue };
+            const updatedData = { ...prevData, [field]: { ...prevData[field], [subfield]: updatedValue } };
+            console.log(updatedData);
             return updatedData;
-        })
+          } 
+          else {
+            if (field === "genero" || field === "id_direccion" || field === "id_tipousuario" || field === "id_tipodocumento" || field === "numero") {
+                updatedValue = parseInt(value, 10);
+            }
+        
+            const updatedData = { ...prevData, [field]: updatedValue };
+        
+            if (field === "nombre" || field === "apellido" || field === "documento") {
+                const { nombre, apellido, documento } = updatedData;
+                updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
+            }
+        
+            console.log(updatedData);
+            return updatedData;
+          }
+        });
     };
 
     return (
     <div class="micuenta">
-    <h1>{`Bienvenido ${userData.nombreusuario}`}</h1>
+    <h1>{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
     <h2>Información personal</h2>
     <form>
         <div class="contenedor-inputs">
         <div class="columna">
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" defaultValue={`${userData.nombre}`} ref={nombreRef} disabled ={!isEditing}/>
+            <input type="text" id="nombre" name="nombre" value={`${userData.nombre}`} onChange={handleInputChange} disabled ={!isEditing}/>
 
             <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" defaultValue={`${userData.apellido}`} ref={apellidoRef} disabled ={!isEditing}/>
+            <input type="text" id="apellido" name="apellido" value={`${userData.apellido}`} onChange={handleInputChange} disabled ={!isEditing}/>
 
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" defaultValue={`${userData.email}`} ref={emailRef} disabled ={!isEditing}/>
+            <input type="email" id="email" name="email" value={`${userData.email}`} onChange={handleInputChange} disabled ={!isEditing}/>
             <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>
         </div>
 
         <div class="columna">
             <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} ref={telefonoRef} disabled ={!isEditing}/>
+            <input type="tel" id="telefono" name="telefono" value={`${userData.telefono}`} onChange={handleInputChange} disabled ={!isEditing}/>
 
                 <label for="direccion">Dirección:</label>
                 <InputGroup className="mb-2">
-                        <input disabled={!isEditing} name="localidad" type="text"  className="unified-input-left" />
-                        <input disabled={!isEditing} name="calle" type="text" />
-                        <input disabled={!isEditing} name="numero" type="number" className="unified-input-right" />
+                        <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={`${userData.id_direccion.localidad}`} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} name="id_direccion.calle" type="text" value={`${userData.id_direccion.calle}`} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={`${userData.id_direccion.numero}`} onChange={handleInputChange}/>
                 </InputGroup>  
 
                 <label for="genero">Genero:</label>
-                <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}`} onChange={handleInputChange} aria-label="Default select example" ref={generoRef} disabled={!isEditing}>
+                <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}`} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
                     <option value="0">Masculino</option>
                     <option value="1">Femenino</option>
                     <option value="2">Prefiero no decir</option>
