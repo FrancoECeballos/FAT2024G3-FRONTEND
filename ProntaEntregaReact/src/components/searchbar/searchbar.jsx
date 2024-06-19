@@ -1,7 +1,7 @@
 import React from "react";
 import { Dropdown } from 'react-bootstrap';
 
-function SearchBar() {
+const SearchBar = () => {
     return (
         <div style={{display:'flex', justifyContent: 'center'}}>
         <input type="text" name="search" style={{border:'0px',borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '80%', marginRight: '2rem'}}>
