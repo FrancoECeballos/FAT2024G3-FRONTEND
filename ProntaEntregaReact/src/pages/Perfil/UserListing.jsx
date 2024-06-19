@@ -26,7 +26,7 @@ function UserListing (){
                 {Array.isArray(users) && users.map(user => (
                     <GenericCard 
                         key={user.id}
-                        titulo={`${user.nombre_usuario} ${user.apellido}`}
+                        titulo={`${user.nombre} ${user.apellido}`}
                         descrip1={user.email}
                         descrip2={user.dni}
                     />

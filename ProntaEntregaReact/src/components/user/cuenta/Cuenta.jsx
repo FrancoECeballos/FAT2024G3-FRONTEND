@@ -183,32 +183,32 @@ const Cuenta = () => {
                 <div class="contenedor-inputs">
                 <div class="columna">
                     <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" value={`${userData.nombre}`} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
 
                     <label for="apellido">Apellido:</label>
-                    <input type="text" id="apellido" name="apellido" value={`${userData.apellido}`} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <input type="text" id="apellido" name="apellido" value={`${userData.apellido}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
 
                     <label for="email">Correo electrónico:</label>
-                    <input type="email" id="email" name="email" value={`${userData.email}`} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>
                 </div>
 
                 <div class="columna">
                     <label for="telefono">Teléfono:</label>
                         <InputGroup className="grouptel">
-                            <input disabled={!isEditing} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}`} onChange={handleInputChange} className="unified-input-left" />
-                            <input disabled={!isEditing} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}`} onChange={handleInputChange}className="unified-input-right" />
+                            <input disabled={!isEditing} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="unified-input-left" />
+                            <input disabled={!isEditing} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="unified-input-right" />
                         </InputGroup>  
 
                         <label for="direccion">Dirección:</label>
                         <InputGroup className="groupderec">
-                            <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={`${userData.id_direccion.localidad}`} onChange={handleInputChange}/>
-                            <input disabled={!isEditing} name="id_direccion.calle" type="text" value={`${userData.id_direccion.calle}`} onChange={handleInputChange}/>
-                            <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={`${userData.id_direccion.numero}`} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={`${userData.id_direccion.localidad}` || ''} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.calle" type="text" value={`${userData.id_direccion.calle}` || ''} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={`${userData.id_direccion.numero}` || ''} onChange={handleInputChange}/>
                         </InputGroup>  
 
                         <label for="genero">Genero:</label>
-                        <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}`} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
+                        <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}` || 2} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
                             <option value="0">Masculino</option>
                             <option value="1">Femenino</option>
                             <option value="2">Prefiero no decir</option>
