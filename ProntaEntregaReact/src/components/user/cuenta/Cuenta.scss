@@ -1,6 +1,17 @@
 .micuenta h1 {
   text-align: center;
-  margin-top: 10rem;
+  margin-top: 5rem;
+}
+
+
+  .fotoperfil{
+    justify-content: center;
+    align-items: center;
+    width: 10rem;
+    height: 10rem;
+    margin: 0 auto;
+    border-radius: 100%;
+    
 }
 
 
@@ -14,6 +25,7 @@
 }
 
 .micuenta form {
+  margin-top: 5rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center; /* Centrar el contenido horizontalmente */
