@@ -4,7 +4,9 @@ import Register from './pages/Register.jsx';
 import ChangePassword from './pages/ChangePassword.jsx';
 import MiCuenta from './pages/Perfil/MiCuenta.jsx';
 import Stock from './pages/Stock/Stock.jsx';
-import SeguridadYPrivacidad from './pages//Perfil/SeguridadYPrivacidad.jsx';
+import SeguridadYPrivacidad from './pages/Perfil/SeguridadYPrivacidad.jsx';
+import UserListing from './pages/Perfil/UserListing.jsx';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //importacion de los renders
@@ -20,6 +22,7 @@ function App() {
         <Route path="/change_password" element={<ChangePassword />} />
         <Route path="/perfil/micuenta" element={<MiCuenta />} />
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
+        <Route path="/selectuser" element={<UserListing />}/>
         <Route path="/stock" element={<Stock />} />
       </Routes>
     </BrowserRouter>

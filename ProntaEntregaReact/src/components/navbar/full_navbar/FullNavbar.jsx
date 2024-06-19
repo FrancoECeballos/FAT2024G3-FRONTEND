@@ -21,19 +21,20 @@ function FullNavbar() {
     const token = Cookies.get('token');
     const fetchUserData = async () => {
       if (token) {
-        const result = await fetchData('/');
+        const result = await fetchData(`/userToken/${token}`);
         setData(result);
       }
     };
     fetchUserData();
+    console.log(data);
   }, []);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const handleSuperUserAuth = () => {
-    if (data.is_superuser) {
-      navigate('/selectUser');
+    if (data.is_superuser===true) {
+      navigate('/selectuser');
     } else {
       navigate('/perfil/micuenta');
     }
