@@ -150,10 +150,13 @@ const Cuenta = () => {
 
         <div class="columna">
             <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" name="telefono" value={`${userData.telefono}`} onChange={handleInputChange} disabled ={!isEditing}/>
+            <InputGroup className="grouptel">
+                        <input disabled={!isEditing} name="cai" type="text"  className="unified-input-left" />
+                        <input disabled={!isEditing} name="telnum" type="text" className="unified-input-right" />
+                </InputGroup>  
 
                 <label for="direccion">Dirección:</label>
-                <InputGroup className="mb-2">
+                <InputGroup className="groupderec">
                         <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={`${userData.id_direccion.localidad}`} onChange={handleInputChange}/>
                         <input disabled={!isEditing} name="id_direccion.calle" type="text" value={`${userData.id_direccion.calle}`} onChange={handleInputChange}/>
                         <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={`${userData.id_direccion.numero}`} onChange={handleInputChange}/>

@@ -12,7 +12,7 @@ function Stock (){
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar />
-                <GenericCard />
+                <GenericCard titulo="Titulo" descrip1="des 1" descrip2="des 2"/>
             </div>
         </div>
     );

@@ -3,6 +3,7 @@
   margin-top: 10rem;
 }
 
+
 .micuenta {
   align-items: center;
 }
@@ -35,10 +36,7 @@
   margin-top: 2rem;
 }
 
-.mb-2 input{
-  display: inline-block;
-  width: auto;
-}
+
 
 .micuenta input{
   background-color: #ffffff;
@@ -48,10 +46,6 @@
   border: none;
   border-radius: 20rem;
   color: black;
-}
-
-.mb-2 input{
-width: 8.5rem;
 }
 
 .input-group{
@@ -68,8 +62,14 @@ flex-wrap: nowrap;
   color: black;
 }
 
-.mb-2 input{
-width: 8.5rem;
+.groupderec input{
+  width: 8.5rem;
+  display: inline-block;
+}
+
+.grouptel input{
+  width: 12.5rem;
+  display: inline-block;
 }
 
 .input-group{

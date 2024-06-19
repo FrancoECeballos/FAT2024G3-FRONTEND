@@ -1,17 +1,21 @@
 .full-navbar {
 	background-color: #A11818;
 	color: white;
-  
-	.navbar-brand {
-	  padding-left: 0;
-	}
+	
   
 	.logo {
 	  width: 4rem;
-	  right: 0;
-	  align-items: left;
 	}
-  
+
+	.container{
+		margin: 0;
+	}	
+
+	.botons-derecha{
+		align-items: flex-end;
+		
+	}
+
 	.nav-link {
 	  color: white;
 	}
