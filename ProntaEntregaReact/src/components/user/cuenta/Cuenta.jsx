@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import fetchData from '../../../functions/fetchData';
+import postData from '../../../functions/postData.jsx';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import './cuenta.scss';
@@ -10,6 +11,7 @@ const Cuenta = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
+    const [direc, setDirec] = useState([]);
 
     const [userData, setUserData] = useState({
         "nombre": "",
@@ -58,6 +60,9 @@ const Cuenta = () => {
             setUserData(result)
             setUserDataDefault(result);
         });
+        fetchData('/direcciones/').then((result) => {
+            setDirec(result);
+        });
     }, [token]);
 
     const handleLogout = () => {
@@ -98,9 +103,6 @@ const Cuenta = () => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         const [field, subfield] = name.split('.');
-        console.log(name);
-        console.log(field);
-        console.log(subfield);
       
         setUserData((prevData) => {
           let updatedValue = value;
@@ -109,7 +111,6 @@ const Cuenta = () => {
                 updatedValue = parseInt(value, 10);
             }
             const updatedData = { ...prevData, [field]: { ...prevData[field], [subfield]: updatedValue } };
-            console.log(updatedData);
             return updatedData;
           } 
           else {
@@ -123,58 +124,93 @@ const Cuenta = () => {
                 const { nombre, apellido, documento } = updatedData;
                 updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
             }
-        
-            console.log(updatedData);
+
+            if (field === "cai" || field === "telnum") {
+                const { cai, telnum } = updatedData;
+                updatedData.telefono = generatePhone(cai, telnum);
+            }
             return updatedData;
           }
         });
     };
 
+    const handleSendData = async(event) => {
+        event.preventDefault();
+        let id_direccion = null;
+    
+        const existingDireccion = direc.find(
+          (d) =>
+            d.calle === userData.id_direccion.calle &&
+            d.numero === userData.id_direccion.numero &&
+            d.localidad === userData.id_direccion.localidad
+        );
+    
+        if (!existingDireccion) {
+          const url = '/crear_direccion/';
+          const body = userData.id_direccion;
+          const result = await postData(url, body);
+          id_direccion = result.id_direccion;
+        } else {
+          id_direccion = existingDireccion.id_direccion;
+        };
+    
+        const updatedUserData = { ...userData, id_direccion };
+        setUserData(updatedUserData);
+    
+        const url = (`/user/update/${token}`);
+        const body = updatedUserData;
+        const result = await postData(url, body);
+        Cookies.set('token', response.token, { expires: 7, secure: true });
+        fetchData('/direcciones/').then((result) => {
+          setDirec(result);
+        });
+    };
+
     return (
-    <div class="micuenta">
-    <h1>{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
-    <h2>Información personal</h2>
-    <form>
-        <div class="contenedor-inputs">
-        <div class="columna">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" value={`${userData.nombre}`} onChange={handleInputChange} disabled ={!isEditing}/>
+        <div class="micuenta">
+            <h1>{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
+            <h2>Información personal</h2>
+            <form>
+                <div class="contenedor-inputs">
+                <div class="columna">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" value={`${userData.nombre}`} onChange={handleInputChange} disabled ={!isEditing}/>
 
-            <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" name="apellido" value={`${userData.apellido}`} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <label for="apellido">Apellido:</label>
+                    <input type="text" id="apellido" name="apellido" value={`${userData.apellido}`} onChange={handleInputChange} disabled ={!isEditing}/>
 
-            <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" name="email" value={`${userData.email}`} onChange={handleInputChange} disabled ={!isEditing}/>
-            <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>
+                    <label for="email">Correo electrónico:</label>
+                    <input type="email" id="email" name="email" value={`${userData.email}`} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>
+                </div>
+
+                <div class="columna">
+                    <label for="telefono">Teléfono:</label>
+                        <InputGroup className="grouptel">
+                            <input disabled={!isEditing} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}`} onChange={handleInputChange} className="unified-input-left" />
+                            <input disabled={!isEditing} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}`} onChange={handleInputChange}className="unified-input-right" />
+                        </InputGroup>  
+
+                        <label for="direccion">Dirección:</label>
+                        <InputGroup className="groupderec">
+                            <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={`${userData.id_direccion.localidad}`} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.calle" type="text" value={`${userData.id_direccion.calle}`} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={`${userData.id_direccion.numero}`} onChange={handleInputChange}/>
+                        </InputGroup>  
+
+                        <label for="genero">Genero:</label>
+                        <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}`} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
+                            <option value="0">Masculino</option>
+                            <option value="1">Femenino</option>
+                            <option value="2">Prefiero no decir</option>
+                        </Form.Select>
+
+                        <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
+                        <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'green', borderColor:'green', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} hidden ={!isEditing} onClick={handleSendData}>Guardar</Button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="columna">
-            <label for="telefono">Teléfono:</label>
-            <InputGroup className="grouptel">
-                        <input disabled={!isEditing} name="cai" type="text"  className="unified-input-left" />
-                        <input disabled={!isEditing} name="telnum" type="text" className="unified-input-right" />
-                </InputGroup>  
-
-                <label for="direccion">Dirección:</label>
-                <InputGroup className="groupderec">
-                        <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={`${userData.id_direccion.localidad}`} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} name="id_direccion.calle" type="text" value={`${userData.id_direccion.calle}`} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={`${userData.id_direccion.numero}`} onChange={handleInputChange}/>
-                </InputGroup>  
-
-                <label for="genero">Genero:</label>
-                <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}`} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
-                    <option value="0">Masculino</option>
-                    <option value="1">Femenino</option>
-                    <option value="2">Prefiero no decir</option>
-                </Form.Select>
-
-                <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
-                <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'green', borderColor:'green', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} hidden ={!isEditing} onClick={handleEdit}>Guardar</Button>
-            </div>
-        </div>
-        </form>
-    </div>
     );
 };
 
