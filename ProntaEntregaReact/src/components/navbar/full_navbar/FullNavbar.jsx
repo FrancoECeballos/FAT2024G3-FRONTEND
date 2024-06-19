@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {Container, Button, Nav, Navbar, Offcanvas} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 import logo from '../../../assets/Logo.png';
 import side from '../../../assets/side_bar.png';
@@ -9,6 +10,7 @@ import  user from '../../../assets/user_in_app.png';
 import './FullNavbar.scss';
 
 function FullNavbar() {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -19,7 +21,7 @@ function FullNavbar() {
       <Container>
         <div className='botons-izq'>
         <Navbar.Brand href="#home">
-          <img src={logo} alt="Logo" className="logo" />
+          <img src={logo} alt="Logo" className="logo" onClick={navigate('/')} />
         </Navbar.Brand>
         </div>
         <Nav>
@@ -40,7 +42,7 @@ function FullNavbar() {
           <img src={noti} alt="Noti" className="noti" style={{ width: '3rem' }} />
         </Navbar.Brand>
         <Navbar.Brand href="#home">
-          <img src={user} alt="User" className="user" style={{ width: '3rem' }}  />
+          <img src={user} alt="User" className="user" style={{ width: '3rem' }} onClick={navigate('/perfil/micuenta')} />
         </Navbar.Brand>
         <Button className="side-button" onClick={handleShow}>
           <img src={side} alt="side" className="side-icon" />

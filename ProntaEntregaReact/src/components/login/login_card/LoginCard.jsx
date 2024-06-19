@@ -35,7 +35,7 @@ const LoginCard = () => {
       } else {
         Cookies.set('token', response.token, { secure: true });
       }
-      navigate('/perfil/micuenta');
+      navigate('/');
     } else {
       alert('Usuario o contraseña incorrectos');
     }
