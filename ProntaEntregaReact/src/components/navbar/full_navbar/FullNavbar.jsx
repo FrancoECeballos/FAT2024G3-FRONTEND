@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import {Container, Button, Nav, Navbar, Offcanvas} from 'react-bootstrap';
+
 import logo from '../../../assets/Logo.png';
-import './FullNavbar.scss';
 import side from '../../../assets/side_bar.png';
 import noti from '../../../assets/notification_bell.png';
 import  user from '../../../assets/user_in_app.png';
+
+import './FullNavbar.scss';
 
 function FullNavbar() {
   const [show, setShow] = useState(false);

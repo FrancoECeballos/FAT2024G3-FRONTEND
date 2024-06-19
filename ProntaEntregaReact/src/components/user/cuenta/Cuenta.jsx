@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import fetchData from '../../../functions/fetchData';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import './cuenta.scss';
+import './Cuenta.scss';
 import { Button, Form } from 'react-bootstrap';
 import { InputGroup } from "react-bootstrap";
 

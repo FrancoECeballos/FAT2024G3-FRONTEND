@@ -7,9 +7,9 @@ const Sidebar = () => {
       <div className="sidebar">
       <ul>
         <SelectableButton texto="Mi cuenta" link="/Perfil/micuenta"/>
-        <SelectableButton texto="Seguridad y Privacidad" link="/Perfil/micuenta"/>
-        <SelectableButton texto="Datos Personales" link="/Perfil/micuenta"/>
-        <SelectableButton texto="Casas" link="/Perfil/micuenta"/>
+        <SelectableButton texto="Seguridad y Privacidad" link="/perfil/seguridad y privacidad"/>
+        <SelectableButton texto="Datos Personales" link="/perfil/micuenta"/>
+        <SelectableButton texto="Casas" link="/perfil/micuenta"/>
       </ul>
       </div>
     );
