@@ -1,10 +1,12 @@
 import React from "react";
 import './Seguridad.scss';
+import user from '../../../assets/user_default.png';
 
 const Seguridad = () => {
     return (
         <div>
-        <h1>hola</h1>
+        <img src={user} className="fotoperfil" />
+        <h2>Información personal</h2>
         </div>
     );
 }

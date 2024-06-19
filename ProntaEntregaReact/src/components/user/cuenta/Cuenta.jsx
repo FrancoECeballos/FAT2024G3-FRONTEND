@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import './Cuenta.scss';
 import { Button, Form } from 'react-bootstrap';
 import { InputGroup } from "react-bootstrap";
+import user from '../../../assets/user_default.png';
 
 const Cuenta = () => {
     const navigate = useNavigate();
@@ -177,8 +178,7 @@ const Cuenta = () => {
 
     return (
         <div class="micuenta">
-            <h1>{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
-            <h2>Información personal</h2>
+              <h1> <img src={user} className="fotoperfil" />{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
             <form>
                 <div class="contenedor-inputs">
                 <div class="columna">
