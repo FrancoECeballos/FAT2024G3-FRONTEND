@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
+import putData from '../../../functions/putData.jsx';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import './Cuenta.scss';
 import { Button, Form } from 'react-bootstrap';
 import { InputGroup } from "react-bootstrap";
+import user from '../../../assets/user_default.png';
 
 const Cuenta = () => {
     const navigate = useNavigate();
@@ -23,6 +25,7 @@ const Cuenta = () => {
         "email": "",
         "genero": "",
         "id_direccion": {
+            "id_direccion": "",
             "localidad": "",
             "calle": "",
             "numero": "",
@@ -42,6 +45,7 @@ const Cuenta = () => {
         "email": "",
         "genero": "",
         "id_direccion": {
+            "id_direccion": "",
             "localidad": "",
             "calle": "",
             "numero": "",
@@ -111,6 +115,7 @@ const Cuenta = () => {
                 updatedValue = parseInt(value, 10);
             }
             const updatedData = { ...prevData, [field]: { ...prevData[field], [subfield]: updatedValue } };
+            console.log(updatedData);
             return updatedData;
           } 
           else {
@@ -129,6 +134,7 @@ const Cuenta = () => {
                 const { cai, telnum } = updatedData;
                 updatedData.telefono = generatePhone(cai, telnum);
             }
+            console.log(updatedData);
             return updatedData;
           }
         });
@@ -136,7 +142,7 @@ const Cuenta = () => {
 
     const handleSendData = async(event) => {
         event.preventDefault();
-        let id_direccion = null;
+        let id_direc = null;
     
         const existingDireccion = direc.find(
           (d) =>
@@ -149,18 +155,22 @@ const Cuenta = () => {
           const url = '/crear_direccion/';
           const body = userData.id_direccion;
           const result = await postData(url, body);
-          id_direccion = result.id_direccion;
+          id_direc = result.id_direccion;
         } else {
-          id_direccion = existingDireccion.id_direccion;
+            id_direc = existingDireccion.id_direccion;
         };
     
-        const updatedUserData = { ...userData, id_direccion };
-        setUserData(updatedUserData);
+        const updatedUserData = { ...userData, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento, id_tipousuario: userData.id_tipousuario.id_tipousuario};
+        setUserDataDefault(userData);
+        setIsEditing(false);
+        document.getElementById("editButton").innerText = "Editar";
+        editButton.style.backgroundColor = 'blue';
+        editButton.style.borderColor = 'blue';
+        editButton.style.color = 'white';
     
-        const url = (`/user/update/${token}`);
+        const url = (`/user/update/${token}/`);
         const body = updatedUserData;
-        const result = await postData(url, body);
-        Cookies.set('token', response.token, { expires: 7, secure: true });
+        const result = await putData(url, body, token);
         fetchData('/direcciones/').then((result) => {
           setDirec(result);
         });
@@ -168,8 +178,7 @@ const Cuenta = () => {
 
     return (
         <div class="micuenta">
-            <h1>{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
-            <h2>Información personal</h2>
+              <h1> <img src={user} className="fotoperfil" />{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
             <form>
                 <div class="contenedor-inputs">
                 <div class="columna">
