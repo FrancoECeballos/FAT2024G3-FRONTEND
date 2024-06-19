@@ -19,10 +19,12 @@ function FullNavbar() {
   return (
     <Navbar expand={true} className="full-navbar" id="base-navbar">
       <Container>
+        <div className='botons-izq'>
         <Navbar.Brand href="#home">
           <img src={logo} alt="Logo" className="logo" />
         </Navbar.Brand>
-        <Nav className="mx-auto">
+        </div>
+        <Nav>
         <div className="vertical-divider"></div>
           <Nav.Link href="#novedades" className="nav-link" style={{alignContent: 'center'}}>Novedades</Nav.Link>
           <div className="vertical-divider"></div>
@@ -35,6 +37,7 @@ function FullNavbar() {
           <Nav.Link href="#ofertas" className="nav-link" style={{alignContent: 'center'}}>Ofertas</Nav.Link>
           <div className="vertical-divider"></div>
         </Nav>
+        <div className='botons-derecha'>
         <Navbar.Brand href="#home">
           <img src={noti} alt="Noti" className="noti" style={{ width: '3rem' }} />
         </Navbar.Brand>
@@ -44,6 +47,7 @@ function FullNavbar() {
         <Button className="side-button" onClick={handleShow}>
           <img src={side} alt="side" className="side-icon" />
         </Button>
+        </div>
 
         <Offcanvas show={show} onHide={handleClose} placement="end" style={{ backgroundColor: '#A11818', color: 'white' }}>
       <Offcanvas.Header closeButton>

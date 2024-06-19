@@ -120,13 +120,16 @@ const Cuenta = () => {
 
         <div class="columna">
             <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" defaultValue={`${userData.telefono}`} ref={telefonoRef} disabled ={!isEditing}/>
+            <InputGroup className="grouptel">
+                        <input disabled={!isEditing} name="cai" type="text"  className="unified-input-left" />
+                        <input disabled={!isEditing} name="telnum" type="text" className="unified-input-right" />
+                </InputGroup>  
 
                 <label for="direccion">Dirección:</label>
-                <InputGroup className="mb-2">
+                <InputGroup className="groupderec">
                         <input disabled={!isEditing} name="localidad" type="text"  className="unified-input-left" />
                         <input disabled={!isEditing} name="calle" type="text" />
-                        <input disabled={!isEditing} name="numero" type="number" className="unified-input-right" />
+                        <input disabled={!isEditing} name="numero" type="text" className="unified-input-right" />
                 </InputGroup>  
 
                 <label for="genero">Genero:</label>
