@@ -16,9 +16,9 @@ function FullNavbar() {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [data, setData] = useState([]);
+  const token = Cookies.get('token');
 
   useEffect(() => {
-    const token = Cookies.get('token');
     const fetchUserData = async () => {
       if (token) {
         const result = await fetchData(`/userToken/${token}`);
@@ -32,11 +32,15 @@ function FullNavbar() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSuperUserAuth = () => {
-    if (data.is_superuser===true) {
+  const handleSuperUserAuth = async (e) => {
+    e.preventDefault();
+    if (data.is_superuser) {
       navigate('/selectuser');
-    } else {
+    } else if (token) {
       navigate('/perfil/micuenta');
+    }
+    else {
+      navigate('/login');
     }
   };
 
