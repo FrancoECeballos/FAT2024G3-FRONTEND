@@ -29,8 +29,6 @@ const RegisterCard = () => {
       setDirec(result);
     });
   }, []);
-  
-  const navigate = useNavigate();
 
   const [imageSrc, setImageSrc] = useState(defaultImage);
   const fileInputRef = useRef(null);

@@ -48,28 +48,28 @@ function FullNavbar() {
     <Navbar expand={true} className="full-navbar" id="base-navbar">
       <Container>
         <div className='botons-izq'>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand>
             <img src={logo} alt="Logo" className="logo" onClick={() => navigate('/')} />
           </Navbar.Brand>
         </div>
         <Nav>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#novedades" className="nav-link" style={{ alignContent: 'center' }}>Novedades</Nav.Link>
+          <Nav.Link className="nav-link" style={{ alignContent: 'center' }}>Novedades</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#stock" className="nav-link" style={{ alignContent: 'center' }}>Stock</Nav.Link>
+          <Nav.Link className="nav-link" style={{ alignContent: 'center' }} onClick={() => navigate('/stock')}>Stock</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#entregas" className="nav-link" style={{ alignContent: 'center' }}>Entregas</Nav.Link>
+          <Nav.Link className="nav-link" style={{ alignContent: 'center' }}>Entregas</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#pedidos" className="nav-link" style={{ alignContent: 'center' }}>Pedidos</Nav.Link>
+          <Nav.Link className="nav-link" style={{ alignContent: 'center' }}>Pedidos</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link href="#ofertas" className="nav-link" style={{ alignContent: 'center' }}>Ofertas</Nav.Link>
+          <Nav.Link className="nav-link" style={{ alignContent: 'center' }}>Ofertas</Nav.Link>
           <div className="vertical-divider"></div>
         </Nav>
         <div className='botons-derecha'>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand>
             <img src={noti} alt="Noti" className="noti" style={{ width: '3rem' }} />
           </Navbar.Brand>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand>
             <img src={user} alt="User" className="user" style={{ width: '3rem' }} onClick={handleSuperUserAuth} />
           </Navbar.Brand>
           <Button className="side-button" onClick={handleShow}>
@@ -82,11 +82,11 @@ function FullNavbar() {
             <Offcanvas.Title>Offcanvas</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <Nav.Link href="#novedades" style={{ color: 'white' }}>Novedades</Nav.Link>
-            <Nav.Link href="#stock" style={{ color: 'white' }}>Stock</Nav.Link>
-            <Nav.Link href="#entregas" style={{ color: 'white' }}>Entregas</Nav.Link>
-            <Nav.Link href="#pedidos" style={{ color: 'white' }}>Pedidos</Nav.Link>
-            <Nav.Link href="#ofertas" style={{ color: 'white' }}>Ofertas</Nav.Link>
+            <Nav.Link style={{ color: 'white' }}>Novedades</Nav.Link>
+            <Nav.Link style={{ color: 'white' }}>Stock</Nav.Link>
+            <Nav.Link style={{ color: 'white' }}>Entregas</Nav.Link>
+            <Nav.Link style={{ color: 'white' }}>Pedidos</Nav.Link>
+            <Nav.Link style={{ color: 'white' }}>Ofertas</Nav.Link>
           </Offcanvas.Body>
         </Offcanvas>
       </Container>
