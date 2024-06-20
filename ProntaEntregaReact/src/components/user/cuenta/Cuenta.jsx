@@ -3,14 +3,15 @@ import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 import putData from '../../../functions/putData.jsx';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Cuenta.scss';
 import { Button, Form } from 'react-bootstrap';
 import { InputGroup } from "react-bootstrap";
 import user from '../../../assets/user_default.png';
 
-const Cuenta = (user_email = null) => {
+const Cuenta = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
     const [direc, setDirec] = useState([]);
@@ -56,7 +57,7 @@ const Cuenta = (user_email = null) => {
     }, [userDataDefault]);
 
     useEffect(() => {
-        if (!user_email) {
+        if (!location.state) {
             if (!token) {
                 navigate('/login');
                 return;
@@ -69,7 +70,7 @@ const Cuenta = (user_email = null) => {
                 setDirec(result);
             });
         } else {
-            fetchData(`/user/${user_email}`).then((result) => {
+            fetchData(`/user/${location.state.user_email}`).then((result) => {
                 setUserData(result)
                 setUserDataDefault(result);
                 console.log(result);
