@@ -16,6 +16,18 @@ const Cuenta = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [direc, setDirec] = useState([]);
 
+    const NullToEmpty = (data) => {
+        if (data === null || data === undefined) return "";
+        if (typeof data === 'object') {
+            const transformedData = {};
+            for (const key in data) {
+                transformedData[key] = NullToEmpty(data[key]);
+            }
+            return transformedData;
+        }
+        return data;
+    };
+
     const [userData, setUserData] = useState({
         "nombre": "",
         "apellido": "",
@@ -57,29 +69,28 @@ const Cuenta = () => {
     }, [userDataDefault]);
 
     useEffect(() => {
+        const updateUserState = (result) => {
+            const transformedData = NullToEmpty(result);
+            setUserData(transformedData);
+            setUserDataDefault(transformedData);
+        };
+
         if (!location.state) {
             if (!token) {
                 navigate('/login');
                 return;
             }
-            fetchData(`/userToken/${token}`).then((result) => {
-                setUserData(result)
-                setUserDataDefault(result);
-            });
+            fetchData(`/userToken/${token}`).then(updateUserState)
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
         } else {
-            fetchData(`/user/${location.state.user_email}`).then((result) => {
-                setUserData(result)
-                setUserDataDefault(result);
-                console.log(result);
-            });
+            fetchData(`/user/${location.state.user_email}`).then(updateUserState)
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
         }
-        }, [token]);
+    }, [token, navigate, location.state]);
 
     const handleLogout = () => {
         Cookies.remove('token');
@@ -214,9 +225,9 @@ const Cuenta = () => {
 
                         <label for="direccion">Dirección:</label>
                         <InputGroup className="groupderec">
-                            <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={`${userData.id_direccion.localidad}` || ''} onChange={handleInputChange}/>
-                            <input disabled={!isEditing} name="id_direccion.calle" type="text" value={`${userData.id_direccion.calle}` || ''} onChange={handleInputChange}/>
-                            <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={`${userData.id_direccion.numero}` || ''} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
+                            <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
                         </InputGroup>  
 
                         <label for="genero">Genero:</label>
