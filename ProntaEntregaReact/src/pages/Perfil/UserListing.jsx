@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/GenericCard.jsx';
+import SendButton from '../../components/buttons/send_button/send_button.jsx';
+
 import fetchData from '../../functions/fetchData';
 
 function UserListing (){
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -29,6 +33,7 @@ function UserListing (){
                         titulo={`${user.nombre} ${user.apellido}`}
                         descrip1={user.email}
                         descrip2={user.dni}
+                        children = {<SendButton onClick={() => navigate('/perfil/micuenta/', {state: {user_email: `${user.email}`}})} text = 'Editar' backcolor = '#3E4692' letercolor='white'></SendButton>}
                     />
                 ))}
             </div>

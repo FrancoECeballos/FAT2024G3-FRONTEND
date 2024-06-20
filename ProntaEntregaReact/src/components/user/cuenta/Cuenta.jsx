@@ -9,7 +9,7 @@ import { Button, Form } from 'react-bootstrap';
 import { InputGroup } from "react-bootstrap";
 import user from '../../../assets/user_default.png';
 
-const Cuenta = () => {
+const Cuenta = (user_email = null) => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
@@ -56,18 +56,29 @@ const Cuenta = () => {
     }, [userDataDefault]);
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
+        if (!user_email) {
+            if (!token) {
+                navigate('/login');
+                return;
+            }
+            fetchData(`/userToken/${token}`).then((result) => {
+                setUserData(result)
+                setUserDataDefault(result);
+            });
+            fetchData('/direcciones/').then((result) => {
+                setDirec(result);
+            });
+        } else {
+            fetchData(`/user/${user_email}`).then((result) => {
+                setUserData(result)
+                setUserDataDefault(result);
+                console.log(result);
+            });
+            fetchData('/direcciones/').then((result) => {
+                setDirec(result);
+            });
         }
-        fetchData(`/userToken/${token}`).then((result) => {
-            setUserData(result)
-            setUserDataDefault(result);
-        });
-        fetchData('/direcciones/').then((result) => {
-            setDirec(result);
-        });
-    }, [token]);
+        }, [token]);
 
     const handleLogout = () => {
         Cookies.remove('token');
