@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Button, Form, InputGroup } from 'react-bootstrap';
+import Cookies from 'js-cookie';
+
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 import putData from '../../../functions/putData.jsx';
-import Cookies from 'js-cookie';
-import { useNavigate, useLocation } from 'react-router-dom';
 import './Cuenta.scss';
-import { Button, Form } from 'react-bootstrap';
-import { InputGroup } from "react-bootstrap";
+
 import user from '../../../assets/user_default.png';
 
 const Cuenta = () => {
