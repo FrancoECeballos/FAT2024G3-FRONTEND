@@ -37,22 +37,6 @@ const RegisterCard = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageSrc(reader.result);
-      };
-      reader.readAsDataURL(file);
-      const { name, value } = event.target;
-      setFormData((prevData) =>  {
-        const updatedData = { ...prevData, [name]: value };
-        return updatedData;
-      });
-    }
-  };
-
   const [formData, setFormData] = useState({
     "nombre": "",
     "apellido": "",
@@ -62,6 +46,7 @@ const RegisterCard = () => {
     "telefono": "",
     "email": "",
     "genero": "",
+    "imagen": "",
     "id_direccion": "",
     "id_tipousuario": 2,
     "id_tipodocumento": ""
@@ -74,18 +59,6 @@ const RegisterCard = () => {
     "numero": "",
     "localidad": ""
   });
-
-  const handleDirecChange = (event) => {
-    const { name, value } = event.target;
-    setDirecFormData((prevData) =>  {
-      let updatedValue = value;
-      if (name === "numero") {
-        updatedValue = parseInt(value, 10);
-      }
-      const updatedData = { ...prevData, [name]: updatedValue };
-      return updatedData;
-    })
-  };
 
   const generateUsername = (nombre, apellido, documento) => {
     if (nombre && apellido && documento) {
@@ -101,23 +74,58 @@ const RegisterCard = () => {
   };
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevData) =>  {
-      let updatedValue = value;
-      if (name === "genero" || name === "id_direccion" || name === "id_tipousuario" || name === "id_tipodocumento") {
-        updatedValue = parseInt(value, 10);
+    const { name, value, type, files } = event.target;
+
+    if (type === 'file') {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImageSrc(reader.result);
+        };
+        reader.readAsDataURL(file);
+        setFormData((prevData) => {
+          const updatedData = { ...prevData, [name]: file };
+          console.log(updatedData);
+          return updatedData;
+        });
       }
-      const updatedData = { ...prevData, [name]: updatedValue };
-      if (name === "nombre" || name === "apellido" || name === "documento") {
-        const { nombre, apellido, documento } = updatedData;
-        updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
-      }
-      if (name === "cai" || name === "telnum") {
-        const { cai, telnum } = updatedData;
-        updatedData.telefono = generatePhone(cai, telnum);
-      }
-      return updatedData;
-    });
+    
+    } else if (name === "calle" || name === "numero" || name === "localidad") {
+      setDirecFormData((prevData) =>  {
+        let updatedValue = value;
+        if (name === "numero") {
+          updatedValue = parseInt(value, 10);
+        }
+
+        const updatedData = { ...prevData, [name]: updatedValue };
+        console.log(updatedData);
+        return updatedData;
+      })
+    
+    } else {
+      setFormData((prevData) => {
+        let updatedValue = value;
+        if (name === "genero" || name === "id_direccion" || name === "id_tipousuario" || name === "id_tipodocumento") {
+          updatedValue = parseInt(value, 10);
+        }
+
+        const updatedData = { ...prevData, [name]: updatedValue };
+
+        if (name === "nombre" || name === "apellido" || name === "documento") {
+          const { nombre, apellido, documento } = updatedData;
+          updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
+        }
+
+        if (name === "cai" || name === "telnum") {
+          const { cai, telnum } = updatedData;
+          updatedData.telefono = generatePhone(cai, telnum);
+        }
+
+        console.log(updatedData);
+        return updatedData;
+      });
+    }
   };
 
   const handleSendData = async(event) => {
@@ -213,9 +221,9 @@ const RegisterCard = () => {
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
-                        <Form.Control name="localidad" type="text" onChange={handleDirecChange} placeholder="Ingrese su Localidad" className="unified-input-left" />
-                        <Form.Control name="calle" type="text" onChange={handleDirecChange} placeholder="Ingrese su Calle" style={{ backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
-                        <Form.Control name="numero" type="number" onChange={handleDirecChange} placeholder="Ingrese su Numero" className="unified-input-right" />
+                        <Form.Control name="localidad" type="text" onChange={handleInputChange} placeholder="Ingrese su Localidad" className="unified-input-left" />
+                        <Form.Control name="calle" type="text" onChange={handleInputChange} placeholder="Ingrese su Calle" style={{ backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                        <Form.Control name="numero" type="number" onChange={handleInputChange} placeholder="Ingrese su Numero" className="unified-input-right" />
                       </InputGroup>
                     </div>
                   </Form.Group>
@@ -251,7 +259,7 @@ const RegisterCard = () => {
                       name="imagen"
                       ref={fileInputRef}
                       className="hidden-file-input"
-                      onChange={handleFileChange}
+                      onChange={handleInputChange}
                     />
                     <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivo" wide="8">
                       <img src={uploadImage} alt="upload" style={{ width: '1.5rem' }} className='upload'/>
