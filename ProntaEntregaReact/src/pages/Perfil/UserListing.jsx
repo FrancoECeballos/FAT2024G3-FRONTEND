@@ -26,6 +26,9 @@ function UserListing (){
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
+                <SendButton onClick={() => navigate('/perfil/micuenta')} text="Mi cuenta" wide='25'/>
+                </div>
                 <SearchBar />
                 {Array.isArray(users) && users.map(user => (
                     <GenericCard 

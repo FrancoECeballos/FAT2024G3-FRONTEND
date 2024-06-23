@@ -133,6 +133,25 @@ const RegisterCard = () => {
     
     if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email || !formData.genero || !formData.id_tipodocumento) {
       alert("Please fill in all required fields.");
+      if(!formData.nombre) {
+        console.log("Nombre vacio");
+      } else if (!formData.apellido) {
+        console.log("Apellido vacio");
+      } else if (!formData.nombreusuario) {
+        console.log("Nombre de usuario vacio");
+      } else if (!formData.password) {
+        console.log("Contraseña vacia");
+      } else if (!formData.documento) {
+        console.log("Documento vacio");
+      } else if (!formData.telefono) {
+        console.log("Telefono vacio");
+      } else if (!formData.email) {
+        console.log("Email vacio");
+      } else if (!formData.genero) {
+        console.log("Genero vacio");
+      } else if (!formData.id_tipodocumento) {
+        console.log("Tipo de documento vacio");
+      } 
       return;
     }
     let id_direccion = null;
