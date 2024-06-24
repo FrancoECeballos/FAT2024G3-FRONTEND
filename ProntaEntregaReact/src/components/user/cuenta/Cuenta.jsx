@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 import putData from '../../../functions/putData.jsx';
+import deleteData from '../../../functions/deleteData.jsx';
 import './Cuenta.scss';
 
 import user from '../../../assets/user_default.png';
@@ -15,6 +16,7 @@ const Cuenta = () => {
     const location = useLocation();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(location.state);
     const [direc, setDirec] = useState([]);
 
     const NullToEmpty = (data) => {
@@ -76,7 +78,7 @@ const Cuenta = () => {
             setUserDataDefault(transformedData);
         };
 
-        if (!location.state) {
+        if (!isAdmin) {
             if (!token) {
                 navigate('/login');
                 return;
@@ -97,6 +99,13 @@ const Cuenta = () => {
         Cookies.remove('token');
         navigate('/login');
     };
+
+    const handleDeleteUser = async(event) => {
+        event.preventDefault();
+        const url = (`/user/delete/${userData.email}/`);
+        const result = await deleteData(url, token);
+        navigate('/selectuser');
+    }
 
     const handleEdit = () => {
         if (isEditing) {  
@@ -184,7 +193,7 @@ const Cuenta = () => {
             id_direc = existingDireccion.id_direccion;
         };
     
-        const updatedUserData = { ...userData, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento, id_tipousuario: userData.id_tipousuario.id_tipousuario};
+        const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento, id_tipousuario: userData.id_tipousuario.id_tipousuario};
         setUserDataDefault(userData);
         setIsEditing(false);
         document.getElementById("editButton").innerText = "Editar";
@@ -192,9 +201,17 @@ const Cuenta = () => {
         editButton.style.borderColor = 'blue';
         editButton.style.color = 'white';
     
-        const url = (`/user/update/${token}/`);
-        const body = updatedUserData;
-        const result = await putData(url, body, token);
+        if (isAdmin) {
+            const url = (`/user/updateEmail/${userData.email}/`);
+            const body = updatedUserData;
+            const result = await putData(url, body, token);
+        } else {
+            console.log("xd")
+            const url = (`/user/update/${token}/`);
+            const body = updatedUserData;
+            const result = await putData(url, body, token);
+
+        }
         fetchData('/direcciones/').then((result) => {
           setDirec(result);
         });
@@ -214,7 +231,8 @@ const Cuenta = () => {
 
                     <label for="email">Correo electrónico:</label>
                     <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
-                    <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>
+                    {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
+                    <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#C21807', borderColor:'#C21807', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleDeleteUser}>Borrar Usuario</Button>
                 </div>
 
                 <div class="columna">

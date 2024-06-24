@@ -16,6 +16,7 @@ import postData from '../../../functions/postData.jsx';
 import SendButton from '../../buttons/send_button/send_button.jsx';
 
 const RegisterCard = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
     fetchData('/tipo_documento/').then((result) => {
@@ -172,16 +173,18 @@ const RegisterCard = () => {
       id_direccion = existingDireccion.id_direccion;
     };
 
-    const updatedFormData = { ...formData, id_direccion };
+    fetchData('/direcciones/').then((result) => {
+      setDirec(result);
+    });
+
+    const updatedFormData = { ...formData, id_direccion };  
     setFormData(updatedFormData);
 
     const url = '/register/';
     const body = updatedFormData;
     const result = await postData(url, body);
-    Cookies.set('token', response.token, { expires: 7, secure: true });
-    fetchData('/direcciones/').then((result) => {
-      setDirec(result);
-    });
+    Cookies.set('token', result.token, { expires: 7, secure: true });
+    navigate('/');
   };
   
   return (
