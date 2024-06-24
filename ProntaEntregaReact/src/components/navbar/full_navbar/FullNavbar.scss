@@ -5,11 +5,9 @@
   
 	.logo {
 	  width: 4rem;
+		margin: 0;
 	}
 
-	.container{
-		margin: 0;
-	}	
 
 	.botons-derecha{
 		align-items: flex-end;
@@ -39,7 +37,7 @@
 	}
 	
 	.pages-nav a {
-	  text-decoration: none;
+	  text-decoration:dashed;
 	  color: white;
 	  transition: background-color 0.3s ease;
   
