@@ -1,6 +1,5 @@
 .micuenta h1 {
   text-align: center;
-  margin-top: 5rem;
 }
 
 
@@ -18,7 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex;
-  margin-left: 20rem; /* Adjust the value according to the width of your sidebar */
+  padding-left: 20rem; 
   margin-top: 5rem;
 }
 
@@ -39,7 +38,7 @@
 }
 
 .columna {
-  width: calc(20%); /* 20% de ancho*/ 
+  width: calc(30%); /* 30% de ancho*/ 
 }
 
 .micuenta label {
