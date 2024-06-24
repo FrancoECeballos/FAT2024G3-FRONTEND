@@ -108,16 +108,17 @@ const Cuenta = () => {
     }
 
     const handleEdit = () => {
+        const editButton = document.getElementById("editButton");
         if (isEditing) {  
             setIsEditing(false);
-            document.getElementById("editButton").innerText = "Editar";
+            editButton.innerText = "Editar";
             editButton.style.backgroundColor = 'blue';
             editButton.style.borderColor = 'blue';
             editButton.style.color = 'white';
             setUserData(userDataDefault);
         } else {
             setIsEditing(true);
-            document.getElementById("editButton").innerText = "Cancelar";
+            editButton.innerText = "Cancelar";
             editButton.style.backgroundColor = 'yellow';
             editButton.style.borderColor = 'yellow';
             editButton.style.color = 'black';
@@ -178,25 +179,27 @@ const Cuenta = () => {
         let id_direc = null;
     
         const existingDireccion = direc.find(
-          (d) =>
+            (d) =>
             d.calle === userData.id_direccion.calle &&
             d.numero === userData.id_direccion.numero &&
             d.localidad === userData.id_direccion.localidad
         );
     
         if (!existingDireccion) {
-          const url = '/crear_direccion/';
-          const body = userData.id_direccion;
-          const result = await postData(url, body);
-          id_direc = result.id_direccion;
+            const url = '/crear_direccion/';
+            const body = userData.id_direccion;
+            const result = await postData(url, body);
+            id_direc = result.id_direccion;
         } else {
             id_direc = existingDireccion.id_direccion;
         };
     
-        const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento, id_tipousuario: userData.id_tipousuario.id_tipousuario};
+        const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento, id_tipousuario: userData.id_tipousuario.id_tipousuario };
         setUserDataDefault(userData);
         setIsEditing(false);
-        document.getElementById("editButton").innerText = "Editar";
+    
+        const editButton = document.getElementById("editButton");
+        editButton.innerText = "Editar";
         editButton.style.backgroundColor = 'blue';
         editButton.style.borderColor = 'blue';
         editButton.style.color = 'white';
@@ -206,14 +209,12 @@ const Cuenta = () => {
             const body = updatedUserData;
             const result = await putData(url, body, token);
         } else {
-            console.log("xd")
             const url = (`/user/update/${token}/`);
             const body = updatedUserData;
             const result = await putData(url, body, token);
-
         }
         fetchData('/direcciones/').then((result) => {
-          setDirec(result);
+            setDirec(result);
         });
     };
 
