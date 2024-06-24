@@ -12,9 +12,10 @@ import fetchData from '../../functions/fetchData';
 function UserListing (){
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    const token = Cookies.get('token');
     const [adminUser, setAdminUser] = useState(null);
-
+    const [searchQuery, setSearchQuery] = useState('');
+    const [orderCriteria, setOrderCriteria] = useState(null);
+    const token = Cookies.get('token');
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -29,8 +30,26 @@ function UserListing (){
             })
             .catch(error => {
                 console.error('Hubo un error al obtener los usuarios', error);
-            });
+        });
     }, [token, navigate]);
+
+    const handleSearchChange = (value) => {
+        setSearchQuery(value);
+    };
+
+    const filteredUsers = users.filter(user =>
+        user.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.documento?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+        if (!orderCriteria) return 0;
+        if (a[orderCriteria]?.toLowerCase() < b[orderCriteria]?.toLowerCase()) return -1;
+        if (a[orderCriteria]?.toLowerCase() > b[orderCriteria]?.toLowerCase()) return 1;
+        return 0;
+    });
 
     return (
         <div>
@@ -39,8 +58,8 @@ function UserListing (){
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
                 <SendButton onClick={() => navigate('/perfil/micuenta')} text="Mi cuenta" wide='25'/>
                 </div>
-                <SearchBar />
-                {Array.isArray(users) && users.map(user => ( 
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria}/>
+                {Array.isArray(users) && sortedUsers.map(user => ( 
                     adminUser && adminUser.email !== user.email && 
                     (
                     <GenericCard 
