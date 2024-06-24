@@ -254,9 +254,9 @@ const RegisterCard = () => {
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
                     <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
                       <option autoFocus hidden>Seleccione un genero</option>
-                      <option value="0">Masculino</option>
-                      <option value="1">Femenino</option>
-                      <option value="2">Prefiero no decir</option>
+                      <option value="1">Masculino</option>
+                      <option value="2">Femenino</option>
+                      <option value="3">Prefiero no decir</option>
                     </Form.Select>
                   </Form.Group>
 

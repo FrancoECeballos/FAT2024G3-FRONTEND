@@ -251,9 +251,9 @@ const Cuenta = () => {
 
                         <label for="genero">Genero:</label>
                         <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}` || 2} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
-                            <option value="0">Masculino</option>
-                            <option value="1">Femenino</option>
-                            <option value="2">Prefiero no decir</option>
+                            <option value="1">Masculino</option>
+                            <option value="2">Femenino</option>
+                            <option value="3">Prefiero no decir</option>
                         </Form.Select>
 
                         <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>

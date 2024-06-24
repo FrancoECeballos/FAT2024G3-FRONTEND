@@ -40,7 +40,9 @@ function UserListing (){
                 <SendButton onClick={() => navigate('/perfil/micuenta')} text="Mi cuenta" wide='25'/>
                 </div>
                 <SearchBar />
-                {Array.isArray(users) && users.map(user => ( adminUser && adminUser.email !== user.email && (
+                {Array.isArray(users) && users.map(user => ( 
+                    adminUser && adminUser.email !== user.email && 
+                    (
                     <GenericCard 
                         key={user.id}
                         titulo={`${user.nombre} ${user.apellido}`}
