@@ -9,12 +9,10 @@ const fetchData = async(url, authToken) => {
                     'Authorization': `Token ${authToken}`
                 }});
             const result = response.data;
-            console.log('Data: ', result);
             return result;
         } else {
             const response = await axios.get(endpoint);
             const result = response.data;
-            console.log('Data: ', result);
             return result;
         }
     } catch (error) {

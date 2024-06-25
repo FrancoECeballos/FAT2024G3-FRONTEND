@@ -8,7 +8,6 @@ const deleteData = async(url, authToken) => {
                 'Authorization': `Token ${authToken}`
             }});
         const result = response.data;
-        console.log('Data: ', result);
         return result;
     } catch (error) {
         console.error('Error fetching data:', error);
