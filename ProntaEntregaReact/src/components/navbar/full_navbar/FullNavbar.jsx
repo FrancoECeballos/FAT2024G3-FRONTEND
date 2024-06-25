@@ -82,11 +82,11 @@ function FullNavbar() {
             <Offcanvas.Title>Offcanvas</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <Nav.Link style={{ color: 'white' }}>Novedades</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Stock</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Entregas</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Pedidos</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Ofertas</Nav.Link>
+            <Nav.Link className='link-side'>Novedades</Nav.Link>
+            <Nav.Link className='link-side'>Stock</Nav.Link>
+            <Nav.Link className='link-side'>Entregas</Nav.Link>
+            <Nav.Link className='link-side'>Pedidos</Nav.Link>
+            <Nav.Link className='link-side'>Ofertas</Nav.Link>
           </Offcanvas.Body>
         </Offcanvas>
       </Container>
