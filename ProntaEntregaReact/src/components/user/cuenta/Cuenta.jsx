@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, Form, InputGroup , Row, Col, Container} from 'react-bootstrap';
+import { Button, Form, InputGroup , Row, Col} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 
 import fetchData from '../../../functions/fetchData';
@@ -11,11 +11,14 @@ import './Cuenta.scss';
 
 import user from '../../../assets/user_default.png';
 
+import SendButton from '../../buttons/send_button/send_button.jsx';
+
+
 const Cuenta = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const token = Cookies.get('token');
-    const [isEditing, setIsEditing] = useState(false);
+    const [hidden:`${hid}`,isEditing, setIsEditing] = useState(false);
     const [isAdmin, setIsAdmin] = useState(location.state);
     const [direc, setDirec] = useState([]);
 
@@ -133,7 +136,7 @@ const Cuenta = () => {
             editButton.innerText = "Cancelar";
             editButton.style.backgroundColor = 'yellow';
             editButton.style.borderColor = 'yellow';
-            editButton.style.color = 'black';
+            editButton.style.color = 'black';id="editButton"
         }
     };
 
@@ -233,7 +236,7 @@ const Cuenta = () => {
     return (
         <div class="micuenta">
             <h1> <img src={user} className="fotoperfil" />{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
-            <Row>
+            <Row className="filainputs">
                 <Col>
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
@@ -247,16 +250,16 @@ const Cuenta = () => {
                 </Col>
                 <Col>
                     <label for="telefono">Teléfono:</label>
-                    <InputGroup className="grouptel">
-                        <input disabled={!isEditing} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="unified-input-left" />
-                        <input disabled={!isEditing} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="unified-input-right" />
+                    <InputGroup className="groupderec">
+                        <input disabled={!isEditing} style={{width:'3.5rem'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
+                        <input disabled={!isEditing} style={{width:'21.5rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
                     </InputGroup>  
 
                     <label for="direccion">Dirección:</label>
                     <InputGroup className="groupderec">
-                        <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'10rem'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'10rem'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'5rem'}} name="id_direccion.numero" type="number"  value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
                     </InputGroup>  
 
                     <label for="genero">Genero:</label>
@@ -267,7 +270,7 @@ const Cuenta = () => {
                     </Form.Select>
                 </Col>
             </Row>
-            <Row>
+            <Row className="filacasas">
                 <Col>
                     <h3>Casas del Usuario</h3>
                     <ul>
@@ -279,7 +282,7 @@ const Cuenta = () => {
                             </li>
                         ))}
                     </ul>
-                    <Form.Select aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
+                    <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
                         <option>Select an object to add</option>
                         {casas.map(casa => (
                             <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option>
@@ -289,13 +292,13 @@ const Cuenta = () => {
                     >Add</Button>
                 </Col>
             </Row>
-            <Row>
+            <Row className="filabuton">
                 <Col>
                     <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#C21807', borderColor:'#C21807', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleDeleteUser}>Borrar Usuario</Button>
                 </Col>
                 <Col>
-                    <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
-                    <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'green', borderColor:'green', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} hidden ={!isEditing} onClick={handleSendData}>Guardar</Button>
+                <SendButton id="editButton" onClick={handleEdit} text="Editar" wide="6" backcolor="blue" letercolor="white"/>
+                <SendButton id="editButton" hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white"/>
                 </Col>
             </Row>
         </div>

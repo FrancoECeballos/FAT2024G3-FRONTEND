@@ -14,27 +14,10 @@
 
 
 .micuenta {
-  display: flex;
   flex-direction: column;
-  align-items: flex;
+  display: flex;
   padding-left: 20rem; 
   margin-top: 5rem;
-}
-
-
-
-.micuenta form {
-  margin-top: 5rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* Centrar el contenido horizontalmente */
-  align-items: center;
-}
-
-.contenedor-inputs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
 }
 
 .columna {
@@ -47,8 +30,6 @@
   margin-top: 2rem;
 }
 
-
-
 .micuenta input{
   background-color: #ffffff;
   box-shadow: none;
@@ -57,11 +38,6 @@
   border: none;
   border-radius: 20rem;
   color: black;
-}
-
-.input-group{
-display: flex;
-flex-wrap: nowrap;
 }
 
 .genero {
@@ -74,20 +50,34 @@ flex-wrap: nowrap;
 }
 
 .groupderec input{
-  width: 8.5rem;
   display: inline-block;
 }
 
-.grouptel input{
+.grouptelde{
   width: 12.5rem;
   display: inline-block;
 }
 
-.input-group{
-display: flex;
-flex-wrap: nowrap;
-}
-
 .form-select:disabled{
 background-color: white;
+}
+
+.filainputs{
+  padding-left: 15rem;
+  margin: 0;
+}
+
+.filacasas{
+  display: flex;
+  justify-content: center;  
+  padding-left: 42rem;
+  padding-top: 2rem;
+  margin: 0;
+
+  
+}
+
+.filabuton{
+  padding-left: 15rem;
+  margin: 0;
 }
