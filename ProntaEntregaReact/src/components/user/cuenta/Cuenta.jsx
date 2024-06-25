@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, Form, InputGroup } from 'react-bootstrap';
+import { Button, Form, InputGroup , Row, Col, Container} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 
 import fetchData from '../../../functions/fetchData';
@@ -18,6 +18,10 @@ const Cuenta = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isAdmin, setIsAdmin] = useState(location.state);
     const [direc, setDirec] = useState([]);
+
+    const [userCasas, setUserCasas] = useState([]);
+    const [casas, setCasas] = useState([]);
+    const [selectedObject, setSelectedObject] = useState('');
 
     const NullToEmpty = (data) => {
         if (data === null || data === undefined) return "";
@@ -93,6 +97,14 @@ const Cuenta = () => {
                 setDirec(result);
             });
         }
+
+        fetchData(`/user/casas/${token}`, token).then((result) => {
+            setUserCasas(result);
+        });
+        fetchData(`/casa/`, token).then((result) => {
+            setCasas(result);
+        });
+
     }, [token, navigate, location.state]);
 
     const handleLogout = () => {
@@ -220,10 +232,9 @@ const Cuenta = () => {
 
     return (
         <div class="micuenta">
-              <h1> <img src={user} className="fotoperfil" />{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
-            <form>
-                <div class="contenedor-inputs">
-                <div class="columna">
+            <h1> <img src={user} className="fotoperfil" />{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
+            <Row>
+                <Col>
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
 
@@ -233,35 +244,60 @@ const Cuenta = () => {
                     <label for="email">Correo electrónico:</label>
                     <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
-                    <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#C21807', borderColor:'#C21807', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleDeleteUser}>Borrar Usuario</Button>
-                </div>
-
-                <div class="columna">
+                </Col>
+                <Col>
                     <label for="telefono">Teléfono:</label>
-                        <InputGroup className="grouptel">
-                            <input disabled={!isEditing} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="unified-input-left" />
-                            <input disabled={!isEditing} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="unified-input-right" />
-                        </InputGroup>  
+                    <InputGroup className="grouptel">
+                        <input disabled={!isEditing} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="unified-input-left" />
+                        <input disabled={!isEditing} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="unified-input-right" />
+                    </InputGroup>  
 
-                        <label for="direccion">Dirección:</label>
-                        <InputGroup className="groupderec">
-                            <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
-                            <input disabled={!isEditing} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
-                            <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
-                        </InputGroup>  
+                    <label for="direccion">Dirección:</label>
+                    <InputGroup className="groupderec">
+                        <input disabled={!isEditing} name="id_direccion.localidad" type="text" className="unified-input-left" value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} name="id_direccion.numero" type="number" className="unified-input-right" value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
+                    </InputGroup>  
 
-                        <label for="genero">Genero:</label>
-                        <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}` || 2} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
-                            <option value="1">Masculino</option>
-                            <option value="2">Femenino</option>
-                            <option value="3">Prefiero no decir</option>
-                        </Form.Select>
-
-                        <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
-                        <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'green', borderColor:'green', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} hidden ={!isEditing} onClick={handleSendData}>Guardar</Button>
-                    </div>
-                </div>
-            </form>
+                    <label for="genero">Genero:</label>
+                    <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}` || 2} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
+                        <option value="1">Masculino</option>
+                        <option value="2">Femenino</option>
+                        <option value="3">Prefiero no decir</option>
+                    </Form.Select>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <h3>Casas del Usuario</h3>
+                    <ul>
+                        {userCasas.map(casa => (
+                            <li key={casa.id_casa}>
+                                {casa.nombre}
+                                <Button variant="danger" size="sm" // onClick={() => handleDeleteObject(casa.id)}
+                                >Delete</Button>
+                            </li>
+                        ))}
+                    </ul>
+                    <Form.Select aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
+                        <option>Select an object to add</option>
+                        {casas.map(casa => (
+                            <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option>
+                        ))}
+                    </Form.Select>
+                    <Button // onClick={handleAddObject}
+                    >Add</Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#C21807', borderColor:'#C21807', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleDeleteUser}>Borrar Usuario</Button>
+                </Col>
+                <Col>
+                    <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'blue', borderColor:'blue', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleEdit}>Editar</Button>
+                    <Button id="editButton" style={{marginTop:'1rem', borderRadius:'10rem', width:'6rem', textAlign:'center', backgroundColor: 'green', borderColor:'green', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} hidden ={!isEditing} onClick={handleSendData}>Guardar</Button>
+                </Col>
+            </Row>
         </div>
     );
 };
