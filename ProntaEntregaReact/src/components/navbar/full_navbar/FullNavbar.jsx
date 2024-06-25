@@ -1,14 +1,16 @@
-import Button from 'react-bootstrap/Button';
+import React from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import fetchData from '../../../functions/fetchData';
 
 import logo from '../../../assets/Logo.png';
-import side from '../../../assets/side_bar.png';
 import noti from '../../../assets/notification_bell.png';
 import user from '../../../assets/user_in_app.png';
 

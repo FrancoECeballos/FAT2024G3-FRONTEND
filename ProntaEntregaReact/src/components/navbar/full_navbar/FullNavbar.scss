@@ -31,7 +31,6 @@
 	}
 	
 
-<<<<<<< HEAD
 
 	@media (max-width: 767px) {
 		.full-navbar {
@@ -40,55 +39,3 @@
 		  }
 		}
 	  }
-=======
-	.nav-link {
-	  color: white;
-	}
-
-	.link-side{
-		background-color: red;
-	}
-  
-	.side-button {
-	  width: 5rem;
-	  background-color: #A11818;
-	  border: none;
-  
-	  .side-icon {
-		width: 2rem;
-	  }
-	}
-  
-	
-	.vertical-divider {
-		width: 1px;
-		height: 3rem; 
-		background-color: #ffffff;
-		margin: 0.5rem; 
-	}
-	
-	.pages-nav a {
-	  text-decoration:dashed;
-	  color: white;
-	  transition: background-color 0.3s ease;
-  
-	  &:hover {
-		background-color: rgb(131, 0, 0);
-	  }
-	}
-  
-	.col-right {
-	  margin-left: 0;
-	}
-  
-	.offcanvas-link {
-	  color: #A11818;
-	}
-  
-	.custom-offcanvas {
-	  background-color: #A11818;
-	  color: #A11818;
-	}
-  }
-  
->>>>>>> a7e398c7d35151bd45019b5ca598f03b0f408668
