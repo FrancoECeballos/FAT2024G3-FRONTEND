@@ -18,7 +18,7 @@ const Cuenta = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const token = Cookies.get('token');
-    const [hidden:`${hid}`,isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [isAdmin, setIsAdmin] = useState(location.state);
     const [direc, setDirec] = useState([]);
 
