@@ -1,6 +1,3 @@
-.SelectableButton li {
-    margin-bottom: 1rem;
-  }
 .SelectableButton a {
   text-align: center;
     font-size: larger;
@@ -14,10 +11,10 @@
 
 .SelectableButton a:hover {
     border-radius: 10rem;
-    background-color: rgba(0, 0, 0, 0.25)
+    background-color: rgba(7, 4, 4, 0.25)
   }
 
-  .SelectableButton a.active {
-    border-radius: 10rem;
-    background-color: rgba(0, 0, 0, 0.25)
-  }  
+.SelectableButton li a:active {
+  border-radius: 10rem;
+  background-color: rgba(7, 4, 4, 0.25);
+}

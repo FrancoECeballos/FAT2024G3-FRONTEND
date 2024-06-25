@@ -3,9 +3,11 @@ import "./selectable_button.scss";
 
 const SelectableButton = ({ texto, link }) => {
   return (
-    <li className="SelectableButton">
+    <div className="SelectableButton">
+    <li>
       <a href={link}>{texto}</a>
     </li>
+    </div>
   );
 };
 
