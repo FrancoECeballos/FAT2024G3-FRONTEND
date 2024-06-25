@@ -6,6 +6,7 @@ import MiCuenta from './pages/Perfil/MiCuenta.jsx';
 import Stock from './pages/Stock/Stock.jsx';
 import SeguridadYPrivacidad from './pages/Perfil/SeguridadYPrivacidad.jsx';
 import UserListing from './pages/Perfil/UserListing.jsx';
+import Categories from './pages/Stock/Categories/Categories.jsx';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
         <Route path="/selectuser" element={<UserListing />}/>
         <Route path="/stock" element={<Stock />} />
+        <Route path="/stock/categories" element={<Categories />} />
       </Routes>
     </BrowserRouter>
   )
