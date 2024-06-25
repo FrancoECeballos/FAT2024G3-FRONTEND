@@ -68,7 +68,7 @@ function FullNavbar() {
           <div className="vertical-divider"></div>
           <Nav.Link style={{ color: 'white' }} > Entregas</Nav.Link>
           <div className="vertical-divider"></div>
-          <Nav.Link style={{ color: 'white' }} > Pedidos</Nav.Link>
+          <Nav.Link onClick={() => navigate('/pedidos')} style={{ color: 'white' }} > Pedidos</Nav.Link>
           <div className="vertical-divider"></div>
           <Nav.Link style={{ color: 'white' }} > Ofertas</Nav.Link>
           <div className="vertical-divider"></div>
