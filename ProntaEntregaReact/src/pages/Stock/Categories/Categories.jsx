@@ -1,5 +1,5 @@
-import {React, useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
@@ -9,11 +9,11 @@ import SendButton from '../../../components/buttons/send_button/send_button.jsx'
 
 import fetchData from '../../../functions/fetchData';
 
-function Categories (){
-
+function Categories() {
     const navigate = useNavigate();
+    const { casaId, categoriaId } = useParams(); // Obtener parámetros de la URL
     const token = Cookies.get('token');
-    const [categories, setCategories] = useState();
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         if (!token) {
@@ -21,26 +21,34 @@ function Categories (){
             return;
         }
 
-        fetchData(`categorias-productos/${location.state.id_casa}/`).then((result) => {
-            setCategories(result)
+        fetchData(`categorias-productos/${casaId}/`, token).then((result) => {
+            setCategories(result);
+        }).catch(error => {
+            console.error('Error fetching categories:', error);
         });
-    }, [token, navigate]); 
-
+    }, [token, navigate, casaId]); // Agregar casaId como dependencia
 
     return (
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar />
-                {Array.isArray(categories) && categories.map((category => (
+                {Array.isArray(categories) && categories.map(category => (
                     <GenericCard 
                         key={category.id_categoria}
-                        titulo={house.nombre}
-                        descrip1={house.count_users}
-                        descrip2={`${house.id_direccion.localidad}, ${house.id_direccion.calle}, ${house.id_direccion.numero}`}
-                        children = {<SendButton onClick={() => navigate('/stock/categories', {state: {id_casa: `${house.id_casa}`}})} text = 'Ver Stock' backcolor = '#3E4692' letercolor='white'></SendButton>}
+                        titulo={category.nombre} // Cambiar 'house' por 'category'
+                        descrip1={category.descripcion} // Ajusta esto según tus datos
+                        descrip2={`ID: ${category.id_categoria}`} // Ajusta esto según tus datos
+                        children={
+                            <SendButton
+                                onClick={() => navigate(`/casa/${casaId}/categoria/${category.id_categoria}/`, { state: { id_casa: casaId } })}
+                                text='Ver Stock'
+                                backcolor='#3E4692'
+                                letercolor='white'
+                            />
+                        }
                     />
-                )))}
+                ))}
             </div>
         </div>
     );

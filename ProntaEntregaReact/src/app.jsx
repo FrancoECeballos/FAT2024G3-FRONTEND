@@ -25,7 +25,7 @@ function App() {
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
         <Route path="/selectuser" element={<UserListing />}/>
         <Route path="/stock" element={<Stock />} />
-        <Route path="/stock/categories" element={<Categories />} />
+        <Route path="/casa/:casaId/categoria/:categoriaId" element={<Categories />} />
       </Routes>
     </BrowserRouter>
   )
