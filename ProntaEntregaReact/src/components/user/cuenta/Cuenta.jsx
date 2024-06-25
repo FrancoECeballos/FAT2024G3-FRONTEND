@@ -91,19 +91,22 @@ const Cuenta = () => {
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
+            fetchData(`/user/casasToken/${token}`, token).then((result) => {
+                setUserCasas(result);
+            });
         } else {
             fetchData(`/user/${location.state.user_email}`).then(updateUserState)
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
-        }
 
-        fetchData(`/user/casas/${token}`, token).then((result) => {
-            setUserCasas(result);
-        });
-        fetchData(`/casa/`, token).then((result) => {
-            setCasas(result);
-        });
+            fetchData(`/user/casasEmail/${location.state.user_email}`, token).then((result) => {
+                setUserCasas(result);
+            });
+            fetchData(`/casa/`, token).then((result) => {
+                setCasas(result);
+            });
+        }
 
     }, [token, navigate, location.state]);
 
@@ -117,7 +120,23 @@ const Cuenta = () => {
         const url = (`/user/delete/${userData.email}/`);
         const result = await deleteData(url, token);
         navigate('/selectuser');
-    }
+    };
+
+    const handleDeleteObject = async(id) => {
+        const url = (`/user/deleteCasa/${userData.email}/${id}/`);
+        const result = await deleteData(url, token);
+        fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
+            setUserCasas(result);
+        });
+    };
+
+    const handleAddObject = async() => {
+        const url = (`/user/addCasa/${userData.email}/${selectedObject}/`);
+        const result = await postData(url, {}, token);
+        fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
+            setUserCasas(result);
+        });
+    };
 
     const handleEdit = () => {
         const editButton = document.getElementById("editButton");
@@ -274,19 +293,17 @@ const Cuenta = () => {
                         {userCasas.map(casa => (
                             <li key={casa.id_casa}>
                                 {casa.nombre}
-                                <Button variant="danger" size="sm" // onClick={() => handleDeleteObject(casa.id)}
-                                >Delete</Button>
+                                {isAdmin && <Button variant="danger" size="sm" style={{marginLeft:'1rem'}} onClick={() => handleDeleteObject(casa.id)}>Delete</Button>}
                             </li>
                         ))}
                     </ul>
-                    <Form.Select aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
+                    {isAdmin && <Form.Select aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
                         <option>Select an object to add</option>
                         {casas.map(casa => (
                             <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option>
                         ))}
-                    </Form.Select>
-                    <Button // onClick={handleAddObject}
-                    >Add</Button>
+                    </Form.Select>}
+                    {isAdmin && <Button onClick={handleAddObject}>Add</Button>}
                 </Col>
             </Row>
             <Row>
