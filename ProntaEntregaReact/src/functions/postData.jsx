@@ -5,7 +5,6 @@ const postData = async(url, body) => {
     try {
         const response = await axios.post(endpoint, body);
         const result = response.data;
-        console.log('Data: ', result);
         return result;
     } catch (error) {
         console.error('Error fetching data:', error);
