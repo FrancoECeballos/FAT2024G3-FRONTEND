@@ -1,62 +1,41 @@
-.full-navbar {
-	background-color: #A11818;
-	color: white;
+	.full-navbar {
+		background-color: #A11818;
+		color: white;
+
+		.vertical-divider {
+			width: 1px;
+			height: 3rem; 
+			background-color: #ffffff;
+			margin: 0.5rem; 
+		}
+	}
 	
-  
 	.logo {
-	  width: 4rem;
+		width: 4rem;
 		margin: 0;
 	}
+	
 
-
-	.botons-derecha{
-		align-items: flex-end;
+	
+	.nav-link{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 0	;
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+	}
+	.botons-derecha {
+		align-items: right;
 		
 	}
+	
 
-	.nav-link {
-	  color: white;
-	}
-  
-	.side-button {
-	  width: 5rem;
-	  background-color: #A11818;
-	  border: none;
-  
-	  .side-icon {
-		width: 2rem;
+
+	@media (max-width: 767px) {
+		.full-navbar {
+		  .nav-link {
+			display: none;
+		  }
+		}
 	  }
-	}
-  
-	
-	.vertical-divider {
-		width: 1px;
-		height: 3rem; 
-		background-color: #ffffff;
-		margin: 0.5rem; 
-	}
-	
-	.pages-nav a {
-	  text-decoration:dashed;
-	  color: white;
-	  transition: background-color 0.3s ease;
-  
-	  &:hover {
-		background-color: rgb(131, 0, 0);
-	  }
-	}
-  
-	.col-right {
-	  margin-left: 0;
-	}
-  
-	.offcanvas-link {
-	  color: #A11818;
-	}
-  
-	.custom-offcanvas {
-	  background-color: #A11818;
-	  color: #A11818;
-	}
-  }
-  
