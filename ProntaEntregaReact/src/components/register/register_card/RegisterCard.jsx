@@ -133,6 +133,48 @@ const RegisterCard = () => {
         console.log(updatedData);
         return updatedData;
       });
+
+      if (name === "documento") {
+        const regex = /^[0-9]+$/;
+        const errorDocumento = document.getElementById("errorDocumento");
+        errorDocumento.innerHTML = !regex.test(value) && value !== "" ? "El documento es inválido" : "";
+      } else if (name === "email") {
+        const regex = /@/;
+        const errorEmail = document.getElementById("errorEmail");
+        errorEmail.innerHTML = !regex.test(value) && value !== "" ? "El email es inválido" : "";
+      } else if (name === "nombre" || name === "apellido") {
+        const regex = /^[a-zA-Z\s]+$/;
+        const errorNombre = document.getElementById("errorNombre");
+        const errorApellido = document.getElementById("errorApellido");
+        if (!regex.test(value) && value !== "") {
+          if (name === "nombre") {
+            errorNombre.innerHTML = "El nombre no puede contener números ni caracteres especiales";
+          } else {
+            errorApellido.innerHTML = "El apellido no puede contener números ni caracteres especiales";
+          }
+        } else {
+          if (name === "nombre") {
+            errorNombre.innerHTML = "";
+          } else {
+            errorApellido.innerHTML = "";
+          }
+        }
+      } else if (name === "telnum") {
+        const regex = /^[0-9]{10}$/;
+        const errorTelefono = document.getElementById("errorTelefono");
+        errorTelefono.innerHTML = !regex.test(value) && value !== "" ? "El teléfono necesita 10 numeros" : "";
+      } else if (name === "password") {
+        const errorPassword = document.getElementById("errorContrasenia");
+        errorPassword.innerHTML = value.length < 8 && value !== "" ? "La contraseña debe tener al menos 8 caracteres" : "";
+      } /*else if (name === "password2") {
+        const password = formData.password;
+        const password2 = document.getElementById("FormConfirmar");
+        
+        if (password !== password2) {
+          const errorConfirmarContrasenia = document.getElementById("errorConfirmar");
+          errorConfirmarContrasenia.innerHTML = "Las contraseñas no coinciden";
+        }
+      }*/
     }
   };
 
@@ -220,11 +262,14 @@ const RegisterCard = () => {
                     </div>
                   </Form.Group>
 
+                  <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                  <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+
                   <Form.Group className="mb-2" controlId="formBasicEmail">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
                     <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
-
+                  <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   <Form.Group className="mb-2" controlId="formBasicDocumento">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
                     <div className="unified-input">
@@ -238,17 +283,21 @@ const RegisterCard = () => {
                         </Form.Select>
                       </InputGroup>
                     </div>
+                    <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicTelefono">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
-                        <Form.Control name="cai" type="text" onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" className="unified-input-left" />
-                        <Form.Control name="telnum" type="text" onChange={handleInputChange} placeholder="Ingrese su telefono" className="unified-input-right" />
+                        <Form.Control name="cai" type="number" onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" className="unified-input-left" />
+                        <Form.Control name="telnum" type="number" onChange={handleInputChange} placeholder="Ingrese su telefono" className="unified-input-right" />
                       </InputGroup>
                     </div>
                   </Form.Group>
+
+                  <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
                   <Form.Group className="mb-2" controlId="formBasicDireccion">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion (*)</Form.Label>
@@ -260,7 +309,7 @@ const RegisterCard = () => {
                       </InputGroup>
                     </div>
                   </Form.Group>
-
+                  
                   <Form.Group className="mb-2" controlId="formBasicGenero">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
                     <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
@@ -276,10 +325,15 @@ const RegisterCard = () => {
                     <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
 
+                  <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+
                   <Form.Group className="mb-2" controlId="formBasicPasswordConfirm">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
-                    <Form.Control name="password2" type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
+
+                  <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+
                 </Form>
               </Col>
               <Col xs={12} sm={4} md={4} lg={4} xl={4} xxl={4} className="d-flex flex-column align-items-center move-to-top">
