@@ -16,6 +16,7 @@ function Stock() {
     const token = Cookies.get('token');
     const [houses, setHouses] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [orderCriteria, setOrderCriteria] = useState('');
 
     useEffect(() => {
         if (!token) {
@@ -48,11 +49,30 @@ function Stock() {
         });
     }, [token, navigate]);
 
+    useEffect(() => {
+        if (orderCriteria) {
+            const sortedHouses = [...houses].sort((a, b) => {
+                if (orderCriteria === 'nombre') {
+                    return a.nombre.localeCompare(b.nombre);
+                } else if (orderCriteria === 'usuarios_registrados') {
+                    return b.usuarios_registrados - a.usuarios_registrados;
+                }
+                return 0;
+            });
+            setHouses(sortedHouses);
+        }
+    }, [orderCriteria, houses]);
+
+    const filters = [
+        { type: 'nombre', label: 'Nombre Alfabético' },
+        { type: 'usuarios_registrados', label: 'Usuarios Registrados' },
+    ];
+
     return (
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
-                <SearchBar />
+                <SearchBar filters={filters} onOrderChange={setOrderCriteria} />
                 {Array.isArray(houses) && houses.length > 0 ? (
                     houses.map(house => (
                         <GenericCard 
@@ -60,7 +80,7 @@ function Stock() {
                             titulo={house.nombre}
                             descrip1={house.usuarios_registrados}
                             descrip2={`${house.id_direccion.localidad}, ${house.id_direccion.calle}, ${house.id_direccion.numero}`}
-                            children = {<SendButton onClick={() => navigate(`/casa/${house.id_casa}/categoria/1/`, {state: {id_casa: `${house.id_casa}`}})} text = 'Ver Stock' backcolor = '#3E4692' letercolor='white'></SendButton>}
+                            children={<SendButton onClick={() => navigate(`/casa/${house.id_casa}/categoria/1/`, { state: { id_casa: `${house.id_casa}` } })} text='Ver Stock' backcolor='#3E4692' letercolor='white' />}
                         />
                     ))
                 ) : (

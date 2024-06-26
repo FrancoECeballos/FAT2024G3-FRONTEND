@@ -9,13 +9,14 @@ import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
 import fetchData from '../../functions/fetchData';
 
-function UserListing (){
+function UserListing() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [adminUser, setAdminUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const token = Cookies.get('token');
+
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -26,6 +27,7 @@ function UserListing (){
         });
         fetchData('/user')
             .then(data => {
+                console.log(data); // Verifica los datos obtenidos
                 setUsers(data);
             })
             .catch(error => {
@@ -37,12 +39,23 @@ function UserListing (){
         setSearchQuery(value);
     };
 
-    const filteredUsers = users.filter(user =>
-        user.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.documento?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filters = [
+        { type: 'nombre', label: 'Nombre Alfabético' },
+        { type: 'apellido', label: 'Apellido Alfabético' },
+        { type: 'email', label: 'Email Alfabético' },
+        { type: 'id_tipousuario', label: 'Rango' },
+        { type: 'documento', label: 'DNI' },
+        { type: 'telefono', label: 'Teléfono' },
+    ];
+
+    const filteredUsers = users.filter(user => {
+        return (
+            user.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.documento?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    });
 
     const sortedUsers = [...filteredUsers].sort((a, b) => {
         if (!orderCriteria) return 0;
@@ -56,20 +69,24 @@ function UserListing (){
             <FullNavbar />
             <div className='margen-arriba'>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
-                <SendButton onClick={() => navigate('/perfil/micuenta')} text="Mi cuenta" wide='25'/>
+                    <SendButton onClick={() => navigate('/perfil/micuenta')} text="Mi cuenta" wide='25' />
                 </div>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria}/>
-                {Array.isArray(users) && sortedUsers.map(user => ( 
-                    adminUser && adminUser.email !== user.email && 
-                    (
-                    <GenericCard 
-                        key={user.id}
-                        titulo={`${user.nombre} ${user.apellido}`}
-                        descrip1={user.email}
-                        descrip2={user.dni}
-                        children = {<SendButton onClick={() => navigate('/perfil/micuenta/', {state: {user_email: `${user.email}`}})} text = 'Editar' backcolor = '#3E4692' letercolor='white'></SendButton>}
-                    />
-                )))}
+                <SearchBar 
+                    onSearchChange={handleSearchChange} 
+                    onOrderChange={setOrderCriteria} 
+                    filters={filters} // Asegurarse de que filters se pase como un array
+                />
+                {Array.isArray(users) && sortedUsers.map(user => (
+                    adminUser && adminUser.email !== user.email && (
+                        <GenericCard 
+                            key={user.id}
+                            titulo={`${user.nombre} ${user.apellido}`}
+                            descrip1={user.email}
+                            descrip2={user.documento}
+                            children={<SendButton onClick={() => navigate('/perfil/micuenta/', {state: {user_email: `${user.email}`}})} text='Editar' backcolor='#3E4692' letercolor='white'></SendButton>}
+                        />
+                    )
+                ))}
             </div>
         </div>
     );

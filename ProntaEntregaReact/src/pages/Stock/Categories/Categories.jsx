@@ -14,6 +14,7 @@ function Categories() {
     const { casaId, categoriaId } = useParams(); // Obtener parámetros de la URL
     const token = Cookies.get('token');
     const [categories, setCategories] = useState([]);
+    const [orderCriteria, setOrderCriteria] = useState('');
 
     useEffect(() => {
         if (!token) {
@@ -28,11 +29,27 @@ function Categories() {
         });
     }, [token, navigate, casaId]); // Agregar casaId como dependencia
 
+    useEffect(() => {
+        if (orderCriteria) {
+            const sortedCategories = [...categories].sort((a, b) => {
+                if (orderCriteria === 'nombre') {
+                    return a.nombre.localeCompare(b.nombre);
+                }
+                return 0;
+            });
+            setCategories(sortedCategories);
+        }
+    }, [orderCriteria, categories]);
+
+    const filters = [
+        { type: 'nombre', label: 'Nombre Alfabético' },
+    ];
+
     return (
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
-                <SearchBar />
+                <SearchBar filters={filters} onOrderChange={setOrderCriteria} />
                 {Array.isArray(categories) && categories.map(category => (
                     <GenericCard 
                         key={category.id_categoria}
