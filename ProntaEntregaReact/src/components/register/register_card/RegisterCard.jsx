@@ -104,13 +104,6 @@ const RegisterCard = () => {
         return updatedData;
       })
 
-    } else if (name === "password2" || name === "password2") {
-      setFormData((prevData) => {
-        const updatedData = { ...prevData, password: value };
-        console.log(updatedData);
-        return updatedData;
-      });
-    
     } else {
       setFormData((prevData) => {
         let updatedValue = value;
@@ -166,15 +159,18 @@ const RegisterCard = () => {
       } else if (name === "password") {
         const errorPassword = document.getElementById("errorContrasenia");
         errorPassword.innerHTML = value.length < 8 && value !== "" ? "La contraseña debe tener al menos 8 caracteres" : "";
-      } /*else if (name === "password2") {
+      } else if (name === "password2") {
         const password = formData.password;
-        const password2 = document.getElementById("FormConfirmar");
+        const password2 = document.getElementById("FormConfirmar").value;
         
-        if (password !== password2) {
-          const errorConfirmarContrasenia = document.getElementById("errorConfirmar");
-          errorConfirmarContrasenia.innerHTML = "Las contraseñas no coinciden";
-        }
-      }*/
+          if (password !== password2) {
+            const errorConfirmarContrasenia = document.getElementById("errorConfirmar");
+            errorConfirmarContrasenia.innerHTML = "Las contraseñas no coinciden";
+          } else {
+            const errorConfirmarContrasenia = document.getElementById("errorConfirmar");
+            errorConfirmarContrasenia.innerHTML = "";
+          }
+      }
     }
   };
 
