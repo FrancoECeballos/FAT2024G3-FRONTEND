@@ -103,6 +103,13 @@ const RegisterCard = () => {
         console.log(updatedData);
         return updatedData;
       })
+
+    } else if (name === "password2" || name === "password2") {
+      setFormData((prevData) => {
+        const updatedData = { ...prevData, password: value };
+        console.log(updatedData);
+        return updatedData;
+      });
     
     } else {
       setFormData((prevData) => {
@@ -207,6 +214,10 @@ const RegisterCard = () => {
                         <Form.Control name="apellido" type="text" onChange={handleInputChange} placeholder="Ingrese su apellido" className="unified-input-right"/>
                       </InputGroup>
                     </div>
+                    <div className="unified-input">
+                      <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
+                      <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
+                    </div>
                   </Form.Group>
 
                   <Form.Group className="mb-2" controlId="formBasicEmail">
@@ -267,7 +278,7 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" controlId="formBasicPasswordConfirm">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
-                    <Form.Control type="password" placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Control name="password2" type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
                   </Form.Group>
                 </Form>
               </Col>
