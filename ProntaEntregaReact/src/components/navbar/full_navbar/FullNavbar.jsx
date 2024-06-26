@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Icon } from '@iconify/react';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -10,7 +11,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import fetchData from '../../../functions/fetchData';
 
-import logo from '../../../assets/Logo.png';
+import whiteLogo from '../../../assets/WhiteLogo.png';
+import blueLogo from '../../../assets/BlueLogo.png';
 import noti from '../../../assets/notification_bell.png';
 import user from '../../../assets/user_in_app.png';
 
@@ -34,8 +36,10 @@ function FullNavbar() {
   console.log(data);
   }, []);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+
+  const handleShowOffcanvas = () => setShowOffcanvas(true);
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   const handleSuperUserAuth = async (e) => {
   e.preventDefault();
@@ -54,60 +58,55 @@ function FullNavbar() {
   return (
     <Navbar expand={expand} className="full-navbar ">
       <Container fluid>
-      <div>
-        <Navbar.Brand href="#">
-          <img src={logo} alt="Logo" className="logo" onClick={() => navigate('/')} />
+        <div>
+          <Navbar.Brand href="#">
+            <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
           </Navbar.Brand>  
-          </div>
-          
+        </div>
+        <div>
           <Nav className="nav-link">
-          <div className="vertical-divider"></div>
-          <Nav.Link style={{ color: 'white' }}>Novedades</Nav.Link>
-          <div className="vertical-divider"></div>
-          <Nav.Link onClick={() => navigate('/stock')} style={{ color: 'white' }} >Stock</Nav.Link>
-          <div className="vertical-divider"></div>
-          <Nav.Link style={{ color: 'white' }} > Entregas</Nav.Link>
-          <div className="vertical-divider"></div>
-          <Nav.Link onClick={() => navigate('/pedidos')} style={{ color: 'white' }} > Pedidos</Nav.Link>
-          <div className="vertical-divider"></div>
-          <Nav.Link style={{ color: 'white' }} > Ofertas</Nav.Link>
-          <div className="vertical-divider"></div>
+            <Nav.Link className='naving'>Novedades</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/stock')}>Stock</Nav.Link>
+            <Nav.Link className='naving'> Entregas</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/pedidos')}> Pedidos</Nav.Link>
+            <Nav.Link className='naving'> Ofertas</Nav.Link>
           </Nav>
-          <div className='botons-derecha'>        
-            <Navbar.Brand href="#">
-        <img src={noti} alt="Noti" className="noti" style={{ width: '3rem' }} />
+        </div>
+        <div className='botons-derecha'>
+          <Navbar.Brand href="#">
+            <Icon icon="gala:bell" style={{ width: '2rem', height: '2rem' , marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}}/>
           </Navbar.Brand>  
           <Navbar.Brand href="#">
-          <img src={user} alt="User" className="user" style={{ width: '3rem' }} onClick={handleSuperUserAuth} />
+            <Icon icon="uil:user" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}} onClick={handleSuperUserAuth}/>
           </Navbar.Brand>  
         
         
-        <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
-        <Navbar.Offcanvas
-          id={`offcanvasNavbar-expand-${expand}`}
-          aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
-          placement="end"
-        >
-          <Offcanvas.Header closeButton style={{ backgroundColor: '#A11818', color: 'white' }}> 
-            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-              Offcanvas
-            </Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body style={{ backgroundColor: '#A11818', color: 'white' }}>
-            <Nav className="justify-content-end flex-grow-1 pe-3">
-            <Nav.Link style={{ color: 'white' }}>Novedades</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Stock</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Entregas</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Pedidos</Nav.Link>
-            <Nav.Link style={{ color: 'white' }}>Ofertas</Nav.Link>
- 
-            </Nav>
-            
-            <Form className="d-flex">
-            
-            </Form>
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
+          <Icon icon="heroicons:bars-3" style={{ width: '3rem', height: '3rem', color: 'black', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}} onClick={handleShowOffcanvas} />
+          <Navbar.Offcanvas
+            id={`offcanvasNavbar-expand-${expand}`}
+            aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
+            placement="end"
+          >
+            <Offcanvas.Header closeButton style={{ backgroundColor: '#A11818', color: 'white' }}> 
+              <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
+                Offcanvas
+              </Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body style={{ backgroundColor: '#A11818', color: 'white' }}>
+              <Nav className="justify-content-end flex-grow-1 pe-3">
+                <Nav.Link style={{ color: 'white' }}>Novedades</Nav.Link>
+                <Nav.Link style={{ color: 'white' }}>Stock</Nav.Link>
+                <Nav.Link style={{ color: 'white' }}>Entregas</Nav.Link>
+                <Nav.Link style={{ color: 'white' }}>Pedidos</Nav.Link>
+                <Nav.Link style={{ color: 'white' }}>Ofertas</Nav.Link>
+              </Nav>
+              
+              <Form className="d-flex">
+              
+              </Form>
+            </Offcanvas.Body>
+          </Navbar.Offcanvas>
+          
         </div>
       </Container>
     </Navbar>
