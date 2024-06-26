@@ -24,7 +24,9 @@ const Cuenta = () => {
 
     const [userCasas, setUserCasas] = useState([]);
     const [casas, setCasas] = useState([]);
+    const [userID, setUserID] = useState();
     const [selectedObject, setSelectedObject] = useState('');
+    const today = new Date().toISOString().split('T')[0];
 
     const NullToEmpty = (data) => {
         if (data === null || data === undefined) return "";
@@ -39,6 +41,7 @@ const Cuenta = () => {
     };
 
     const [userData, setUserData] = useState({
+        "id_usuario": "",
         "nombre": "",
         "apellido": "",
         "nombreusuario": "",
@@ -59,6 +62,7 @@ const Cuenta = () => {
     }, [userData]);
 
     const [userDataDefault, setUserDataDefault] = useState({
+        "id_usuario": "",
         "nombre": "",
         "apellido": "",
         "nombreusuario": "",
@@ -125,17 +129,21 @@ const Cuenta = () => {
         navigate('/selectuser');
     };
 
-    const handleDeleteObject = async(id) => {
-        const url = (`/user/deleteCasa/${userData.email}/${id}/`);
+    const handleDeleteCasaFromUser = async(id) => {
+        const url = (`/user/casas/delete/${id}/`);
         const result = await deleteData(url, token);
         fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
             setUserCasas(result);
         });
     };
 
-    const handleAddObject = async() => {
-        const url = (`/user/addCasa/${userData.email}/${selectedObject}/`);
-        const result = await postData(url, {}, token);
+    const handleAddOCasaToUser = async() => {
+        const url = (`user/casas/post/`);
+        const result = await postData(url, 
+            {descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la casa ${selectedObject}`, 
+            fechaingreso: today,
+            id_casa: parseInt(selectedObject, 10),
+            id_usuario: userData.id_usuario}, token);
         fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
             setUserCasas(result);
         });
@@ -294,19 +302,19 @@ const Cuenta = () => {
                     <h3>Casas del Usuario</h3>
                     <ul>
                         {userCasas.map(casa => (
-                            <li key={casa.id_casa}>
-                                {casa.nombre}
-                                {isAdmin && <Button variant="danger" size="sm" style={{marginLeft:'1rem'}} onClick={() => handleDeleteObject(casa.id)}>Delete</Button>}
+                            <li key={casa.id_casa.id_casa}>
+                                {casa.id_casa.nombre}
+                                {isAdmin && <Button variant="danger" size="sm" style={{marginLeft:'1rem'}} onClick={() => handleDeleteCasaFromUser(casa.id_casa.id_casa)}>Delete</Button>}
                             </li>
                         ))}
                     </ul>
                     {isAdmin && <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
-                        <option>Select an object to add</option>
+                        <option disabled hidden value="">Select an object to add</option>
                         {casas.map(casa => (
-                            <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option>
+                            !userCasas.some(userCasa => userCasa.id_casa.id_casa === casa.id_casa) ? <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option> : null
                         ))}
                     </Form.Select>}
-                    {isAdmin && <Button onClick={handleAddObject}>Add</Button>}
+                    {isAdmin && <Button onClick={handleAddOCasaToUser} disabled={!selectedObject}>Add</Button>}
                 </Col>
             </Row>
             <Row className="filabuton">
@@ -314,8 +322,8 @@ const Cuenta = () => {
                     <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#C21807', borderColor:'#C21807', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleDeleteUser}>Borrar Usuario</Button>
                 </Col>
                 <Col>
-                <SendButton id="editButton" onClick={handleEdit} text="Editar" wide="6" backcolor="blue" letercolor="white"/>
-                <SendButton id="editButton" hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white"/>
+                <SendButton onClick={handleEdit} text="Editar" wide="6" backcolor="blue" letercolor="white"/>
+                <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white"/>
                 </Col>
             </Row>
         </div>
