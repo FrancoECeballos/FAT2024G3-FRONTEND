@@ -8,6 +8,7 @@ import SeguridadYPrivacidad from './pages/Perfil/SeguridadYPrivacidad.jsx';
 import UserListing from './pages/Perfil/UserListing.jsx';
 import Categories from './pages/Stock/Categories/Categories.jsx';
 import Pedidos from './pages/Pedidos/Pedidos.jsx';
+import Ofertas from './pages/Ofertas/Ofertas.jsx';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/stock" element={<Stock />} />
         <Route path="/casa/:casaId/categoria/:categoriaId" element={<Categories />} />
         <Route path="/pedidos" element={<Pedidos />} />
+        <Route path="/oferta" element={<Ofertas />} />
       </Routes>
     </BrowserRouter>
   )
