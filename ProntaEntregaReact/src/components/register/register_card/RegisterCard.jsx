@@ -102,13 +102,6 @@ const RegisterCard = () => {
         const updatedData = { ...prevData, [name]: updatedValue };
         console.log(updatedData);
         return updatedData;
-      })
-
-    } else if (name === "password2" || name === "password2") {
-      setFormData((prevData) => {
-        const updatedData = { ...prevData, password: value };
-        console.log(updatedData);
-        return updatedData;
       });
     
     } else {

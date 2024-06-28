@@ -24,7 +24,7 @@ const Cuenta = () => {
 
     const [userCasas, setUserCasas] = useState([]);
     const [casas, setCasas] = useState([]);
-    const [userID, setUserID] = useState();
+    const [casaID, setCasaID] = useState([]);
     const [selectedObject, setSelectedObject] = useState('');
     const today = new Date().toISOString().split('T')[0];
 
@@ -99,16 +99,37 @@ const Cuenta = () => {
                 setDirec(result);
             });
             fetchData(`/user/casasToken/${token}`, token).then((result) => {
-                setUserCasas(result);
+                setUserCasas(casasResult);
+                setCasaID([]);
+            
+                const fetchPromises = casasResult.map(casa =>
+                    fetchData(`/casa/${casa.id_casa}`, token)
+                );
+            
+                Promise.all(fetchPromises).then((results) => {
+                    const flattenedResults = results.flat();
+                    const uniqueResults = Array.from(new Set(flattenedResults.map(JSON.stringify))).map(JSON.parse);
+                    setCasaID(uniqueResults);
+                });
             });
         } else {
             fetchData(`/user/${location.state.user_email}`).then(updateUserState)
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
-
-            fetchData(`/user/casasEmail/${location.state.user_email}`, token).then((result) => {
-                setUserCasas(result);
+            fetchData(`/user/casasEmail/${location.state.user_email}`, token).then((casasResult) => {
+                setUserCasas(casasResult);
+                setCasaID([]);
+            
+                const fetchPromises = casasResult.map(casa =>
+                    fetchData(`/casa/${casa.id_casa}`, token)
+                );
+            
+                Promise.all(fetchPromises).then((results) => {
+                    const flattenedResults = results.flat();
+                    const uniqueResults = Array.from(new Set(flattenedResults.map(JSON.stringify))).map(JSON.parse);
+                    setCasaID(uniqueResults);
+                });
             });
             fetchData(`/casa/`, token).then((result) => {
                 setCasas(result);
@@ -130,10 +151,12 @@ const Cuenta = () => {
     };
 
     const handleDeleteCasaFromUser = async(id) => {
-        const url = (`/user/casas/delete/${id}/`);
+        const aux = userCasas.find(casa => casa.id_casa === id);
+        const url = (`/user/casas/delete/${aux.id_detallecasausuario}/`);
         const result = await deleteData(url, token);
         fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
             setUserCasas(result);
+            window.location.reload();
         });
     };
 
@@ -142,28 +165,27 @@ const Cuenta = () => {
         const result = await postData(url, 
             {descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la casa ${selectedObject}`, 
             fechaingreso: today,
-            id_casa: parseInt(selectedObject, 10),
+            id_casa: parseInt(selectedObject),
             id_usuario: userData.id_usuario}, token);
         fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
             setUserCasas(result);
+            window.location.reload();
         });
     };
 
-    const handleEdit = () => {
-        const editButton = document.getElementById("editButton");
-        if (isEditing) {  
+    const handleEdit = (e) => {
+        const editButton = e.target;
+        if (isEditing) { 
             setIsEditing(false);
-            editButton.innerText = "Editar";
-            editButton.style.backgroundColor = 'blue';
-            editButton.style.borderColor = 'blue';
-            editButton.style.color = 'white';
+            editButton.text = "Editar";
+            editButton.backcolor = 'blue';
+            editButton.letercolor = 'white';
             setUserData(userDataDefault);
         } else {
             setIsEditing(true);
-            editButton.innerText = "Cancelar";
-            editButton.style.backgroundColor = 'yellow';
-            editButton.style.borderColor = 'yellow';
-            editButton.style.color = 'black';id="editButton"
+            editButton.text = "Cancelar";
+            editButton.backcolor = 'yellow';
+            editButton.letercolor = 'black';
         }
     };
 
@@ -241,10 +263,9 @@ const Cuenta = () => {
         setIsEditing(false);
     
         const editButton = document.getElementById("editButton");
-        editButton.innerText = "Editar";
-        editButton.style.backgroundColor = 'blue';
-        editButton.style.borderColor = 'blue';
-        editButton.style.color = 'white';
+        editButton.text = "Editar";
+        editButton.backcolor = 'blue';
+        editButton.letercolor = 'white';
     
         if (isAdmin) {
             const url = (`/user/updateEmail/${userData.email}/`);
@@ -301,29 +322,29 @@ const Cuenta = () => {
                 <Col>
                     <h3>Casas del Usuario</h3>
                     <ul>
-                        {userCasas.map(casa => (
-                            <li key={casa.id_casa.id_casa}>
-                                {casa.id_casa.nombre}
-                                {isAdmin && <Button variant="danger" size="sm" style={{marginLeft:'1rem'}} onClick={() => handleDeleteCasaFromUser(casa.id_casa.id_casa)}>Delete</Button>}
+                        {casaID.map(usercasa => (
+                            <li key={usercasa.id_casa}>
+                                {usercasa.nombre}
+                                {isAdmin && <SendButton text="Delete" backcolor="red" letercolor="white" wide="5" onClick={() => handleDeleteCasaFromUser(usercasa.id_casa)}></SendButton>}
                             </li>
                         ))}
                     </ul>
                     {isAdmin && <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
                         <option disabled hidden value="">Select an object to add</option>
                         {casas.map(casa => (
-                            !userCasas.some(userCasa => userCasa.id_casa.id_casa === casa.id_casa) ? <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option> : null
+                            !casaID.some(casaID => casaID.id_casa === casa.id_casa) ? <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option> : null
                         ))}
                     </Form.Select>}
-                    {isAdmin && <Button onClick={handleAddOCasaToUser} disabled={!selectedObject}>Add</Button>}
+                    {isAdmin && <SendButton onClick={handleAddOCasaToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
                 </Col>
             </Row>
             <Row className="filabuton">
                 <Col>
-                    <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#C21807', borderColor:'#C21807', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleDeleteUser}>Borrar Usuario</Button>
+                    <SendButton text="Borrar Usuario" backcolor="red" letercolor="white" onClick={handleDeleteUser}></SendButton>
                 </Col>
                 <Col>
-                <SendButton onClick={handleEdit} text="Editar" wide="6" backcolor="blue" letercolor="white"/>
-                <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white"/>
+                    <SendButton onClick={handleEdit} text="Editar" wide="6" backcolor="blue" letercolor="white"/>
+                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white"/>
                 </Col>
             </Row>
         </div>

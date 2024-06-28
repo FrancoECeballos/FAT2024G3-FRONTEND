@@ -31,7 +31,6 @@ function FullNavbar() {
     }
   };
   fetchUserData();
-  console.log(data);
   }, []);
 
   const handleClose = () => setShow(false);
