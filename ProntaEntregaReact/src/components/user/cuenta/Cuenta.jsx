@@ -98,7 +98,7 @@ const Cuenta = () => {
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
-            fetchData(`/user/casasToken/${token}`, token).then((result) => {
+            fetchData(`/user/casasToken/${token}`, token).then((casasResult) => {
                 setUserCasas(casasResult);
                 setCasaID([]);
             

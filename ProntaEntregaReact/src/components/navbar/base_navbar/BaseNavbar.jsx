@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from 'react-router-dom';
 
 
-import Logo from '../../../assets/Logo.png';
+import Logo from '../../../assets/BlueLogo.png';
 
 export default function BaseNavbar({}) {
     const navigate = useNavigate();
