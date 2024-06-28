@@ -1,6 +1,6 @@
 	.full-navbar {
-		background-color: #A11818;
-		color: white;
+		background-color: white;
+		color: #02005E;
 
 		.vertical-divider {
 			width: 1px;
@@ -10,6 +10,12 @@
 		}
 	}
 	
+	.naving {
+		color: #02005E;
+		margin-left: 0.5rem;
+		margin-right: 0.5rem;
+	}
+
 	.logo {
 		width: 4rem;
 		margin: 0;
@@ -27,7 +33,6 @@
 	}
 	.botons-derecha {
 		align-items: right;
-		
 	}
 	
 
