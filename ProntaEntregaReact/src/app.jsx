@@ -7,6 +7,7 @@ import Stock from './pages/Stock/Stock.jsx';
 import SeguridadYPrivacidad from './pages/Perfil/SeguridadYPrivacidad.jsx';
 import UserListing from './pages/Perfil/UserListing.jsx';
 import Categories from './pages/Stock/Categories/Categories.jsx';
+import Products from './pages/Stock/Products/Products.jsx';
 import Pedidos from './pages/Pedidos/Pedidos.jsx';
 import Ofertas from './pages/Ofertas/Ofertas.jsx';
 
@@ -27,7 +28,8 @@ function App() {
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
         <Route path="/selectuser" element={<UserListing />}/>
         <Route path="/stock" element={<Stock />} />
-        <Route path="/casa/:casaId/categoria/:categoriaId" element={<Categories />} />
+        <Route path="/casa/:casaId/categoria" element={<Categories />} />
+        <Route path="/casa/:casaId/categoria/:categoriaID" element={<Products />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
       </Routes>

@@ -9,11 +9,11 @@ import SendButton from '../../../components/buttons/send_button/send_button.jsx'
 
 import fetchData from '../../../functions/fetchData';
 
-function Categories() {
+function Products() {
     const navigate = useNavigate();
-    const { casaId, categoriaId } = useParams();
+    const { casaId, categoriaID } = useParams();
     const token = Cookies.get('token');
-    const [categories, setCategories] = useState([]);
+    const [products, setProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
@@ -23,22 +23,23 @@ function Categories() {
             return;
         }
 
-        fetchData(`categorias-productos/${casaId}/`, token).then((result) => {
-            setCategories(result);
-            console.log('Categories fetched:', result);
+        fetchData(`casa/${casaId}/categoria/${categoriaID}/`, token).then((result) => {
+            setProducts(result);
+            console.log('Products fetched:', result);
         }).catch(error => {
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching products:', error);
         });
     }, [token, navigate, casaId]);
 
-    const filteredCategories = categories.filter(category => {
+    const filteredProducts = products.filter(product => {
         return (
-            category.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            category.descripcion?.toLowerCase().includes(searchQuery.toLowerCase())
+            product.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.id_producto.descripcion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.id_producto.id_unidadmedida.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
-    const sortedCategories = [...filteredCategories].sort((a, b) => {
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
         if (!orderCriteria) return 0;
         const aValue = a[orderCriteria];
         const bValue = b[orderCriteria];
@@ -56,7 +57,8 @@ function Categories() {
 
     const filters = [
         { type: 'nombre', label: 'Nombre Alfabético' },
-        { type: 'cantidad_productos', label: 'Cantidad de Productos' },
+        { type: 'cantidad', label: 'Cantidad' },
+        { type: 'id_producto.id_unidadmedida.nombre', label: 'Unidad de Medida' },
     ];
 
     const handleSearchChange = (value) => {
@@ -68,16 +70,16 @@ function Categories() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
-                {Array.isArray(sortedCategories) && sortedCategories.map(category => (
+                {Array.isArray(sortedProducts) && sortedProducts.map(product => (
                     <GenericCard 
-                        key={category.id_categoria}
-                        titulo={category.nombre}
-                        descrip1={category.descripcion}
-                        descrip2={`Cantidad de Productos: ${category.cantidad_productos}`}
+                        key={product.id_producto.id_producto}
+                        titulo={product.id_producto.nombre}
+                        descrip1={product.id_producto.descripcion}
+                        descrip2={`Cantidad: ${product.cantidad} ${product.id_producto.id_unidadmedida.nombre}`}
                         children={
                             <SendButton
-                                onClick={() => navigate(`/casa/${casaId}/categoria/${category.id_categoriaproducto}/`, { state: { id_casa: casaId } })}
-                                text='Ver Productos'
+                                onClick={() => navigate(`/casa/${casaId}/categoria/${product.id_categoria}/`, { state: { id_casa: casaId } })}
+                                text='Editar Cantidad'
                                 backcolor='#3E4692'
                                 letercolor='white'
                             />
@@ -89,4 +91,4 @@ function Categories() {
     );
 }
 
-export default Categories;
+export default Products;

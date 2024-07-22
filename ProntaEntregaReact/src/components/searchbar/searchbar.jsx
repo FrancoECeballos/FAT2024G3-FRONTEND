@@ -15,6 +15,7 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
             <input 
                 type="text" 
                 name="search" 
+                placeholder="Buscar..."
                 style={{ border: '0px', borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '80%', marginRight: '2rem' }} 
                 onChange={(e) => {
                     console.log("Search Query: ", e.target.value);

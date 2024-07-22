@@ -16,6 +16,8 @@ function Stock() {
     const token = Cookies.get('token');
     const [houses, setHouses] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [orderCriteria, setOrderCriteria] = useState(null);
 
     useEffect(() => {
         if (!token) {
@@ -38,7 +40,7 @@ function Stock() {
             } else {
                 fetchData(`/user/casasEmail/${email}/`, token).then((result) => {
                     console.log("House for User:", result);
-                    setHouses(result); // Asegúrate de que `result` es un array
+                    setHouses(result);
                 }).catch(error => {
                     console.error('Error fetching house for user', error);
                 });
@@ -48,19 +50,52 @@ function Stock() {
         });
     }, [token, navigate]);
 
+    const filteredHouses = houses.filter(house => {
+        return (
+            house.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            house.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            house.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    });
+
+    const sortedHouses = [...filteredHouses].sort((a, b) => {
+        if (!orderCriteria) return 0;
+        const aValue = a[orderCriteria];
+        const bValue = b[orderCriteria];
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+        }
+
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return bValue - aValue;
+        }
+
+        return 0;
+    });
+
+    const filters = [
+        { type: 'nombre', label: 'Nombre Alfabético' },
+        { type: 'usuarios_registrados', label: 'Usuarios Registrados' },
+    ];
+
+    const handleSearchChange = (value) => {
+        setSearchQuery(value);
+    };
+
     return (
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
-                <SearchBar />
-                {Array.isArray(houses) && houses.length > 0 ? (
-                    houses.map(house => (
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
+                {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
+                    sortedHouses.map(house => (
                         <GenericCard 
                             key={house.id_casa}
                             titulo={house.nombre}
-                            descrip1={house.usuarios_registrados}
+                            descrip1={`Usuarios Registrados: ${house.usuarios_registrados}`}
                             descrip2={`${house.id_direccion.localidad}, ${house.id_direccion.calle}, ${house.id_direccion.numero}`}
-                            children = {<SendButton onClick={() => navigate(`/casa/${house.id_casa}/categoria/1/`, {state: {id_casa: `${house.id_casa}`}})} text = 'Ver Stock' backcolor = '#3E4692' letercolor='white'></SendButton>}
+                            children = {<SendButton onClick={() => navigate(`/casa/${house.id_casa}/categoria`, {state: {id_casa: `${house.id_casa}`}})} text = 'Ver Stock' backcolor = '#3E4692' letercolor='white'></SendButton>}
                         />
                     ))
                 ) : (

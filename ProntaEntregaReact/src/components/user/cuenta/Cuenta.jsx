@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Form, InputGroup , Row, Col} from 'react-bootstrap';
 import Cookies from 'js-cookie';
@@ -27,6 +27,8 @@ const Cuenta = () => {
     const [casaID, setCasaID] = useState([]);
     const [selectedObject, setSelectedObject] = useState('');
     const today = new Date().toISOString().split('T')[0];
+
+    const editButtonRef = useRef(null);
 
     const NullToEmpty = (data) => {
         if (data === null || data === undefined) return "";
@@ -173,19 +175,12 @@ const Cuenta = () => {
         });
     };
 
-    const handleEdit = (e) => {
-        const editButton = e.target;
+    const handleEdit = () => {
         if (isEditing) { 
             setIsEditing(false);
-            editButton.text = "Editar";
-            editButton.backcolor = 'blue';
-            editButton.letercolor = 'white';
             setUserData(userDataDefault);
         } else {
             setIsEditing(true);
-            editButton.text = "Cancelar";
-            editButton.backcolor = 'yellow';
-            editButton.letercolor = 'black';
         }
     };
 
@@ -261,11 +256,6 @@ const Cuenta = () => {
         const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento, id_tipousuario: userData.id_tipousuario.id_tipousuario };
         setUserDataDefault(userData);
         setIsEditing(false);
-    
-        const editButton = document.getElementById("editButton");
-        editButton.text = "Editar";
-        editButton.backcolor = 'blue';
-        editButton.letercolor = 'white';
     
         if (isAdmin) {
             const url = (`/user/updateEmail/${userData.email}/`);
@@ -343,7 +333,7 @@ const Cuenta = () => {
                     <SendButton text="Borrar Usuario" backcolor="red" letercolor="white" onClick={handleDeleteUser}></SendButton>
                 </Col>
                 <Col>
-                    <SendButton onClick={handleEdit} text="Editar" wide="6" backcolor="blue" letercolor="white"/>
+                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "yellow" : "blue"} letercolor={isEditing ? "black" : "white"}/>
                     <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white"/>
                 </Col>
             </Row>

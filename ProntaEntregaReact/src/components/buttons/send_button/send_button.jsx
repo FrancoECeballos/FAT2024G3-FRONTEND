@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 
-export default function SendButton({onClick, text = 'Enviar', wide = '10', children, backcolor = '#D9D9D9', letercolor = 'black', id,hid}) {
+export default function SendButton({onClick, text = 'Enviar', wide = '10', children, backcolor = '#D9D9D9', letercolor = 'black', id, hid}) {
     return (
         <Button 
             onClick={onClick} 
