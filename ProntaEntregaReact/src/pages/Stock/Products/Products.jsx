@@ -72,6 +72,7 @@ function Products() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 {Array.isArray(sortedProducts) && sortedProducts.map(product => (
                     <GenericCard 
+                    onClick={() => navigate(`/casa/${casaId}/categoria/${product.id_categoria}/`, { state: { id_casa: casaId } })}
                         key={product.id_producto.id_producto}
                         titulo={product.id_producto.nombre}
                         descrip1={product.id_producto.descripcion}

@@ -63,25 +63,20 @@ function Categories() {
         setSearchQuery(value);
     };
 
+
+
     return (
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
-                {Array.isArray(sortedCategories) && sortedCategories.map(category => (
+                {Array.isArray(sortedCategories) && sortedCategories.map(category => (  
                     <GenericCard 
+                        onClick={() => navigate(`/casa/${casaId}/categoria/${category.id_categoriaproducto}/`, { state: { id_casa: casaId } })}
                         key={category.id_categoria}
                         titulo={category.nombre}
                         descrip1={category.descripcion}
                         descrip2={`Cantidad de Productos: ${category.cantidad_productos}`}
-                        children={
-                            <SendButton
-                                onClick={() => navigate(`/casa/${casaId}/categoria/${category.id_categoriaproducto}/`, { state: { id_casa: casaId } })}
-                                text='Ver Productos'
-                                backcolor='#3E4692'
-                                letercolor='white'
-                            />
-                        }
                     />
                 ))}
             </div>
