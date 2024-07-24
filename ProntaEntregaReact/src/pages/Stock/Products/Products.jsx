@@ -5,9 +5,9 @@ import Cookies from 'js-cookie';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/GenericCard.jsx';
-import SendButton from '../../../components/buttons/send_button/send_button.jsx';
 
 import fetchData from '../../../functions/fetchData';
+import Modal from '../../../components/modals/Modal.jsx';
 
 function Products() {
     const navigate = useNavigate();
@@ -77,12 +77,7 @@ function Products() {
                         descrip1={product.id_producto.descripcion}
                         descrip2={`Cantidad: ${product.cantidad} ${product.id_producto.id_unidadmedida.nombre}`}
                         children={
-                            <SendButton
-                                onClick={() => navigate(`/casa/${casaId}/categoria/${product.id_categoria}/`, { state: { id_casa: casaId } })}
-                                text='Editar Cantidad'
-                                backcolor='#3E4692'
-                                letercolor='white'
-                            />
+                            <Modal openButtonText="Abrir!!!!" title="Modificar Stock" content="Necesito pito" saveButtonText="Guardar"/>
                         }
                     />
                 ))}

@@ -40,7 +40,14 @@ function Stock() {
             } else {
                 fetchData(`/user/casasEmail/${email}/`, token).then((result) => {
                     console.log("House for User:", result);
-                    setHouses(result);
+                    const houseIds = result.map(house => house.id_casa);
+                    const housePromises = houseIds.map(id => fetchData(`/casa/${id}`, token));
+                    Promise.all(housePromises).then(houses => {
+                        console.log("Fetched Houses:", houses);
+                        setHouses(houses.flat());
+                    }).catch(error => {
+                        console.error('Error fetching houses by ID', error);
+                    });
                 }).catch(error => {
                     console.error('Error fetching house for user', error);
                 });
