@@ -35,8 +35,8 @@ function Pedidos() {
                             <GenericCard
                                 key={pedido.id_pedido}
                                 titulo={`Pedido ${pedido.id_pedido}`}
-                                descrip1={`Fecha Inicio: ${pedido.fechainicio.split('-').reverse().join('/')} ${pedido.horainicio}`}
-                                descrip2={`Fecha Vencimiento: ${pedido.fechavencimiento.split('-').reverse().join('/')} ${pedido.horavencimiento}`}
+                                descrip1={`Fecha Inicio: ${pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} ${pedido.horainicio}`}
+                                descrip2={`Fecha Vencimiento: ${pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} ${pedido.horavencimiento}`}
                                 // Puedes agregar más detalles del pedido según la estructura de datos
                             />
                         ))
