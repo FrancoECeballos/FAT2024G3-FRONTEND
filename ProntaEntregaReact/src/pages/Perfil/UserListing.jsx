@@ -79,12 +79,11 @@ function UserListing() {
                 {Array.isArray(users) && sortedUsers.map(user => (
                     adminUser && adminUser.email !== user.email && (
                         <GenericCard 
+                            onClick={() => navigate('/perfil/micuenta/', {state: {user_email: `${user.email}`}})}
                             key={user.id}
                             titulo={`${user.nombre} ${user.apellido}`}
                             descrip1={user.email}
-                            descrip2={user.documento}
-                            children={<SendButton onClick={() => navigate('/perfil/micuenta/', {state: {user_email: `${user.email}`}})} text='Editar' backcolor='#3E4692' letercolor='white'></SendButton>}
-                        />
+                            descrip2={user.documento}                        />
                     )
                 ))}
             </div>

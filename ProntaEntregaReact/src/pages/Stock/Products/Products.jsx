@@ -72,18 +72,11 @@ function Products() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 {Array.isArray(sortedProducts) && sortedProducts.map(product => (
                     <GenericCard 
+                    onClick={() => navigate(`/casa/${casaId}/categoria/${product.id_categoria}/`, { state: { id_casa: casaId } })}
                         key={product.id_producto.id_producto}
                         titulo={product.id_producto.nombre}
                         descrip1={product.id_producto.descripcion}
                         descrip2={`Cantidad: ${product.cantidad} ${product.id_producto.id_unidadmedida.nombre}`}
-                        children={
-                            <SendButton
-                                onClick={() => navigate(`/casa/${casaId}/categoria/${product.id_categoria}/`, { state: { id_casa: casaId } })}
-                                text='Editar Cantidad'
-                                backcolor='#3E4692'
-                                letercolor='white'
-                            />
-                        }
                     />
                 ))}
             </div>
