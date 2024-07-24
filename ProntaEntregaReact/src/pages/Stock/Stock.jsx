@@ -40,7 +40,14 @@ function Stock() {
             } else {
                 fetchData(`/user/casasEmail/${email}/`, token).then((result) => {
                     console.log("House for User:", result);
-                    setHouses(result);
+                    const houseIds = result.map(house => house.id_casa);
+                    const housePromises = houseIds.map(id => fetchData(`/casa/${id}`, token));
+                    Promise.all(housePromises).then(houses => {
+                        console.log("Fetched Houses:", houses);
+                        setHouses(houses.flat());
+                    }).catch(error => {
+                        console.error('Error fetching houses by ID', error);
+                    });
                 }).catch(error => {
                     console.error('Error fetching house for user', error);
                 });
@@ -90,12 +97,12 @@ function Stock() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
                     sortedHouses.map(house => (
-                        <GenericCard 
+                        <GenericCard
+                            onClick={() => navigate(`/casa/${house.id_casa}/categoria`, {state: {id_casa: `${house.id_casa}`}})} 
                             key={house.id_casa}
                             titulo={house.nombre}
                             descrip1={`Usuarios Registrados: ${house.usuarios_registrados}`}
                             descrip2={`${house.id_direccion.localidad}, ${house.id_direccion.calle}, ${house.id_direccion.numero}`}
-                            children = {<SendButton onClick={() => navigate(`/casa/${house.id_casa}/categoria`, {state: {id_casa: `${house.id_casa}`}})} text = 'Ver Stock' backcolor = '#3E4692' letercolor='white'></SendButton>}
                         />
                     ))
                 ) : (

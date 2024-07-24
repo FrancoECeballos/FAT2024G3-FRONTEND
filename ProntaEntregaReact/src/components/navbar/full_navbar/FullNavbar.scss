@@ -23,14 +23,19 @@
 	
 
 	
-	.nav-link{
+	.nav-link {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		padding: 0	;
+		padding: 0;
 		padding-left: 0.5rem;
 		padding-right: 0.5rem;
-	}
+		color: #02005E;
+	  
+		&:hover {
+		  color: black;
+		}
+	  }
 	.botons-derecha {
 		align-items: right;
 	}
@@ -50,17 +55,13 @@
 		
 	}
 
-	.nav-link {
-	  color: black;
-	}
-
 	.link-side{
 		color: white;
 	}
   
 	.side-button {
 	  width: 5rem;
-	  background-color: #A11818;
+	  background-color: white;
 	  border: none;
   
 	  .side-icon {
@@ -68,13 +69,7 @@
 	  }
 	}
   
-	
-	.vertical-divider {
-		width: 1px;
-		height: 3rem; 
-		background-color: #ffffff;
-		margin: 0.5rem; 
-	}
+
 	
 	.pages-nav a {
 	  text-decoration:dashed;
@@ -91,11 +86,11 @@
 	}
   
 	.offcanvas-link {
-	  color: #A11818;
+	  color: white;
 	}
   
 	.custom-offcanvas {
 	  background-color: #A11818;
-	  color: #A11818;
+	  color: white;
 	}
   
