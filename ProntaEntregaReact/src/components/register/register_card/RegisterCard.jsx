@@ -91,7 +91,7 @@ const RegisterCard = () => {
           return updatedData;
         });
       }
-    
+
     } else if (name === "calle" || name === "numero" || name === "localidad") {
       setDirecFormData((prevData) =>  {
         let updatedValue = value;
@@ -103,7 +103,6 @@ const RegisterCard = () => {
         console.log(updatedData);
         return updatedData;
       });
-    
     } else {
       setFormData((prevData) => {
         let updatedValue = value;
@@ -340,8 +339,8 @@ const RegisterCard = () => {
                       className="hidden-file-input"
                       onChange={handleInputChange}
                     />
-                    <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivo" wide="8">
-                      <img src={uploadImage} alt="upload" style={{ width: '1.5rem' }} className='upload'/>
+                    <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivo      " wide="15">
+                      <img src={uploadImage} alt="upload" style={{ width: '1.2rem', alignContent: 'center' }}  className='upload'/>
                     </SendButton>
                   </Form.Group>
                 </div>

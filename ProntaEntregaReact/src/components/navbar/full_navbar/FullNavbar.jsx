@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Icon } from '@iconify/react';
 
-import { Container, Nav, Navbar, Offcanvas } from 'react-bootstrap';
+import { Container, Nav, Navbar, Offcanvas , Dropdown, Button} from 'react-bootstrap';
 import fetchData from '../../../functions/fetchData';
 
 import whiteLogo from '../../../assets/WhiteLogo.png';
@@ -12,6 +12,7 @@ import blueLogo from '../../../assets/BlueLogo.png';
 import './FullNavbar.scss';
 
 function FullNavbar() {
+  const [show, setShow] = useState(false);
   const expand = false; 
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -35,7 +36,7 @@ function FullNavbar() {
   const handleSuperUserAuth = async (e) => {
     e.preventDefault();
     if (data.is_superuser) {
-      navigate('/selectuser');
+      navigate('/perfil/micuenta');
     } else if (token) {
       navigate('/perfil/micuenta');
     } else {
@@ -51,19 +52,28 @@ function FullNavbar() {
             <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
           </Navbar.Brand>  
         </div>
-        <div>
+
           <Nav className="nav-link">
-            <Nav.Link className='naving'>Novedades</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/stock')}>Stock</Nav.Link>
             <Nav.Link className='naving'>Entregas</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
           </Nav>
-        </div>
         <div className='botons-derecha'>
           <Navbar.Brand href="#">
-            <Icon icon="gala:bell" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}}/>
-          </Navbar.Brand>  
+          <Dropdown>
+            <Dropdown.Toggle as="div" id="dropdown-custom-components" onClick={() => setShow(!show)}>
+              <Icon icon="gala:bell" style={{ width: '2rem', height: '2rem', color: '#02005E' }} />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu show={show}>
+              <Dropdown.Item eventKey="1">Acción 1</Dropdown.Item>
+              <Dropdown.Item eventKey="2">Acción 2</Dropdown.Item>
+              <Dropdown.Item eventKey="3">Acción 3</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+            </Navbar.Brand>  
           <Navbar.Brand href="#">
             <Icon icon="uil:user" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}} onClick={handleSuperUserAuth}/>
           </Navbar.Brand>  

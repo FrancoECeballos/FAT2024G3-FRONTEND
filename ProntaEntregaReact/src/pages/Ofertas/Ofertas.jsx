@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericCard from '../../components/cards/GenericCard.jsx'; // Importa tu componente genérico de tarjeta
+import GenericCard from '../../components/cards/generic_card/GenericCard.jsx'; // Importa tu componente genérico de tarjeta
 import fetchData from '../../functions/fetchData';
 
 function Ofertas() {
@@ -35,8 +35,8 @@ function Ofertas() {
                             <GenericCard
                                 key={oferta.id_oferta}
                                 titulo={`Ofertas ${oferta.id_oferta}`}
-                                descrip1={`Fecha Inicio: ${oferta.fechainicio} ${oferta.horainicio}`}
-                                descrip2={`Fecha Vencimiento: ${oferta.fechavencimiento} ${oferta.horavencimiento}`}
+                                descrip1={`Fecha Inicio: ${oferta.fechainicio ? oferta.fechainicio.split('-').reverse().join('/') : ''} ${oferta.horainicio}`}
+                                descrip2={`Fecha Vencimiento: ${oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''} ${oferta.horavencimiento}`}
                             />
                         ))
                     ) : (

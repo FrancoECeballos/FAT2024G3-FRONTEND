@@ -8,8 +8,8 @@ const Sidebar = () => {
       <ul>
         <SelectableButton texto="Mi cuenta" link="/perfil/micuenta"/>
         <SelectableButton texto="Seguridad y Privacidad" link="/perfil/seguridad"/>
-        <SelectableButton texto="Datos Personales" link="/perfil/micuenta"/>
-        <SelectableButton texto="Casas" link="/perfil/micuenta"/>
+        <SelectableButton texto="Datos Personales" link="/perfil/datos_personales"/>
+        <SelectableButton texto="Casas" link="/casas"/>
       </ul>
       </div>
     );

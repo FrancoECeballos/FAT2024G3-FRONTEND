@@ -1,27 +1,40 @@
 	.full-navbar {
 		background-color: white;
 		color: #02005E;
-
-		.vertical-divider {
-			width: 1px;
-			height: 3rem; 
-			background-color: #ffffff;
-			margin: 0.5rem; 
-		}
 	}
 	
 	.naving {
 		color: #02005E;
 		margin-left: 0.5rem;
 		margin-right: 0.5rem;
-	}
+		position: relative; // Necesario para el pseudo-elemento
+			transition: color 1s ease; // Solo la transición del color del texto
+	  
+	  
+		&::before {
+			height: 160%;
+			width: 100;
+			padding-top: 5%;
+		  content: "";
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: rgb(156, 156, 156); // Color de fondo del hover
+		  opacity: 0; // Inicialmente invisible
+		  transition: opacity 0.5s ease; // Transición de la opacidad
+		}
+	  
+		&:hover::before {
+		  opacity: 0.3; // Muestra el fondo al hacer hover
+		}
+	  }
 
 	.logo {
 		width: 4rem;
 		margin: 0;
 	}
-	
-
 	
 	.nav-link {
 		display: flex;
@@ -39,8 +52,10 @@
 	.botons-derecha {
 		align-items: right;
 	}
-	
 
+	.dropdown-toggle::after {
+		display: none !important;
+	}
 
 	@media (max-width: 767px) {
 		.full-navbar {
@@ -50,40 +65,12 @@
 		}
 	  }
 
-	.botons-derecha{
-		align-items: flex-end;
-		
-	}
-
-	.link-side{
-		color: white;
-	}
-  
-	.side-button {
-	  width: 5rem;
-	  background-color: white;
-	  border: none;
-  
-	  .side-icon {
-		width: 2rem;
+	  .botons-derecha {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
 	  }
-	}
-  
 
-	
-	.pages-nav a {
-	  text-decoration:dashed;
-	  color: white;
-	  transition: background-color 0.3s ease;
-  
-	  &:hover {
-		background-color: rgb(131, 0, 0);
-	  }
-	}
-  
-	.col-right {
-	  margin-left: 0;
-	}
   
 	.offcanvas-link {
 	  color: white;
