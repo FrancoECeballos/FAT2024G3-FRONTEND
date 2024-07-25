@@ -13,7 +13,7 @@ export default function BaseNavbar({}) {
             id="base-navbar" 
             expand="sm" 
             fixed="top" 
-            style={{ backgroundColor: '#A11818', color: 'white' }}>
+            style={{ backgroundColor: 'white', color: 'white' }}>
             <Container fluid>
                 <Navbar.Brand href="#login">
                     <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} onClick={navigate('/')} />
