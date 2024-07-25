@@ -36,7 +36,7 @@ function FullNavbar() {
   const handleSuperUserAuth = async (e) => {
     e.preventDefault();
     if (data.is_superuser) {
-      navigate('/selectuser');
+      navigate('/perfil/micuenta');
     } else if (token) {
       navigate('/perfil/micuenta');
     } else {
@@ -54,7 +54,7 @@ function FullNavbar() {
         </div>
         <div>
           <Nav className="nav-link">
-            <Nav.Link className='naving'>Novedades</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/stock')}>Stock</Nav.Link>
             <Nav.Link className='naving'>Entregas</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>

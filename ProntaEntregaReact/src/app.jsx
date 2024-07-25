@@ -18,6 +18,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 //importacion de los renders
 import Main from './pages/Main/Main.jsx'
 import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
+import Casas from './pages/Casas/Casas.jsx';
+import Novedades from './pages/Novedades/Novedades.jsx';
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
         <Route path="/casa/:casaId/categoria/:categoriaID" element={<Products />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
+        <Route path="/casas" element={<Casas />} />
+        <Route path="/novedades" element={<Novedades />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
       </Routes>
     </BrowserRouter>
