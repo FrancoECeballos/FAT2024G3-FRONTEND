@@ -17,6 +17,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //importacion de los renders
 import Main from './pages/Main/Main.jsx'
+import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/perfil/micuenta" element={<MiCuenta />} />
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
         <Route path="/selectuser" element={<UserListing />}/>
+        <Route path="/perfil/datos_personales" element={<DatosPersonales />} />
         <Route path="/stock" element={<Stock />} />
         <Route path="/casa/:casaId/categoria" element={<Categories />} />
         <Route path="/casa/:casaId/categoria/:categoriaID" element={<Products />} />
