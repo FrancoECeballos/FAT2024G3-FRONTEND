@@ -6,7 +6,8 @@ import './Products.scss';
 
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
+import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.jsx';
+import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';
@@ -92,7 +93,7 @@ function Products() {
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 {Array.isArray(sortedProducts) && sortedProducts.map(product => (
-                    <GenericCard
+                    <AcordeonCard
                         key={product.id_producto.id_producto}
                         titulo={product.id_producto.nombre}
                         descrip1={product.id_producto.descripcion}
@@ -123,6 +124,11 @@ function Products() {
                                     </Form.Select>
                                 </div>
                             }/>
+                        }
+                        accordionChildren={
+                            //For product in products add a LittleCard
+                            <div>
+                            </div>
                         }
                     />
                 ))}
