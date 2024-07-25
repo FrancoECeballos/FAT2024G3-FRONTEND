@@ -1,13 +1,6 @@
 	.full-navbar {
 		background-color: white;
 		color: #02005E;
-
-		.vertical-divider {
-			width: 1px;
-			height: 3rem; 
-			background-color: #ffffff;
-			margin: 0.5rem; 
-		}
 	}
 	
 	.naving {
@@ -46,8 +39,6 @@
 		margin: 0;
 	}
 	
-
-	
 	.nav-link {
 		display: flex;
 		flex-direction: row;
@@ -64,8 +55,10 @@
 	.botons-derecha {
 		align-items: right;
 	}
-	
 
+	.dropdown-toggle::after {
+		display: none !important;
+	}
 
 	@media (max-width: 767px) {
 		.full-navbar {
@@ -75,40 +68,12 @@
 		}
 	  }
 
-	.botons-derecha{
-		align-items: flex-end;
-		
-	}
-
-	.link-side{
-		color: white;
-	}
-  
-	.side-button {
-	  width: 5rem;
-	  background-color: white;
-	  border: none;
-  
-	  .side-icon {
-		width: 2rem;
+	  .botons-derecha {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
 	  }
-	}
-  
 
-	
-	.pages-nav a {
-	  text-decoration:dashed;
-	  color: white;
-	  transition: background-color 0.3s ease;
-  
-	  &:hover {
-		background-color: rgb(131, 0, 0);
-	  }
-	}
-  
-	.col-right {
-	  margin-left: 0;
-	}
   
 	.offcanvas-link {
 	  color: white;
