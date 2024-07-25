@@ -85,18 +85,18 @@ function FullNavbar() {
             show={showOffcanvas}
             onHide={handleCloseOffcanvas}
             placement="end"
-            style={{ backgroundColor: '#A11818', color: 'white' }}
+            style={{ backgroundColor: 'white', color: 'white' }}
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title>Offcanvas</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link style={{ color: 'white' }}>Novedades</Nav.Link>
-                <Nav.Link style={{ color: 'white' }}>Stock</Nav.Link>
-                <Nav.Link style={{ color: 'white' }}>Entregas</Nav.Link>
-                <Nav.Link style={{ color: 'white' }}>Pedidos</Nav.Link>
-                <Nav.Link style={{ color: 'white' }}>Ofertas</Nav.Link>
+                <Nav.Link style={{ color: '#02005E' }}>Novedades</Nav.Link>
+                <Nav.Link style={{ color: '#02005E' }}>Stock</Nav.Link>
+                <Nav.Link style={{ color: '#02005E' }}>Entregas</Nav.Link>
+                <Nav.Link style={{ color: '#02005E' }}>Pedidos</Nav.Link>
+                <Nav.Link style={{ color: '#02005E' }}>Ofertas</Nav.Link>
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>

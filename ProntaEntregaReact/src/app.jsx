@@ -11,6 +11,8 @@ import Products from './pages/Stock/Products/Products.jsx';
 import Pedidos from './pages/Pedidos/Pedidos.jsx';
 import Ofertas from './pages/Ofertas/Ofertas.jsx';
 
+import CrearPedido from './pages/Pedidos/CrearPedido.jsx';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //importacion de los renders
@@ -32,6 +34,7 @@ function App() {
         <Route path="/casa/:casaId/categoria/:categoriaID" element={<Products />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
+        <Route path="/crear_pedido" element={<CrearPedido />} />
       </Routes>
     </BrowserRouter>
   )
