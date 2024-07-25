@@ -14,7 +14,32 @@
 		color: #02005E;
 		margin-left: 0.5rem;
 		margin-right: 0.5rem;
-	}
+		position: relative; // Necesario para el pseudo-elemento
+			transition: color 1s ease; // Solo la transición del color del texto
+	  
+		&:hover {
+		  color: black;
+		}
+	  
+		&::before {
+			height: 160%;
+			width: 100;
+		  content: "";
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: rgb(156, 156, 156); // Color de fondo del hover
+		  z-index: 0; // Asegura que esté debajo del texto
+		  opacity: 0; // Inicialmente invisible
+		  transition: opacity 0.5s ease; // Transición de la opacidad
+		}
+	  
+		&:hover::before {
+		  opacity: 0.3; // Muestra el fondo al hacer hover
+		}
+	  }
 
 	.logo {
 		width: 4rem;
