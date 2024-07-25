@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {InputGroup, Form} from 'react-bootstrap';
 import Cookies from 'js-cookie';
@@ -17,10 +17,15 @@ function Products() {
     const navigate = useNavigate();
     const { casaId, categoriaID } = useParams();
     const token = Cookies.get('token');
+
+    const cantidadRef = useRef(null);
+    const cantidadUnidadesRef = useRef(null);
+    const unidadMedidaRef = useRef(null);
     
     const [products, setProducts] = useState([]);
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
+    const [detalle, setDetalle] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -33,6 +38,7 @@ function Products() {
 
         fetchData(`casa/${casaId}/categoria/${categoriaID}/`, token).then((result) => {
             setProducts(result);
+            console.log('Products fetched:', result);
         }).catch(error => {
             console.error('Error fetching products:', error);
         });
@@ -77,14 +83,21 @@ function Products() {
         setSearchQuery(value);
     };
 
-    const handleSave  = async(id) => {
-        await putData(`CambiarDetalleStock/${id}/`, 
-        {},
-        token).then(window.location.reload())
+    const handleSave = (id) => {
+        putData(`CambiarDetalleStock/${id}/`, detalle, token);
     };
 
     const fetchSelectedObject = async (event) => {
-        setIsPaquete(unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete);
+        if (event.target.name === 'unidadMedida') {
+            setIsPaquete(unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete);
+        }
+
+        const { name, value } = event.target;
+        setDetalle((prevData) => {
+            const updatedData = { ...prevData, [name]: parseInt(value, 10) };
+            console.log(updatedData);
+            return updatedData;
+        });
     };
 
     return (
@@ -99,7 +112,7 @@ function Products() {
                         descrip1={product.id_producto.descripcion}
                         descrip2={`Cantidad: ${product.cantidad} ${product.id_unidadmedida.nombre}`}
                         children={
-                            <Modal openButtonText="Modificar Stock" title="Modificar Stock" saveButtonText="Guardar" handleSave={handleSave}
+                            <Modal openButtonText="Modificar Stock" title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
                             content={
                                 <div>
                                     <h2 className='centered'> Producto: {product.id_producto.nombre} </h2>
@@ -110,14 +123,14 @@ function Products() {
                                         )}
                                     </div>
                                     <InputGroup className="mb-2">
-                                        <Form.Control name="cantidad" type="number" 
+                                        <Form.Control name="cantidad" type="number" ref={cantidadRef} onChange={fetchSelectedObject} 
                                             style={!isPaquete ? { borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' } : null}
                                             className={isPaquete ? "unified-input-left" : null} defaultValue={product.cantidad}/>
                                         {isPaquete && (
-                                            <Form.Control name="cantidadUnidades" type="number" className="unified-input-right" defaultValue={product.cantidadUnidades}/>
+                                            <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" defaultValue={product.cantidadUnidades} onChange={fetchSelectedObject}/>
                                         )}
                                     </InputGroup>
-                                    <Form.Select name="unidadMedida" type="text" onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} defaultValue={product.id_unidadmedida.id_unidadmedida}>
+                                    <Form.Select name="id_unidadMedida" type="text" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} defaultValue={product.id_unidadmedida.id_unidadmedida}>
                                         {unidadMedida.map((item) => (
                                             <option key={item.id} value={item.id}>{item.nombre}</option>
                                         ))}

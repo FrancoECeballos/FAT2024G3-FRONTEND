@@ -63,7 +63,7 @@ function FullNavbar() {
             <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
           </Navbar.Brand>  
         </div>
-        <div>
+
           <Nav className="nav-link">
             <Nav.Link className='naving' onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/stock')}>Stock</Nav.Link>
@@ -71,7 +71,6 @@ function FullNavbar() {
             <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
           </Nav>
-        </div>
         <div className='botons-derecha'>
           <Navbar.Brand>
           <Dropdown>
