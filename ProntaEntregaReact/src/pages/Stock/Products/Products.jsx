@@ -6,7 +6,7 @@ import './Products.scss';
 
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericCard from '../../../components/cards/GenericCard.jsx';
+import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';

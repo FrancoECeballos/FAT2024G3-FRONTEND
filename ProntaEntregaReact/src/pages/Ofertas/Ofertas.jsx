@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericCard from '../../components/cards/GenericCard.jsx'; // Importa tu componente genérico de tarjeta
+import GenericCard from '../../components/cards/generic_card/GenericCard.jsx'; // Importa tu componente genérico de tarjeta
 import fetchData from '../../functions/fetchData';
 
 function Ofertas() {
