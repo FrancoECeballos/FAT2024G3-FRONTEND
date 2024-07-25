@@ -7,7 +7,6 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
-import './Stock.scss';
 
 import fetchData from '../../functions/fetchData';
 
@@ -98,7 +97,6 @@ function Stock() {
                 {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
                     sortedHouses.map(house => (
                         <GenericCard
-                            onClick={() => navigate(`/casa/${house.id_casa}/categoria`, {state: {id_casa: `${house.id_casa}`}})} 
                             key={house.id_casa}
                             titulo={house.nombre}
                             descrip1={`Usuarios Registrados: ${house.usuarios_registrados}`}
