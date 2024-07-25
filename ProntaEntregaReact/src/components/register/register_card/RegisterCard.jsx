@@ -91,7 +91,7 @@ const RegisterCard = () => {
           return updatedData;
         });
       }
-    
+
     } else if (name === "calle" || name === "numero" || name === "localidad") {
       setDirecFormData((prevData) =>  {
         let updatedValue = value;
@@ -103,7 +103,6 @@ const RegisterCard = () => {
         console.log(updatedData);
         return updatedData;
       });
-    
     } else {
       setFormData((prevData) => {
         let updatedValue = value;

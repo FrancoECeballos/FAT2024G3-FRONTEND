@@ -30,6 +30,8 @@ const Cuenta = () => {
 
     const editButtonRef = useRef(null);
 
+    const [GuardarButtonIsValid, setGuardarButtonIsValid] = useState(false);
+
     const NullToEmpty = (data) => {
         if (data === null || data === undefined) return "";
         if (typeof data === 'object') {
@@ -231,6 +233,30 @@ const Cuenta = () => {
             return updatedData;
           }
         });
+        
+        if (name === "nombre" || name === "apellido") {
+            const regex = /^[a-zA-Z\s]+$/;
+            const errorNombre = document.getElementById("errorNombre");
+            const errorApellido = document.getElementById("errorApellido");
+            if (!regex.test(value) && value !== "") {
+            if (name === "nombre") {
+                errorNombre.innerHTML = "El nombre no puede contener números ni caracteres especiales";
+            } else {
+                errorApellido.innerHTML = "El apellido no puede contener números ni caracteres especiales";
+            }
+            } else {
+            if (name === "nombre") {
+                errorNombre.innerHTML = "";
+            } else {
+                errorApellido.innerHTML = "";
+            }
+            }
+        } else if (name === "telnum") {
+            const regex = /^[0-9]{10}$/;
+            const errorTelefono = document.getElementById("errorTelefono");
+            errorTelefono.innerHTML = !regex.test(value) && value !== "" ? "El teléfono necesita 10 numeros" : "";
+        }
+        
     };
 
     const handleSendData = async(event) => {
@@ -271,6 +297,8 @@ const Cuenta = () => {
         });
     };
 
+
+
     return (
         <div class="micuenta">
             <h1> <img src={user} className="fotoperfil" />{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
@@ -278,12 +306,19 @@ const Cuenta = () => {
                 <Col>
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
+                    
+                    <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}></Form.Label>
 
                     <label for="apellido">Apellido:</label>
                     <input type="text" id="apellido" name="apellido" value={`${userData.apellido}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
 
+                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+
                     <label for="email">Correo electrónico:</label>
                     <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
+                    
+                    <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+
                     {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
                 </Col>
                 <Col>
@@ -292,6 +327,8 @@ const Cuenta = () => {
                         <input disabled={!isEditing} style={{width:'3.5rem'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
                         <input disabled={!isEditing} style={{width:'21.5rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
                     </InputGroup>  
+
+                    <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
                     <label for="direccion">Dirección:</label>
                     <InputGroup className="groupderec">
@@ -334,7 +371,7 @@ const Cuenta = () => {
                 </Col>
                 <Col>
                     <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "yellow" : "blue"} letercolor={isEditing ? "black" : "white"}/>
-                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white"/>
+                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white" disabled={!GuardarButtonIsValid}/>
                 </Col>
             </Row>
         </div>
