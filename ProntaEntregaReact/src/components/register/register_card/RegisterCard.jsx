@@ -252,10 +252,6 @@ const RegisterCard = () => {
                         <Form.Control name="apellido" type="text" onChange={handleInputChange} placeholder="Ingrese su apellido" className="unified-input-right"/>
                       </InputGroup>
                     </div>
-                    <div className="unified-input">
-                      <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
-                      <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
-                    </div>
                   </Form.Group>
 
                   <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>

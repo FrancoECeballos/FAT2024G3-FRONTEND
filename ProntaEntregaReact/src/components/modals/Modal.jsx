@@ -3,8 +3,8 @@ import SendButton from '../buttons/send_button/send_button.jsx';
 import Modal from 'react-bootstrap/Modal';
 import './Modal.scss';
 
-function GenericModal({ openButtonText, title, content, saveButtonText }) {
-    const [show, setShow] = useState(false);
+function GenericModal({ openButtonText, title, content, saveButtonText, handleSave }) {
+  const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -26,7 +26,7 @@ function GenericModal({ openButtonText, title, content, saveButtonText }) {
             <Modal.Body>{content}</Modal.Body>
             <Modal.Footer>
                 <SendButton text="Cerrar" onClick={handleClose}/>
-                <SendButton text={saveButtonText} onClick={handleClose}/>
+                <SendButton text={saveButtonText} onClick={() => { handleSave(); handleClose();}}/>
             </Modal.Footer>
         </Modal>
     </>
