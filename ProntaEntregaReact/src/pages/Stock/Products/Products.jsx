@@ -23,7 +23,7 @@ function Products() {
     const unidadMedidaRef = useRef(null);
     
     const [products, setProducts] = useState([]);
-    const [scombinedProducts, setCombinedProducts] = useState([]);
+    const [combinedProducts, setCombinedProducts] = useState([]);
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
     const [detalle, setDetalle] = useState([]);
@@ -65,7 +65,7 @@ function Products() {
         fetchProducts();
     }, [token, navigate, stockId, categoriaID]);
 
-    const filteredProducts = scombinedProducts.filter(product => {
+    const filteredProducts = combinedProducts.filter(product => {
         return (
             product.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             product.descripcion?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -99,7 +99,7 @@ function Products() {
     };
 
     const newDetail = (product) => {
-        setDetalle({ ...detalle, id_producto: product });
+        setDetalle({ ...detalle, id_producto: product, id_stock: parseInt(stockId, 10) });
     };
 
     const resetDetail = () => {
@@ -107,11 +107,30 @@ function Products() {
     };
 
     const handleSave = (id) => {
-        putData(`CambiarDetalleStock/${id}/`, detalle, token);
+        if (!detalle.id_unidadMedida) {
+            alert('Por favor seleccione una unidad de medida');
+            return;
+        } else if (!detalle.cantidad || detalle.cantidad <= 0) {
+            alert('Por favor ingrese una cantidad válida');
+            return;
+        } else if (detalle.cantidadUnidades !== undefined && detalle.cantidadUnidades < 0) {
+            alert('Por favor ingrese una cantidad de unidades válida');
+            return;
+        } else if (combinedProducts.id_producto(id).id_detalle.some(detail => detail.id_unidadMedida === detalle.id_unidadMedida)) {
+            putData(`editar_unidad_medida/${id}/`, detalle, token).then((result) => {
+                console.log('Detail Updated:', result);
+                resetDetail();
+            });
+        } else {
+            postData(`crear_unidad_medida/`, detalle, token).then((result) => {
+                console.log('Detail Created:', result);
+                resetDetail();
+            });
+        }
     };
 
     const fetchSelectedObject = async (event) => {
-        if (event.target.name === 'unidadMedida') {
+        if (event.target.name === 'id_unidadMedida') {
             setIsPaquete(unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete);
         }
 
