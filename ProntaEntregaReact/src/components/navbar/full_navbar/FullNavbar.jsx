@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Icon } from '@iconify/react';
 
-import { Container, Nav, Navbar, Offcanvas , Dropdown, Button} from 'react-bootstrap';
+import { Container, Nav, Navbar, Offcanvas , Dropdown, Badge} from 'react-bootstrap';
 import fetchData from '../../../functions/fetchData';
 
 import whiteLogo from '../../../assets/WhiteLogo.png';
 import blueLogo from '../../../assets/BlueLogo.png';
+
+import NotificationCard from '../../notifications/notification_card/NotificationCard';
 
 import './FullNavbar.scss';
 
@@ -21,8 +23,15 @@ function FullNavbar() {
   useEffect(() => {
     const fetchUserData = async () => {
       if (token) {
-        const result = await fetchData(`/userToken/${token}`);
-        setData(result);
+        fetchData(`/userToken/${token}`).then((result) => {
+          setData(result);
+          return fetchData(`/getNotificacion/${result.id_usuario}`, token);
+        }).then((notificationResult) => {
+          setNotificationByUser(notificationResult);
+          console.log(notificationResult);
+        }).catch((error) => {
+          console.error(error);
+        });
       }
     };
     fetchUserData();
@@ -32,6 +41,8 @@ function FullNavbar() {
 
   const handleShowOffcanvas = () => setShowOffcanvas(true);
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+
+  const [notificationByUser, setNotificationByUser] = useState([]);
 
   const handleSuperUserAuth = async (e) => {
     e.preventDefault();
@@ -59,18 +70,25 @@ function FullNavbar() {
             <Nav.Link className='naving'>Entregas</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/autos')}>Autos</Nav.Link>
           </Nav>
         <div className='botons-derecha'>
-          <Navbar.Brand href="#">
+          <Navbar.Brand>
           <Dropdown>
             <Dropdown.Toggle as="div" id="dropdown-custom-components" onClick={() => setShow(!show)}>
-              <Icon icon="gala:bell" style={{ width: '2rem', height: '2rem', color: '#02005E' }} />
+            {notificationByUser.length >= 1 ? (
+              <Icon icon="line-md:bell-alert-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
+            ) : (
+              <Icon icon="line-md:bell-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
+            )}
             </Dropdown.Toggle>
 
             <Dropdown.Menu show={show}>
-              <Dropdown.Item eventKey="1">Acción 1</Dropdown.Item>
-              <Dropdown.Item eventKey="2">Acción 2</Dropdown.Item>
-              <Dropdown.Item eventKey="3">Acción 3</Dropdown.Item>
+              {notificationByUser.map((notification) => (
+                <Dropdown.Item key={notification.id}>
+                  <NotificationCard titulo={notification.titulo} info={notification.descripcion} />
+                </Dropdown.Item>
+              ))}
             </Dropdown.Menu>
           </Dropdown>
             </Navbar.Brand>  
