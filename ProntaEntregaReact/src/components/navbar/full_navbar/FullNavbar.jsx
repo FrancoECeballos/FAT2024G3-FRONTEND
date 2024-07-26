@@ -94,8 +94,8 @@ function FullNavbar() {
               )}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {notificationByUser.map((notification) => (
-                  <Dropdown.Item key={notification.id} onClick={() => handleNotificationClick(notification)}>
+                {notificationByUser.map((notification, index) => (
+                  <Dropdown.Item key={notification.id || index} onClick={() => handleNotificationClick(notification)}>
                     <NotificationCard titulo={notification.titulo} info={notification.descripcion} />
                   </Dropdown.Item>
                 ))}
