@@ -20,6 +20,7 @@ import Main from './pages/Main/Main.jsx'
 import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
 import Casas from './pages/Casas/Casas.jsx';
 import Novedades from './pages/Novedades/Novedades.jsx';
+import Autos from './pages/Autos/Autos.jsx';
 
 function App() {
   return (
@@ -34,12 +35,13 @@ function App() {
         <Route path="/selectuser" element={<UserListing />}/>
         <Route path="/perfil/datos_personales" element={<DatosPersonales />} />
         <Route path="/stock" element={<Stock />} />
-        <Route path="/casa/:casaId/categoria" element={<Categories />} />
-        <Route path="/casa/:casaId/categoria/:categoriaID" element={<Products />} />
+        <Route path="/casa/:stockId/categoria" element={<Categories />} />
+        <Route path="/casa/:stockId/categoria/:categoriaID" element={<Products />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/casas" element={<Casas />} />
         <Route path="/novedades" element={<Novedades />} />
+        <Route path="/autos" element={<Autos />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
       </Routes>
     </BrowserRouter>

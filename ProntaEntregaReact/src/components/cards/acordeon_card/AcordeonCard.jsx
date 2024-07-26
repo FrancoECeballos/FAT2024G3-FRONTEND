@@ -4,7 +4,7 @@ import { Card, Row, Col } from 'react-bootstrap';
 
 import GenericAccordion from "../../accordions/generic_accordion/GenericAccordion.jsx";
 
-function AcordeonCard({foto, titulo, descrip1, descrip2, children, onClick, accordionChildren}){
+function AcordeonCard({foto, titulo, acordeonTitle, descrip1, descrip2, children, onClick, accordionChildren}){
     return(
         <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem' }}>
             <Card onClick={onClick} style={{ width: '90%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', padding: '0.5rem' }}>
@@ -18,7 +18,7 @@ function AcordeonCard({foto, titulo, descrip1, descrip2, children, onClick, acco
                             <div style={{marginLeft: '1rem'}}>
                                 <p>{descrip1}</p>
                                 <p>{descrip2}</p>
-                                <GenericAccordion titulo={accordionTitle} children={accordionChildren}/>
+                                <GenericAccordion titulo={acordeonTitle} children={accordionChildren}/>
                             </div>
                         </div>
                     </Col>

@@ -3,11 +3,11 @@ import SendButton from '../buttons/send_button/send_button.jsx';
 import Modal from 'react-bootstrap/Modal';
 import './Modal.scss';
 
-function GenericModal({ openButtonText, title, content, saveButtonText, handleSave }) {
+function GenericModal({ openButtonText, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave }) {
   const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => {setShow(false); handleCloseModal();};
+  const handleShow = () => {setShow(true); handleShowModal();};
 
   return (
     <>
