@@ -26,21 +26,18 @@ function Stock() {
         }
 
         fetchData(`/userToken/${token}`, token).then((result) => {
-            console.log("User Token Result:", result);
             setIsAdmin(result.is_superuser);
             const email = result.email;
 
             if (result.is_superuser) {
-                fetchData('/casa/', token).then((result) => {
-                    console.log("Houses for Admin:", result);
+                fetchData('/stock/', token).then((result) => {
                     setHouses(result);
                 }).catch(error => {
                     console.error('Error fetching houses for admin', error);
                 });
             } else {
-                fetchData(`/user/casasEmail/${email}/`, token).then((result) => {
-                    console.log("House for User:", result);
-                    const houseIds = result.map(house => house.id_casa);
+                fetchData(`/user/stockEmail/${email}/`, token).then((result) => {
+                    const houseIds = result.map(house => house.id_casa.id_casa);
                     const housePromises = houseIds.map(id => fetchData(`/casa/${id}`, token));
                     Promise.all(housePromises).then(houses => {
                         console.log("Fetched Houses:", houses);
@@ -59,16 +56,16 @@ function Stock() {
 
     const filteredHouses = houses.filter(house => {
         return (
-            house.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
+            house.id_casa.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            house.id_casa.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            house.id_casa.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
     const sortedHouses = [...filteredHouses].sort((a, b) => {
         if (!orderCriteria) return 0;
-        const aValue = a[orderCriteria];
-        const bValue = b[orderCriteria];
+        const aValue = a.id_casa[orderCriteria];
+        const bValue = b.id_casa[orderCriteria];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
@@ -98,11 +95,11 @@ function Stock() {
                 {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
                     sortedHouses.map(house => (
                         <GenericCard
-                            onClick={() => navigate(`/casa/${house.id_casa}/categoria`, {state: {id_casa: `${house.id_casa}`}})} 
-                            key={house.id_casa}
-                            titulo={house.nombre}
-                            descrip1={`Usuarios Registrados: ${house.usuarios_registrados}`}
-                            descrip2={`${house.id_direccion.localidad}, ${house.id_direccion.calle}, ${house.id_direccion.numero}`}
+                            onClick={() => navigate(`/casa/${house.id_stock}/categoria`, {state: {id_stock: `${house.id_stock}`}})} 
+                            key={house.id_stock }
+                            titulo={house.id_casa.nombre}
+                            descrip1={`Usuarios Registrados: ${house.id_casa.usuarios_registrados}`}
+                            descrip2={`${house.id_casa.id_direccion.localidad}, ${house.id_casa.id_direccion.calle}, ${house.id_casa.id_direccion.numero}`}
                         />
                     ))
                 ) : (

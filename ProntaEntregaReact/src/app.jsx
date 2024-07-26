@@ -34,8 +34,8 @@ function App() {
         <Route path="/selectuser" element={<UserListing />}/>
         <Route path="/perfil/datos_personales" element={<DatosPersonales />} />
         <Route path="/stock" element={<Stock />} />
-        <Route path="/casa/:casaId/categoria" element={<Categories />} />
-        <Route path="/casa/:casaId/categoria/:categoriaID" element={<Products />} />
+        <Route path="/casa/:stockId/categoria" element={<Categories />} />
+        <Route path="/casa/:stockId/categoria/:categoriaID" element={<Products />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/casas" element={<Casas />} />
