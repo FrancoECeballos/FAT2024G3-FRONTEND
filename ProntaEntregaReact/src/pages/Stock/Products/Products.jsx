@@ -15,7 +15,7 @@ import putData from '../../../functions/putData.jsx';
 
 function Products() {
     const navigate = useNavigate();
-    const { casaId, categoriaID } = useParams();
+    const { stockId, categoriaID } = useParams();
     const token = Cookies.get('token');
 
     const cantidadRef = useRef(null);
@@ -23,6 +23,7 @@ function Products() {
     const unidadMedidaRef = useRef(null);
     
     const [products, setProducts] = useState([]);
+    const [scombinedProducts, setCombinedProducts] = useState([]);
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
     const [detalle, setDetalle] = useState([]);
@@ -35,25 +36,35 @@ function Products() {
             navigate('/login');
             return;
         }
+    
+        const fetchProducts = async () => {
+            try {
+                const productsData = await fetchData(`casa/${stockId}/categoria/${categoriaID}/`, token);
+                const allProductsData = await fetchData(`productos/`, token);
+    
+                const combinedProducts = allProductsData.map(product => {
+                    const detalles = productsData.filter(item => item.id_producto.id_producto === product.id_producto);
+                    return {
+                        ...product,
+                        ...(detalles.length > 0 && { id_detalle: detalles })
+                    };
+                }).filter(product => product.id_detalle);
+    
+                setProducts(productsData);
+                setCombinedProducts(combinedProducts);
+                console.log('Combined Products:', combinedProducts);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+    
+        fetchProducts();
+    }, [token, navigate, stockId, categoriaID]);
 
-        fetchData(`casa/${casaId}/categoria/${categoriaID}/`, token).then((result) => {
-            setProducts(result);
-            console.log('Products fetched:', result);
-        }).catch(error => {
-            console.error('Error fetching products:', error);
-        });
-
-        fetchData(`unidad_medida/`, token).then((result) => {
-            setUnidadMedida(result);
-        })
-
-    }, [token, navigate, casaId]);
-
-    const filteredProducts = products.filter(product => {
+    const filteredProducts = scombinedProducts.filter(product => {
         return (
-            product.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.id_producto.descripcion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.id_producto.id_unidadmedida.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+            product.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.descripcion?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
@@ -83,6 +94,14 @@ function Products() {
         setSearchQuery(value);
     };
 
+    const newDetail = (product) => {
+        setDetalle({ ...detalle, id_producto: product });
+    };
+
+    const resetDetail = () => {
+        setDetalle({});
+    };
+
     const handleSave = (id) => {
         putData(`CambiarDetalleStock/${id}/`, detalle, token);
     };
@@ -107,12 +126,13 @@ function Products() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 {Array.isArray(sortedProducts) && sortedProducts.map(product => (
                     <AcordeonCard
-                        key={product.id_producto.id_producto}
-                        titulo={product.id_producto.nombre}
-                        descrip1={product.id_producto.descripcion}
-                        descrip2={`Cantidad: ${product.cantidad} ${product.id_unidadmedida.nombre}`}
+                        key={product.id_producto}
+                        titulo={product.nombre}
+                        acordeonTitle={`Ver almacén de: ${product.nombre}`}
+                        descrip1={product.descripcion}
+                        /*descrip2={`Cantidad: ${product.cantidad} ${product.id_unidadmedida.nombre}`}*/
                         children={
-                            <Modal openButtonText="Modificar Stock" title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
+                            <Modal openButtonText="Modificar Stock" handleShowModal={() => newDetail(product.id_producto)} handleCloseModal={() => resetDetail()} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
                             content={
                                 <div>
                                     <h2 className='centered'> Producto: {product.id_producto.nombre} </h2>
@@ -125,12 +145,13 @@ function Products() {
                                     <InputGroup className="mb-2">
                                         <Form.Control name="cantidad" type="number" ref={cantidadRef} onChange={fetchSelectedObject} 
                                             style={!isPaquete ? { borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' } : null}
-                                            className={isPaquete ? "unified-input-left" : null} defaultValue={product.cantidad}/>
+                                            className={isPaquete ? "unified-input-left" : null}/>
                                         {isPaquete && (
-                                            <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" defaultValue={product.cantidadUnidades} onChange={fetchSelectedObject}/>
+                                            <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" onChange={fetchSelectedObject}/>
                                         )}
                                     </InputGroup>
-                                    <Form.Select name="id_unidadMedida" type="text" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} defaultValue={product.id_unidadmedida.id_unidadmedida}>
+                                    <Form.Select name="id_unidadMedida" type="text" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                        <option autoFocus hidden>Seleccionar...</option>
                                         {unidadMedida.map((item) => (
                                             <option key={item.id} value={item.id}>{item.nombre}</option>
                                         ))}
@@ -139,9 +160,20 @@ function Products() {
                             }/>
                         }
                         accordionChildren={
-                            //For product in products add a LittleCard
-                            <div>
-                            </div>
+                            Array.isArray(product.id_detalle) && product.id_detalle.map(detail => {
+                                return (
+                                    <LittleCard
+                                        key={detail.id_detallestockproducto}
+                                        foto={detail.id_producto.foto}
+                                        titulo={detail.id_unidadmedida.nombre}
+                                        descrip1={
+                                            detail.id_unidadmedida.paquete 
+                                            ? `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador} ${detail.cantidadUnidades}` 
+                                            : `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador}`
+                                        }
+                                    />
+                                );
+                            })
                         }
                     />
                 ))}

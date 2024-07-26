@@ -307,19 +307,19 @@ const Cuenta = () => {
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
-                    <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}></Form.Label>
+                    <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'blue' }}></Form.Label>
 
                     <label for="apellido">Apellido:</label>
                     <input type="text" id="apellido" name="apellido" value={`${userData.apellido}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
 
-                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
                     <label for="email">Correo electrónico:</label>
                     <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
-                    <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
-                    {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: 'red', borderColor:'red', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
+                    {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
                 </Col>
                 <Col>
                     <label for="telefono">Teléfono:</label>
@@ -328,7 +328,7 @@ const Cuenta = () => {
                         <input disabled={!isEditing} style={{width:'21.5rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
                     </InputGroup>  
 
-                    <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
                     <label for="direccion">Dirección:</label>
                     <InputGroup className="groupderec">
@@ -352,7 +352,7 @@ const Cuenta = () => {
                         {casaID.map(usercasa => (
                             <li key={usercasa.id_casa}>
                                 {usercasa.nombre}
-                                {isAdmin && <SendButton text="Delete" backcolor="red" letercolor="white" wide="5" onClick={() => handleDeleteCasaFromUser(usercasa.id_casa)}></SendButton>}
+                                {isAdmin && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteCasaFromUser(usercasa.id_casa)}></SendButton>}
                             </li>
                         ))}
                     </ul>
@@ -367,11 +367,11 @@ const Cuenta = () => {
             </Row>
             <Row className="filabuton">
                 <Col>
-                    <SendButton text="Borrar Usuario" backcolor="red" letercolor="white" onClick={handleDeleteUser}></SendButton>
+                    <SendButton text="Borrar Usuario" backcolor="#D10000" letercolor="white" onClick={handleDeleteUser}></SendButton>
                 </Col>
                 <Col>
-                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "yellow" : "blue"} letercolor={isEditing ? "black" : "white"}/>
-                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="green" letercolor="white" disabled={!GuardarButtonIsValid}/>
+                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "#D10000" : "#D9D9D9"} letercolor={isEditing ? "white" : "black"}/>
+                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="#D9D9D9" letercolor="black" disabled={!GuardarButtonIsValid}/>
                 </Col>
             </Row>
         </div>

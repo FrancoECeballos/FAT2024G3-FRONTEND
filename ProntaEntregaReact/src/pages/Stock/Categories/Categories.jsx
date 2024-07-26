@@ -11,7 +11,7 @@ import fetchData from '../../../functions/fetchData';
 
 function Categories() {
     const navigate = useNavigate();
-    const { casaId, categoriaId } = useParams();
+    const { stockId, categoriaId } = useParams();
     const token = Cookies.get('token');
     const [categories, setCategories] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -23,13 +23,12 @@ function Categories() {
             return;
         }
 
-        fetchData(`categorias-productos/${casaId}/`, token).then((result) => {
+        fetchData(`categorias-productos/${stockId}/`, token).then((result) => {
             setCategories(result);
-            console.log('Categories fetched:', result);
         }).catch(error => {
             console.error('Error fetching categories:', error);
         });
-    }, [token, navigate, casaId]);
+    }, [token, navigate, stockId]);
 
     const filteredCategories = categories.filter(category => {
         return (
@@ -72,7 +71,7 @@ function Categories() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 {Array.isArray(sortedCategories) && sortedCategories.map(category => (  
                     <GenericCard 
-                        onClick={() => navigate(`/casa/${casaId}/categoria/${category.id_categoriaproducto}/`, { state: { id_casa: casaId } })}
+                        onClick={() => navigate(`/casa/${stockId}/categoria/${category.id_categoriaproducto}/`, { state: { id_stock: stockId } })}
                         key={category.id_categoria}
                         titulo={category.nombre}
                         descrip1={category.descripcion}
