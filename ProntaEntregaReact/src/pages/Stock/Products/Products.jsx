@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {InputGroup, Form} from 'react-bootstrap';
+import {InputGroup, Form, Button} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import './Products.scss';
 
@@ -182,6 +182,10 @@ function Products() {
                                                 <option key={item.id} value={item.id}>{item.nombre}</option>
                                             ))}
                                         </Form.Select>
+                                        <InputGroup className="mb-2">
+                                            <Button className="unified-input-left" style={{color: 'black', marginTop: '1rem'}}>Añadir</Button>
+                                            <Button className="unified-input-right" style={{color: 'black', marginTop: '1rem'}}>Quitar</Button>
+                                        </InputGroup>
                                     </div>
                                 }/>
                             }
