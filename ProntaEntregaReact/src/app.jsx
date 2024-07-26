@@ -20,6 +20,7 @@ import Main from './pages/Main/Main.jsx'
 import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
 import Casas from './pages/Casas/Casas.jsx';
 import Novedades from './pages/Novedades/Novedades.jsx';
+import Autos from './pages/Autos/Autos.jsx';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/casas" element={<Casas />} />
         <Route path="/novedades" element={<Novedades />} />
+        <Route path="/autos" element={<Autos />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
       </Routes>
     </BrowserRouter>

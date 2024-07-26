@@ -70,6 +70,7 @@ function FullNavbar() {
             <Nav.Link className='naving'>Entregas</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/autos')}>Autos</Nav.Link>
           </Nav>
         <div className='botons-derecha'>
           <Navbar.Brand>
