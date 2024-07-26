@@ -30,22 +30,39 @@
   margin-top: 2rem;
 }
 
-.micuenta input{
-  background-color: #ffffff;
+.micuenta input:enabled{
+  background-color:white;
   box-shadow: none;
   width: 25rem;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 20rem;
+  padding: 0.5rem;  
+  border-radius: 0.5rem;
+  color: black;
+}
+.micuenta input:disabled{
+
+  background-color: #eeeeee;
+  box-shadow: none;
+  width: 25rem;
+  padding: 0.5rem;  
+  border-radius: 0.5rem;
   color: black;
 }
 
-.genero {
-  background-color: white;
+.genero:enabled{
+  background-color:WHITE;
+  box-shadow: none;
   width: 25rem;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 20rem;
+  padding: 0.5rem;  
+  border-radius: 0.5rem;
+  color: black;
+}
+.genero:disabled{
+  
+  background-color: #eeeeee;
+  box-shadow: none;
+  width: 25rem;
+  padding: 0.5rem;  
+  border-radius: 0.5rem;
   color: black;
 }
 

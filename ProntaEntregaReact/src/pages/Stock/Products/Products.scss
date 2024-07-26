@@ -1,7 +1,15 @@
-.centered{
+.centered {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
+}
+
+.little-cards-container {
+    display: flex;
+    flex-wrap: nowrap; /* No permitir que las tarjetas se envuelvan */
+    gap: 1rem; /* Espacio entre las tarjetas */
+    overflow-x: auto; /* Scroll horizontal */
+    white-space: nowrap; /* No permitir que las tarjetas se envuelvan a la siguiente línea */
 }

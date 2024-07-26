@@ -307,7 +307,7 @@ const Cuenta = () => {
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
-                    <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'blue' }}></Form.Label>
+                    <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: '#02005E' }}></Form.Label>
 
                     <label for="apellido">Apellido:</label>
                     <input type="text" id="apellido" name="apellido" value={`${userData.apellido}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
