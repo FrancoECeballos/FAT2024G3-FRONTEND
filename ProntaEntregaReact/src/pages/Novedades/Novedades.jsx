@@ -4,14 +4,12 @@ import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 
-// URL base para tus imágenes en Google Cloud Storage
-const MEDIA_URL = 'https://storage.googleapis.com/bucket-django-pronta-entrega/';
 
 const Novedades = () => {
     const [producto, setProducto] = useState(null);
 
     useEffect(() => {
-        fetchData('/producto/4/')
+        fetchData('/producto/1/')
             .then(data => {
                 setProducto(data);
                 console.log(data);
