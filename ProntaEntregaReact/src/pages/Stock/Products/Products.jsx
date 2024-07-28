@@ -8,6 +8,7 @@ import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.jsx';
 import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
+import SendButton from '../../../components/buttons/send_button/send_button.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';
@@ -50,7 +51,7 @@ function Products() {
                     };
                 }).filter(product => product.id_detalle);
     
-                setProducts(productsData);
+                setProducts(allProductsData);
                 setCombinedProducts(combinedProducts);
                 console.log('Combined Products:', combinedProducts);
             } catch (error) {
@@ -106,6 +107,10 @@ function Products() {
         setDetalle({});
     };
 
+    const newProduct = () => {
+        console.log('New Product');
+    };
+
     const handleSave = (id) => {
         if (!detalle.id_unidadMedida) {
             alert('Por favor seleccione una unidad de medida');
@@ -147,21 +152,22 @@ function Products() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                {Array.isArray(sortedProducts) && sortedProducts.map(product => {
+                {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? sortedProducts.map(product => {
                     const totalMultiplicacion = product.id_detalle ? product.id_detalle.reduce((sum, detail) => sum + detail.multiplicacion, 0) : 0;
                     return (
                         <AcordeonCard
+                            foto={product.imagen}
                             key={product.id_producto}
                             titulo={product.nombre}
                             acordeonTitle={`Ver almacén de: ${product.nombre}`}
                             descrip1={product.descripcion}
                             descrip2={`Total: ${totalMultiplicacion} ${product.id_unidadmedida.identificador}`}
                             children={
-                                <Modal openButtonText="Modificar Stock" handleShowModal={() => newDetail(product.id_producto)} handleCloseModal={() => resetDetail()} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
+                                <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => newDetail(product.id_producto)} handleCloseModal={() => resetDetail()} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
                                     content={
                                         <div>
-                                            <h2 className='centered'> Producto: {product.id_producto.nombre} </h2>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <h2 className='centered'> Producto: {product.nombre} </h2>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
                                                 <Form.Label style={{ marginLeft: '1rem' }}>Cantidad</Form.Label>
                                                 {isPaquete && (
                                                     <Form.Label style={{ marginRight: '1rem' }}>Cantidad/Paquetes</Form.Label>
@@ -177,8 +183,10 @@ function Products() {
                                             </InputGroup>
                                             <Form.Select name="id_unidadMedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
                                                 <option autoFocus hidden>Seleccionar...</option>
-                                                {unidadMedida.map((item) => (
-                                                    <option key={item.id} value={item.id}>{item.nombre}</option>
+                                                {unidadMedida
+                                                    .filter((item) => item.descripcion.includes(product.id_unidadmedida.nombre))
+                                                    .map((item) => (
+                                                        <option key={item.id} value={item.id}>{item.nombre}</option>
                                                 ))}
                                             </Form.Select>
                                             <InputGroup className="mb-2">
@@ -194,7 +202,7 @@ function Products() {
                                         return (
                                             <LittleCard
                                                 key={detail.id_detallestockproducto}
-                                                foto={detail.id_producto.foto}
+                                                foto={detail.id_producto.imagen}
                                                 titulo={detail.id_unidadmedida.nombre}
                                                 descrip1={
                                                     detail.id_unidadmedida.paquete
@@ -208,7 +216,19 @@ function Products() {
                             }
                         />
                     );
-                })}
+                }) : (
+                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay Productos disponibles.</p>
+                )}
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
+                    <Modal openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} content={
+                        <div>
+                            <h2 className='centered'> Nuevo Producto </h2>
+                            <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            <Form.Control name="imagen" type="text" placeholder="URL de la imagen" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                        </div>
+                    }></Modal>
+                </div>
             </div>
         </div>
     );

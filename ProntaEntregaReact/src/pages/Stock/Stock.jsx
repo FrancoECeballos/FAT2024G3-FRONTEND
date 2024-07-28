@@ -103,7 +103,7 @@ function Stock() {
                         />
                     ))
                 ) : (
-                    <p>No hay casas disponibles.</p>
+                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay casas disponibles.</p>
                 )}
             </div>
         </div>

@@ -16,7 +16,7 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
                 type="text" 
                 name="search" 
                 placeholder="Buscar..."
-                style={{ border: '0px', borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '80%', marginRight: '2rem' }} 
+                style={{ border: '0px', borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '75%', marginRight: '2rem', padding: '0.5rem 1rem' }} 
                 onChange={(e) => {
                     console.log("Search Query: ", e.target.value);
                     onSearchChange(e.target.value);
@@ -25,7 +25,7 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
             <Dropdown>
                 <Dropdown.Toggle 
                     id="dropdown-basic" 
-                    style={{ border: '0px', color: 'black', borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
+                    style={{ border: '0px', color: 'black', borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '14rem', textAlign: 'center' }}>
                     {selectedItem || "Ordenar Por"}
                 </Dropdown.Toggle>
 
@@ -35,11 +35,11 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
                             {filter.label}
                         </Dropdown.Item>
                     ))}
-                    </Dropdown.Menu>
-                </Dropdown>
-            </div>
-        );
-    };
-    
-    export default SearchBar;
+                </Dropdown.Menu>
+            </Dropdown>
+        </div>
+    );
+};
+
+export default SearchBar;
                        

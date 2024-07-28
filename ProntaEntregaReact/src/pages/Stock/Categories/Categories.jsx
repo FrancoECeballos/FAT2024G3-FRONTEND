@@ -69,7 +69,7 @@ function Categories() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
-                {Array.isArray(sortedCategories) && sortedCategories.map(category => (  
+                {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
                         onClick={() => navigate(`/casa/${stockId}/categoria/${category.id_categoriaproducto}/`, { state: { id_stock: stockId } })}
                         key={category.id_categoria}
@@ -77,7 +77,9 @@ function Categories() {
                         descrip1={category.descripcion}
                         descrip2={`Cantidad de Productos: ${category.cantidad_productos}`}
                     />
-                ))}
+                )) : (
+                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
+                )}
             </div>
         </div>
     );

@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
+import GenericAlert from "../../alerts/generic_alert/GenericAlert.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginCard.scss';
 
@@ -17,6 +18,7 @@ const LoginCard = () => {
     "email": "",
     "password": ""
   });
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -37,13 +39,14 @@ const LoginCard = () => {
       }
       navigate('/');
     } else {
-      alert('Usuario o contraseña incorrectos');
+      setShowAlert(true);
     }
   };
 
   return (
     <Container style={{display: 'flex'}} className="d-flex justify-content-center align-items-center vh-100 login-container">
       <Card style={{position: 'relative', width: '30rem',borderRadius:'1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
+      <GenericAlert title="Error" description="Usuario o contraseña incorrectos" type="danger" show={showAlert} setShow={setShowAlert} />
         <Card.Body>
           <Form>
             <h1 className="font-rubik" style={{textAlign:"center",margin:'2.8rem'}}>Iniciar Sesi&oacute;n</h1>
