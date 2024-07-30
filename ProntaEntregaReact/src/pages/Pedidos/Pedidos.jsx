@@ -66,6 +66,8 @@ function Pedidos() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <h2 style={{marginLeft: '7rem'}}>Pedidos</h2>
+                {/* Botón para navegar a crear_pedido */}
+                <button onClick={() => navigate('/crear_pedido')} style={{marginLeft: '7rem', marginBottom: '1rem'}}>Crear Pedido</button>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='pedido-list'>
                     {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
@@ -73,9 +75,10 @@ function Pedidos() {
                             <GenericCard
                                 key={pedido.id_pedido}
                                 titulo={`Pedido ${pedido.id_pedido}`}
-                                descrip1={`Fecha Inicio: ${pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} ${pedido.horainicio}`}
-                                descrip2={`Fecha Vencimiento: ${pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} ${pedido.horavencimiento}`}
-                                // Puedes agregar más detalles del pedido según la estructura de datos
+                                descrip1={`Casa: ${pedido.id_casa.nombre} Usuario: ${pedido.id_usuario.nombre} ${pedido.id_usuario.apellido}`}
+                                descrip2={`Urgencia: ${pedido.urgente} Cantidad: ${pedido.cantidad}`}
+                                descrip3={`Fecha Inicio: ${pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} ${pedido.horainicio}`}
+                                descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} ${pedido.horavencimiento}`}
                             />
                         ))
                     ) : (

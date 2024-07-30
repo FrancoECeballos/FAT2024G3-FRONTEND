@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Row, Col } from 'react-bootstrap';
 
-function GenericCard({foto, titulo, descrip1, descrip2, children, onClick}) {
+function GenericCard({foto, titulo, descrip1, descrip2, descrip3, descrip4, children, onClick}) {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem' }}>
             <Card onClick={onClick} style={{ width: '90%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', padding: '0.5rem' }}>
@@ -15,6 +15,8 @@ function GenericCard({foto, titulo, descrip1, descrip2, children, onClick}) {
                             <div style={{marginLeft: '1rem'}}>
                                 <p>{descrip1}</p>
                                 <p>{descrip2}</p>
+                                <p>{descrip3}</p>
+                                <p>{descrip4}</p>
                             </div>
                         </div>
                     </Col>
