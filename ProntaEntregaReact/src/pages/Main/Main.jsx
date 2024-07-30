@@ -11,9 +11,28 @@ function Main (){
  
   return (
     <div>
-        <FullNavbar />
-        <Container className='margen-arriba'>
-  
+      <FullNavbar />
+      <Container className='margen-arriba'>
+        <Row>
+          <Col md={4}>
+            Column 1
+          </Col>
+          <Col md={4}>
+            Column 2
+          </Col>
+          <Col md={4}>
+            <Row>
+              <Col>
+                Row 1 of Column 3
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                Row 2 of Column 3
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       </Container>
     </div>
   );
