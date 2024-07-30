@@ -27,6 +27,7 @@ function Products() {
     const [combinedProducts, setCombinedProducts] = useState([]);
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
+    const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -109,6 +110,7 @@ function Products() {
 
     const resetDetail = () => {
         setDetalle({});
+        setSelectedCardId(null);
     };
 
     const newProduct = () => {
@@ -157,23 +159,53 @@ function Products() {
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} content={
+                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} handleCloseModal={resetDetail} content={
                         <div>
                             <h2 className='centered'> Nuevo Producto </h2>
                             {Array.isArray(products) && products
-                            .filter(addedProduct => addedProduct.id_category === categoriaID)
+                            .filter(addedProduct => addedProduct.id_categoriaproducto !== categoriaID)
                             .map(addedProduct => {
                                 return (
                                     <LittleCard
-                                        key={addedProduct.id_detallestockproducto}
+                                        key={addedProduct.id_producto}
                                         foto={addedProduct.imagen}
                                         titulo={addedProduct.nombre}
                                         descrip1={addedProduct.id_unidadmedida.paquete}
+                                        selected={selectedCardId.id_producto === addedProduct.id_producto}
+                                        onSelect={() => {
+                                            const newSelectedCard = selectedCardId?.id_producto === addedProduct.id_producto ? {} : addedProduct;
+                                            setSelectedCardId(newSelectedCard);
+                                            console.log(newSelectedCard);
+                                        }}
                                     />
                                 );
                             })}
-                            <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Control name="imagen" type="text" placeholder="URL de la imagen" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            {selectedCardId && Object.keys(selectedCardId).length > 0 && (
+                                <>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+                                        <Form.Label style={{ marginLeft: '1rem' }}>Cantidad</Form.Label>
+                                        {isPaquete && (
+                                            <Form.Label style={{ marginRight: '1rem' }}>Cantidad/Paquetes</Form.Label>
+                                        )}
+                                    </div>
+                                    <InputGroup className="mb-2">
+                                        <Form.Control name="cantidad" type="number" ref={cantidadRef} onChange={fetchSelectedObject}
+                                            style={!isPaquete ? { borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' } : null}
+                                            className={isPaquete ? "unified-input-left" : null} />
+                                        {isPaquete && (
+                                            <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" onChange={fetchSelectedObject} />
+                                        )}
+                                    </InputGroup>
+                                    <Form.Select name="id_unidadMedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                        <option autoFocus hidden>Seleccionar...</option>
+                                        {unidadMedida
+                                            .filter((item) => item.descripcion.includes(selectedCardId.id_unidadmedida.nombre))
+                                            .map((item) => (
+                                                <option key={item.id} value={item.id}>{item.nombre}</option>
+                                        ))}
+                                    </Form.Select>
+                                </>
+                            )}
                         </div>
                     }></Modal>
                 </div>
