@@ -15,6 +15,7 @@ import addProd from '../../../assets/add_product.png';
 import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';
 import putData from '../../../functions/putData.jsx';
+import postData from '../../../functions/postData.jsx';
 
 function Products() {
     const navigate = useNavigate();
@@ -44,6 +45,7 @@ function Products() {
         const fetchProducts = async () => {
             try {
                 const productsData = await fetchData(`casa/${stockId}/categoria/${categoriaID}/`, token);
+                console.log('Products Data:', productsData);
                 const allProductsData = await fetchData(`productos/`, token);
         
                 const combinedProducts = allProductsData.map(product => {
@@ -116,11 +118,34 @@ function Products() {
     };
 
     const newProduct = () => {
-        console.log('New Product');
-    };  
+        const updatedDetalle = {
+            ...detalle,
+            id_producto: selectedCardId.id_producto,
+            id_stock: parseInt(stockId, 10),
+            cantidadUnidades: detalle.cantidadUnidades !== undefined ? detalle.cantidadUnidades : 1
+        };
+        setDetalle(updatedDetalle);
+        console.log('New Product:', updatedDetalle);
+
+        if (!updatedDetalle.id_unidadmedida) {
+            alert('Por favor seleccione una unidad de medida');
+            return;
+        } else if (!updatedDetalle.cantidad || updatedDetalle.cantidad <= 0) {
+            alert('Por favor ingrese una cantidad válida');
+            return;
+        } else if (updatedDetalle.cantidadUnidades !== undefined && updatedDetalle.cantidadUnidades < 0) {
+            alert('Por favor ingrese una cantidad de unidades válida');
+            return;
+        } else {
+            postData(`detallestockproducto/`, updatedDetalle, token).then((result) => {
+                console.log('Detail Created:', result);
+                resetDetail();
+            });
+        }
+    };
 
     const handleSave = (id) => {
-        if (!detalle.id_unidadMedida) {
+        if (!detalle.id_unidadmedida) {
             alert('Por favor seleccione una unidad de medida');
             return;
         } else if (!detalle.cantidad || detalle.cantidad <= 0) {
@@ -129,7 +154,7 @@ function Products() {
         } else if (detalle.cantidadUnidades !== undefined && detalle.cantidadUnidades < 0) {
             alert('Por favor ingrese una cantidad de unidades válida');
             return;
-        } else if (combinedProducts.id_producto(id).id_detalle.some(detail => detail.id_unidadMedida === detalle.id_unidadMedida)) {
+        } else if (combinedProducts.id_producto(id).id_detalle.some(detail => detail.id_unidadmedida === detalle.id_unidadmedida)) {
             putData(`editar_unidad_medida/${id}/`, detalle, token).then((result) => {
                 console.log('Detail Updated:', result);
                 resetDetail();
@@ -143,8 +168,11 @@ function Products() {
     };
 
     const fetchSelectedObject = async (event) => {
-        if (event.target.name === 'id_unidadMedida') {
-            setIsPaquete(unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete);
+        if (event.target.name === 'id_unidadmedida') {
+            setIsPaquete(unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete)
+            if (!unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete) {
+                setDetalle({ ...detalle, cantidadUnidades: 1 });
+            }
         }
 
         const { name, value } = event.target;
@@ -173,9 +201,8 @@ function Products() {
                                             <LittleCard
                                                 foto={addedProduct.imagen}
                                                 titulo={addedProduct.nombre}
-                                                descrip1={addedProduct.id_unidadmedida.paquete}
-                                                selected={selectedCardId.id_producto === addedProduct.id_producto}
-                                                onSelect={() => setSelectedCardId(selectedCardId?.id_producto === addedProduct.id_producto ? {} : addedProduct)}
+                                                selected={selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && selectedCardId.id_producto === addedProduct.id_producto}
+                                                onSelect={() => setSelectedCardId(selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && selectedCardId.id_producto === addedProduct.id_producto ? {} : addedProduct)}
                                             />
                                         </div>
                                     );
@@ -183,9 +210,11 @@ function Products() {
                                 <LittleCard
                                     foto={addProd}
                                     titulo={'Crear Nuevo Producto'}
+                                    selected={selectedCardId === 'New'}
+                                    onSelect={() => setSelectedCardId(selectedCardId === 'New' ? {} : 'New')}
                                 />
                             </div>
-                            {selectedCardId && Object.keys(selectedCardId).length > 0 && (
+                            {selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && (
                                 <>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
                                         <Form.Label style={{ marginLeft: '1rem' }}>Cantidad</Form.Label>
@@ -201,7 +230,7 @@ function Products() {
                                             <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" onChange={fetchSelectedObject} />
                                         )}
                                     </InputGroup>
-                                    <Form.Select name="id_unidadMedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                    <Form.Select name="id_unidadmedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
                                         <option autoFocus hidden>Seleccionar...</option>
                                         {unidadMedida
                                             .filter((item) => item.descripcion.includes(selectedCardId.id_unidadmedida.nombre))
@@ -243,7 +272,7 @@ function Products() {
                                                     <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" onChange={fetchSelectedObject} />
                                                 )}
                                             </InputGroup>
-                                            <Form.Select name="id_unidadMedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                            <Form.Select name="id_unidadmedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
                                                 <option autoFocus hidden>Seleccionar...</option>
                                                 {unidadMedida
                                                     .filter((item) => item.descripcion.includes(product.id_unidadmedida.nombre))
