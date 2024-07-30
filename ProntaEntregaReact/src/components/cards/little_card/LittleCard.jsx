@@ -22,7 +22,7 @@ function LittleCard({ foto, titulo, descrip1, selected, onSelect }) {
         borderStyle: 'solid' 
       }}
     >
-      <Card.Img variant="top" src={foto || notPic} style={{ width: "10rem", justifyContent: "center" }} />
+      <Card.Img variant="top" src={foto || notPic} style={{ width: "10rem", justifyContent: "center", margin: "0 auto" }} />
       <Card.Body>
         <Card.Title>{titulo}</Card.Title>
         <Card.Text>

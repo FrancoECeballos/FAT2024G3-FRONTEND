@@ -10,6 +10,8 @@ import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.j
 import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
 import SendButton from '../../../components/buttons/send_button/send_button.jsx';
 
+import addProd from '../../../assets/add_product.png';
+
 import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';
 import putData from '../../../functions/putData.jsx';
@@ -162,20 +164,27 @@ function Products() {
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} handleCloseModal={resetDetail} content={
                         <div>
                             <h2 className='centered'> Nuevo Producto </h2>
-                            {Array.isArray(products) && products
-                            .filter(addedProduct => addedProduct.id_categoriaproducto !== categoriaID)
-                            .map(addedProduct => {
-                                return (
-                                    <LittleCard
-                                        key={addedProduct.id_producto}
-                                        foto={addedProduct.imagen}
-                                        titulo={addedProduct.nombre}
-                                        descrip1={addedProduct.id_unidadmedida.paquete}
-                                        selected={selectedCardId.id_producto === addedProduct.id_producto}
-                                        onSelect={() => setSelectedCardId(selectedCardId?.id_producto === addedProduct.id_producto ? {} : addedProduct)}
-                                    />
-                                );
-                            })}
+                            <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                                {Array.isArray(products) && products
+                                .filter(addedProduct => addedProduct.id_categoriaproducto !== categoriaID)
+                                .map(addedProduct => {
+                                    return (
+                                        <div key={addedProduct.id_producto} style={{ display: 'inline-block', marginRight: '1rem' }}>
+                                            <LittleCard
+                                                foto={addedProduct.imagen}
+                                                titulo={addedProduct.nombre}
+                                                descrip1={addedProduct.id_unidadmedida.paquete}
+                                                selected={selectedCardId.id_producto === addedProduct.id_producto}
+                                                onSelect={() => setSelectedCardId(selectedCardId?.id_producto === addedProduct.id_producto ? {} : addedProduct)}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                                <LittleCard
+                                    foto={addProd}
+                                    titulo={'Crear Nuevo Producto'}
+                                />
+                            </div>
                             {selectedCardId && Object.keys(selectedCardId).length > 0 && (
                                 <>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
