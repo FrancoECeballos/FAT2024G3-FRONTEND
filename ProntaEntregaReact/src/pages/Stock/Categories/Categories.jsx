@@ -9,6 +9,10 @@ import SendButton from '../../../components/buttons/send_button/send_button.jsx'
 
 import fetchData from '../../../functions/fetchData';
 
+import Modal from '../../../components/modals/Modal.jsx';
+import {InputGroup, Form, Button} from 'react-bootstrap';
+import postData from '../../../functions/postData.jsx';
+
 function Categories() {
     const navigate = useNavigate();
     const { stockId, categoriaId } = useParams();
@@ -16,6 +20,10 @@ function Categories() {
     const [categories, setCategories] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+
+    const [formCategoryData, setFormCategoryData] = useState({
+        "nombre": "",
+      });
 
     useEffect(() => {
         if (!token) {
@@ -62,7 +70,9 @@ function Categories() {
         setSearchQuery(value);
     };
 
-
+    const newcategory = () => {
+        postData('newcategory/', formCategoryData, token);
+    };
 
     return (
         <div>
@@ -72,7 +82,7 @@ function Categories() {
                 {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
                         onClick={() => navigate(`/casa/${stockId}/categoria/${category.id_categoriaproducto}/`, { state: { id_stock: stockId } })}
-                        key={category.id_categoria}
+                        key={category.id_categoriaproducto}
                         titulo={category.nombre}
                         descrip1={category.descripcion}
                         descrip2={`Cantidad de Productos: ${category.cantidad_productos}`}
@@ -80,6 +90,15 @@ function Categories() {
                 )) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
                 )}
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
+                    <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Nueva Categoria' saveButtonText='Crear' handleSave={newcategory} handleShowModal content={
+                        <div>
+                            <h2 className='centered'> Nueva Categoria </h2>
+                            <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                        </div>
+                    }></Modal>
+                </div>
             </div>
         </div>
     );

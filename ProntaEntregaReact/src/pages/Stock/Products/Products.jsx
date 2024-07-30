@@ -27,6 +27,7 @@ function Products() {
     const [combinedProducts, setCombinedProducts] = useState([]);
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
+    const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -42,7 +43,7 @@ function Products() {
             try {
                 const productsData = await fetchData(`casa/${stockId}/categoria/${categoriaID}/`, token);
                 const allProductsData = await fetchData(`productos/`, token);
-    
+        
                 const combinedProducts = allProductsData.map(product => {
                     const detalles = productsData.filter(item => item.id_producto.id_producto === product.id_producto);
                     return {
@@ -50,8 +51,12 @@ function Products() {
                         ...(detalles.length > 0 && { id_detalle: detalles })
                     };
                 }).filter(product => product.id_detalle);
-    
-                setProducts(allProductsData);
+        
+                const nonCombinedProducts = allProductsData.filter(product => 
+                    !combinedProducts.some(combinedProduct => combinedProduct.id_producto === product.id_producto)
+                );
+        
+                setProducts(nonCombinedProducts);
                 setCombinedProducts(combinedProducts);
                 console.log('Combined Products:', combinedProducts);
             } catch (error) {
@@ -105,11 +110,12 @@ function Products() {
 
     const resetDetail = () => {
         setDetalle({});
+        setSelectedCardId(null);
     };
 
     const newProduct = () => {
         console.log('New Product');
-    };
+    };  
 
     const handleSave = (id) => {
         if (!detalle.id_unidadMedida) {
@@ -152,6 +158,57 @@ function Products() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} handleCloseModal={resetDetail} content={
+                        <div>
+                            <h2 className='centered'> Nuevo Producto </h2>
+                            {Array.isArray(products) && products
+                            .filter(addedProduct => addedProduct.id_categoriaproducto !== categoriaID)
+                            .map(addedProduct => {
+                                return (
+                                    <LittleCard
+                                        key={addedProduct.id_producto}
+                                        foto={addedProduct.imagen}
+                                        titulo={addedProduct.nombre}
+                                        descrip1={addedProduct.id_unidadmedida.paquete}
+                                        selected={selectedCardId.id_producto === addedProduct.id_producto}
+                                        onSelect={() => {
+                                            const newSelectedCard = selectedCardId?.id_producto === addedProduct.id_producto ? {} : addedProduct;
+                                            setSelectedCardId(newSelectedCard);
+                                            console.log(newSelectedCard);
+                                        }}
+                                    />
+                                );
+                            })}
+                            {selectedCardId && Object.keys(selectedCardId).length > 0 && (
+                                <>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+                                        <Form.Label style={{ marginLeft: '1rem' }}>Cantidad</Form.Label>
+                                        {isPaquete && (
+                                            <Form.Label style={{ marginRight: '1rem' }}>Cantidad/Paquetes</Form.Label>
+                                        )}
+                                    </div>
+                                    <InputGroup className="mb-2">
+                                        <Form.Control name="cantidad" type="number" ref={cantidadRef} onChange={fetchSelectedObject}
+                                            style={!isPaquete ? { borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' } : null}
+                                            className={isPaquete ? "unified-input-left" : null} />
+                                        {isPaquete && (
+                                            <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" onChange={fetchSelectedObject} />
+                                        )}
+                                    </InputGroup>
+                                    <Form.Select name="id_unidadMedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                        <option autoFocus hidden>Seleccionar...</option>
+                                        {unidadMedida
+                                            .filter((item) => item.descripcion.includes(selectedCardId.id_unidadmedida.nombre))
+                                            .map((item) => (
+                                                <option key={item.id} value={item.id}>{item.nombre}</option>
+                                        ))}
+                                    </Form.Select>
+                                </>
+                            )}
+                        </div>
+                    }></Modal>
+                </div>
                 {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? sortedProducts.map(product => {
                     const totalMultiplicacion = product.id_detalle ? product.id_detalle.reduce((sum, detail) => sum + detail.multiplicacion, 0) : 0;
                     return (
@@ -219,16 +276,6 @@ function Products() {
                 }) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay Productos disponibles.</p>
                 )}
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
-                    <Modal openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} content={
-                        <div>
-                            <h2 className='centered'> Nuevo Producto </h2>
-                            <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Control name="imagen" type="text" placeholder="URL de la imagen" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                        </div>
-                    }></Modal>
-                </div>
             </div>
         </div>
     );
