@@ -258,7 +258,7 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" controlId="formBasicEmail">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
-                    <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
                   <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   <Form.Group className="mb-2" controlId="formBasicDocumento">
