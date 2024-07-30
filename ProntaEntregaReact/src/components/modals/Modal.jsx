@@ -5,9 +5,19 @@ import './Modal.scss';
 
 function GenericModal({ openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave }) {
   const [show, setShow] = useState(false);
+    const handleClose = () => {
+        setShow(false);
+        if (handleCloseModal) {
+            handleCloseModal();
+        }
+    };
 
-  const handleClose = () => {setShow(false); handleCloseModal();};
-  const handleShow = () => {setShow(true); handleShowModal();};
+    const handleShow = () => {
+        setShow(true);
+        if (handleShowModal) {
+            handleShowModal();
+        }
+    };
 
   return (
     <>
