@@ -21,6 +21,7 @@ import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
 import Casas from './pages/Casas/Casas.jsx';
 import Novedades from './pages/Novedades/Novedades.jsx';
 import Autos from './pages/Autos/Autos.jsx';
+import Landing from './pages/landing/landin.jsx';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/autos" element={<Autos />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
+        <Route path="/landing" element={<Landing />} />
       </Routes>
     </BrowserRouter>
   )
