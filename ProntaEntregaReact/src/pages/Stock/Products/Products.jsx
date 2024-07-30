@@ -110,7 +110,7 @@ function Products() {
 
     const resetDetail = () => {
         setDetalle({});
-        setSelectedCardId(null);
+        setSelectedCardId({});
     };
 
     const newProduct = () => {
@@ -172,11 +172,7 @@ function Products() {
                                         titulo={addedProduct.nombre}
                                         descrip1={addedProduct.id_unidadmedida.paquete}
                                         selected={selectedCardId.id_producto === addedProduct.id_producto}
-                                        onSelect={() => {
-                                            const newSelectedCard = selectedCardId?.id_producto === addedProduct.id_producto ? {} : addedProduct;
-                                            setSelectedCardId(newSelectedCard);
-                                            console.log(newSelectedCard);
-                                        }}
+                                        onSelect={() => setSelectedCardId(selectedCardId?.id_producto === addedProduct.id_producto ? {} : addedProduct)}
                                     />
                                 );
                             })}
