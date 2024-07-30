@@ -7,8 +7,8 @@
 		color: #02005E;
 		margin-left: 0.5rem;
 		margin-right: 0.5rem;
-		position: relative; // Necesario para el pseudo-elemento
-			transition: color 1s ease; // Solo la transición del color del texto
+		position: relative;
+			transition: color 1s ease;
 	  
 	  
 		&::before {
@@ -21,13 +21,13 @@
 		  left: 0;
 		  right: 0;
 		  bottom: 0;
-		  background-color: rgb(156, 156, 156); // Color de fondo del hover
-		  opacity: 0; // Inicialmente invisible
-		  transition: opacity 0.5s ease; // Transición de la opacidad
+		  background-color: rgb(156, 156, 156);
+		  opacity: 0;
+		  transition: opacity 0.5s ease;
 		}
 	  
 		&:hover::before {
-		  opacity: 0.3; // Muestra el fondo al hacer hover
+		  opacity: 0.3;
 		}
 	  }
 
@@ -81,3 +81,12 @@
 	  color: white;
 	}
   
+	.custom-dropdown-item {
+		background-color: transparent !important;
+		&:hover,
+		&:focus,
+		&:active {
+		  background-color: transparent !important;
+		  color: inherit !important;
+		}
+	}

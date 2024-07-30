@@ -7,8 +7,6 @@ import fetchData from '../../../functions/fetchData';
 
 import whiteLogo from '../../../assets/WhiteLogo.png';
 import blueLogo from '../../../assets/BlueLogo.png';
-import noti from '../../../assets/notification_bell.png';
-import user from '../../../assets/user_in_app.png';
 
 import NotificationCard from '../../notifications/notification_card/NotificationCard';
 import GenericModal from '../../modals/Modal';
@@ -87,18 +85,28 @@ function FullNavbar() {
           <Navbar.Brand>
             <Dropdown align="end">
               <Dropdown.Toggle as="div" id="dropdown-custom-components">
-              {notificationByUser.length >= 1 ? (
-                <Icon icon="line-md:bell-alert-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
-              ) : (
-                <Icon icon="line-md:bell-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
-              )}
+                {notificationByUser.length >= 1 ? (
+                  <Icon icon="line-md:bell-alert-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
+                ) : (
+                  <Icon icon="line-md:bell-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
+                )}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {notificationByUser.map((notification, index) => (
-                  <Dropdown.Item key={notification.id || index} onClick={() => handleNotificationClick(notification)}>
-                    <NotificationCard titulo={notification.titulo} info={notification.descripcion} />
+                {notificationByUser.length >= 1 ? (
+                  notificationByUser.map((notification, index) => (
+                    <Dropdown.Item
+                      key={notification.id || index}
+                      onClick={() => handleNotificationClick(notification)}
+                      className="custom-dropdown-item"
+                    >
+                      <NotificationCard titulo={notification.titulo} info={notification.descripcion} />
+                    </Dropdown.Item>
+                  ))
+                ) : (
+                  <Dropdown.Item className="custom-dropdown-item">
+                    <div>No hay notificaciones</div>
                   </Dropdown.Item>
-                ))}
+                )}
               </Dropdown.Menu>
             </Dropdown>
           </Navbar.Brand>
@@ -107,22 +115,21 @@ function FullNavbar() {
             <Modal.Header closeButton>
               <Modal.Title>{selectedNotification?.titulo}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>{selectedNotification?.descripcion}</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>
-                Cerrar
-              </Button>
-              <Button variant="primary" onClick={handleCloseModal}>
-                Guardar
-              </Button>
-            </Modal.Footer>
+            <Modal.Body>
+              <div>
+                {selectedNotification?.descripcion}
+              </div>
+              <div style={{marginTop:"2rem"}}>
+                {selectedNotification?.fecha_creacion}
+              </div>
+            </Modal.Body>
           </Modal>
 
           <Navbar.Brand>
-          <Icon icon="uil:user" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}} onClick={handleSuperUserAuth}/>
+            <Icon icon="line-md:account" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}} onClick={handleSuperUserAuth}/>
           </Navbar.Brand>  
           <Navbar.Brand>
-            <Icon icon="heroicons:bars-3" style={{ width: '3rem', height: '3rem', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E' }} onClick={handleShowOffcanvas} />
+            <Icon icon="line-md:menu" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.3rem', color: '#02005E' }} onClick={handleShowOffcanvas} />
           </Navbar.Brand>
           <Navbar.Offcanvas
             show={showOffcanvas}
