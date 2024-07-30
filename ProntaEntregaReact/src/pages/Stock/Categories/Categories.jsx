@@ -62,8 +62,6 @@ function Categories() {
         setSearchQuery(value);
     };
 
-
-
     return (
         <div>
             <FullNavbar />

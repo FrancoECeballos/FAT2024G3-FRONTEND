@@ -6,7 +6,7 @@ import notPic from "../../../assets/no_image.png";
 function LittleCard({foto, titulo, descrip1}){
  return(
     <Card style={{ width: '18rem', flex:"0 0 auto"}}>
-      <Card.Img variant="top" src={foto || notPic} />
+      <Card.Img variant="top" src={foto || notPic} style={{width: "10rem", justifyContent: "centre"}}/>
       <Card.Body>
         <Card.Title>{titulo}</Card.Title>
         <Card.Text>

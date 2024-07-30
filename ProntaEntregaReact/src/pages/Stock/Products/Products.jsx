@@ -42,7 +42,7 @@ function Products() {
             try {
                 const productsData = await fetchData(`casa/${stockId}/categoria/${categoriaID}/`, token);
                 const allProductsData = await fetchData(`productos/`, token);
-    
+        
                 const combinedProducts = allProductsData.map(product => {
                     const detalles = productsData.filter(item => item.id_producto.id_producto === product.id_producto);
                     return {
@@ -50,8 +50,12 @@ function Products() {
                         ...(detalles.length > 0 && { id_detalle: detalles })
                     };
                 }).filter(product => product.id_detalle);
-    
-                setProducts(allProductsData);
+        
+                const nonCombinedProducts = allProductsData.filter(product => 
+                    !combinedProducts.some(combinedProduct => combinedProduct.id_producto === product.id_producto)
+                );
+        
+                setProducts(nonCombinedProducts);
                 setCombinedProducts(combinedProducts);
                 console.log('Combined Products:', combinedProducts);
             } catch (error) {
@@ -109,7 +113,7 @@ function Products() {
 
     const newProduct = () => {
         console.log('New Product');
-    };
+    };  
 
     const handleSave = (id) => {
         if (!detalle.id_unidadMedida) {
@@ -152,6 +156,27 @@ function Products() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} content={
+                        <div>
+                            <h2 className='centered'> Nuevo Producto </h2>
+                            {Array.isArray(products) && products
+                            .filter(addedProduct => addedProduct.id_category === categoriaID)
+                            .map(addedProduct => {
+                                return (
+                                    <LittleCard
+                                        key={addedProduct.id_detallestockproducto}
+                                        foto={addedProduct.imagen}
+                                        titulo={addedProduct.nombre}
+                                        descrip1={addedProduct.id_unidadmedida.paquete}
+                                    />
+                                );
+                            })}
+                            <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            <Form.Control name="imagen" type="text" placeholder="URL de la imagen" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                        </div>
+                    }></Modal>
+                </div>
                 {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? sortedProducts.map(product => {
                     const totalMultiplicacion = product.id_detalle ? product.id_detalle.reduce((sum, detail) => sum + detail.multiplicacion, 0) : 0;
                     return (
@@ -219,16 +244,6 @@ function Products() {
                 }) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay Productos disponibles.</p>
                 )}
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
-                    <Modal openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} content={
-                        <div>
-                            <h2 className='centered'> Nuevo Producto </h2>
-                            <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Control name="imagen" type="text" placeholder="URL de la imagen" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                        </div>
-                    }></Modal>
-                </div>
             </div>
         </div>
     );
