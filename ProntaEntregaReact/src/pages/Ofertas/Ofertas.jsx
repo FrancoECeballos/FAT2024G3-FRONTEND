@@ -72,9 +72,11 @@ function Ofertas() {
                         sortedOfertas.map(oferta => (
                             <GenericCard
                                 key={oferta.id_oferta}
-                                titulo={`Ofertas ${oferta.id_oferta}`}
-                                descrip1={`Fecha Inicio: ${oferta.fechainicio ? oferta.fechainicio.split('-').reverse().join('/') : ''} ${oferta.horainicio}`}
-                                descrip2={`Fecha Vencimiento: ${oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''} ${oferta.horavencimiento}`}
+                                titulo={`oferta ${oferta.id_oferta}`}
+                                descrip1={`Casa: ${oferta.id_casa.nombre} Usuario: ${oferta.id_usuario.nombre} ${oferta.id_usuario.apellido}`}
+                                descrip2={`Estado: ${oferta.id_estadooferta.nombre} Cantidad: ${oferta.cantidad}`}
+                                descrip3={`Fecha Inicio: ${oferta.fechainicio ? oferta.fechainicio.split('-').reverse().join('/') : ''} ${oferta.horainicio}`}
+                                descrip4={`Fecha Vencimiento: ${oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''} ${oferta.horavencimiento}`}
                             />
                         ))
                     ) : (
