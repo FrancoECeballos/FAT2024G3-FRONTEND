@@ -15,7 +15,7 @@ import postData from '../../../functions/postData.jsx';
 
 function Categories() {
     const navigate = useNavigate();
-    const { stockId, categoriaId } = useParams();
+    const { stockId } = useParams();
     const token = Cookies.get('token');
     const [categories, setCategories] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -81,8 +81,9 @@ function Categories() {
     };
 
     const newcategory = () => {
-        postData('crear_categoria/', formCategoryData, token);
-        window.location.reload();
+        postData('crear_categoria/', formCategoryData, token).then(() => {
+            window.location.reload();
+        });
     };
 
     return (

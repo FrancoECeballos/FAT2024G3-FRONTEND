@@ -35,6 +35,7 @@ function Products() {
     const [isPaquete, setIsPaquete] = useState(true);
     const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
+    const [showNewProductModal, setShowNewProductModal] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -48,7 +49,6 @@ function Products() {
         const fetchProducts = async () => {
             try {
                 const productsData = await fetchData(`casa/${stockId}/categoria/${categoriaID}/`, token);
-                console.log('Products Data:', productsData);
                 const allProductsData = await fetchData(`productos/`, token);
         
                 const combinedProducts = allProductsData.map(product => {
@@ -65,7 +65,6 @@ function Products() {
         
                 setProducts(nonCombinedProducts);
                 setCombinedProducts(combinedProducts);
-                console.log('Combined Products:', combinedProducts);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
@@ -125,33 +124,36 @@ function Products() {
     };
 
     const newProduct = () => {
-        const updatedDetalle = {
-            ...detalle,
-            id_producto: selectedCardId.id_producto,
-            id_stock: parseInt(stockId, 10),
-            cantidadUnidades: detalle.cantidadUnidades !== undefined ? detalle.cantidadUnidades : 1
-        };
-        setDetalle(updatedDetalle);
-        console.log('New Product:', updatedDetalle);
+        if (selectedCardId != 'New') {
+            const updatedDetalle = {
+                ...detalle,
+                id_producto: selectedCardId.id_producto,
+                id_stock: parseInt(stockId, 10),
+                cantidadUnidades: detalle.cantidadUnidades !== undefined ? detalle.cantidadUnidades : 1
+            };
+            setDetalle(updatedDetalle);
 
-        if (!updatedDetalle.id_unidadmedida) {
-            alert('Por favor seleccione una unidad de medida');
-            return;
-        } else if (!updatedDetalle.cantidad || updatedDetalle.cantidad <= 0) {
-            alert('Por favor ingrese una cantidad válida');
-            return;
-        } else if (updatedDetalle.cantidadUnidades !== undefined && updatedDetalle.cantidadUnidades < 0) {
-            alert('Por favor ingrese una cantidad de unidades válida');
-            return;
-        } else {
-            postData(`detallestockproducto/`, updatedDetalle, token).then((result) => {
-                console.log('Detail Created:', result);
-                resetDetail();
-            });
+            if (!updatedDetalle.id_unidadmedida) {
+                alert('Por favor seleccione una unidad de medida');
+                return;
+            } else if (!updatedDetalle.cantidad || updatedDetalle.cantidad <= 0) {
+                alert('Por favor ingrese una cantidad válida');
+                return;
+            } else if (updatedDetalle.cantidadUnidades !== undefined && updatedDetalle.cantidadUnidades < 0) {
+                alert('Por favor ingrese una cantidad de unidades válida');
+                return;
+            } else {
+                postData(`detallestockproducto/`, updatedDetalle, token).then((result) => {
+                    console.log('Detail Created:', result);
+                    resetDetail();
+                });
+            }
+        } else if (selectedCardId == 'New') {
+            setShowNewProductModal(true);
         }
     };
 
-    const handleSave = (id) => {
+    const handleSave = () => {
         if (!detalle.id_unidadmedida) {
             alert('Por favor seleccione una unidad de medida');
             return;
@@ -161,13 +163,8 @@ function Products() {
         } else if (detalle.cantidadUnidades !== undefined && detalle.cantidadUnidades < 0) {
             alert('Por favor ingrese una cantidad de unidades válida');
             return;
-        } else if (combinedProducts.id_producto(id).id_detalle.some(detail => detail.id_unidadmedida === detalle.id_unidadmedida)) {
-            putData(`editar_unidad_medida/${id}/`, detalle, token).then((result) => {
-                console.log('Detail Updated:', result);
-                resetDetail();
-            });
         } else {
-            postData(`crear_unidad_medida/`, detalle, token).then((result) => {
+            postData(`PostDetallestockproducto/`, detalle, token).then((result) => {
                 console.log('Detail Created:', result);
                 resetDetail();
             });
@@ -209,10 +206,19 @@ function Products() {
                         })}
                     </Tabs>
                 </div>
+                <Modal
+                    openButtonText="Open Modal :D"
+                    openButtonWidth="200px"
+                    title="Modal Title"
+                    content={<div>Modal Content</div>}
+                    saveButtonText={selectedCardId === 'New' ? 'Crear' : 'Agregar'}
+                    showModal={showNewProductModal}
+                    showButton={false}
+                />
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} handleCloseModal={resetDetail} content={
+                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleSave={newProduct} handleCloseModal={resetDetail} content={
                         <div>
-                            <h2 className='centered'> Nuevo Producto </h2>
+                            <h2 className='centered'> Elija el Producto </h2>
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
                                 {Array.isArray(products) && products
                                 .filter(addedProduct => addedProduct.id_categoriaproducto !== categoriaID)
@@ -260,6 +266,9 @@ function Products() {
                                         ))}
                                     </Form.Select>
                                 </>
+                            )}
+                            {selectedCardId && selectedCardId == 'New' && Object.keys(selectedCardId).length > 0 && (
+                                <p style={{marginTop: '1rem'}}>Para crear un nuevo producto, seleccióne el botón <strong>Crear</strong> y lo enviará a la inferfaz de creación.</p>
                             )}
                         </div>
                     }></Modal>
