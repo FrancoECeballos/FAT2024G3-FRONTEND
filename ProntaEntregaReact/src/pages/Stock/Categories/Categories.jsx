@@ -32,7 +32,7 @@ function Categories() {
             return;
         }
 
-        fetchData(`categorias-productos/${stockId}/`, token).then((result) => {
+        fetchData('categoria/', token).then((result) => {
             setCategories(result);
         }).catch(error => {
             console.error('Error fetching categories:', error);
@@ -81,7 +81,7 @@ function Categories() {
     };
 
     const newcategory = () => {
-        postData('crear_categoria_producto/', formCategoryData, token);
+        postData('crear_categoria/', formCategoryData, token);
         window.location.reload();
     };
 
