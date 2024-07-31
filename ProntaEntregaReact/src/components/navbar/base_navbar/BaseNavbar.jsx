@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Children } from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/BlueLogo.png';
 
-export default function BaseNavbar({}) {
+export default function BaseNavbar({ children }) {
     const navigate = useNavigate();
     return (
         <Navbar 
@@ -17,6 +17,9 @@ export default function BaseNavbar({}) {
                     <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} onClick={navigate('/')} />
                 </Navbar.Brand>
             </Container>
+            <div>    
+                {children}
+            </div>
         </Navbar>
     );
 };

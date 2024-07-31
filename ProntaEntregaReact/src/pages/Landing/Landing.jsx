@@ -1,6 +1,7 @@
 import React from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BaseNavbar from '../../components/navbar/base_navbar/BaseNavbar.jsx';
 import ControlledCarousel from '../../components/carrusel/carrusel.jsx';
@@ -14,19 +15,37 @@ function Landing (){
  
   return (
     <div>
-        <BaseNavbar/>
-        <ControlledCarousel foto1={foto1} foto2={foto2} foto3={foto3}/>
-        <div style={{textAlign:'center',fontFamily: ''}}>
+      <BaseNavbar children={
+        <div>
+          <Button 
+            style={{  
+                borderRadius:'1rem', 
+                textAlign:'center',
+                width: `7rem`, 
+                backgroundColor: 'blue', 
+                borderColor:'white', 
+                color:`white`,
+                marginRight: '2rem', 
+            }} 
+            variant="primary" 
+            type="submit"
+        >
+          Ingresar
+        </Button>
+        </div>
+      }/>
+      <ControlledCarousel foto1={foto1} foto2={foto2} foto3={foto3}/>
+      <div style={{textAlign:'center',fontFamily: ''}}>
         <h1 style={{fontSize: '5rem'}}>¿Que es pronta entrega?</h1>
         <p style={{fontSize: '2rem'}}>
-        Pronta Entrega busca brindar una forma de contactar a las 
-        <br/>
-        casas para distribuir recursos y agilizar la administración de estos materiales.</p>
+          Pronta Entrega busca brindar una forma de contactar a las 
+          <br/>
+          casas para distribuir recursos y agilizar la administración de estos materiales.
+        </p>
         <br/>
         <br/>
         <h1 style={{fontSize: '5rem'}}>¿Quienes somos?</h1>
-        <p style={{fontSize: '2rem'}}>
-        Somos una fundación de inspiración jesuita abierta a toda persona de buena voluntad. A través del compromiso de voluntarios nos proponemos servir y promover a los más necesitados mejorando su calidad de vida y suavizando las situaciones de pobreza, dolor y soledad, interviniendo en espacios que están desatendidos e ignorados en la sociedad.</p>  
+        <p style={{fontSize: '2rem'}}></p>
         </div>
         <br/>
         <br/>
