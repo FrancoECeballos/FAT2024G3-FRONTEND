@@ -5,7 +5,7 @@ function GenericTab({nombre,titulo,sub}) {
     <Tab style={{textAlign:'center'}} eventKey="home" title={nombre}>
       <h1 className='titulo_tabs'>{titulo}</h1>
       <h2>{sub}</h2>
-      </Tab>
+    </Tab>
   );
 }
 
