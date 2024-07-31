@@ -102,7 +102,7 @@ function Categories() {
                 {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
                         onClick={() => navigate(`/casa/${stockId}/categoria/${category.id_categoriaproducto}/`, { state: { id_stock: stockId } })}
-                        key={category.id_categoriaproducto}
+                        key={category.id_categoria}
                         titulo={category.nombre}
                         descrip1={category.descripcion}
                         descrip2={`Cantidad de Productos: ${category.cantidad_productos}`}
