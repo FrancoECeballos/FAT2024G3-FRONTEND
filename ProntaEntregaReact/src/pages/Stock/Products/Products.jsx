@@ -8,7 +8,7 @@ import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.jsx';
 import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
-import SendButton from '../../../components/buttons/send_button/send_button.jsx';
+import GenericRadioButton from '../../../components/buttons/radio_button/radio_button.jsx';
 
 import addProd from '../../../assets/add_product.png';
 
@@ -188,6 +188,9 @@ function Products() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
+                    <GenericRadioButton titulo='Paquete' selected={isPaquete} onSelect={() => setIsPaquete(!isPaquete)} />
+                </div>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} handleCloseModal={resetDetail} content={
                         <div>
