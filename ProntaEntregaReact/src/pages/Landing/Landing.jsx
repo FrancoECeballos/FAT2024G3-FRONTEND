@@ -26,7 +26,8 @@ function Landing (){
                 borderColor:'white', 
                 color:`white`,
                 marginRight: '2rem', 
-            }} 
+            }}
+            href='/login' 
             variant="primary" 
             type="submit"
         >
