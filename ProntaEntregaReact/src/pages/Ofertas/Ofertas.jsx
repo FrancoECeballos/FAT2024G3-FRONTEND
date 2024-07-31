@@ -72,11 +72,13 @@ function Ofertas() {
                         sortedOfertas.map(oferta => (
                             <GenericCard
                                 key={oferta.id_oferta}
-                                titulo={`oferta ${oferta.id_oferta}`}
-                                descrip1={`Casa: ${oferta.id_casa.nombre} Usuario: ${oferta.id_usuario.nombre} ${oferta.id_usuario.apellido}`}
-                                descrip2={`Estado: ${oferta.id_estadooferta.nombre} Cantidad: ${oferta.cantidad}`}
-                                descrip3={`Fecha Inicio: ${oferta.fechainicio ? oferta.fechainicio.split('-').reverse().join('/') : ''} ${oferta.horainicio}`}
-                                descrip4={`Fecha Vencimiento: ${oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''} ${oferta.horavencimiento}`}
+                                titulo={`Oferta ${oferta.id_oferta}`}
+                                foto={oferta.id_producto.imagen}
+                                descrip1={<><strong>Casa:</strong> {oferta.id_casa.nombre}</>}
+                                descrip2={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                descrip3={<><strong>Estado:</strong> {oferta.id_estadooferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad}</>}
+                                descrip4={<><strong>Fecha Inicio:</strong> {oferta.fechainicio ? oferta.fechainicio.split('-').reverse().join('/') : ''} {oferta.horainicio}</>}
+                                descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''} {oferta.horavencimiento}</>}
                             />
                         ))
                     ) : (

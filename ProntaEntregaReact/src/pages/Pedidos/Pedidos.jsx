@@ -75,10 +75,12 @@ function Pedidos() {
                             <GenericCard
                                 key={pedido.id_pedido}
                                 titulo={`Pedido ${pedido.id_pedido}`}
-                                descrip1={`Casa: ${pedido.id_casa.nombre} Usuario: ${pedido.id_usuario.nombre} ${pedido.id_usuario.apellido}`}
-                                descrip2={`Urgencia: ${pedido.urgente} Cantidad: ${pedido.cantidad}`}
-                                descrip3={`Fecha Inicio: ${pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} ${pedido.horainicio}`}
-                                descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} ${pedido.horavencimiento}`}
+                                foto={pedido.id_producto.imagen}
+                                descrip1={<><strong>Casa:</strong> {pedido.id_casa.nombre}</>}
+                                descrip2={<><strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
+                                descrip3={<><strong>Urgencia:</strong> {pedido.urgente} <strong>Cantidad:</strong> {pedido.cantidad}</>}
+                                descrip4={<><strong>Fecha Inicio:</strong> {pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} {pedido.horainicio}</>}
+                                descrip5={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} {pedido.horavencimiento}</>}
                             />
                         ))
                     ) : (
