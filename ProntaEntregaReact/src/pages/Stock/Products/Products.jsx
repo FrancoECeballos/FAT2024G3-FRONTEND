@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {InputGroup, Form, Button} from 'react-bootstrap';
+import {InputGroup, Form, Button, Tabs, Tab} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import './Products.scss';
 
@@ -8,9 +8,6 @@ import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.jsx';
 import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
-import GenericRadioButton from '../../../components/buttons/radio_button/radio_button.jsx';
-import GenericTab from '../../../components/tabs/tab/tab.jsx';
-import GenericTabs from '../../../components/tabs/tabs.jsx';
 
 import addProd from '../../../assets/add_product.png';
 
@@ -33,8 +30,6 @@ function Products() {
 
     const [categorias, setCategorias] = useState([]);
     const [categoriaProductos, setCategoriaProductos] = useState([]);
-    const [selectedCategoria, setSelectedCategoria] = useState([]);
-    const [selectedCategoriaProducto, setSelectedCategoriaProducto] = useState([]);
 
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
@@ -78,10 +73,6 @@ function Products() {
 
         fetchData(`unidad_medida/`, token).then((result) => {
             setUnidadMedida(result);
-        });
-
-        fetchData(`categoriaproducto/`, token).then((result) => {
-            setCategorias(result);
         });
 
         fetchData(`categoria/`, token).then((result) => {
@@ -205,10 +196,10 @@ function Products() {
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
-                    <GenericTabs>
+                    <Tabs>
                         {Array.isArray(categorias) && categorias.map((categoria, index) => {
                             return (
-                            <GenericTab
+                            <Tab
                                 key={categoria.id_categoriaproducto}
                                 eventKey={index.toString()}
                                 title={categoria.nombre}
@@ -216,7 +207,7 @@ function Products() {
                             />
                             );
                         })}
-                    </GenericTabs>
+                    </Tabs>
                 </div>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Nuevo Producto' saveButtonText='Crear' handleSave={newProduct} handleCloseModal={resetDetail} content={

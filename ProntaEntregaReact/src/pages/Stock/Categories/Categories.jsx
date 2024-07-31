@@ -101,11 +101,10 @@ function Categories() {
                 </div>
                 {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
-                        onClick={() => navigate(`/casa/${stockId}/categoria/${category.id_categoriaproducto}/`, { state: { id_stock: stockId } })}
+                        onClick={() => navigate(`/casa/${stockId}/categoria/${category.id_categoria}/`, { state: { id_stock: stockId } })}
                         key={category.id_categoria}
                         titulo={category.nombre}
                         descrip1={category.descripcion}
-                        descrip2={`Cantidad de Productos: ${category.cantidad_productos}`}
                     />
                 )) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
