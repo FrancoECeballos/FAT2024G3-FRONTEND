@@ -74,7 +74,7 @@ function Pedidos() {
                         sortedPedidos.map(pedido => (
                             <GenericCard
                                 key={pedido.id_pedido}
-                                titulo={`Pedido ${pedido.id_pedido}`}
+                                titulo={`Pedido: ${pedido.id_producto.nombre}`}
                                 foto={pedido.id_producto.imagen}
                                 descrip1={<><strong>Casa:</strong> {pedido.id_casa.nombre}</>}
                                 descrip2={<><strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}

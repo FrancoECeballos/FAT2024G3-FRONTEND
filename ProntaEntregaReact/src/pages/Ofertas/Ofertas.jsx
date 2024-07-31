@@ -72,7 +72,7 @@ function Ofertas() {
                         sortedOfertas.map(oferta => (
                             <GenericCard
                                 key={oferta.id_oferta}
-                                titulo={`Oferta ${oferta.id_oferta}`}
+                                titulo={`Oferta: ${oferta.id_producto.nombre}`}
                                 foto={oferta.id_producto.imagen}
                                 descrip1={<><strong>Casa:</strong> {oferta.id_casa.nombre}</>}
                                 descrip2={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
