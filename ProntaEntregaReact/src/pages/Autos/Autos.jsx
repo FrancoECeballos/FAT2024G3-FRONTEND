@@ -6,6 +6,7 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
+import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
 function AutosComponent() {
     const navigate = useNavigate();
@@ -77,9 +78,13 @@ function AutosComponent() {
                         sortedAutos.map(auto => (
                             <GenericCard
                                 key={auto.id_transporte}
-                                titulo={`Marca: ${auto.marca} - Modelo: ${auto.modelo}`}
-                                descrip1={`Patente: ${auto.patente}`}
-                                descrip2={`Kilometraje: ${auto.kilometraje} km`}
+                                foto={auto.imagen}
+                                titulo={<><strong>Marca:</strong> {auto.marca} - <strong>Modelo:</strong> {auto.modelo}</>}
+                                descrip1={<><strong>Patente:</strong> {auto.patente}</>}
+                                descrip2={<><strong>Kilometraje:</strong> {auto.kilometraje} km</>}
+                                children={
+                                    <SendButton text='Solicitar Mantenimiento' />
+                                }
                             />
                         ))
                     ) : (
