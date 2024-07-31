@@ -21,13 +21,13 @@ import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
 import Casas from './pages/Casas/Casas.jsx';
 import Novedades from './pages/Novedades/Novedades.jsx';
 import Autos from './pages/Autos/Autos.jsx';
-import Landing from './pages/landing/landin.jsx';
+import Landing from './pages/Landing/Landing.jsx';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<Main />} />
+        <Route path="/main" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/change_password" element={<ChangePassword />} />
@@ -44,7 +44,7 @@ function App() {
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/autos" element={<Autos />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
-        <Route path="/landing" element={<Landing />} />
+        <Route index element={<Landing />} />
       </Routes>
     </BrowserRouter>
   )
