@@ -27,7 +27,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/main" element={<Main />} />
+        <Route index element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/change_password" element={<ChangePassword />} />
@@ -44,7 +44,7 @@ function App() {
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/autos" element={<Autos />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
-        <Route index element={<Landing />} />
+        <Route path="/landing" element={<Landing />} />
       </Routes>
     </BrowserRouter>
   )
