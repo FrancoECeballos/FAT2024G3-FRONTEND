@@ -29,6 +29,7 @@ function Products() {
     const [combinedProducts, setCombinedProducts] = useState([]);
 
     const [categoriaProductos, setCategoriaProductos] = useState([]);
+    const [selectedOperacion, setSelectedOperacion] = useState('sumar');
 
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
@@ -164,10 +165,19 @@ function Products() {
             alert('Por favor ingrese una cantidad de unidades válida');
             return;
         } else {
-            postData(`PostDetallestockproducto/`, detalle, token).then((result) => {
-                console.log('Detail Created:', result);
-                resetDetail();
-            });
+            if (selectedOperacion === 'sumar') {
+                postData(`AddDetallestockproducto/`, detalle, token).then((result) => {
+                    console.log('Detail Created:', result);
+                    resetDetail();
+                    window.location.reload();
+                });
+            } else if (selectedOperacion === 'restar') {
+                postData(`SubtractDetallestockproducto/`, detalle, token).then((result) => {
+                    console.log('Detail Created:', result);
+                    resetDetail();
+                    window.location.reload();
+                });
+            }
         }
     };
 
@@ -320,10 +330,10 @@ function Products() {
                                                 ))}
                                             </Form.Select>
                                             <InputGroup className="mb-2">
-                                            <Button className="unified-input-left" style={{color: 'black', marginTop: '1rem'}}>Añadir</Button>
-                                            <Button className="unified-input-right" style={{color: 'black', marginTop: '1rem'}}>Quitar</Button>
-                                        </InputGroup>
-                                    </div>
+                                                <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
+                                                <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
+                                            </InputGroup>
+                                        </div>
                                     } />
                             }
                             accordionChildren={
