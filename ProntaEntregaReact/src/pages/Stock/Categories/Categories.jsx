@@ -13,6 +13,10 @@ import Modal from '../../../components/modals/Modal.jsx';
 import {InputGroup, Form, Button} from 'react-bootstrap';
 import postData from '../../../functions/postData.jsx';
 
+import comidaLogo from '../../../assets/comidaLogo.png';
+import medicinaLogo from '../../../assets/medicinaLogo.png';
+import mueblesLogo from '../../../assets/mueblesLogo.png';
+
 function Categories() {
     const navigate = useNavigate();
     const { stockId } = useParams();
@@ -20,6 +24,8 @@ function Categories() {
     const [categories, setCategories] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+
+    const images = [comidaLogo, medicinaLogo, mueblesLogo];
 
     const [formCategoryData, setFormCategoryData] = useState({
         "nombre": "",
@@ -103,6 +109,7 @@ function Categories() {
                 {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
                         onClick={() => navigate(`/casa/${stockId}/categoria/${category.id_categoria}/`, { state: { id_stock: stockId } })}
+                        foto={images[category.id_categoria-1]}
                         key={category.id_categoria}
                         titulo={category.nombre}
                         descrip1={category.descripcion}
