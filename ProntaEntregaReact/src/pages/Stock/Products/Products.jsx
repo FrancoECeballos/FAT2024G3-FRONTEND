@@ -209,11 +209,14 @@ function Products() {
                 <Modal
                     openButtonText="Open Modal :D"
                     openButtonWidth="200px"
-                    title="Modal Title"
-                    content={<div>Modal Content</div>}
+                    title="Crear un nuevo Producto"
+                    content={<div>
+                        <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                        <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                    </div>}
                     saveButtonText={selectedCardId === 'New' ? 'Crear' : 'Agregar'}
                     showModal={showNewProductModal}
-                    showButton={false}
+                    showButton={true}
                 />
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleSave={newProduct} handleCloseModal={resetDetail} content={
