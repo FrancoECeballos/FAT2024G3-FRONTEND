@@ -97,6 +97,7 @@ function Stock() {
                         <GenericCard
                             onClick={() => navigate(`/casa/${house.id_stock}/categoria`, {state: {id_stock: `${house.id_stock}`}})} 
                             key={house.id_stock }
+                            foto={house.id_casa.imagen}
                             titulo={house.id_casa.nombre}
                             descrip1={`Usuarios Registrados: ${house.id_casa.usuarios_registrados}`}
                             descrip2={`${house.id_casa.id_direccion.localidad}, ${house.id_casa.id_direccion.calle}, ${house.id_casa.id_direccion.numero}`}
