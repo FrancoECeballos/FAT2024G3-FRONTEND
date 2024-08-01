@@ -3,8 +3,13 @@ import SendButton from '../buttons/send_button/send_button.jsx';
 import Modal from 'react-bootstrap/Modal';
 import './Modal.scss';
 
-function GenericModal({ openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave }) {
-  const [show, setShow] = useState(false);
+function GenericModal({ openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true  }) {
+    const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        setShow(showModal);
+    }, [showModal]);
+
     const handleClose = () => {
         setShow(false);
         if (handleCloseModal) {
@@ -28,6 +33,7 @@ function GenericModal({ openButtonText, openButtonWidth, handleShowModal, handle
             backcolor='#3E4692'
             letercolor='white'
             wide={openButtonWidth}
+            hid={!showButton}
         />
 
         <Modal centered show={show} onHide={handleClose}>

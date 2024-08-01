@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
+import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
 function AutosComponent() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [autos, setAutos] = useState([]);
+    const [maintenanceStatus, setMaintenanceStatus] = useState({});
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -23,10 +26,61 @@ function AutosComponent() {
 
         fetchData('/transporte/', token).then((result) => {
             setAutos(result);
+
+            // Establecer el estado de mantenimiento basado en los datos iniciales
+            const initialStatus = result.reduce((acc, auto) => {
+                acc[auto.id_transporte] = {
+                    isMaintained: auto.necesita_mantenimiento,
+                    buttonColor: auto.necesita_mantenimiento ? 'green' : '#3E4692',
+                    buttonText: auto.necesita_mantenimiento ? 'Mantenimiento realizado' : 'Solicitar Mantenimiento'
+                };
+                return acc;
+            }, {});
+            setMaintenanceStatus(initialStatus);
         }).catch(error => {
             console.error('Error fetching autos:', error);
         });
     }, [token, navigate]);
+
+    const handleMaintenanceRequest = async (id) => {
+        const currentStatus = maintenanceStatus[id]?.isMaintained || false;
+        const newStatus = !currentStatus;
+
+        setMaintenanceStatus(prevState => ({
+            ...prevState,
+            [id]: {
+                isMaintained: newStatus,
+                buttonColor: newStatus ? 'green' : '#3E4692',
+                buttonText: newStatus ? 'Mantenimiento realizado' : 'Solicitar Mantenimiento'
+            }
+        }));
+
+        try {
+            await axios.put(`http://localhost:8000/editar_transporte/${id}/`, 
+                { necesita_mantenimiento: newStatus },
+                { headers: { 'Authorization': `Token ${token}` } }  // Asegúrate de que el token esté correcto
+            );
+
+            // Actualizar la lista de autos
+            setAutos(prevAutos => prevAutos.map(auto =>
+                auto.id_transporte === id
+                ? { ...auto, necesita_mantenimiento: newStatus }
+                : auto
+            ));
+        } catch (error) {
+            console.error('Error updating maintenance status:', error);
+            // Rollback local state if there's an error
+            setMaintenanceStatus(prevState => ({
+                ...prevState,
+                [id]: {
+                    ...prevState[id],
+                    isMaintained: currentStatus,
+                    buttonColor: currentStatus ? 'green' : '#3E4692',
+                    buttonText: currentStatus ? 'Mantenimiento realizado' : 'Solicitar Mantenimiento'
+                }
+            }));
+        }
+    };
 
     const filteredAutos = autos.filter(auto => {
         return (
@@ -39,19 +93,24 @@ function AutosComponent() {
     });
 
     const sortedAutos = [...filteredAutos].sort((a, b) => {
-        if (!orderCriteria) return 0;
-        const aValue = a[orderCriteria];
-        const bValue = b[orderCriteria];
+        // Priorizar autos que necesitan mantenimiento
+        if (a.necesita_mantenimiento === b.necesita_mantenimiento) {
+            // Si tienen el mismo estado de mantenimiento, ordenar por el criterio
+            if (orderCriteria) {
+                const aValue = a[orderCriteria];
+                const bValue = b[orderCriteria];
 
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-            return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+                }
+
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    return bValue - aValue;
+                }
+            }
+            return 0;
         }
-
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-            return bValue - aValue;
-        }
-
-        return 0;
+        return a.necesita_mantenimiento ? -1 : 1; // Los que necesitan mantenimiento primero
     });
 
     const filters = [
@@ -70,20 +129,37 @@ function AutosComponent() {
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
-                <h2 style={{marginLeft: '7rem'}}>Lista de Autos</h2>
+                <h2 style={{ marginLeft: '7rem' }}>Lista de Autos</h2>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>
                     {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
-                        sortedAutos.map(auto => (
-                            <GenericCard
-                                key={auto.id_transporte}
-                                titulo={`Marca: ${auto.marca} - Modelo: ${auto.modelo}`}
-                                descrip1={`Patente: ${auto.patente}`}
-                                descrip2={`Kilometraje: ${auto.kilometraje} km`}
-                            />
-                        ))
+                        sortedAutos.map(auto => {
+                            const maintenance = maintenanceStatus[auto.id_transporte] || {};
+                            const cardStyle = maintenance.isMaintained ? { backgroundColor: 'gray' } : {};
+                            const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
+
+                            return (
+                                <GenericCard
+                                    key={auto.id_transporte}
+                                    foto={auto.imagen}
+                                    titulo={<><strong>Marca:</strong> {auto.marca} - <strong>Modelo:</strong> {auto.modelo}</>}
+                                    descrip1={<><strong>Patente:</strong> {auto.patente}</>}
+                                    descrip2={<><strong>Kilometraje:</strong> {auto.kilometraje} km</>}
+                                    cardStyle={cardStyle}
+                                    imageStyle={imageStyle}
+                                    children={
+                                        <SendButton
+                                            text={maintenance.buttonText || 'Solicitar Mantenimiento'}
+                                            backcolor={maintenance.buttonColor || '#3E4692'}
+                                            letercolor='white'
+                                            onClick={() => handleMaintenanceRequest(auto.id_transporte)}
+                                        />
+                                    }
+                                />
+                            );
+                        })
                     ) : (
-                        <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay autos disponibles.</p>
+                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay autos disponibles.</p>
                     )}
                 </div>
             </div>

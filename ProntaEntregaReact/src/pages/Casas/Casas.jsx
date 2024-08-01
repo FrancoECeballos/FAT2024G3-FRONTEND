@@ -7,7 +7,6 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
-
 import fetchData from '../../functions/fetchData';
 
 function Stock() {
@@ -98,6 +97,7 @@ function Stock() {
                     sortedHouses.map(house => (
                         <GenericCard
                             key={house.id_casa}
+                            foto={house.imagen}
                             titulo={house.nombre}
                             descrip1={`Usuarios Registrados: ${house.usuarios_registrados}`}
                             descrip2={`${house.id_direccion.localidad}, ${house.id_direccion.calle}, ${house.id_direccion.numero}`}
