@@ -233,7 +233,7 @@ const RegisterCard = () => {
   
   return (
     <>
-      <Container className="d-flex justify-content-center align-items-center register-container">
+      <Container className="d-flex justify-content-center align-items-center register-container"> 
         <Card style={{ width: '100%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
             <Row>
@@ -295,7 +295,7 @@ const RegisterCard = () => {
                     <div className="unified-input">
                       <InputGroup className="mb-2">
                         <Form.Control name="localidad" type="text" onChange={handleInputChange} placeholder="Ingrese su Localidad" className="unified-input-left" />
-                        <Form.Control name="calle" type="text" onChange={handleInputChange} placeholder="Ingrese su Calle" style={{ backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                        <Form.Control name="calle" type="text" onChange={handleInputChange} placeholder="Ingrese su Calle" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                         <Form.Control name="numero" type="number" onChange={handleInputChange} placeholder="Ingrese su Numero" className="unified-input-right" />
                       </InputGroup>
                     </div>
@@ -303,7 +303,7 @@ const RegisterCard = () => {
                   
                   <Form.Group className="mb-2" controlId="formBasicGenero">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
-                    <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
+                    <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{borderRadius: '8px', backgroundColor: '#EEEEEE',}}>
                       <option autoFocus hidden>Seleccione un genero</option>
                       <option value="1">Masculino</option>
                       <option value="2">Femenino</option>
@@ -313,14 +313,14 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" controlId="formBasicPassword">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña (*)</Form.Label>
-                    <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
 
                   <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
                   <Form.Group className="mb-2" controlId="formBasicPasswordConfirm">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
-                    <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} />
+                    <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE',}} />
                   </Form.Group>
 
                   <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
