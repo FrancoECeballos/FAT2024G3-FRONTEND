@@ -27,7 +27,6 @@ function AutosComponent() {
         fetchData('/transporte/', token).then((result) => {
             setAutos(result);
 
-            // Establecer el estado de mantenimiento basado en los datos iniciales
             const initialStatus = result.reduce((acc, auto) => {
                 acc[auto.id_transporte] = {
                     isMaintained: auto.necesita_mantenimiento,
@@ -58,7 +57,7 @@ function AutosComponent() {
         try {
             await axios.put(`http://localhost:8000/editar_transporte/${id}/`, 
                 { necesita_mantenimiento: newStatus },
-                { headers: { 'Authorization': `Token ${token}` } }  // Asegúrate de que el token esté correcto
+                { headers: { 'Authorization': `Token ${token}` } }
             );
 
             // Actualizar la lista de autos
@@ -69,7 +68,6 @@ function AutosComponent() {
             ));
         } catch (error) {
             console.error('Error updating maintenance status:', error);
-            // Rollback local state if there's an error
             setMaintenanceStatus(prevState => ({
                 ...prevState,
                 [id]: {
@@ -93,9 +91,7 @@ function AutosComponent() {
     });
 
     const sortedAutos = [...filteredAutos].sort((a, b) => {
-        // Priorizar autos que necesitan mantenimiento
         if (a.necesita_mantenimiento === b.necesita_mantenimiento) {
-            // Si tienen el mismo estado de mantenimiento, ordenar por el criterio
             if (orderCriteria) {
                 const aValue = a[orderCriteria];
                 const bValue = b[orderCriteria];
@@ -110,7 +106,7 @@ function AutosComponent() {
             }
             return 0;
         }
-        return a.necesita_mantenimiento ? -1 : 1; // Los que necesitan mantenimiento primero
+        return a.necesita_mantenimiento ? -1 : 1;
     });
 
     const filters = [
@@ -135,7 +131,7 @@ function AutosComponent() {
                     {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
                         sortedAutos.map(auto => {
                             const maintenance = maintenanceStatus[auto.id_transporte] || {};
-                            const cardStyle = maintenance.isMaintained ? { backgroundColor: 'gray' } : {};
+                            const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
                             const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
 
                             return (
