@@ -1,11 +1,12 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 
-export default function SendButton({onClick, text = 'Enviar', wide = '10', children, backcolor = '#D9D9D9', letercolor = 'black', id, hid}) {
+export default function SendButton({onClick,href, text = 'Enviar', wide = '10', children, backcolor = '#D9D9D9', letercolor = 'black', id, hid,shadow = '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}) {
     return (
         <Button 
             onClick={onClick} 
             hidden = {hid}
+            href={href}
             style={{
                 id:`${id}`,
                 borderRadius:'1rem', 
@@ -14,7 +15,7 @@ export default function SendButton({onClick, text = 'Enviar', wide = '10', child
                 backgroundColor: `${backcolor}`, 
                 borderColor:'#D9D9D9', 
                 color:`${letercolor}`, 
-                boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'
+                boxShadow:`${shadow}`
             }} 
             variant="primary" 
             type="submit"
