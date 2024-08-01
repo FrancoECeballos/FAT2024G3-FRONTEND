@@ -68,7 +68,7 @@ function FullNavbar() {
     <Navbar expand={expand} className="full-navbar">
       <Container fluid>
         <div>
-          <Navbar.Brand href="#">
+          <Navbar.Brand>
             <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
           </Navbar.Brand>  
         </div>
@@ -135,13 +135,14 @@ function FullNavbar() {
             show={showOffcanvas}
             onHide={handleCloseOffcanvas}
             placement="end"
-            style={{ backgroundColor: 'white', color: 'white' }}
+            style={{ backgroundColor: 'white', color: 'white' ,width:"25%"}}
           >
             <Offcanvas.Header closeButton>
-              <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+              <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
+              <Offcanvas.Title style={{color:"#02005E", marginLeft:"25%"}}>Menú</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-              <Nav className="justify-content-end flex-grow-1 pe-3">
+              <Nav className="justify-content-center align-items-center flex-grow-1 pe-3">
                 <Nav.Link style={{ color: '#02005E' }}>Novedades</Nav.Link>
                 <Nav.Link style={{ color: '#02005E' }}>Stock</Nav.Link>
                 <Nav.Link style={{ color: '#02005E' }}>Entregas</Nav.Link>

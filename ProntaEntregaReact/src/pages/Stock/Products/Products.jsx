@@ -206,14 +206,16 @@ function Products() {
                     <Tabs
                         onSelect={(k) => fetchProducts(k)}>
                         <Tab
+                            style={{backgroundColor:'transparent'}}
                             key='Todos'
                             eventKey='Todos'
                             title='Todos'
-                            onSelect={() => setSelectedCategoriaProducto('Todos')}>
-                        </Tab>
+                            onSelect={() => setSelectedCategoriaProducto('Todos')}
+                        />
                         {Array.isArray(categoriaProductos) && categoriaProductos.map((catProd, index) => {
                             return (
                                 <Tab
+                                    style={{backgroundColor:'transparent'}}
                                     key={catProd.id_categoriaproducto}
                                     eventKey={index.toString()}
                                     title={catProd.nombre}
