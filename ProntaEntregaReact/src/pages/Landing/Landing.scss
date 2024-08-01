@@ -1,0 +1,33 @@
+.nav-tabs {
+    .nav-item {
+      .nav-link {
+        background-color: #ECECEC; // Color de fondo de las pestañas
+        border-radius: 0.25rem; // Bordes redondeados
+        color: #495057; // Color del texto
+        padding: 0.5rem; // Relleno interno
+        text-align: center; // Centrar el texto
+        font-size: 1.25rem; // Tamaño de fuente más grande
+  
+        &:hover {
+          background-color: #b9b9b9; // Color de fondo al pasar el mouse
+          color: #212529; // Color del texto al pasar el mouse
+        }
+  
+        &.active {
+          background-color: white; // Color de fondo de la pestaña activa
+          color: black; // Color del texto de la pestaña activa
+          border-color: white; // Color del borde de la pestaña activa
+        }
+      }
+    }
+  }
+  
+  // Estilos para el contenido de las pestañas
+  .tab-content {
+    .tab-pane {
+      padding: 1rem; // Relleno interno del contenido de las pestañas
+      border-radius: 0.25rem; // Bordes redondeados
+      background-color: white; // Color de fondo del contenido de las pestañas
+      margin-top: -1.1rem; // Ajuste para que el borde superior no se superponga con las pestañas
+    }
+  }
