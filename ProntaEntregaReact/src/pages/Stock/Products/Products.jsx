@@ -28,8 +28,8 @@ function Products() {
     const [products, setProducts] = useState([]);
     const [combinedProducts, setCombinedProducts] = useState([]);
 
-    const [categorias, setCategorias] = useState([]);
     const [categoriaProductos, setCategoriaProductos] = useState([]);
+    const [selectedCategoriaProducto, setSelectedCategoriaProducto] = useState({});
 
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(true);
@@ -48,7 +48,7 @@ function Products() {
     
         const fetchProducts = async () => {
             try {
-                const productsData = await fetchData(`casa/${stockId}/categoria/${categoriaID}/`, token);
+                const productsData = await fetchData(`casa/${stockId}/categoria_producto/${selectedCategoriaProducto.id_categoriaproducto}/`, token);
                 const allProductsData = await fetchData(`productos/`, token);
         
                 const combinedProducts = allProductsData.map(product => {
@@ -74,7 +74,7 @@ function Products() {
             setUnidadMedida(result);
         });
 
-        fetchData(`categoria/`, token).then((result) => {
+        fetchData(`catprod_casa/${categoriaID}/`, token).then((result) => {
             setCategoriaProductos(result);
         });
     
@@ -194,13 +194,16 @@ function Products() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
                     <Tabs>
-                        {Array.isArray(categorias) && categorias.map((categoria, index) => {
+                        <Tab>
+                            
+                        </Tab>
+                        {Array.isArray(categoriaProductos) && categoriaProductos.map((catProd, index) => {
                             return (
                             <Tab
-                                key={categoria.id_categoriaproducto}
+                                key={catProd.id_categoriaproducto}
                                 eventKey={index.toString()}
-                                title={categoria.nombre}
-                                onSelect={() => setSelectedCategoria(categoria)}
+                                title={catProd.nombre}
+                                onSelect={() => setSelectedCategoriaProducto(catProd)}
                             />
                             );
                         })}
@@ -209,11 +212,14 @@ function Products() {
                 <Modal
                     openButtonText="Open Modal :D"
                     openButtonWidth="200px"
-                    title="Modal Title"
-                    content={<div>Modal Content</div>}
+                    title="Crear un nuevo Producto"
+                    content={<div>
+                        <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                        <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                    </div>}
                     saveButtonText={selectedCardId === 'New' ? 'Crear' : 'Agregar'}
                     showModal={showNewProductModal}
-                    showButton={false}
+                    showButton={true}
                 />
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleSave={newProduct} handleCloseModal={resetDetail} content={
