@@ -1,13 +1,24 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Cookies from 'js-cookie';
 
 import './Main.scss';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar'
 
 function Main (){
+  const navigate = useNavigate();
+  const token = Cookies.get('token');
+
+  useEffect(() => {
+      if (!token) {
+        navigate('/landing');
+        return;
+    }
+  });
  
   return (
     <div>
