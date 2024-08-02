@@ -38,7 +38,7 @@ function Stock() {
             } else {
                 fetchData(`/user/stockEmail/${email}/`, token).then((result) => {
                     const houseIds = result.map(house => house.id_casa.id_casa);
-                    const housePromises = houseIds.map(id => fetchData(`/casa/${id}`, token));
+                    const housePromises = houseIds.map(id => fetchData(`/stock/${id}`, token));
                     Promise.all(housePromises).then(houses => {
                         console.log("Fetched Houses:", houses);
                         setHouses(houses.flat());
@@ -74,7 +74,7 @@ function Stock() {
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-
+        
         return 0;
     });
 
@@ -86,7 +86,7 @@ function Stock() {
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
-
+    
     return (
         <div>
             <FullNavbar />
@@ -96,7 +96,7 @@ function Stock() {
                     sortedHouses.map(house => (
                         <GenericCard
                             onClick={() => navigate(`/casa/${house.id_stock}/categoria`, {state: {id_stock: `${house.id_stock}`}})} 
-                            key={house.id_stock }
+                            key={house.id_stock}
                             foto={house.id_casa.imagen}
                             titulo={house.id_casa.nombre}
                             descrip1={`Usuarios Registrados: ${house.id_casa.usuarios_registrados}`}
