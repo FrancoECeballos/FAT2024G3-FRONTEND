@@ -76,9 +76,9 @@ function FullNavbar() {
           <Nav className="nav-link">
             <Nav.Link className='naving' onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/stock')}>Stock</Nav.Link>
-            <Nav.Link className='naving'>Entregas</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
+            <Nav.Link className='naving'>Entregas</Nav.Link>
             <Nav.Link className='naving' onClick={() => navigate('/autos')}>Autos</Nav.Link>
           </Nav>
         <div className='botons-derecha'>
@@ -139,15 +139,51 @@ function FullNavbar() {
           >
             <Offcanvas.Header closeButton>
               <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
-              <Offcanvas.Title style={{color:"#02005E", marginLeft:"25%"}}>Menú</Offcanvas.Title>
+              <Offcanvas.Title style={{color:"#02005E", marginLeft: 'auto', marginRight: 'auto'}}>Menú</Offcanvas.Title>
             </Offcanvas.Header>
-            <Offcanvas.Body>
+
+            <Offcanvas.Body style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+              
               <Nav className="justify-content-center align-items-center flex-grow-1 pe-3">
-                <Nav.Link style={{ color: '#02005E' }}>Novedades</Nav.Link>
-                <Nav.Link style={{ color: '#02005E' }}>Stock</Nav.Link>
-                <Nav.Link style={{ color: '#02005E' }}>Entregas</Nav.Link>
-                <Nav.Link style={{ color: '#02005E' }}>Pedidos</Nav.Link>
-                <Nav.Link style={{ color: '#02005E' }}>Ofertas</Nav.Link>
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={handleSuperUserAuth}>
+                  <Icon icon="line-md:account" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={handleSuperUserAuth}>Mi Cuenta</Nav.Link>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/novedades')}>
+                  <Icon icon="line-md:lightbulb" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/stock')}>
+                  <Icon icon="line-md:clipboard-list" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={() => navigate('/stock')}>Stock</Nav.Link>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/pedidos')}>
+                  <Icon icon="line-md:text-box" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/ofertas')}>
+                  <Icon icon="line-md:upload-outline" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={() => navigate('/ofertas')}>Ofertas</Nav.Link>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/entregas')}>
+                  <Icon icon="line-md:telegram" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={() => navigate('/entregas')}>Entregas</Nav.Link>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/autos')}>
+                  <Icon icon="line-md:speed" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={() => navigate('/autos')}>Autos</Nav.Link>
+                </div>
+                
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/casas')}>
+                  <Icon icon="line-md:home-md" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                  <Nav.Link onClick={() => navigate('/casas')}>Casas</Nav.Link>
+                </div>
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
