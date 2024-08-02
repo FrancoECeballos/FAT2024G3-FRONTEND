@@ -148,7 +148,6 @@ function Products() {
                 return;
             } else {
                 postData(`detallestockproducto/`, updatedDetalle, token).then((result) => {
-                    console.log('Detail Created:', result);
                     resetDetail();
                 });
             }
@@ -170,13 +169,11 @@ function Products() {
         } else {
             if (selectedOperacion === 'sumar') {
                 postData(`AddDetallestockproducto/`, detalle, token).then((result) => {
-                    console.log('Detail Created:', result);
                     resetDetail();
                     window.location.reload();
                 });
             } else if (selectedOperacion === 'restar') {
                 postData(`SubtractDetallestockproducto/`, detalle, token).then((result) => {
-                    console.log('Detail Created:', result);
                     resetDetail();
                     window.location.reload();
                 });
@@ -195,9 +192,16 @@ function Products() {
         const { name, value } = event.target;
         setDetalle((prevData) => {
             const updatedData = { ...prevData, [name]: parseInt(value, 10) };
-            console.log(updatedData);
             return updatedData;
         });
+    };
+
+    const handleSelect = (k) => {
+        if (k === 'Todos') {
+            fetchProducts('Todos');
+        } else {
+            fetchProducts((Number(k) + 1), false);
+        }
     };
 
     return (
@@ -207,7 +211,7 @@ function Products() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
                     <Tabs
-                        onSelect={(k) => fetchProducts(k, false)}>
+                        onSelect={handleSelect}>
                         <Tab
                             style={{backgroundColor:'transparent'}}
                             key='Todos'
