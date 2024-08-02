@@ -37,7 +37,7 @@ const LoginCard = () => {
       } else {
         Cookies.set('token', response.token, { secure: true });
       }
-      navigate('/main');
+      navigate('');
     } else {
       setShowAlert(true);
     }
