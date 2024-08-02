@@ -40,7 +40,7 @@ function Products() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
-    const fetchProducts = async (id) => {
+    const fetchProducts = async (id, firstTime) => {
         try {
             const productsData = await fetchData(`casa/${stockId}/categoria_producto/${id}/${categoriaID}/`, token);
             const allProductsData = await fetchData(`productos/`, token);
@@ -53,12 +53,15 @@ function Products() {
                 };
             }).filter(product => product.id_detalle);
     
-            const nonCombinedProducts = allProductsData.filter(product => 
-                !combinedProducts.some(combinedProduct => combinedProduct.id_producto === product.id_producto)
-            );
-    
-            setProducts(nonCombinedProducts);
+            if (firstTime) {
+                const nonCombinedProducts = allProductsData.filter(product => 
+                    !combinedProducts.some(combinedProduct => combinedProduct.id_producto === product.id_producto)
+                );
+        
+                setProducts(nonCombinedProducts);
+            }
             setCombinedProducts(combinedProducts);
+            console.log('Combined Products:', combinedProducts);
         } catch (error) {
             console.error('Error fetching products:', error);
             setCombinedProducts([]);
@@ -77,7 +80,7 @@ function Products() {
 
         fetchData(`catprod_casa/${categoriaID}/`, token).then((result) => {
             setCategoriaProductos(result);
-            fetchProducts('Todos');
+            fetchProducts('Todos', true);
         });
 
     }, [token, navigate, stockId, categoriaID]);
@@ -204,7 +207,7 @@ function Products() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
                     <Tabs
-                        onSelect={(k) => fetchProducts(k)}>
+                        onSelect={(k) => fetchProducts(k, false)}>
                         <Tab
                             style={{backgroundColor:'transparent'}}
                             key='Todos'
