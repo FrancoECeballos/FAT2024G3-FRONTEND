@@ -29,7 +29,7 @@ function Footer() {
           </a>
         </div>
         <div className="footer-bottom">
-          <p>© 2023 Copyright: <a href="https://tu-sitio-web.com">TuSitioWeb.com</a></p>
+          <p>© 2024 Fundación Manos Abiertas</p>
         </div>
       </div>
     </footer>

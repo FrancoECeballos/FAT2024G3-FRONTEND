@@ -349,12 +349,16 @@ const Cuenta = () => {
                 <Col>
                     <h3>Casas del Usuario</h3>
                     <ul>
-                        {casaID.map(usercasa => (
-                            <li key={usercasa.id_casa}>
-                                {usercasa.nombre}
-                                {isAdmin && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteCasaFromUser(usercasa.id_casa)}></SendButton>}
-                            </li>
-                        ))}
+                        {casaID.length === 0 ? (
+                            <p> Este usuario no pertenece<br/>a ninguna casa </p>
+                        ) : (
+                            casaID.map(usercasa => (
+                                <li key={usercasa.id_casa}>
+                                    {usercasa.nombre}
+                                    {isAdmin && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteCasaFromUser(usercasa.id_casa)}></SendButton>}
+                                </li>
+                            ))
+                        )}
                     </ul>
                     {isAdmin && <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
                         <option disabled hidden value="">Select an object to add</option>

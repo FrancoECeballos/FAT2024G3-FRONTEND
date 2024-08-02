@@ -261,11 +261,11 @@ const RegisterCard = () => {
             <Row>
               <Col xs={12} sm={8} md={8} lg={8} xl={8} xxl={8}>
                 <Form>
-                  <Form.Group className='mb-2' controlId='title'>
+                  <Form.Group className='mb-2'>
                     <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2" controlId="formBasicUser">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -278,13 +278,13 @@ const RegisterCard = () => {
                   <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2" controlId="formBasicEmail">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
                     <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
                   <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2" controlId="formBasicDocumento">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -300,7 +300,7 @@ const RegisterCard = () => {
                     <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2" controlId="formBasicTelefono">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -312,7 +312,7 @@ const RegisterCard = () => {
 
                   <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2" controlId="formBasicDireccion">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -323,7 +323,7 @@ const RegisterCard = () => {
                     </div>
                   </Form.Group>
 
-                  <Form.Group className="mb-2" controlId="formBasicGenero">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
                     <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }}>
                       <option autoFocus hidden>Seleccione un genero</option>
@@ -333,14 +333,14 @@ const RegisterCard = () => {
                     </Form.Select>
                   </Form.Group>
 
-                  <Form.Group className="mb-2" controlId="formBasicPassword">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña (*)</Form.Label>
                     <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
 
                   <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2" controlId="formBasicPasswordConfirm">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
                     <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
@@ -353,7 +353,7 @@ const RegisterCard = () => {
                 <div className="flex-grow-1 d-flex flex-column align-items-center">
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Imagen de perfil</Form.Label>
                   <img src={imageSrc} alt="Imagen de perfil" className="user-image" style={{ marginBottom: '4%' }} />
-                  <Form.Group className="mb-2" controlId="formFile">
+                  <Form.Group className="mb-2">
                     <input
                       type="file"
                       name="imagen"
