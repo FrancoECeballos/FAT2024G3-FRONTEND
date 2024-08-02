@@ -206,7 +206,7 @@ function Products() {
 
     return (
         <div>
-            <FullNavbar />
+            <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>

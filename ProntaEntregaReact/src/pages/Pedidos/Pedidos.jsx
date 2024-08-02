@@ -63,7 +63,7 @@ function Pedidos() {
 
     return (
         <div>
-            <FullNavbar />
+            <FullNavbar selectedPage='Pedidos'/>
             <div className='margen-arriba'>
                 <h2 style={{marginLeft: '7rem'}}>Pedidos</h2>
                 {/* Botón para navegar a crear_pedido */}

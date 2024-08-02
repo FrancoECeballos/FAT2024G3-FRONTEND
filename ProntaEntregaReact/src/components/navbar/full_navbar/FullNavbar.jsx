@@ -13,7 +13,7 @@ import GenericModal from '../../modals/Modal';
 
 import './FullNavbar.scss';
 
-function FullNavbar() {
+function FullNavbar ({selectedPage}) {
   const [show, setShow] = useState(false);
   const expand = false; 
   const navigate = useNavigate();
@@ -74,12 +74,12 @@ function FullNavbar() {
         </div>
 
           <Nav className="nav-link">
-            <Nav.Link className='naving' onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/stock')}>Stock</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
-            <Nav.Link className='naving'>Entregas</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/autos')}>Autos</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/novedades')}>{selectedPage === 'Novedades' ? <strong>Novedades</strong> : 'Novedades'}</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/stock')}> {selectedPage === 'Stock' ? <strong>Stock</strong> : 'Stock'}</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>{selectedPage === 'Pedidos' ? <strong>Pedidos</strong> : 'Pedidos'}</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/oferta')}>{selectedPage === 'Ofertas' ? <strong>Ofertas</strong> : 'Ofertas'}</Nav.Link>
+            <Nav.Link className='naving'>{selectedPage === 'Entregas' ? <strong>Entregas</strong> : 'Entregas'}</Nav.Link>
+            <Nav.Link className='naving' onClick={() => navigate('/autos')}>{selectedPage === 'Autos' ? <strong>Autos</strong> : 'Autos'}</Nav.Link>
           </Nav>
         <div className='botons-derecha'>
           <Navbar.Brand>

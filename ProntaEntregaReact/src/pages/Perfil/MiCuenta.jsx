@@ -16,8 +16,6 @@ function MiCuenta(){
         });
     }, [token]);
 
-    console.log(user.is_staff);
-
     return (
         <div style={{backgroundColor: '#ECECEC'}}>
             <FullNavbar/>

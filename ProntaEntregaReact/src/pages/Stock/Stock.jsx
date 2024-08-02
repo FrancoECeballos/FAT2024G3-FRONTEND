@@ -89,7 +89,7 @@ function Stock() {
     
     return (
         <div>
-            <FullNavbar />
+            <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (

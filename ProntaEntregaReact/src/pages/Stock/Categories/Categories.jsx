@@ -94,7 +94,7 @@ function Categories() {
 
     return (
         <div>
-            <FullNavbar />
+            <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>

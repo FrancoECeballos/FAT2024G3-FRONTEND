@@ -63,7 +63,7 @@ function Ofertas() {
 
     return (
         <div>
-            <FullNavbar />
+            <FullNavbar selectedPage='Ofertas' />
             <div className='margen-arriba'>
                 <h2 style={{marginLeft: '7rem'}}>Ofertas</h2>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />

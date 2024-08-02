@@ -123,7 +123,7 @@ function AutosComponent() {
 
     return (
         <div>
-            <FullNavbar />
+            <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
                 <h2 style={{ marginLeft: '7rem' }}>Lista de Autos</h2>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />

@@ -6,7 +6,7 @@ import CrearPedido from '../../components/forms/pedido_form/PedidoForm.jsx';
 function Form (){
   return (
     <div style={{backgroundColor: '#ECECEC'}}>
-      <FullNavbar/>
+      <FullNavbar selectedPage='Pedidos'/>
       <CrearPedido />
     </div>
   );
