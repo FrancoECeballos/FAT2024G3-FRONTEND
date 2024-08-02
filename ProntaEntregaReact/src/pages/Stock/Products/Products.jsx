@@ -32,7 +32,7 @@ function Products() {
     const [selectedOperacion, setSelectedOperacion] = useState('sumar');
 
     const [unidadMedida, setUnidadMedida] = useState([]);
-    const [isPaquete, setIsPaquete] = useState(true);
+    const [isPaquete, setIsPaquete] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
     const [showNewProductModal, setShowNewProductModal] = useState(false);
@@ -317,9 +317,9 @@ function Products() {
                                         <div>
                                             <h2 className='centered'> Producto: {product.nombre} </h2>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-                                                <Form.Label style={{ marginLeft: '1rem' }}>Cantidad</Form.Label>
+                                                <Form.Label style={{ marginLeft: '1rem' }}>{isPaquete ? 'Peso' : 'Cantidad'}</Form.Label>
                                                 {isPaquete && (
-                                                    <Form.Label style={{ marginRight: '1rem' }}>Cantidad/Paquetes</Form.Label>
+                                                    <Form.Label style={{ marginRight: '1rem' }}>Cantidad de Paquetes</Form.Label>
                                                 )}
                                             </div>
                                             <InputGroup className="mb-2">
