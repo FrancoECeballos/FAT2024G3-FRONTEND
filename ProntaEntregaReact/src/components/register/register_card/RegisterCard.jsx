@@ -179,11 +179,10 @@ const RegisterCard = () => {
 
   const handleSendData = async (event) => {
     event.preventDefault();
-  
-    // Validación de campos requeridos
+
+    // Verificación de campos requeridos
     if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email || !formData.genero || !formData.id_tipodocumento) {
       alert("Please fill in all required fields.");
-      // Muestra en la consola los campos vacíos
       if (!formData.nombre) {
         console.log("Nombre vacio");
       } else if (!formData.apellido) {
@@ -205,16 +204,16 @@ const RegisterCard = () => {
       }
       return;
     }
-  
+
     let id_direccion = null;
-  
+
     const existingDireccion = direc.find(
       (d) =>
         d.calle === direcFormData.calle &&
         d.numero === direcFormData.numero &&
         d.localidad === direcFormData.localidad
     );
-  
+
     if (!existingDireccion) {
       const url = '/crear_direccion/';
       const body = direcFormData;
@@ -223,35 +222,29 @@ const RegisterCard = () => {
     } else {
       id_direccion = existingDireccion.id_direccion;
     };
-  
+
     fetchData('/direcciones/').then((result) => {
       setDirec(result);
     });
-  
+
     const updatedFormData = { ...formData, id_direccion };
     setFormData(updatedFormData);
-  
-    // Crea un FormData para enviar con Axios
+
+    // Crear un FormData para enviar con Axios
     const formDataToSend = new FormData();
     Object.entries(updatedFormData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-  
+
     const url = '/register/';
-    try {
-      const result = await postData(url, formDataToSend);
-      if (result && result.token) {
-        Cookies.set('token', result.token, { expires: 7, secure: true });
-        navigate('/');
-      } else {
-        alert("Error en el registro. Por favor, revisa los datos ingresados.");
-      }
-    } catch (error) {
-      console.error('Error al registrar:', error.response ? error.response.data : error.message);
-      alert('Error en el registro. Por favor, intenta de nuevo.');
+    const result = await postData(url, formDataToSend);
+    if (result && result.token) {
+      Cookies.set('token', result.token, { expires: 7, secure: true });
+      navigate('/');
+    } else {
+      alert("Error en el registro. Por favor, revisa los datos ingresados.");
     }
   };
-  
 
   return (
     <>
@@ -261,11 +254,11 @@ const RegisterCard = () => {
             <Row>
               <Col xs={12} sm={8} md={8} lg={8} xl={8} xxl={8}>
                 <Form>
-                  <Form.Group className='mb-2'>
+                  <Form.Group className='mb-2' controlId='title'>
                     <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicUser">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -278,13 +271,13 @@ const RegisterCard = () => {
                   <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicEmail">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
                     <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
                   <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicDocumento">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -300,7 +293,7 @@ const RegisterCard = () => {
                     <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicTelefono">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -312,7 +305,7 @@ const RegisterCard = () => {
 
                   <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicDireccion">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion (*)</Form.Label>
                     <div className="unified-input">
                       <InputGroup className="mb-2">
@@ -323,7 +316,7 @@ const RegisterCard = () => {
                     </div>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicGenero">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
                     <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }}>
                       <option autoFocus hidden>Seleccione un genero</option>
@@ -333,14 +326,14 @@ const RegisterCard = () => {
                     </Form.Select>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicPassword">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña (*)</Form.Label>
                     <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
 
                   <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formBasicPasswordConfirm">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
                     <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
                   </Form.Group>
@@ -353,7 +346,7 @@ const RegisterCard = () => {
                 <div className="flex-grow-1 d-flex flex-column align-items-center">
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Imagen de perfil</Form.Label>
                   <img src={imageSrc} alt="Imagen de perfil" className="user-image" style={{ marginBottom: '4%' }} />
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" controlId="formFile">
                     <input
                       type="file"
                       name="imagen"
