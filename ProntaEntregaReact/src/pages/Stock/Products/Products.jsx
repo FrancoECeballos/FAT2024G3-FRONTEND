@@ -200,7 +200,7 @@ function Products() {
         if (k === 'Todos') {
             fetchProducts('Todos');
         } else {
-            fetchProducts((Number(k) + 1), false);
+            fetchProducts((Number(k)), false);
         }
     };
 
@@ -219,12 +219,12 @@ function Products() {
                             title='Todos'
                             onSelect={() => setSelectedCategoriaProducto('Todos')}
                         />
-                        {Array.isArray(categoriaProductos) && categoriaProductos.map((catProd, index) => {
+                        {Array.isArray(categoriaProductos) && categoriaProductos.map((catProd) => {
                             return (
                                 <Tab
                                     style={{backgroundColor:'transparent'}}
                                     key={catProd.id_categoriaproducto}
-                                    eventKey={index.toString()}
+                                    eventKey={catProd.id_categoriaproducto}
                                     title={catProd.nombre}
                                 />
                             );
