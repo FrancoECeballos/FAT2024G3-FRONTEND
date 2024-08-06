@@ -9,7 +9,7 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
             <Card onClick={onClick} style={{ ...cardStyle, width: '90%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', padding: '0.5rem' }}>
                 <Row className="g-0" style={{ padding: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Col xs={4} md={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <img src={foto || noImg} style={{ ...imageStyle, width: '100%', borderRadius: '1rem', maxHeight: '18rem' }} />
+                        <img src={foto || noImg} style={{ ...imageStyle, width: '10rem', borderRadius: '1rem', maxHeight: '10rem' }} />
                     </Col>
                     <Col xs={6} md={8}>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', marginLeft: '3rem' }}>

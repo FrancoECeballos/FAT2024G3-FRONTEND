@@ -3,15 +3,15 @@ body {
 }
 
 .cardstock{
-    width: 100%; /* Puedes ajustar el ancho según necesites */
-    height: 100vh; /* Define la altura fija del contenedor */
+    margin: 0 auto;
+    width: 80rem;
+    height: 70vh;
     margin-top: 2rem;
-    padding-left: 5rem;
-    padding-right: 5rem;
     overflow-y: auto; /* Habilita el scroll vertical */
     overflow-x: hidden; /* Evita el scroll horizontal */
     box-sizing: border-box;
 }
+
 
 
 .margen-arriba {
