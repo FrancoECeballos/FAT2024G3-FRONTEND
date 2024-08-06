@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
+import Footer from '../../components/footer/Footer.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
@@ -92,6 +93,7 @@ function Stock() {
             <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
+                <div className='cardstock'>
                 {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
                     sortedHouses.map(house => (
                         <GenericCard
@@ -106,7 +108,9 @@ function Stock() {
                 ) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay obras disponibles.</p>
                 )}
+                </div> 
             </div>
+                <Footer/>
         </div>
     );
 }
