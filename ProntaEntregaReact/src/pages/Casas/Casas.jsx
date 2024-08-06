@@ -104,7 +104,7 @@ function Stock() {
                         />
                     ))
                 ) : (
-                    <p>No hay casas disponibles.</p>
+                    <p>No hay obras disponibles.</p>
                 )}
             </div>
         </div>
