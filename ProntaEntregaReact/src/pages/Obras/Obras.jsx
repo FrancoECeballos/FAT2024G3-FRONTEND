@@ -7,7 +7,7 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
-import fetchData from '../../functions/fetchData';
+import fetchData from '../../functions/fetchData.jsx';
 
 function Stock() {
     const navigate = useNavigate();

@@ -9,7 +9,7 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Modal from '../../components/modals/Modal.jsx';
-import {InputGroup, Form, Button} from 'react-bootstrap';
+import {InputGroup, Form, Button, Dropdown} from 'react-bootstrap';
 import postData from '../../functions/postData.jsx';
 
 function AutosComponent() {
@@ -180,12 +180,25 @@ function AutosComponent() {
                                     cardStyle={cardStyle}
                                     imageStyle={imageStyle}
                                     children={
-                                        <SendButton
-                                            text={maintenance.buttonText || 'Solicitar Mantenimiento'}
-                                            backcolor={maintenance.buttonColor || '#3E4692'}
-                                            letercolor='white'
-                                            onClick={() => handleMaintenanceRequest(auto.id_transporte)}
-                                        />
+                                        <Dropdown>
+                                            <Dropdown.Toggle as="div">
+                                                <SendButton
+                                                    text={maintenance.buttonText || 'Solicitar Mantenimiento'}
+                                                    backcolor={maintenance.buttonColor || '#3E4692'}
+                                                    letercolor='white'/>
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                    <input type="text" placeholder="Enter text" style={{ marginBottom: '1rem', width: '100%' }} />
+                                                    <SendButton
+                                                    text={maintenance.buttonText || 'Solicitar Mantenimiento'}
+                                                    backcolor={maintenance.buttonColor || '#3E4692'}
+                                                    letercolor='white'
+                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte)}
+                                                    />
+                                                </div>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
                                     }
                                 />
                             );
