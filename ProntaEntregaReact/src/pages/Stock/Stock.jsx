@@ -15,7 +15,7 @@ import fetchData from '../../functions/fetchData';
 function Stock() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
-    const [houses, setHouses] = useState([]);
+    const [obras, setObras] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -25,29 +25,27 @@ function Stock() {
             navigate('/login');
             return;
         }
-
         fetchData(`/userToken/${token}`, token).then((result) => {
             setIsAdmin(result.is_superuser);
             const email = result.email;
-
             if (result.is_superuser) {
                 fetchData('/stock/', token).then((result) => {
-                    setHouses(result);
+                    setObras(result);
                 }).catch(error => {
-                    console.error('Error fetching houses for admin', error);
+                    console.error('Error fetching obras for admin', error);
                 });
             } else {
                 fetchData(`/user/stockEmail/${email}/`, token).then((result) => {
-                    const houseIds = result.map(house => house.id_obra.id_obra);
-                    const housePromises = houseIds.map(id => fetchData(`/stock/${id}`, token));
-                    Promise.all(housePromises).then(houses => {
-                        console.log("Fetched Houses:", houses);
-                        setHouses(houses.flat());
+                    const obraIds = result.map(obra => obra.id_obra.id_obra);
+                    const obraPromises = obraIds.map(id => fetchData(`/stock/${id}`, token));
+                    Promise.all(obraPromises).then(obras => {
+                        console.log("Fetched Obras:", obras);
+                        setObras(obras.flat());
                     }).catch(error => {
-                        console.error('Error fetching houses by ID', error);
+                        console.error('Error fetching obras by ID', error);
                     });
                 }).catch(error => {
-                    console.error('Error fetching house for user', error);
+                    console.error('Error fetching obra for user', error);
                 });
             }
         }).catch(error => {
@@ -55,27 +53,24 @@ function Stock() {
         });
     }, [token, navigate]);
 
-    const filteredHouses = houses.filter(house => {
+    const filteredObras = obras.filter(obra => {
         return (
-            house.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_obra.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_obra.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
+            obra.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.id_obra.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.id_obra.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
-    const sortedHouses = [...filteredHouses].sort((a, b) => {
+    const sortedObras = [...filteredObras].sort((a, b) => {
         if (!orderCriteria) return 0;
         const aValue = a.id_obra[orderCriteria];
         const bValue = b.id_obra[orderCriteria];
-
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
-
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-        
         return 0;
     });
 
@@ -87,22 +82,22 @@ function Stock() {
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
-    
+
     return (
         <div>
             <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div className='cardstock'>
-                {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
-                    sortedHouses.map(house => (
+                {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
+                    sortedObras.map(obra => (
                         <GenericCard
-                            onClick={() => navigate(`/obra/${house.id_stock}/categoria`, {state: {id_stock: `${house.id_stock}`}})} 
-                            key={house.id_stock}
-                            foto={house.id_obra.imagen}
-                            titulo={house.id_obra.nombre}
-                            descrip1={`Usuarios Registrados: ${house.id_obra.usuarios_registrados}`}
-                            descrip2={`${house.id_obra.id_direccion.localidad}, ${house.id_obra.id_direccion.calle}, ${house.id_obra.id_direccion.numero}`}
+                            onClick={() => navigate(`/obra/${obra.id_stock}/categoria`, {state: {id_stock: `${obra.id_stock}`}})} 
+                            key={obra.id_stock}
+                            foto={obra.id_obra.imagen}
+                            titulo={obra.id_obra.nombre}
+                            descrip1={`Usuarios Registrados: ${obra.id_obra.usuarios_registrados}`}
+                            descrip2={`${obra.id_obra.id_direccion.localidad}, ${obra.id_obra.id_direccion.calle}, ${obra.id_obra.id_direccion.numero}`}
                         />
                     ))
                 ) : (
@@ -110,7 +105,7 @@ function Stock() {
                 )}
                 </div> 
             </div>
-                <Footer/>
+            <Footer/>
         </div>
     );
 }
