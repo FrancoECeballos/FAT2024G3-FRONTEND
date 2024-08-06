@@ -23,10 +23,10 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                             alt="Card" 
                             style={{ 
                                 ...imageStyle, 
-                                width: '100%', 
+                                width: '10rem', 
                                 height: 'auto', 
                                 borderRadius: '1rem', 
-                                maxHeight: '18rem', 
+                                maxHeight: '10rem', 
                                 objectFit: 'cover' 
                             }} 
                         />
