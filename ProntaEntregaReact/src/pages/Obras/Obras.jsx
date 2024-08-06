@@ -7,12 +7,12 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
-import fetchData from '../../functions/fetchData';
+import fetchData from '../../functions/fetchData.jsx';
 
 function Stock() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
-    const [houses, setHouses] = useState([]);
+    const [obras, setObras] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -22,32 +22,30 @@ function Stock() {
             navigate('/login');
             return;
         }
-
         fetchData(`/userToken/${token}`, token).then((result) => {
             console.log("User Token Result:", result);
             setIsAdmin(result.is_superuser);
             const email = result.email;
-
             if (result.is_superuser) {
-                fetchData('/casa/', token).then((result) => {
-                    console.log("Houses for Admin:", result);
-                    setHouses(result);
+                fetchData('/obra/', token).then((result) => {
+                    console.log("Obras for Admin:", result);
+                    setObras(result);
                 }).catch(error => {
-                    console.error('Error fetching houses for admin', error);
+                    console.error('Error fetching obras for admin', error);
                 });
             } else {
-                fetchData(`/user/casasEmail/${email}/`, token).then((result) => {
-                    console.log("House for User:", result);
-                    const houseIds = result.map(house => house.id_casa);
-                    const housePromises = houseIds.map(id => fetchData(`/casa/${id}`, token));
-                    Promise.all(housePromises).then(houses => {
-                        console.log("Fetched Houses:", houses);
-                        setHouses(houses.flat());
+                fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
+                    console.log("Obras for User:", result);
+                    const obraIds = result.map(obra => obra.id_obra);
+                    const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
+                    Promise.all(obraPromises).then(obras => {
+                        console.log("Fetched Obras:", obras);
+                        setObras(obras.flat());
                     }).catch(error => {
-                        console.error('Error fetching houses by ID', error);
+                        console.error('Error fetching obras by ID', error);
                     });
                 }).catch(error => {
-                    console.error('Error fetching house for user', error);
+                    console.error('Error fetching obras for user', error);
                 });
             }
         }).catch(error => {
@@ -55,27 +53,24 @@ function Stock() {
         });
     }, [token, navigate]);
 
-    const filteredHouses = houses.filter(house => {
+    const filteredObras = obras.filter(obra => {
         return (
-            house.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
+            obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
-    const sortedHouses = [...filteredHouses].sort((a, b) => {
+    const sortedObras = [...filteredObras].sort((a, b) => {
         if (!orderCriteria) return 0;
         const aValue = a[orderCriteria];
         const bValue = b[orderCriteria];
-
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
-
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-
         return 0;
     });
 
@@ -93,18 +88,18 @@ function Stock() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
-                {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
-                    sortedHouses.map(house => (
+                {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
+                    sortedObras.map(obra => (
                         <GenericCard
-                            key={house.id_casa}
-                            foto={house.imagen}
-                            titulo={house.nombre}
-                            descrip1={`Usuarios Registrados: ${house.usuarios_registrados}`}
-                            descrip2={`${house.id_direccion.localidad}, ${house.id_direccion.calle}, ${house.id_direccion.numero}`}
+                            key={obra.id_obra}
+                            foto={obra.imagen}
+                            titulo={obra.nombre}
+                            descrip1={`Usuarios Registrados: ${obra.usuarios_registrados}`}
+                            descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
                         />
                     ))
                 ) : (
-                    <p>No hay casas disponibles.</p>
+                    <p>No hay obras disponibles.</p>
                 )}
             </div>
         </div>

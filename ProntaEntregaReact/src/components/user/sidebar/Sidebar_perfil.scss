@@ -2,9 +2,9 @@
     padding-top: 21rem;
     background-color: white;
     width: 20rem;
+    height: 100vh;
     position: absolute;
-    min-height: 100%; // Cambiado a min-height para asegurar que al menos llene la altura de la ventana
-    height: auto; // Asegura que crezca con el contenido
+    box-sizing: border-box;
 }
 
 .sidebar ul {

@@ -180,9 +180,9 @@ function FullNavbar ({selectedPage}) {
                   <Nav.Link onClick={() => navigate('/autos')}>Autos</Nav.Link>
                 </div>
                 
-                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/casas')}>
+                <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/obras')}>
                   <Icon icon="line-md:home-md" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
-                  <Nav.Link onClick={() => navigate('/casas')}>Casas</Nav.Link>
+                  <Nav.Link onClick={() => navigate('/obras')}>Obras</Nav.Link>
                 </div>
               </Nav>
             </Offcanvas.Body>

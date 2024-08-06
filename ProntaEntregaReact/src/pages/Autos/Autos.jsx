@@ -9,14 +9,16 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Modal from '../../components/modals/Modal.jsx';
-import {InputGroup, Form, Button} from 'react-bootstrap';
+import {InputGroup, Form, Button, Dropdown} from 'react-bootstrap';
 import postData from '../../functions/postData.jsx';
 
 function AutosComponent() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [autos, setAutos] = useState([]);
-    const [maintenanceStatus, setMaintenanceStatus] = useState({});
+
+    const [maintenanceStatus, setMaintenanceStatus] = useState({}); 
+    const [description, setDescription] = useState('');
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -51,7 +53,7 @@ function AutosComponent() {
         });
     }, [token, navigate]);
 
-    const handleMaintenanceRequest = async (id) => {
+    const handleMaintenanceRequest = async (id, description) => {
         const currentStatus = maintenanceStatus[id]?.isMaintained || false;
         const newStatus = !currentStatus;
 
@@ -66,14 +68,14 @@ function AutosComponent() {
 
         try {
             await axios.put(`http://localhost:8000/editar_transporte/${id}/`, 
-                { necesita_mantenimiento: newStatus },
+                { necesita_mantenimiento: newStatus, descripcion_mantenimiento: description },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
 
             // Actualizar la lista de autos
             setAutos(prevAutos => prevAutos.map(auto =>
                 auto.id_transporte === id
-                ? { ...auto, necesita_mantenimiento: newStatus }
+                ? { ...auto, necesita_mantenimiento: newStatus, descripcion_mantenimiento: description}
                 : auto
             ));
         } catch (error) {
@@ -169,7 +171,6 @@ function AutosComponent() {
                             const maintenance = maintenanceStatus[auto.id_transporte] || {};
                             const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
                             const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
-
                             return (
                                 <GenericCard
                                     key={auto.id_transporte}
@@ -177,16 +178,48 @@ function AutosComponent() {
                                     titulo={<><strong>Marca:</strong> {auto.marca} - <strong>Modelo:</strong> {auto.modelo}</>}
                                     descrip1={<><strong>Patente:</strong> {auto.patente}</>}
                                     descrip2={<><strong>Kilometraje:</strong> {auto.kilometraje} km</>}
+                                    descrip3={auto.descripcion_mantenimiento !== '' && (<><strong>Mantenimiento:</strong> {auto.descripcion_mantenimiento}</>)}
                                     cardStyle={cardStyle}
                                     imageStyle={imageStyle}
                                     children={
-                                        <SendButton
-                                            text={maintenance.buttonText || 'Solicitar Mantenimiento'}
-                                            backcolor={maintenance.buttonColor || '#3E4692'}
-                                            letercolor='white'
-                                            onClick={() => handleMaintenanceRequest(auto.id_transporte)}
-                                        />
-                                    }
+                                        !maintenance.isMaintained ? (
+                                            <Dropdown>
+                                              <Dropdown.Toggle as="div">
+                                                <SendButton 
+                                                    wide='15'
+                                                  text={maintenance.buttonText || 'Solicitar Mantenimiento'}
+                                                  backcolor={maintenance.buttonColor || '#3E4692'}
+                                                  letercolor='white'
+                                                />
+                                              </Dropdown.Toggle>
+                                              <Dropdown.Menu>
+                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                  <input
+                                                    type="text"
+                                                    placeholder="Añada una descripción"
+                                                    style={{ marginBottom: '1rem', width: '100%' }}
+                                                    value={description}
+                                                    onChange={(e) => setDescription(e.target.value)}
+                                                  />
+                                                  <SendButton
+                                                    wide='15'
+                                                    text={maintenance.buttonText || 'Solicitar'}
+                                                    backcolor={maintenance.buttonColor || '#3E4692'}
+                                                    letercolor='white'
+                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, description)}
+                                                  />
+                                                </div>
+                                              </Dropdown.Menu>
+                                            </Dropdown>
+                                        ) : (
+                                            <SendButton
+                                                text={maintenance.buttonText || 'Solicitar Mantenimiento'}
+                                                backcolor={maintenance.buttonColor || '#3E4692'}
+                                                letercolor='white'
+                                                onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
+                                            />
+                                        )
+                                      }
                                 />
                             );
                         })

@@ -29,7 +29,7 @@ function Landing (){
         <p style={{fontSize: '1.25rem'}}>
           Pronta Entrega busca brindar una forma de contactar a las 
           <br/>
-          casas para distribuir recursos y agilizar la administración de estos materiales.
+          obras para distribuir recursos y agilizar la administración de estos materiales.
         </p>
         </div>
         <br/>
@@ -48,14 +48,14 @@ function Landing (){
         <h1>Stock</h1>
         <br/>
         <p style={{fontSize: '1.8rem',marginTop:'1rem'}}>
-        Se proporcionará un sistema de registro del stock rápido y sencillo de utilizar para que los voluntarios puedan visualizar los recursos de sus casas, 
+        Se proporcionará un sistema de registro del stock rápido y sencillo de utilizar para que los voluntarios puedan visualizar los recursos de sus obras, 
         ingresar cambios fácilmente y recibir notificaciones en caso de exceso o escasez de un producto</p>
         </Tab>
         <Tab style={{textAlign:'center'}} eventKey="profile" title="Pedidos">
         <Icon style={{width:'10rem', height:'10rem',marginTop:'1.5rem', marginBottom:'1.5rem'}} icon="bi:cart" />
         <h1>Pedidos</h1>
         <p style={{fontSize: '1.8rem',marginTop:'1.5rem'}}>
-        Basado en el sistema anterior, si se necesita o se tiene demasiado de un producto, un voluntario puede crear un pedido o una oferta que será vista por los integrantes de todas las casas. 
+        Basado en el sistema anterior, si se necesita o se tiene demasiado de un producto, un voluntario puede crear un pedido o una oferta que será vista por los integrantes de todas las obras. 
         Este podrá ser tomado, lo que lo llevará al último apartado</p>
         </Tab>
         <Tab style={{textAlign:'center'}} eventKey="longer-tab" title="Envios">

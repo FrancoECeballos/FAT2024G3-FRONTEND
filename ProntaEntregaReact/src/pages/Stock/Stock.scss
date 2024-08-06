@@ -2,6 +2,18 @@ body {
     background-color: #ECECEC;
 }
 
+.cardstock{
+    margin: 0 auto;
+    width: 80rem;
+    height: 70vh;
+    margin-top: 2rem;
+    overflow-y: auto; /* Habilita el scroll vertical */
+    overflow-x: hidden; /* Evita el scroll horizontal */
+    box-sizing: border-box;
+}
+
+
+
 .margen-arriba {
     margin-top: 8%;
     @media (min-width: 1200px) {
