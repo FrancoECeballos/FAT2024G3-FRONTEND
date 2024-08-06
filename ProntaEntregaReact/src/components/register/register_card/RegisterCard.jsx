@@ -179,10 +179,11 @@ const RegisterCard = () => {
 
   const handleSendData = async (event) => {
     event.preventDefault();
-
-    // Verificación de campos requeridos
+  
+    // Validación de campos requeridos
     if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email || !formData.genero || !formData.id_tipodocumento) {
       alert("Please fill in all required fields.");
+      // Muestra en la consola los campos vacíos
       if (!formData.nombre) {
         console.log("Nombre vacio");
       } else if (!formData.apellido) {
@@ -204,16 +205,16 @@ const RegisterCard = () => {
       }
       return;
     }
-
+  
     let id_direccion = null;
-
+  
     const existingDireccion = direc.find(
       (d) =>
         d.calle === direcFormData.calle &&
         d.numero === direcFormData.numero &&
         d.localidad === direcFormData.localidad
     );
-
+  
     if (!existingDireccion) {
       const url = '/crear_direccion/';
       const body = direcFormData;
@@ -222,29 +223,35 @@ const RegisterCard = () => {
     } else {
       id_direccion = existingDireccion.id_direccion;
     };
-
+  
     fetchData('/direcciones/').then((result) => {
       setDirec(result);
     });
-
+  
     const updatedFormData = { ...formData, id_direccion };
     setFormData(updatedFormData);
-
-    // Crear un FormData para enviar con Axios
+  
+    // Crea un FormData para enviar con Axios
     const formDataToSend = new FormData();
     Object.entries(updatedFormData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-
+  
     const url = '/register/';
-    const result = await postData(url, formDataToSend);
-    if (result && result.token) {
-      Cookies.set('token', result.token, { expires: 7, secure: true });
-      navigate('/');
-    } else {
-      alert("Error en el registro. Por favor, revisa los datos ingresados.");
+    try {
+      const result = await postData(url, formDataToSend);
+      if (result && result.token) {
+        Cookies.set('token', result.token, { expires: 7, secure: true });
+        navigate('/');
+      } else {
+        alert("Error en el registro. Por favor, revisa los datos ingresados.");
+      }
+    } catch (error) {
+      console.error('Error al registrar:', error.response ? error.response.data : error.message);
+      alert('Error en el registro. Por favor, intenta de nuevo.');
     }
   };
+  
 
   return (
     <>
