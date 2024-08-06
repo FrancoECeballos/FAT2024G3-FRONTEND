@@ -82,6 +82,7 @@ function UserListing() {
                             onClick={() => navigate('/perfil/micuenta/', {state: {user_email: `${user.email}`}})}
                             key={user.id}
                             titulo={`${user.nombre} ${user.apellido}`}
+                            foto={user.imagen}
                             descrip1={user.email}
                             descrip2={user.documento}                        />
                     )
