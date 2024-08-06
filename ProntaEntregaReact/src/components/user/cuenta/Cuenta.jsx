@@ -22,9 +22,9 @@ const Cuenta = () => {
     const [isAdmin, setIsAdmin] = useState(location.state);
     const [direc, setDirec] = useState([]);
 
-    const [userCasas, setUserCasas] = useState([]);
-    const [casas, setCasas] = useState([]);
-    const [casaID, setCasaID] = useState([]);
+    const [userObras, setUserObras] = useState([]);
+    const [obras, setObras] = useState([]);
+    const [obraID, setObraID] = useState([]);
     const [selectedObject, setSelectedObject] = useState('');
     const today = new Date().toISOString().split('T')[0];
 
@@ -102,18 +102,18 @@ const Cuenta = () => {
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
-            fetchData(`/user/casasToken/${token}`, token).then((casasResult) => {
-                setUserCasas(casasResult);
-                setCasaID([]);
+            fetchData(`/user/obrasToken/${token}`, token).then((obrasResult) => {
+                setUserObras(obrasResult);
+                setObraID([]);
             
-                const fetchPromises = casasResult.map(casa =>
-                    fetchData(`/casa/${casa.id_casa}`, token)
+                const fetchPromises = obrasResult.map(obra =>
+                    fetchData(`/obra/${obra.id_obra}`, token)
                 );
             
                 Promise.all(fetchPromises).then((results) => {
                     const flattenedResults = results.flat();
                     const uniqueResults = Array.from(new Set(flattenedResults.map(JSON.stringify))).map(JSON.parse);
-                    setCasaID(uniqueResults);
+                    setObraID(uniqueResults);
                 });
             });
         } else {
@@ -121,22 +121,22 @@ const Cuenta = () => {
             fetchData('/direcciones/').then((result) => {
                 setDirec(result);
             });
-            fetchData(`/user/casasEmail/${location.state.user_email}`, token).then((casasResult) => {
-                setUserCasas(casasResult);
-                setCasaID([]);
+            fetchData(`/user/obrasEmail/${location.state.user_email}`, token).then((obrasResult) => {
+                setUserObras(obrasResult);
+                setObraID([]);
             
-                const fetchPromises = casasResult.map(casa =>
-                    fetchData(`/casa/${casa.id_casa}`, token)
+                const fetchPromises = obrasResult.map(obra =>
+                    fetchData(`/obra/${obra.id_obra}`, token)
                 );
             
                 Promise.all(fetchPromises).then((results) => {
                     const flattenedResults = results.flat();
                     const uniqueResults = Array.from(new Set(flattenedResults.map(JSON.stringify))).map(JSON.parse);
-                    setCasaID(uniqueResults);
+                    setObraID(uniqueResults);
                 });
             });
-            fetchData(`/casa/`, token).then((result) => {
-                setCasas(result);
+            fetchData(`/obra/`, token).then((result) => {
+                setObras(result);
             });
         }
 
@@ -154,25 +154,25 @@ const Cuenta = () => {
         navigate('/selectuser');
     };
 
-    const handleDeleteCasaFromUser = async(id) => {
-        const aux = userCasas.find(casa => casa.id_casa === id);
-        const url = (`/user/casas/delete/${aux.id_detallecasausuario}/`);
+    const handleDeleteObraFromUser = async(id) => {
+        const aux = userObras.find(obra => obra.id_obra === id);
+        const url = (`/user/obras/delete/${aux.id_detalleobrausuario}/`);
         const result = await deleteData(url, token);
-        fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
-            setUserCasas(result);
+        fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
+            setUserObras(result);
             window.location.reload();
         });
     };
 
-    const handleAddOCasaToUser = async() => {
-        const url = (`user/casas/post/`);
+    const handleAddOObraToUser = async() => {
+        const url = (`user/obras/post/`);
         const result = await postData(url, 
-            {descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la casa ${selectedObject}`, 
+            {descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`, 
             fechaingreso: today,
-            id_casa: parseInt(selectedObject),
+            id_obra: parseInt(selectedObject),
             id_usuario: userData.id_usuario}, token);
-        fetchData(`/user/casasEmail/${userData.email}`, token).then((result) => {
-            setUserCasas(result);
+        fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
+            setUserObras(result);
             window.location.reload();
         });
     };
@@ -345,28 +345,28 @@ const Cuenta = () => {
                     </Form.Select>
                 </Col>
             </Row>
-            <Row className="filacasas">
+            <Row className="filaobras">
                 <Col>
-                    <h3>Casas del Usuario</h3>
+                    <h3>Obras del Usuario</h3>
                     <ul>
-                        {casaID.length === 0 ? (
-                            <p> Este usuario no pertenece<br/>a ninguna casa </p>
+                        {obraID.length === 0 ? (
+                            <p> Este usuario no pertenece<br/>a ninguna obra </p>
                         ) : (
-                            casaID.map(usercasa => (
-                                <li key={usercasa.id_casa}>
-                                    {usercasa.nombre}
-                                    {isAdmin && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteCasaFromUser(usercasa.id_casa)}></SendButton>}
+                            obraID.map(userobra => (
+                                <li key={userobra.id_obra}>
+                                    {userobra.nombre}
+                                    {isAdmin && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteObraFromUser(userobra.id_obra)}></SendButton>}
                                 </li>
                             ))
                         )}
                     </ul>
                     {isAdmin && <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
                         <option disabled hidden value="">Select an object to add</option>
-                        {casas.map(casa => (
-                            !casaID.some(casaID => casaID.id_casa === casa.id_casa) ? <option key={casa.id_casa} value={casa.id_casa}>{casa.nombre}</option> : null
+                        {obras.map(obra => (
+                            !obraID.some(obraID => obraID.id_obra === obra.id_obra) ? <option key={obra.id_obra} value={obra.id_obra}>{obra.nombre}</option> : null
                         ))}
                     </Form.Select>}
-                    {isAdmin && <SendButton onClick={handleAddOCasaToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
+                    {isAdmin && <SendButton onClick={handleAddOObraToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
                 </Col>
             </Row>
             <Row className="filabuton">

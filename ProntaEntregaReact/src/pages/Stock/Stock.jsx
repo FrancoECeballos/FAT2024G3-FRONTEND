@@ -37,7 +37,7 @@ function Stock() {
                 });
             } else {
                 fetchData(`/user/stockEmail/${email}/`, token).then((result) => {
-                    const houseIds = result.map(house => house.id_casa.id_casa);
+                    const houseIds = result.map(house => house.id_obra.id_obra);
                     const housePromises = houseIds.map(id => fetchData(`/stock/${id}`, token));
                     Promise.all(housePromises).then(houses => {
                         console.log("Fetched Houses:", houses);
@@ -56,16 +56,16 @@ function Stock() {
 
     const filteredHouses = houses.filter(house => {
         return (
-            house.id_casa.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_casa.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            house.id_casa.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
+            house.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            house.id_obra.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            house.id_obra.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
     const sortedHouses = [...filteredHouses].sort((a, b) => {
         if (!orderCriteria) return 0;
-        const aValue = a.id_casa[orderCriteria];
-        const bValue = b.id_casa[orderCriteria];
+        const aValue = a.id_obra[orderCriteria];
+        const bValue = b.id_obra[orderCriteria];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
@@ -95,12 +95,12 @@ function Stock() {
                 {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
                     sortedHouses.map(house => (
                         <GenericCard
-                            onClick={() => navigate(`/casa/${house.id_stock}/categoria`, {state: {id_stock: `${house.id_stock}`}})} 
+                            onClick={() => navigate(`/obra/${house.id_stock}/categoria`, {state: {id_stock: `${house.id_stock}`}})} 
                             key={house.id_stock}
-                            foto={house.id_casa.imagen}
-                            titulo={house.id_casa.nombre}
-                            descrip1={`Usuarios Registrados: ${house.id_casa.usuarios_registrados}`}
-                            descrip2={`${house.id_casa.id_direccion.localidad}, ${house.id_casa.id_direccion.calle}, ${house.id_casa.id_direccion.numero}`}
+                            foto={house.id_obra.imagen}
+                            titulo={house.id_obra.nombre}
+                            descrip1={`Usuarios Registrados: ${house.id_obra.usuarios_registrados}`}
+                            descrip2={`${house.id_obra.id_direccion.localidad}, ${house.id_obra.id_direccion.calle}, ${house.id_obra.id_direccion.numero}`}
                         />
                     ))
                 ) : (

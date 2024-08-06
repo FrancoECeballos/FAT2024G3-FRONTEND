@@ -42,7 +42,7 @@ function Products() {
 
     const fetchProducts = async (id, firstTime) => {
         try {
-            const productsData = await fetchData(`casa/${stockId}/categoria_producto/${id}/${categoriaID}/`, token);
+            const productsData = await fetchData(`obra/${stockId}/categoria_producto/${id}/${categoriaID}/`, token);
             const allProductsData = await fetchData(`productos/`, token);
     
             const combinedProducts = allProductsData.map(product => {
@@ -78,7 +78,7 @@ function Products() {
             setUnidadMedida(result);
         });
 
-        fetchData(`catprod_casa/${categoriaID}/`, token).then((result) => {
+        fetchData(`catprod_obra/${categoriaID}/`, token).then((result) => {
             setCategoriaProductos(result);
             fetchProducts('Todos', true);
         });

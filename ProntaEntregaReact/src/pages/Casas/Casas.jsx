@@ -29,17 +29,17 @@ function Stock() {
             const email = result.email;
 
             if (result.is_superuser) {
-                fetchData('/casa/', token).then((result) => {
+                fetchData('/obra/', token).then((result) => {
                     console.log("Houses for Admin:", result);
                     setHouses(result);
                 }).catch(error => {
                     console.error('Error fetching houses for admin', error);
                 });
             } else {
-                fetchData(`/user/casasEmail/${email}/`, token).then((result) => {
+                fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
                     console.log("House for User:", result);
-                    const houseIds = result.map(house => house.id_casa);
-                    const housePromises = houseIds.map(id => fetchData(`/casa/${id}`, token));
+                    const houseIds = result.map(house => house.id_obra);
+                    const housePromises = houseIds.map(id => fetchData(`/obra/${id}`, token));
                     Promise.all(housePromises).then(houses => {
                         console.log("Fetched Houses:", houses);
                         setHouses(houses.flat());
@@ -96,7 +96,7 @@ function Stock() {
                 {Array.isArray(sortedHouses) && sortedHouses.length > 0 ? (
                     sortedHouses.map(house => (
                         <GenericCard
-                            key={house.id_casa}
+                            key={house.id_obra}
                             foto={house.imagen}
                             titulo={house.nombre}
                             descrip1={`Usuarios Registrados: ${house.usuarios_registrados}`}

@@ -9,7 +9,7 @@ const Sidebar = ({ isAdmin = false }) => {
               <SelectableButton texto="Mi cuenta" link="/perfil/micuenta"/>
               <SelectableButton texto="Seguridad y Privacidad" link="/perfil/seguridad"/>
               <SelectableButton texto="Datos Personales" link="/perfil/datos_personales"/>
-              <SelectableButton texto="Casas" link="/casas"/>
+              <SelectableButton texto="Obras" link="/obras"/>
               {isAdmin ? (
                   <SelectableButton texto="Administrar Usuarios" link="/selectuser"/>
               ) : null}
