@@ -182,15 +182,17 @@ function AutosComponent() {
                                     children={
                                         <Dropdown>
                                             <Dropdown.Toggle as="div">
-                                                <SendButton
+                                                <SendButton 
+                                                    wide='15'
                                                     text={maintenance.buttonText || 'Solicitar Mantenimiento'}
                                                     backcolor={maintenance.buttonColor || '#3E4692'}
                                                     letercolor='white'/>
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
-                                                <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                                     <input type="text" placeholder="Enter text" style={{ marginBottom: '1rem', width: '100%' }} />
                                                     <SendButton
+                                                    wide='15'
                                                     text={maintenance.buttonText || 'Solicitar Mantenimiento'}
                                                     backcolor={maintenance.buttonColor || '#3E4692'}
                                                     letercolor='white'
