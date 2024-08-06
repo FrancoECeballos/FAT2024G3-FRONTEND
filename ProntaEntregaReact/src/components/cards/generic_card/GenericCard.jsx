@@ -9,24 +9,28 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                 onClick={onClick} 
                 style={{ 
                     ...cardStyle, 
-                    width: '100%', 
-                    maxWidth: '800px', 
+                    width: '100vw', // Ocupa todo el ancho de la ventana gráfica
+                    maxWidth: '100%', // Asegúrate de que no se exceda el 100% del ancho
                     borderRadius: '1rem', 
                     boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', 
-                    padding: '0.5rem' 
+                    padding: '0.5rem',
+                    overflow: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between'
                 }}
             >
-                <Row className="g-0">
+                <Row className="g-0 flex-grow-1">
                     <Col xs={12} md={3} className="d-flex justify-content-center align-items-center">
                         <img 
                             src={foto || noImg} 
                             alt="Card" 
                             style={{ 
                                 ...imageStyle, 
-                                width: '10rem', 
+                                width: '50%', 
                                 height: 'auto', 
                                 borderRadius: '1rem', 
-                                maxHeight: '10rem', 
+                                maxHeight: '18rem', 
                                 objectFit: 'cover' 
                             }} 
                         />
@@ -42,7 +46,7 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                                 <p>{descrip5}</p>
                             </div>
                         </div>
-                    </Col> 
+                    </Col>
                     <Col xs={12} md={2} className="d-flex justify-content-end align-items-center">
                         {children}
                     </Col>
