@@ -2,6 +2,18 @@ body {
     background-color: #ECECEC;
 }
 
+.cardstock{
+    width: 100%; /* Puedes ajustar el ancho según necesites */
+    height: 100vh; /* Define la altura fija del contenedor */
+    margin-top: 2rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    overflow-y: auto; /* Habilita el scroll vertical */
+    overflow-x: hidden; /* Evita el scroll horizontal */
+    box-sizing: border-box;
+}
+
+
 .margen-arriba {
     margin-top: 8%;
     @media (min-width: 1200px) {
