@@ -6,6 +6,9 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
+import Modal from '../../components/modals/Modal.jsx';
+import {InputGroup, Form, Button} from 'react-bootstrap';
+import postData from '../../functions/postData.jsx';
 
 function Pedidos() {
     const navigate = useNavigate();
@@ -14,6 +17,11 @@ function Pedidos() {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+
+    const [formCategoryData, setFormCategoryData] = useState({
+        "nombre": "",
+        "descripcion": "",
+      });
 
     useEffect(() => {
         if (!token) {
@@ -60,16 +68,37 @@ function Pedidos() {
         setSearchQuery(value);
     };
 
+    const handleInputChange = async (event) => {
+        const { name, value } = event.target;
+        setFormCategoryData((prevData) => {
+            const updatedData = { ...prevData, [name]: value };
+            console.log(updatedData);
+            return updatedData;
+        });
+    };
 
+    const nuevopedido = () => {
+        postData('/crear_pedido', formCategoryData, token).then(() => {
+            window.location.reload();
+        });
+    };
     return (
         <div>
             <FullNavbar selectedPage='Pedidos'/>
             <div className='margen-arriba'>
                 <h2 style={{marginLeft: '7rem'}}>Pedidos</h2>
-                {/* Botón para navegar a crear_pedido */}
-                <button onClick={() => navigate('/crear_pedido')} style={{marginLeft: '7rem', marginBottom: '1rem'}}>Crear Pedido</button>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='pedido-list'>
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                        <Modal openButtonText='¿No encuentra su pedido? Añadalo' openButtonWidth='20' title='Nuevo Pedido' saveButtonText='Crear' handleSave={nuevopedido}  content={
+                            <div>
+                                <h2 className='centered'> Nuevo Pedido </h2>
+                                <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            </div>
+                        }></Modal>
+                    </div>
+
                     {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
                         sortedPedidos.map(pedido => (
                             <GenericCard

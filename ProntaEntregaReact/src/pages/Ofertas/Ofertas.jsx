@@ -6,6 +6,9 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
+import Modal from '../../components/modals/Modal.jsx';
+import {InputGroup, Form, Button} from 'react-bootstrap';
+import postData from '../../functions/postData.jsx';
 
 function Ofertas() {
     const navigate = useNavigate();
@@ -14,6 +17,11 @@ function Ofertas() {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+
+    const [formCategoryData, setFormCategoryData] = useState({
+        "nombre": "",
+        "descripcion": "",
+      });
 
     useEffect(() => {
         if (!token) {
@@ -60,6 +68,21 @@ function Ofertas() {
         setSearchQuery(value);
     };
 
+    const handleInputChange = async (event) => {
+        const { name, value } = event.target;
+        setFormCategoryData((prevData) => {
+            const updatedData = { ...prevData, [name]: value };
+            console.log(updatedData);
+            return updatedData;
+        });
+    };
+
+    const nuevaoferta = () => {
+        postData('/crear_oferta', formCategoryData, token).then(() => {
+            window.location.reload();
+        });
+    };
+
 
     return (
         <div>
@@ -68,6 +91,15 @@ function Ofertas() {
                 <h2 style={{marginLeft: '7rem'}}>Ofertas</h2>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='oferta-list'>
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                        <Modal openButtonText='¿No encuentra su oferta? Añadala' openButtonWidth='20' title='Nueva Oferta' saveButtonText='Crear' handleSave={nuevaoferta}  content={
+                            <div>
+                                <h2 className='centered'> Nueva Oferta </h2>
+                                <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            </div>
+                        }></Modal>
+                    </div>
                     {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
                         sortedOfertas.map(oferta => (
                             <GenericCard
