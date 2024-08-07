@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 
 function Footer() {
   return (
-    <footer className="footer-16371">
+    <footer className="footer">
       <div className="footer-container">
         <div className="social-links">
           <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
