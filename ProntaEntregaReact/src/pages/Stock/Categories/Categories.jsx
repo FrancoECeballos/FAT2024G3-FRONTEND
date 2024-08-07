@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import './Categories.scss';
 
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
 import SendButton from '../../../components/buttons/send_button/send_button.jsx';
+import Footer from '../../../components/footer/Footer.jsx';
 
 import fetchData from '../../../functions/fetchData';
 
@@ -117,6 +119,7 @@ function Categories() {
                         </div>
                     }></Modal>
                 </div>
+                <div className='cardCategori'>
                 {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
                         onClick={() => navigate(`/obra/${stockId}/categoria/${category.id_categoria}/`, { state: { id_stock: stockId } })}
@@ -128,8 +131,9 @@ function Categories() {
                 )) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
                 )}
-                
+                </div>
             </div>
+        <Footer/>
         </div>
     );
 }

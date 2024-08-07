@@ -14,7 +14,6 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                     borderRadius: '1rem', 
                     boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', 
                     padding: '0.5rem',
-                    overflow: 'auto',
                     justifyContent: 'space-between'
                 }}
             >
