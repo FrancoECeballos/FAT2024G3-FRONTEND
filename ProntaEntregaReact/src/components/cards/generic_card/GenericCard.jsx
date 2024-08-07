@@ -9,7 +9,7 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                 onClick={onClick} 
                 style={{ 
                     ...cardStyle, 
-                    width: '100rem', // Ocupa todo el ancho de la ventana gráfica
+                    width: '80%', // Ocupa todo el ancho de la ventana gráfica
                     maxWidth: '100%', // Asegúrate de que no se exceda el 100% del ancho
                     borderRadius: '1rem', 
                     boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', 
