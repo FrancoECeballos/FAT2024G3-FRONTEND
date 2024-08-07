@@ -1,59 +1,27 @@
-.footer-16371 {
-    background-color: transparent;
+.footer {
+    height: 6rem;
+    border: 1px solid #cfd4d8;
     color: black;
-    padding: 2rem;
     text-align: center;
   }
   
   .footer-container {
-    max-width: 1200px;
+    padding-top: 1rem;
     margin: 0 auto;
-    padding: 0 20px;
   }
   
   .social-links a {
     color: black;
-    margin: 0 10px;
-    font-size: 24px;
+    padding: 0.8rem;
+    font-size: 1.5rem;
     text-decoration: none;
   }
   
   .social-links a:hover {
     color: #495057;
   }
-  
-  .creators h5 {
-    margin-top: 20px;
-    font-size: 18px;
-  }
-  
-  .creators ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .creators ul li {
-    margin: 5px 0;
-  }
-  
-  .creators ul li a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  .creators ul li a:hover {
-    text-decoration: underline;
-  }
-  
-  .footer-bottom {
-    margin-top: 20px;
-  }
-  
-  .footer-bottom a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .footer-bottom a:hover {
-    text-decoration: underline;
+
+  .footer-bottom{
+    padding-top: 0.8rem;
+    margin-bottom: 0px;
   }
