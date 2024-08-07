@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
+import GenericTable from '../../components/tables/generic_table/generic_table.jsx';
+import Cookies from 'js-cookie';
 
 import fetchData from '../../functions/fetchData.jsx';
 
 
 const Novedades = () => {
-    const [producto, setProducto] = useState(null);
+    const [unidadMedida, setUnidadMedida] = useState([]);
+    const token = Cookies.get('token');
+    const headers = ["id", "nombre", "descripcion", "identificador"];
 
     useEffect(() => {
-        fetchData('/producto/1/')
-            .then(data => {
-                setProducto(data);
-                console.log(data);
-            })
-            .catch(error => console.error(error));
-    }, []);
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+        fetchData(`unidad_medida/`, token).then((result) => {
+            setUnidadMedida(result);
+        });
+    });
 
     return (
         <div>
-            <FullNavbar />
-            {producto && (
-                <GenericCard
-                    titulo={producto[0].nombre}
-                    foto={`${producto[0].imagen}`} // Asumiendo que 'imagen' es el campo con la ruta de la imagen
-                    descrip1={producto[0].descripcion} // Ajusta según los campos disponibles en tu producto
-                    descrip2={producto[0].imagen}
-                />
-            )}
+            <FullNavbar/>
+            <GenericTable headers={headers} data={unidadMedida}
+            />
         </div>
     );
 };

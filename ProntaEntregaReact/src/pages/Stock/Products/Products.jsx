@@ -37,13 +37,17 @@ function Products() {
     const [detalle, setDetalle] = useState([]);
     const [showNewProductModal, setShowNewProductModal] = useState(false);
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const [productSearchQuery, setProductSearchQuery] = useState('');
+    const [detailSearchQuery, setDetailSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+    const [detailOrderCriteria, setDetailOrderCriteria] = useState(null);
 
     const fetchProducts = async (id, firstTime) => {
         try {
             const productsData = await fetchData(`obra/${stockId}/categoria_producto/${id}/${categoriaID}/`, token);
+            console.log(productsData);
             const allProductsData = await fetchData(`productos/`, token);
+            console.log(allProductsData);
     
             const combinedProducts = allProductsData.map(product => {
                 const detalles = productsData.filter(item => item.id_producto.id_producto === product.id_producto);
@@ -61,7 +65,6 @@ function Products() {
                 setProducts(nonCombinedProducts);
             }
             setCombinedProducts(combinedProducts);
-            console.log('Combined Products:', combinedProducts);
         } catch (error) {
             console.error('Error fetching products:', error);
             setCombinedProducts([]);
@@ -87,8 +90,8 @@ function Products() {
 
     const filteredProducts = combinedProducts.filter(product => {
         return (
-            product.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.descripcion?.toLowerCase().includes(searchQuery.toLowerCase())
+            product.nombre?.toLowerCase().includes(productSearchQuery.toLowerCase()) ||
+            product.descripcion?.toLowerCase().includes(productSearchQuery.toLowerCase())
         );
     });
 
@@ -114,8 +117,17 @@ function Products() {
         { type: 'id_producto.id_unidadmedida.nombre', label: 'Unidad de Medida' },
     ];
 
+    const detailFilters = [
+        { type: 'cantidad', label: 'Cantidad' },
+        { type: 'cantidadUnidades', label: 'Cantidad de Unidades' },
+    ];
+
     const handleSearchChange = (value) => {
-        setSearchQuery(value);
+        setProductSearchQuery(value);
+    };
+
+    const handleDetailSearchChange = (value) => {
+        setDetailSearchQuery(value);
     };
 
     const newDetail = (product) => {
@@ -346,22 +358,54 @@ function Products() {
                                     } />
                             }
                             accordionChildren={
-                                <div className="little-cards-container">
-                                    {Array.isArray(product.id_detalle) && product.id_detalle.map(detail => {
+                                <>
+                                    {(() => {
+                                        const filteredDetails = product.id_detalle.filter(detalle => {
+                                            return (
+                                                detalle.cantidad?.toString().includes(detailSearchQuery) ||
+                                                detalle.cantidadUnidades?.toString().includes(detailSearchQuery)
+                                            );
+                                        });
+                                        
+                                        const sortedDetails = [...filteredDetails].sort((a, b) => {
+                                            if (!detailOrderCriteria) return 0;
+                                            const aValue = a[detailOrderCriteria];
+                                            const bValue = b[detailOrderCriteria];
+                            
+                                            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                                                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+                                            }
+                            
+                                            if (typeof aValue === 'number' && typeof bValue === 'number') {
+                                                return bValue - aValue;
+                                            }
+                            
+                                            return 0;
+                                        });
+                            
                                         return (
-                                            <LittleCard
-                                                key={detail.id_detallestockproducto}
-                                                foto={detail.id_producto.imagen}
-                                                titulo={detail.id_unidadmedida.nombre}
-                                                descrip1={
-                                                    detail.id_unidadmedida.paquete
-                                                        ? `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador} ${detail.cantidadUnidades}`
-                                                        : `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador}`
-                                                }
-                                            />
+                                            <>
+                                                <SearchBar onSearchChange={handleDetailSearchChange} onOrderChange={setDetailOrderCriteria} filters={detailFilters} />
+                                                <div className="little-cards-container" style={{marginTop: '1rem'}}>
+                                                    {Array.isArray(sortedDetails) && sortedDetails.map(detail => {
+                                                        return (
+                                                            <LittleCard
+                                                                key={detail.id_detallestockproducto}
+                                                                foto={detail.id_producto.imagen}
+                                                                titulo={detail.id_unidadmedida.nombre}
+                                                                descrip1={
+                                                                    detail.id_unidadmedida.paquete
+                                                                        ? `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador} ${detail.cantidadUnidades}`
+                                                                        : `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador}`
+                                                                }
+                                                            />
+                                                        );
+                                                    })}
+                                                </div>
+                                            </>
                                         );
-                                    })}
-                                </div>
+                                    })()}
+                                </>
                             }
                         />
                     );
