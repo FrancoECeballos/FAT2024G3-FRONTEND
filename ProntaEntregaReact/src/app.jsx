@@ -44,7 +44,7 @@ function App() {
         <Route path="/obras" element={<Obras />} />
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/autos" element={<ObrasAutos />} />
-        <Route path="/autos/: obraId" element={<Autos />} />
+        <Route path="/autos/:obraId" element={<Autos />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
         <Route path="/landing" element={<Landing />} />
       </Routes>
