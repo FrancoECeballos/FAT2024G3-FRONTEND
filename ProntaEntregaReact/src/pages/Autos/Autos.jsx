@@ -16,9 +16,13 @@ function AutosComponent() {
     const navigate = useNavigate();
     const { obraId } = useParams();
     const token = Cookies.get('token');
+
+    const [currentObra, setCurrentObra] = useState(false);
+
     const [autos, setAutos] = useState([]);
     const [maintenanceStatus, setMaintenanceStatus] = useState({}); 
     const [description, setDescription] = useState('');
+
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [formCategoryData, setFormCategoryData] = useState({
@@ -33,6 +37,7 @@ function AutosComponent() {
             navigate('/login');
             return;
         }
+
         fetchData(`/transporte/${obraId}`, token).then((result) => {
             setAutos(result);
             const initialStatus = result.reduce((acc, auto) => {
@@ -47,6 +52,11 @@ function AutosComponent() {
         }).catch(error => {
             console.error('Error fetching autos:', error);
         });
+
+        fetchData(`/obra/${obraId}`, token).then((result) => {
+            setCurrentObra(result[0].nombre);
+        });
+
     }, [token, navigate]);
 
     const handleMaintenanceRequest = async (id, description) => {
@@ -172,6 +182,10 @@ function AutosComponent() {
         <div>
             <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
+                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8%' }}>
+                    <h4 style={{ color: 'grey', cursor: 'pointer' }} onClick={() => navigate('/autos')} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>Autos</h4>
+                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentObra}</h4>
+                </div>
                 <h2 style={{ marginLeft: '7rem' }}>Lista de Autos</h2>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>

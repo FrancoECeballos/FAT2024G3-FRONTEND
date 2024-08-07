@@ -74,7 +74,7 @@ const Cuenta = () => {
                     <input type="email" id="email" name="email" value={userData.email} disabled />
 
                     <label htmlFor="fecha_union">Fecha de unión:</label>
-                    <input type="text" id="fecha_union" name="fecha_union" value={new Date(userData.fecha_union).toLocaleDateString()} disabled />
+                    <input type="text" id="fecha_union" name="fecha_union" value={userData.fecha_union} disabled />
 
                 </Col>
                 <Col>
@@ -82,7 +82,11 @@ const Cuenta = () => {
                     <input type="text" id="telefono" name="telefono" value={userData.telefono} disabled />
 
                     <label htmlFor="direccion">Dirección:</label>
-                    <input type="text" id="id_direccion" name="id_direccion" value={userData.id_direccion} disabled />
+                    <InputGroup className="groupderec">
+                        <input style={{width:'10rem'}} type="text" id="id_direccion" name="id_direccion.localidad" value={userData.id_direccion.localidad} disabled />
+                        <input style={{width:'10rem'}} type="text" id="id_direccion" name="id_direccion.calle" value={userData.id_direccion.calle} disabled />
+                        <input style={{width:'5rem'}} type="text" id="id_direccion" name="id_direccion.numero" value={userData.id_direccion.numero} disabled />
+                    </InputGroup>
 
                     <label htmlFor="genero">Género:</label>
                     <select className="genero" name="genero" id="genero" value={userData.genero} disabled>

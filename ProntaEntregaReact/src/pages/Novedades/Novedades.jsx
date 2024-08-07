@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
+import Cookies from 'js-cookie';
 
 import fetchData from '../../functions/fetchData.jsx';
 

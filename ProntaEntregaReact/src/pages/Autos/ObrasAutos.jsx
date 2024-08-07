@@ -91,6 +91,7 @@ function ObrasAutos() {
         <div>
             <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
+            <h4 style={{marginLeft: '8%', color: 'grey'}}>Autos</h4>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div className='cardstock'>
                 {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
