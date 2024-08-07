@@ -3,13 +3,22 @@ body {
 }
 
 .cardstock{
-    margin: 0 auto;
-    width: 120rem;
+    margin-left: 15rem;
+    width: 90rem;
     height: 70vh;
     margin-top: 2rem;
-    overflow-y: auto; /* Habilita el scroll vertical */
-    overflow-x: hidden; /* Evita el scroll horizontal */
+    overflow-y: scroll; /* Habilita el desplazamiento vertical */
+    overflow-x: hidden; /* Oculta el desplazamiento horizontal */
     box-sizing: border-box;
+}
+
+.cardstock {
+  -ms-overflow-style: none;  /* IE y Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.cardstock::-webkit-scrollbar {
+  display: none; /* Safari y Chrome */
 }
 
 
