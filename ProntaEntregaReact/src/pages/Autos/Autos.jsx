@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -14,6 +14,7 @@ import postData from '../../functions/postData.jsx';
 
 function AutosComponent() {
     const navigate = useNavigate();
+    const { obraId } = useParams();
     const token = Cookies.get('token');
     const [autos, setAutos] = useState([]);
     const [maintenanceStatus, setMaintenanceStatus] = useState({}); 
@@ -32,7 +33,7 @@ function AutosComponent() {
             navigate('/login');
             return;
         }
-        fetchData('/transporte/', token).then((result) => {
+        fetchData(`/transporte/${obraId}`, token).then((result) => {
             setAutos(result);
             const initialStatus = result.reduce((acc, auto) => {
                 acc[auto.id_transporte] = {
