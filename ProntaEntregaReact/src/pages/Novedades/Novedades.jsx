@@ -23,7 +23,7 @@ const Novedades = () => {
 
     return (
         <div>
-            <FullNavbar/>
+            <FullNavbar selectedPage='Novedades'/>
             <UploadImage/>
         </div>
     );

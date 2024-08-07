@@ -9,8 +9,8 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                 onClick={onClick} 
                 style={{ 
                     ...cardStyle, 
-                    width: '100rem', // Ocupa todo el ancho de la ventana gráfica
-                    maxWidth: '100%', // Asegúrate de que no se exceda el 100% del ancho
+                    width: '80%', // Ocupa todo el ancho de la ventana gráfica
+                    maxWidth: '80%', // Asegúrate de que no se exceda el 100% del ancho
                     borderRadius: '1rem', 
                     boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', 
                     padding: '0.5rem',
@@ -24,10 +24,11 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                             alt="Card" 
                             style={{ 
                                 ...imageStyle, 
-                                width: '50%', 
+                                width: '12rem', 
                                 height: 'auto', 
                                 borderRadius: '1rem', 
-                                maxHeight: '18rem', 
+                                maxHeight: '12rem', 
+                                minHeight: '12rem',
                                 objectFit: 'cover' 
                             }} 
                         />

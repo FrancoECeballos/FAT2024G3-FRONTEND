@@ -5,19 +5,8 @@ body {
 .cardstock{
     height: 70vh;
     margin-top: 2rem;
-    overflow-y: scroll; /* Habilita el desplazamiento vertical */
-    overflow-x: hidden; /* Oculta el desplazamiento horizontal */
-    }
-
-.cardstock {
-  -ms-overflow-style: none;  /* IE y Edge */
-  scrollbar-width: none;  /* Firefox */
+    overflow: auto;
 }
-
-.cardstock::-webkit-scrollbar {
-  display: none; /* Safari y Chrome */
-}
-
 
 
 .margen-arriba {

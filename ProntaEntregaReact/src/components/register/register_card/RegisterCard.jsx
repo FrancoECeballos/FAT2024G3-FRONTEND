@@ -237,6 +237,7 @@ const RegisterCard = () => {
         <Card style={{ width: '100%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
             <Row>
+            <UploadImage wide='5'/>
               <Col xs={12} sm={8} md={8} lg={8} xl={8} xxl={8}>
                 <Form>
                   <Form.Group className='mb-2'>
@@ -326,9 +327,6 @@ const RegisterCard = () => {
                   <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
                 </Form>
-              </Col>
-              <Col xs={12} sm={4} md={4} lg={4} xl={4} xxl={4} className="d-flex flex-column align-items-center move-to-top">
-                <UploadImage/>
               </Col>
               <Col xs={12} className="d-flex justify-content-end w-100 move-to-bottom">
                 <div style={{ marginTop: '5%' }}>
