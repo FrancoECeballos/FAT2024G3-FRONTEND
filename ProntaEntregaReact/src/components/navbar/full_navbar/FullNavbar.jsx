@@ -30,6 +30,11 @@ function FullNavbar ({selectedPage}) {
 
   const handleCloseModal = () => setShowModal(false);
 
+  const handleLogout = () => {
+    Cookies.remove('token');
+    navigate('/login');
+  }
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (token) {
@@ -167,7 +172,7 @@ function FullNavbar ({selectedPage}) {
 
                 <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/ofertas')}>
                   <Icon icon="line-md:upload-outline" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
-                  <Nav.Link onClick={() => navigate('/ofertas')}>Ofertas</Nav.Link>
+                  <Nav.Link onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/entregas')}>
@@ -183,6 +188,10 @@ function FullNavbar ({selectedPage}) {
                 <div style={{ display: 'flex', alignItems: 'center', color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/obras')}>
                   <Icon icon="line-md:home-md" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
                   <Nav.Link onClick={() => navigate('/obras')}>Obras</Nav.Link>
+                </div>
+
+                <div style={{position: 'absolute', bottom: '0.4rem', right: '0.6rem', color: '#D9D9D9'}}>
+                  <Nav.Link onClick={handleLogout}>Cerrar Sesión</Nav.Link>
                 </div>
               </Nav>
             </Offcanvas.Body>
