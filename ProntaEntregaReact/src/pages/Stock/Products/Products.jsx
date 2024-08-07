@@ -31,6 +31,9 @@ function Products() {
     const [categoriaProductos, setCategoriaProductos] = useState([]);
     const [selectedOperacion, setSelectedOperacion] = useState('sumar');
 
+    const [currentObra, setCurrentObra] = useState(false);
+    const [currentCategory, setCurrentCategory] = useState(false);
+
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState({});
@@ -84,6 +87,14 @@ function Products() {
         fetchData(`catprod_obra/${categoriaID}/`, token).then((result) => {
             setCategoriaProductos(result);
             fetchProducts('Todos', true);
+        });
+
+        fetchData(`/stock/${stockId}`, token).then((result) => {
+            setCurrentObra(result[0].id_obra.nombre);
+        });
+
+        fetchData(`/categoria/${categoriaID}`, token).then((result) => {
+            setCurrentCategory(result[0].nombre);
         });
 
     }, [token, navigate, stockId, categoriaID]);
@@ -220,6 +231,11 @@ function Products() {
         <div>
             <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
+                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8%' }}>
+                    <h4 style={{ color: 'grey', cursor: 'pointer' }} onClick={() => navigate('/stock')} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>Stock</h4>
+                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/obra/${stockId}/categoria`, { state: { id_stock: `${stockId}` } })} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>{currentObra}</span></h4>
+                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentCategory}</h4>
+                </div>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
                     <Tabs

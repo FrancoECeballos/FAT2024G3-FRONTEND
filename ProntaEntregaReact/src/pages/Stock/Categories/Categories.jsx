@@ -21,7 +21,10 @@ function Categories() {
     const navigate = useNavigate();
     const { stockId } = useParams();
     const token = Cookies.get('token');
+
     const [categories, setCategories] = useState([]);
+    const [currentObra, setCurrentObra] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
@@ -42,6 +45,10 @@ function Categories() {
             setCategories(result);
         }).catch(error => {
             console.error('Error fetching categories:', error);
+        });
+
+        fetchData(`/stock/${stockId}`, token).then((result) => {
+            setCurrentObra(result[0].id_obra.nombre);
         });
     }, [token, navigate, stockId]);
 
@@ -96,6 +103,10 @@ function Categories() {
         <div>
             <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
+                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8%' }}>
+                    <h4 style={{ color: 'grey', cursor: 'pointer' }} onClick={() => navigate('/stock')} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>Stock</h4>
+                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentObra}</h4>
+                </div>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Nueva Categoria' saveButtonText='Crear' handleSave={newcategory} content={
