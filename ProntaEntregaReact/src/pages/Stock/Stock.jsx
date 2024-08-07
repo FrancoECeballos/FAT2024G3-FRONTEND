@@ -83,29 +83,34 @@ function Stock() {
         setSearchQuery(value);
     };
 
+    if (Array.isArray(sortedObras) && sortedObras.length === 1) {
+        const obra = sortedObras[0];
+        navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } });
+    }
+    
     return (
         <div>
-            <FullNavbar selectedPage='Stock'/>
+            <FullNavbar selectedPage='Stock' />
             <div className='margen-arriba'>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='cardstock'>
-                {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
-                    sortedObras.map(obra => (
-                        <GenericCard
-                            onClick={() => navigate(`/obra/${obra.id_stock}/categoria`, {state: {id_stock: `${obra.id_stock}`}})} 
-                            key={obra.id_stock}
-                            foto={obra.id_obra.imagen}
-                            titulo={obra.id_obra.nombre}
-                            descrip1={`Usuarios Registrados: ${obra.id_obra.usuarios_registrados}`}
-                            descrip2={`${obra.id_obra.id_direccion.localidad}, ${obra.id_obra.id_direccion.calle}, ${obra.id_obra.id_direccion.numero}`}
-                        />
-                    ))
-                ) : (
-                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay obras disponibles.</p>
-                )}
-                </div> 
+                    {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
+                        sortedObras.map(obra => (
+                            <GenericCard
+                                onClick={() => navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } })}
+                                key={obra.id_stock}
+                                foto={obra.id_obra.imagen}
+                                titulo={obra.id_obra.nombre}
+                                descrip1={`Usuarios Registrados: ${obra.id_obra.usuarios_registrados}`}
+                                descrip2={`${obra.id_obra.id_direccion.localidad}, ${obra.id_obra.id_direccion.calle}, ${obra.id_obra.id_direccion.numero}`}
+                            />
+                        ))
+                    ) : (
+                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
+                    )}
+                </div>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 }
