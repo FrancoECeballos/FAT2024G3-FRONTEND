@@ -16,29 +16,24 @@ function AutosComponent() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [autos, setAutos] = useState([]);
-
     const [maintenanceStatus, setMaintenanceStatus] = useState({}); 
     const [description, setDescription] = useState('');
-
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
-
     const [formCategoryData, setFormCategoryData] = useState({
         "marca": "",
         "modelo": "",
         "patente": "",
         "kilometros": "",
-      });
+    });
 
     useEffect(() => {
         if (!token) {
             navigate('/login');
             return;
         }
-
         fetchData('/transporte/', token).then((result) => {
             setAutos(result);
-
             const initialStatus = result.reduce((acc, auto) => {
                 acc[auto.id_transporte] = {
                     isMaintained: auto.necesita_mantenimiento,
@@ -56,7 +51,6 @@ function AutosComponent() {
     const handleMaintenanceRequest = async (id, description) => {
         const currentStatus = maintenanceStatus[id]?.isMaintained || false;
         const newStatus = !currentStatus;
-
         setMaintenanceStatus(prevState => ({
             ...prevState,
             [id]: {
@@ -65,13 +59,11 @@ function AutosComponent() {
                 buttonText: newStatus ? 'Mantenimiento realizado' : 'Solicitar Mantenimiento'
             }
         }));
-
         try {
             await axios.put(`http://localhost:8000/editar_transporte/${id}/`, 
                 { necesita_mantenimiento: newStatus, descripcion_mantenimiento: description },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
-
             // Actualizar la lista de autos
             setAutos(prevAutos => prevAutos.map(auto =>
                 auto.id_transporte === id
@@ -92,6 +84,41 @@ function AutosComponent() {
         }
     };
 
+    const handleCreateAuto = async (id) => {
+        try {
+            await axios.put(`http://localhost:8000/crear_transporte/`, 
+                formCategoryData,
+                { headers: { 'Authorization': `Token ${token}` } }
+            );
+            window.location.reload();
+        } catch (error) {
+            console.error('Error updating auto:', error);
+        }
+    };
+
+    const handleUpdateAuto = async (id) => {
+        try {
+            await axios.put(`http://localhost:8000/editar_transporte/${id}/`, 
+                formCategoryData,
+                { headers: { 'Authorization': `Token ${token}` } }
+            );
+            window.location.reload();
+        } catch (error) {
+            console.error('Error updating auto:', error);
+        }
+    };
+
+    const handleDeleteAuto = async (id) => {
+        try {
+            await axios.delete(`http://localhost:8000/eliminar_transporte/${id}/`, 
+                { headers: { 'Authorization': `Token ${token}` } }
+            );
+            setAutos(prevAutos => prevAutos.filter(auto => auto.id_transporte !== id));
+        } catch (error) {
+            console.error('Error deleting auto:', error);
+        }
+    };
+
     const filteredAutos = autos.filter(auto => {
         return (
             auto.marca?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -107,11 +134,9 @@ function AutosComponent() {
             if (orderCriteria) {
                 const aValue = a[orderCriteria];
                 const bValue = b[orderCriteria];
-
                 if (typeof aValue === 'string' && typeof bValue === 'string') {
                     return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
                 }
-
                 if (typeof aValue === 'number' && typeof bValue === 'number') {
                     return bValue - aValue;
                 }
@@ -142,12 +167,6 @@ function AutosComponent() {
         });
     };
 
-    const nuevaoauto = () => {
-        postData('crear_transporte/', formCategoryData, token).then(() => {
-            window.location.reload();
-        });
-    };
-
     return (
         <div>
             <FullNavbar selectedPage='Autos'/>
@@ -156,13 +175,13 @@ function AutosComponent() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <Modal openButtonText='¿No encuentra su auto? Añadalo' openButtonWidth='20' title='Nuevo Auto' saveButtonText='Crear' handleSave={nuevaoauto}  content={
+                        <Modal openButtonText='¿No encuentra su auto? Añadalo' openButtonWidth='20' title='Nuevo Auto' saveButtonText='Crear' handleSave={handleCreateAuto}  content={
                             <div>
                                 <h2 className='centered'> Nuevo Auto </h2>
                                 <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                 <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                 <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="kilometros" type="text" placeholder="Kilometros" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                             </div>
                         }></Modal>
                     </div>
@@ -182,54 +201,79 @@ function AutosComponent() {
                                     cardStyle={cardStyle}
                                     imageStyle={imageStyle}
                                     children={
-                                        !maintenance.isMaintained ? (
-                                            <Dropdown>
-                                              <Dropdown.Toggle as="div">
-                                                <SendButton 
+                                        <>
+                                            {!maintenance.isMaintained ? (
+                                                <Dropdown>
+                                                    <Dropdown.Toggle as="div">
+                                                        <SendButton 
+                                                            wide='15'
+                                                            text={maintenance.buttonText || 'Solicitar Mantenimiento'}
+                                                            backcolor={maintenance.buttonColor || '#3E4692'}
+                                                            letercolor='white'
+                                                        />
+                                                    </Dropdown.Toggle>
+                                                    <Dropdown.Menu>
+                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Añada una descripción"
+                                                                style={{ marginBottom: '1rem', width: '100%' }}
+                                                                value={description}
+                                                                onChange={(e) => setDescription(e.target.value)}
+                                                                />
+                                                                <SendButton
+                                                                    wide='15'
+                                                                    text='Enviar'
+                                                                    backcolor='#3E4692'
+                                                                    letercolor='white'
+                                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, description)}
+                                                                />
+                                                            </div>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                ) : (
+                                                    <SendButton
+                                                        wide='15'
+                                                        text={maintenance.buttonText || 'Mantenimiento realizado'}
+                                                        backcolor={maintenance.buttonColor || 'green'}
+                                                        letercolor='white'
+                                                        onClick={() => handleMaintenanceRequest(auto.id_transporte, description)}
+                                                    />
+                                                )}
+                                                    <Modal 
+                                                        openButtonText='Actualizar Auto' 
+                                                        openButtonWidth='15' 
+                                                        title='Actualizar Auto' 
+                                                        saveButtonText='Actualizar' 
+                                                        handleSave={() => handleUpdateAuto(auto.id_transporte)}  
+                                                        content={
+                                                            <div>
+                                                                <h2 className='centered'> Nuevo Auto </h2>
+                                                                <Form.Control name="marca" type="text" placeholder= { auto.marca } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="modelo" type="text" placeholder= { auto.modelo } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="patente" type="text" placeholder= { auto.patente } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="kilometraje" type="text" placeholder= { auto.kilometraje } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                            </div>
+                                                        }
+                                                    />
+                                                <SendButton
                                                     wide='15'
-                                                  text={maintenance.buttonText || 'Solicitar Mantenimiento'}
-                                                  backcolor={maintenance.buttonColor || '#3E4692'}
-                                                  letercolor='white'
-                                                />
-                                              </Dropdown.Toggle>
-                                              <Dropdown.Menu>
-                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                                  <input
-                                                    type="text"
-                                                    placeholder="Añada una descripción"
-                                                    style={{ marginBottom: '1rem', width: '100%' }}
-                                                    value={description}
-                                                    onChange={(e) => setDescription(e.target.value)}
-                                                  />
-                                                  <SendButton
-                                                    wide='15'
-                                                    text={maintenance.buttonText || 'Solicitar'}
-                                                    backcolor={maintenance.buttonColor || '#3E4692'}
+                                                    text='Eliminar Auto'
+                                                    backcolor='#FF0000'
                                                     letercolor='white'
-                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, description)}
-                                                  />
-                                                </div>
-                                              </Dropdown.Menu>
-                                            </Dropdown>
-                                        ) : (
-                                            <SendButton
-                                                text={maintenance.buttonText || 'Solicitar Mantenimiento'}
-                                                backcolor={maintenance.buttonColor || '#3E4692'}
-                                                letercolor='white'
-                                                onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
-                                            />
-                                        )
-                                      }
-                                />
-                            );
-                        })
-                    ) : (
-                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay autos disponibles.</p>
-                    )}
+                                                    onClick={() => handleDeleteAuto(auto.id_transporte)}
+                                                />
+                                            </>
+                                        }
+                                    />
+                                );
+                            })
+                        ) : (
+                            <p>No se encontraron autos.</p>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
-    );
-}
-
+        );
+    }
 export default AutosComponent;
