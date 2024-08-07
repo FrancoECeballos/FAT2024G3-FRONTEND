@@ -18,6 +18,7 @@ function AutosComponent() {
     const token = Cookies.get('token');
 
     const [currentObra, setCurrentObra] = useState(false);
+    const [autoModal, setAutoModal] = useState();
 
     const [autos, setAutos] = useState([]);
     const [maintenanceStatus, setMaintenanceStatus] = useState({}); 
@@ -215,6 +216,7 @@ function AutosComponent() {
                                     descrip3={auto.descripcion_mantenimiento !== '' && (<><strong>Mantenimiento:</strong> {auto.descripcion_mantenimiento}</>)}
                                     cardStyle={cardStyle}
                                     imageStyle={imageStyle}
+                                    onClick={() => setAutoModal(auto.id_transporte)}
                                     children={
                                         <>
                                             {!maintenance.isMaintained ? (
@@ -260,24 +262,22 @@ function AutosComponent() {
                                                         openButtonWidth='15' 
                                                         title='Actualizar Auto' 
                                                         saveButtonText='Actualizar' 
-                                                        handleSave={() => handleUpdateAuto(auto.id_transporte)}  
+                                                        handleSave={() => handleUpdateAuto(auto.id_transporte)}
+                                                        showButton={false}
+                                                        showModal={autoModal === auto.id_transporte}
+                                                        showDeleteButton={true}
+                                                        deleteFunction={() => handleDeleteAuto(auto.id_transporte)}
+                                                        handleCloseModal={() => setAutoModal(false)}
                                                         content={
                                                             <div>
                                                                 <h2 className='centered'> Nuevo Auto </h2>
-                                                                <Form.Control name="marca" type="text" placeholder= { auto.marca } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                                                <Form.Control name="modelo" type="text" placeholder= { auto.modelo } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                                                <Form.Control name="patente" type="text" placeholder= { auto.patente } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                                                <Form.Control name="kilometraje" type="text" placeholder= { auto.kilometraje } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="marca" type="text" defaultValue= { auto.marca } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="modelo" type="text" defaultValue= { auto.modelo } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="patente" type="text" defaultValue= { auto.patente } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="kilometraje" type="text" defaultValue= { auto.kilometraje } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                                             </div>
                                                         }
                                                     />
-                                                <SendButton
-                                                    wide='15'
-                                                    text='Eliminar Auto'
-                                                    backcolor='#FF0000'
-                                                    letercolor='white'
-                                                    onClick={() => handleDeleteAuto(auto.id_transporte)}
-                                                />
                                             </>
                                         }
                                     />

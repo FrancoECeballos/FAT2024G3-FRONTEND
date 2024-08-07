@@ -8,6 +8,7 @@ import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.jsx';
 import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
+import GenericTable from '../../../components/tables/generic_table/GenericTable.jsx';
 
 import addProd from '../../../assets/add_product.png';
 
@@ -276,26 +277,7 @@ function Products() {
                         <div>
                             <h2 className='centered'> Elija el Producto </h2>
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                                {Array.isArray(products) && products
-                                .filter(addedProduct => addedProduct.id_categoriaproducto !== categoriaID)
-                                .map(addedProduct => {
-                                    return (
-                                        <div key={addedProduct.id_producto} style={{ display: 'inline-block', marginRight: '1rem' }}>
-                                            <LittleCard
-                                                foto={addedProduct.imagen}
-                                                titulo={addedProduct.nombre}
-                                                selected={selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && selectedCardId.id_producto === addedProduct.id_producto}
-                                                onSelect={() => setSelectedCardId(selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && selectedCardId.id_producto === addedProduct.id_producto ? {} : addedProduct)}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                                <LittleCard
-                                    foto={addProd}
-                                    titulo={'Crear Nuevo Producto'}
-                                    selected={selectedCardId === 'New'}
-                                    onSelect={() => setSelectedCardId(selectedCardId === 'New' ? {} : 'New')}
-                                />
+                                <GenericTable headers={["nombre", "descripcion"]} data={products} showCreateNew={true} createNewFunction={() => setSelectedCardId(selectedCardId === 'New' ? {} : 'New')}></GenericTable>
                             </div>
                             {selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && (
                                 <>

@@ -38,8 +38,9 @@ function ObrasAutos() {
                     const obraIds = result.map(obra => obra.id_obra);
                     const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
                     Promise.all(obraPromises).then(obras => {
-                        console.log("Fetched Obras:", obras);
-                        setObras(obras.flat());
+                        const uniqueObras = Array.from(new Set(obras.flat().map(obra => JSON.stringify(obra)))).map(str => JSON.parse(str));
+                        console.log("Fetched Obras:", uniqueObras);
+                        setObras(uniqueObras);
                     }).catch(error => {
                         console.error('Error fetching obras by ID', error);
                     });
@@ -101,7 +102,7 @@ function ObrasAutos() {
                             key={obra.id_obra}
                             foto={obra.imagen}
                             titulo={obra.nombre}
-                            descrip1={`Usuarios Registrados: ${obra.usuarios_registrados}`}
+                            descrip1={`Autos Registrados: ${obra.autos_registrados}`}
                             descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
                         />
                     ))
