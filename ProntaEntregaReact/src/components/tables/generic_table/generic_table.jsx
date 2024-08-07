@@ -3,7 +3,7 @@ import React from "react";
 import { Table } from "react-bootstrap";
 
 
-const GenericTable = ({ data, headers }) => {
+const GenericTable = ({ headers, data }) => {
   return (
     <Table striped bordered hover>
       <thead>
@@ -14,14 +14,16 @@ const GenericTable = ({ data, headers }) => {
         </tr>
       </thead>
       <tbody>
-        {data.map((row, index) => (
-          <tr key={index}>
-            {row.map((cell, index) => (
-              <td key={index}>{cell}</td>
+        {data.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {headers.map((header, cellIndex) => (
+              <td key={cellIndex}>{row[header]}</td>
             ))}
           </tr>
         ))}
       </tbody>
     </Table>
   );
-}; export default GenericTable;
+};
+
+export default GenericTable;

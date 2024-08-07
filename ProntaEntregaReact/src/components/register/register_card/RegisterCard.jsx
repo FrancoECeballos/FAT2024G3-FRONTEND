@@ -51,7 +51,6 @@ const RegisterCard = () => {
     genero: "",
     imagen: null,
     id_direccion: "",
-    id_tipousuario: 2,
     id_tipodocumento: ""
   });
   
@@ -110,7 +109,7 @@ const RegisterCard = () => {
     } else {
       setFormData((prevData) => {
         let updatedValue = value;
-        if (name === "genero" || name === "id_direccion" || name === "id_tipousuario" || name === "id_tipodocumento") {
+        if (name === "genero" || name === "id_direccion" || name === "id_tipodocumento") {
           updatedValue = parseInt(value, 10);
         }
 

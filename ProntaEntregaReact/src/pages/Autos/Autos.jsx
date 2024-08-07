@@ -186,7 +186,7 @@ function AutosComponent() {
                                             <Dropdown>
                                               <Dropdown.Toggle as="div">
                                                 <SendButton 
-                                                    wide='15'
+                                                  wide='15'
                                                   text={maintenance.buttonText || 'Solicitar Mantenimiento'}
                                                   backcolor={maintenance.buttonColor || '#3E4692'}
                                                   letercolor='white'
@@ -213,6 +213,7 @@ function AutosComponent() {
                                             </Dropdown>
                                         ) : (
                                             <SendButton
+                                                wide='15'
                                                 text={maintenance.buttonText || 'Solicitar Mantenimiento'}
                                                 backcolor={maintenance.buttonColor || '#3E4692'}
                                                 letercolor='white'
