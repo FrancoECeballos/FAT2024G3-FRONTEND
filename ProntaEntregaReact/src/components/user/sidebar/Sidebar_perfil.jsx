@@ -17,7 +17,7 @@ const Sidebar = ({ isAdmin = false }) => {
         />
         <SelectableButton texto="Obras" link="/obras" />
         {isAdmin ? (
-          <SelectableButton texto="Administrar Usuarios" link="/selectuser" />
+          <SelectableButton texto="Administrar Usuarios" link="/userlisting" />
         ) : null}
       </ul>
     </div>
