@@ -3,11 +3,23 @@
     background-color: white;
     width: 20rem;
     height: 100vh;
-    position: absolute;
+    position: fixed;
     box-sizing: border-box;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
+  
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+  
+    @media (max-width: 768px) {
+      width: 100%;
+      padding-top: 5rem;
+      height: auto;
+      position: static;
+    }
+  
+    @media (max-width: 576px) {
+      padding-top: 2rem;
+    }
+  }
+  

@@ -324,16 +324,16 @@ const Cuenta = () => {
                 <Col>
                     <label for="telefono">Teléfono:</label>
                     <InputGroup className="groupderec">
-                        <input disabled={!isEditing} style={{width:'3.5rem'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
-                        <input disabled={!isEditing} style={{width:'21.5rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
+                        <input disabled={!isEditing} style={{width:'3rem'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
+                        <input disabled={!isEditing} style={{width:'18.5rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
                     </InputGroup>  
 
                     <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
                     <label for="direccion">Dirección:</label>
                     <InputGroup className="groupderec">
-                        <input disabled={!isEditing} style={{width:'10rem'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} style={{width:'10rem'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'8rem'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'8rem'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
                         <input disabled={!isEditing} style={{width:'5rem'}} name="id_direccion.numero" type="number"  value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
                     </InputGroup>  
 
