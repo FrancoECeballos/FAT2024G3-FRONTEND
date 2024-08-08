@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
+import { InputGroup, Col, Row, Form, Container, Card} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -243,104 +243,126 @@ const RegisterCard = () => {
       <Container className="d-flex justify-content-center align-items-center register-container">
         <Card style={{ width: '100%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
+            <UploadImage wide='13'/>
+            <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
+            <Form>
             <Row>
-            <UploadImage wide='15' onFileChange={handleFileChange} />
-              <Col xs={12} sm={8} md={8} lg={8} xl={8} xxl={8}>
-                <Form>
-                  <Form.Group className='mb-2'>
-                    <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
+              <Col style={{maxWidth:"50%"}} xs={12} sm={6} md={6} lg={6} xl={6} xxl={6}>
+
+                  <Form.Group className="mb-2" >
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre (*)</Form.Label>
+                      <Form.Control name="nombre" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre"/>
+                      <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre y Apellido (*)</Form.Label>
-                    <div className="unified-input">
-                      <InputGroup className="mb-2">
-                        <Form.Control name="nombre" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre" className="unified-input-left" />
-                        <Form.Control name="apellido" type="text" onChange={handleInputChange} placeholder="Ingrese su apellido" className="unified-input-right" />
-                      </InputGroup>
-                    </div>
+                  <Form.Group className="mb-2 SinError">
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre de Usuario (*)</Form.Label>
+                      <Form.Control name="nombre" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre de usuario"  />
                   </Form.Group>
 
-                  <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
-                  <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
-
-                  <Form.Group className="mb-2">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
-                    <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
-                  </Form.Group>
-                  <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
-
-                  <Form.Group className="mb-2">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
-                    <div className="unified-input">
-                      <InputGroup className="mb-2">
-                        <Form.Control name="documento" onChange={handleInputChange} aria-label="Text input with dropdown button" className="unified-input-left" />
-                        <Form.Select name="id_tipodocumento" onChange={handleInputChange} aria-label="Default select example" className="unified-input-right">
+                  <Form.Group className="mb-2 SinError">
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Tipo de documento (*)</Form.Label>
+                  <Form.Select name="id_tipodocumento" onChange={handleInputChange} aria-label="Default select example">
                           <option autoFocus hidden>Seleccione un tipo de documento</option>
                           {data.map((item) => (
                             <option key={item.id} value={item.id}>{item.nombre}</option>
                           ))}
-                        </Form.Select>
-                      </InputGroup>
-                    </div>
+                  </Form.Select>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2 SinError">
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
+                    <div>
+                      <Form.Check
+                        inline
+                        label="Hombre"
+                        name="genero"
+                        type="radio"
+                        value="Hombre"
+                        onChange={handleInputChange}
+                      />
+                      <Form.Check
+                        inline
+                        label="Mujer"
+                        name="genero"
+                        type="radio"
+                        value="Mujer"
+                        onChange={handleInputChange}
+                      />
+                      <Form.Check
+                        inline
+                        label="Prefiero no decir"
+                        name="genero"
+                        type="radio"
+                        value="Prefiero no decir"
+                        onChange={handleInputChange}
+                      />
+                    </div>   
+                  </Form.Group>
+
+                  <Form.Group className="mb-2 SinError">
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
+                  <Form.Control name="localidad" type="text" onChange={handleInputChange} placeholder="Ingrese su Localidad"/>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2 SinError">
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Calle (*)</Form.Label>
+                  <Form.Control name="calle" type="text" onChange={handleInputChange} placeholder="Ingrese su Calle"  />
+                  </Form.Group>
+
+                  <Form.Group className="mb-2 SinError">
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de Calle (*)</Form.Label>
+                  <Form.Control name="numero" type="number" onChange={handleInputChange} placeholder="Ingrese su Numero"/>
+                  </Form.Group>
+              </Col>
+              
+              <Col style={{maxWidth:"50%"}} xs={12} sm={6} md={6} lg={6} xl={6} xxl={6}>
+                  <Form.Group className="mb-2">
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido(*)</Form.Label>
+                    <Form.Control name="apellido" type="text" onChange={handleInputChange} placeholder="Ingrese su apellido"/>
+                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2">
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
+                    <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email"/>
+                    <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2">
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
+                    <Form.Control name="documento" type="documento" onChange={handleInputChange} placeholder="Ingrese su documento"/>
                     <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
+
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
-                    <div className="unified-input">
                       <InputGroup className="mb-2">
-                        <Form.Control name="cai" type="number" onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" className="unified-input-left" />
-                        <Form.Control name="telnum" type="number" onChange={handleInputChange} placeholder="Ingrese su telefono" className="unified-input-right" />
+                        <Form.Control name="cai" className="CAI" type="number" onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" />
+                        <Form.Control name="telnum" type="number" onChange={handleInputChange} placeholder="Ingrese su telefono"/>
                       </InputGroup>
-                    </div>
-                  </Form.Group>
-
-                  <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
-
-                  <Form.Group className="mb-2">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Direccion (*)</Form.Label>
-                    <div className="unified-input">
-                      <InputGroup className="mb-2">
-                        <Form.Control name="localidad" type="text" onChange={handleInputChange} placeholder="Ingrese su Localidad" className="unified-input-left" />
-                        <Form.Control name="calle" type="text" onChange={handleInputChange} placeholder="Ingrese su Calle" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
-                        <Form.Control name="numero" type="number" onChange={handleInputChange} placeholder="Ingrese su Numero" className="unified-input-right" />
-                      </InputGroup>
-                    </div>
-                  </Form.Group>
-
-                  <Form.Group className="mb-2">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
-                    <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }}>
-                      <option autoFocus hidden>Seleccione un genero</option>
-                      <option value="1">Masculino</option>
-                      <option value="2">Femenino</option>
-                      <option value="3">Prefiero no decir</option>
-                    </Form.Select>
+                      <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña (*)</Form.Label>
-                    <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
+                    <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" />
+                    <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
-                  <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
 
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
-                    <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña" style={{ borderRadius: '8px', backgroundColor: '#EEEEEE', }} />
+                    <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña"/>
+                    <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
-
-                  <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
-
-                </Form>
               </Col>
-              <Col xs={12} className="d-flex justify-content-end w-100 move-to-bottom">
-                <div style={{ marginTop: '5%' }}>
+              </Row>
+            </Form>
+                <div style={{ marginTop: '5%'}}>
                   <SendButton onClick={handleSendData} text="Registrar" wide="15" />
                 </div>
-              </Col>
-            </Row>
           </Card.Body>
         </Card>
       </Container>

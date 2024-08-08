@@ -6,7 +6,7 @@ import defaultImage from '../../../assets/user_default.png';
 import SendButton from "../send_button/send_button";
 import './uploadImage.scss';
 
-const UploadImage = ({ wide = '15', onFileChange }) => {
+function UploadImage ({wide}){
 
     const handleFileButtonClick = () => {
         fileInputRef.current.click();
@@ -30,7 +30,7 @@ const UploadImage = ({ wide = '15', onFileChange }) => {
     return (
         <div className="flex-grow-1 d-flex flex-column align-items-center">
             <div className="font-rubik" style={{ fontSize: '0.8rem' }}>Imagen de perfil</div>
-            <img src={imageSrc} alt="Imagen de perfil" className="user-image" style={{ marginBottom: '4%',width:'13rem'}}/>
+            <img src={imageSrc} alt="Imagen de perfil" className="user-image" style={{ marginBottom: '4%',width:`${wide}rem`}}/>
             <div className="mb-2">
             <input
                 type="file"
