@@ -6,6 +6,7 @@ import axios from 'axios';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
+import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 import fetchData from '../../functions/fetchData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Modal from '../../components/modals/Modal.jsx';
@@ -27,6 +28,7 @@ function AutosComponent() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [formCategoryData, setFormCategoryData] = useState({
+        imagen: null,
         "marca": "",
         "modelo": "",
         "patente": "",
@@ -127,7 +129,7 @@ function AutosComponent() {
 
     const handleDeleteAuto = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/eliminar_detalle_transporte/${id}/`, 
+            await axios.delete(`http://localhost:8000/eliminar_detalle_transporte/${obraId}/${id}/`, 
                 { headers: { 'Authorization': `Token ${token}` } }
             );
             setAutos(prevAutos => prevAutos.filter(auto => auto.id_transporte !== id));
@@ -203,6 +205,7 @@ function AutosComponent() {
                         <Modal openButtonText='¿No encuentra su auto? Añadalo' openButtonWidth='20' title='Nuevo Auto' saveButtonText='Crear' handleSave={handleCreateAuto}  content={
                             <div>
                                 <h2 className='centered'> Nuevo Auto </h2>
+                                <UploadImage/>
                                 <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                 <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                 <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
