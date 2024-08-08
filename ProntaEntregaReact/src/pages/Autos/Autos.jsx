@@ -98,8 +98,13 @@ function AutosComponent() {
 
     const handleCreateAuto = async (id) => {
         try {
-            await axios.put(`http://localhost:8000/crear_transporte/`, 
+            const response = await axios.post(`http://localhost:8000/crear_transporte/`, 
                 formCategoryData,
+                { headers: { 'Authorization': `Token ${token}` } }
+            );
+            const autoId = response.data.id_transporte;
+            await axios.post(`http://localhost:8000/crear_detalle_transporte/`, 
+                { id_transporte: autoId, id_obra: obraId },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
             window.location.reload();
@@ -122,12 +127,16 @@ function AutosComponent() {
 
     const handleDeleteAuto = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/eliminar_transporte/${id}/`, 
+            await axios.delete(`http://localhost:8000/eliminar_detalle_transporte/${id}/`, 
                 { headers: { 'Authorization': `Token ${token}` } }
             );
             setAutos(prevAutos => prevAutos.filter(auto => auto.id_transporte !== id));
         } catch (error) {
-            console.error('Error deleting auto:', error);
+            if (error.response && error.response.data && error.response.data.error === "No se encontró un detalle de obra transporte con el ID proporcionado.") {
+                alert("No se encontró un auto con el ID proporcionado.");
+            } else {
+                console.error('Error deleting auto:', error);
+            }
         }
     };
 
