@@ -155,6 +155,13 @@ const RegisterCard = () => {
     }
   };
 
+  const handleFileChange = (file) => {
+    setFormData((prevData) => {
+      return { ...prevData, imagen: file };
+    });
+    console.log(formData);
+  };
+
   const handleSendData = async (event) => {
     event.preventDefault();
   
@@ -237,7 +244,7 @@ const RegisterCard = () => {
         <Card style={{ width: '100%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
             <Row>
-            <UploadImage wide='5'/>
+            <UploadImage wide='15' onFileChange={handleFileChange} />
               <Col xs={12} sm={8} md={8} lg={8} xl={8} xxl={8}>
                 <Form>
                   <Form.Group className='mb-2'>
