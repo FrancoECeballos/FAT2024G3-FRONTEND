@@ -19,7 +19,7 @@ const Cuenta = () => {
     const location = useLocation();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(location.state);
+    const [isStaff, setIsStaff] = useState(location.state);
     const [direc, setDirec] = useState([]);
 
     const [userObras, setUserObras] = useState([]);
@@ -27,8 +27,6 @@ const Cuenta = () => {
     const [obraID, setObraID] = useState([]);
     const [selectedObject, setSelectedObject] = useState('');
     const today = new Date().toISOString().split('T')[0];
-
-    const editButtonRef = useRef(null);
 
     const [GuardarButtonIsValid, setGuardarButtonIsValid] = useState(false);
 
@@ -93,7 +91,7 @@ const Cuenta = () => {
             setUserDataDefault(transformedData);
         };
 
-        if (!isAdmin) {
+        if (!isStaff) {
             if (!token) {
                 navigate('/login');
                 return;
@@ -171,7 +169,7 @@ const Cuenta = () => {
             fechaingreso: today,
             id_obra: parseInt(selectedObject),
             id_usuario: userData.id_usuario, 
-            id_tipousuario: 2}, token);
+            id_tipousuario: 1}, token);
         fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
             setUserObras(result);
             window.location.reload();
@@ -284,7 +282,7 @@ const Cuenta = () => {
         setUserDataDefault(userData);
         setIsEditing(false);
     
-        if (isAdmin) {
+        if (isStaff) {
             const url = (`/user/updateEmail/${userData.email}/`);
             const body = updatedUserData;
             const result = await putData(url, body, token);
@@ -320,7 +318,7 @@ const Cuenta = () => {
                     
                     <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
-                    {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
+                    {!isStaff && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
                 </Col>
                 <Col>
                     <label for="telefono">Teléfono:</label>
@@ -356,18 +354,18 @@ const Cuenta = () => {
                             obraID.map(userobra => (
                                 <li key={userobra.id_obra}>
                                     {userobra.nombre}
-                                    {isAdmin && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteObraFromUser(userobra.id_obra)}></SendButton>}
+                                    {isStaff && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteObraFromUser(userobra.id_obra)}></SendButton>}
                                 </li>
                             ))
                         )}
                     </ul>
-                    {isAdmin && <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
+                    {isStaff && <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
                         <option disabled hidden value="">Select an object to add</option>
                         {obras.map(obra => (
                             !obraID.some(obraID => obraID.id_obra === obra.id_obra) ? <option key={obra.id_obra} value={obra.id_obra}>{obra.nombre}</option> : null
                         ))}
                     </Form.Select>}
-                    {isAdmin && <SendButton onClick={handleAddOObraToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
+                    {isStaff && <SendButton onClick={handleAddOObraToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
                 </Col>
             </Row>
             <Row className="filabuton">
