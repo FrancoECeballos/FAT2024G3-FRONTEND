@@ -20,6 +20,7 @@ import Main from './pages/Main/Main.jsx'
 import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
 import Obras from './pages/Obras/Obras.jsx';
 import Novedades from './pages/Novedades/Novedades.jsx';
+import ObrasAutos from './pages/Autos/ObrasAutos.jsx';
 import Autos from './pages/Autos/Autos.jsx';
 import Landing from './pages/Landing/Landing.jsx';
 
@@ -42,7 +43,8 @@ function App() {
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/obras" element={<Obras />} />
         <Route path="/novedades" element={<Novedades />} />
-        <Route path="/autos" element={<Autos />} />
+        <Route path="/autos" element={<ObrasAutos />} />
+        <Route path="/autos/:obraId" element={<Autos />} />
         <Route path="/crear_pedido" element={<CrearPedido />} />
         <Route path="/landing" element={<Landing />} />
       </Routes>

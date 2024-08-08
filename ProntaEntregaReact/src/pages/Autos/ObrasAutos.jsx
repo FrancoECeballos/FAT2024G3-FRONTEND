@@ -6,13 +6,12 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Footer from '../../components/footer/Footer.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
-import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
-import './Stock.scss';
+import './ObrasAutos.scss';
 
 import fetchData from '../../functions/fetchData';
 
-function Stock() {
+function ObrasAutos() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [obras, setObras] = useState([]);
@@ -29,15 +28,15 @@ function Stock() {
             setIsAdmin(result.is_superuser);
             const email = result.email;
             if (result.is_superuser) {
-                fetchData('/stock/', token).then((result) => {
+                fetchData('/obra/', token).then((result) => {
                     setObras(result);
                 }).catch(error => {
                     console.error('Error fetching obras for admin', error);
                 });
             } else {
-                fetchData(`/user/stockEmail/${email}/`, token).then((result) => {
-                    const obraIds = result.map(obra => obra.id_obra.id_obra);
-                    const obraPromises = obraIds.map(id => fetchData(`/stock/${id}`, token));
+                fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
+                    const obraIds = result.map(obra => obra.id_obra);
+                    const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
                     Promise.all(obraPromises).then(obras => {
                         const uniqueObras = Array.from(new Set(obras.flat().map(obra => JSON.stringify(obra)))).map(str => JSON.parse(str));
                         console.log("Fetched Obras:", uniqueObras);
@@ -56,9 +55,9 @@ function Stock() {
 
     const filteredObras = obras.filter(obra => {
         return (
-            obra.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.id_obra.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.id_obra.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
+            obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.id_direccion.localidad?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.id_direccion.calle?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
@@ -86,35 +85,35 @@ function Stock() {
 
     if (Array.isArray(sortedObras) && sortedObras.length === 1) {
         const obra = sortedObras[0];
-        navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } });
+        navigate(`/autos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}});
     }
-    
+
     return (
         <div>
-            <FullNavbar selectedPage='Stock' />
+            <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
-                <h4 style={{marginLeft: '8%', color: 'grey'}}>Stock</h4>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+            <h4 style={{marginLeft: '8%', color: 'grey'}}>Autos</h4>
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div className='cardstock'>
-                    {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
-                        sortedObras.map(obra => (
-                            <GenericCard
-                                onClick={() => navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } })}
-                                key={obra.id_stock}
-                                foto={obra.id_obra.imagen}
-                                titulo={obra.id_obra.nombre}
-                                descrip1={`Usuarios Registrados: ${obra.id_obra.usuarios_registrados}`}
-                                descrip2={`${obra.id_obra.id_direccion.localidad}, ${obra.id_obra.id_direccion.calle}, ${obra.id_obra.id_direccion.numero}`}
-                            />
-                        ))
-                    ) : (
-                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
-                    )}
-                </div>
+                {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
+                    sortedObras.map(obra => (
+                        <GenericCard
+                            onClick={() => navigate(`/autos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}})} 
+                            key={obra.id_obra}
+                            foto={obra.imagen}
+                            titulo={obra.nombre}
+                            descrip1={`Autos Registrados: ${obra.autos_registrados}`}
+                            descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
+                        />
+                    ))
+                ) : (
+                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay obras disponibles.</p>
+                )}
+                </div> 
             </div>
-            <Footer />
+            <Footer/>
         </div>
     );
 }
 
-export default Stock;
+export default ObrasAutos;

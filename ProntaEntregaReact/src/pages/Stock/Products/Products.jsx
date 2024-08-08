@@ -8,6 +8,7 @@ import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.jsx';
 import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
+import GenericTable from '../../../components/tables/generic_table/GenericTable.jsx';
 
 import addProd from '../../../assets/add_product.png';
 
@@ -31,19 +32,26 @@ function Products() {
     const [categoriaProductos, setCategoriaProductos] = useState([]);
     const [selectedOperacion, setSelectedOperacion] = useState('sumar');
 
+    const [currentObra, setCurrentObra] = useState(false);
+    const [currentCategory, setCurrentCategory] = useState(false);
+
     const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
     const [showNewProductModal, setShowNewProductModal] = useState(false);
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const [productSearchQuery, setProductSearchQuery] = useState('');
+    const [detailSearchQuery, setDetailSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+    const [detailOrderCriteria, setDetailOrderCriteria] = useState(null);
 
     const fetchProducts = async (id, firstTime) => {
         try {
             const productsData = await fetchData(`obra/${stockId}/categoria_producto/${id}/${categoriaID}/`, token);
+            console.log(productsData);
             const allProductsData = await fetchData(`productos/`, token);
+            console.log(allProductsData);
     
             const combinedProducts = allProductsData.map(product => {
                 const detalles = productsData.filter(item => item.id_producto.id_producto === product.id_producto);
@@ -61,7 +69,6 @@ function Products() {
                 setProducts(nonCombinedProducts);
             }
             setCombinedProducts(combinedProducts);
-            console.log('Combined Products:', combinedProducts);
         } catch (error) {
             console.error('Error fetching products:', error);
             setCombinedProducts([]);
@@ -83,12 +90,20 @@ function Products() {
             fetchProducts('Todos', true);
         });
 
+        fetchData(`/stock/${stockId}`, token).then((result) => {
+            setCurrentObra(result[0].id_obra.nombre);
+        });
+
+        fetchData(`/categoria/${categoriaID}`, token).then((result) => {
+            setCurrentCategory(result[0].nombre);
+        });
+
     }, [token, navigate, stockId, categoriaID]);
 
     const filteredProducts = combinedProducts.filter(product => {
         return (
-            product.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.descripcion?.toLowerCase().includes(searchQuery.toLowerCase())
+            product.nombre?.toLowerCase().includes(productSearchQuery.toLowerCase()) ||
+            product.descripcion?.toLowerCase().includes(productSearchQuery.toLowerCase())
         );
     });
 
@@ -114,8 +129,17 @@ function Products() {
         { type: 'id_producto.id_unidadmedida.nombre', label: 'Unidad de Medida' },
     ];
 
+    const detailFilters = [
+        { type: 'cantidad', label: 'Cantidad' },
+        { type: 'cantidadUnidades', label: 'Cantidad de Unidades' },
+    ];
+
     const handleSearchChange = (value) => {
-        setSearchQuery(value);
+        setProductSearchQuery(value);
+    };
+
+    const handleDetailSearchChange = (value) => {
+        setDetailSearchQuery(value);
     };
 
     const newDetail = (product) => {
@@ -208,6 +232,11 @@ function Products() {
         <div>
             <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
+                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8%' }}>
+                    <h4 style={{ color: 'grey', cursor: 'pointer' }} onClick={() => navigate('/stock')} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>Stock</h4>
+                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/obra/${stockId}/categoria`, { state: { id_stock: `${stockId}` } })} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>{currentObra}</span></h4>
+                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentCategory}</h4>
+                </div>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
                     <Tabs
@@ -248,26 +277,7 @@ function Products() {
                         <div>
                             <h2 className='centered'> Elija el Producto </h2>
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                                {Array.isArray(products) && products
-                                .filter(addedProduct => addedProduct.id_categoriaproducto !== categoriaID)
-                                .map(addedProduct => {
-                                    return (
-                                        <div key={addedProduct.id_producto} style={{ display: 'inline-block', marginRight: '1rem' }}>
-                                            <LittleCard
-                                                foto={addedProduct.imagen}
-                                                titulo={addedProduct.nombre}
-                                                selected={selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && selectedCardId.id_producto === addedProduct.id_producto}
-                                                onSelect={() => setSelectedCardId(selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && selectedCardId.id_producto === addedProduct.id_producto ? {} : addedProduct)}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                                <LittleCard
-                                    foto={addProd}
-                                    titulo={'Crear Nuevo Producto'}
-                                    selected={selectedCardId === 'New'}
-                                    onSelect={() => setSelectedCardId(selectedCardId === 'New' ? {} : 'New')}
-                                />
+                                <GenericTable headers={["nombre", "descripcion"]} data={products} showCreateNew={true} createNewFunction={() => setSelectedCardId(selectedCardId === 'New' ? {} : 'New')}></GenericTable>
                             </div>
                             {selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && (
                                 <>
@@ -346,22 +356,54 @@ function Products() {
                                     } />
                             }
                             accordionChildren={
-                                <div className="little-cards-container">
-                                    {Array.isArray(product.id_detalle) && product.id_detalle.map(detail => {
+                                <>
+                                    {(() => {
+                                        const filteredDetails = product.id_detalle.filter(detalle => {
+                                            return (
+                                                detalle.cantidad?.toString().includes(detailSearchQuery) ||
+                                                detalle.cantidadUnidades?.toString().includes(detailSearchQuery)
+                                            );
+                                        });
+                                        
+                                        const sortedDetails = [...filteredDetails].sort((a, b) => {
+                                            if (!detailOrderCriteria) return 0;
+                                            const aValue = a[detailOrderCriteria];
+                                            const bValue = b[detailOrderCriteria];
+                            
+                                            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                                                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+                                            }
+                            
+                                            if (typeof aValue === 'number' && typeof bValue === 'number') {
+                                                return bValue - aValue;
+                                            }
+                            
+                                            return 0;
+                                        });
+                            
                                         return (
-                                            <LittleCard
-                                                key={detail.id_detallestockproducto}
-                                                foto={detail.id_producto.imagen}
-                                                titulo={detail.id_unidadmedida.nombre}
-                                                descrip1={
-                                                    detail.id_unidadmedida.paquete
-                                                        ? `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador} ${detail.cantidadUnidades}`
-                                                        : `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador}`
-                                                }
-                                            />
+                                            <>
+                                                <SearchBar onSearchChange={handleDetailSearchChange} onOrderChange={setDetailOrderCriteria} filters={detailFilters} />
+                                                <div className="little-cards-container" style={{marginTop: '1rem'}}>
+                                                    {Array.isArray(sortedDetails) && sortedDetails.map(detail => {
+                                                        return (
+                                                            <LittleCard
+                                                                key={detail.id_detallestockproducto}
+                                                                foto={detail.id_producto.imagen}
+                                                                titulo={detail.id_unidadmedida.nombre}
+                                                                descrip1={
+                                                                    detail.id_unidadmedida.paquete
+                                                                        ? `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador} ${detail.cantidadUnidades}`
+                                                                        : `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador}`
+                                                                }
+                                                            />
+                                                        );
+                                                    })}
+                                                </div>
+                                            </>
                                         );
-                                    })}
-                                </div>
+                                    })()}
+                                </>
                             }
                         />
                     );
