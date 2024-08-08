@@ -254,7 +254,7 @@ function AutosComponent() {
                                                         text={maintenance.buttonText || 'Mantenimiento realizado'}
                                                         backcolor={maintenance.buttonColor || 'green'}
                                                         letercolor='white'
-                                                        onClick={() => handleMaintenanceRequest(auto.id_transporte, description)}
+                                                        onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
                                                     />
                                                 )}
                                                     <Modal 
