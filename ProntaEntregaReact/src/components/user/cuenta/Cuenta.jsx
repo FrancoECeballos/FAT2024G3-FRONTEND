@@ -300,7 +300,7 @@ const Cuenta = () => {
 
     return (
         <div class="micuenta">
-            <h1> <img src={user} className="fotoperfil" />{`Bienvenido ${userDataDefault.nombreusuario}`}</h1>
+            <h1> <img src={userData.imagen} className="fotoperfil" />{` Bienvenido ${userDataDefault.nombreusuario}`}</h1>
             <Row className="filainputs">
                 <Col>
                     <label for="nombre">Nombre:</label>
