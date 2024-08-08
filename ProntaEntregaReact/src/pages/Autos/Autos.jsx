@@ -270,7 +270,7 @@ function AutosComponent() {
                                                         handleCloseModal={() => setAutoModal(false)}
                                                         content={
                                                             <div>
-                                                                <h2 className='centered'> Nuevo Auto </h2>
+                                                                <h2 className='centered'> Actualizar Auto </h2>
                                                                 <Form.Control name="marca" type="text" defaultValue= { auto.marca } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                                                 <Form.Control name="modelo" type="text" defaultValue= { auto.modelo } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                                                 <Form.Control name="patente" type="text" defaultValue= { auto.patente } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
