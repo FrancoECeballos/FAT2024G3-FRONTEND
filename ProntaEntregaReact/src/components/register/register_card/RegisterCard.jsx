@@ -19,6 +19,8 @@ import GenericAlert from '../../alerts/generic_alert/GenericAlert.jsx';
 const RegisterCard = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('Los campos fueron ingresados incorrectamente');
   
   useEffect(() => {
     fetchData('/tipo_documento/').then((result) => {
@@ -180,30 +182,31 @@ const RegisterCard = () => {
 
   const handleSendData = async (event) => {
     event.preventDefault();
-  
-    // Validación de campos requeridos
+    setAlertMessage('');
+
     if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email || !formData.genero || !formData.id_tipodocumento) {
-      alert("Please fill in all required fields.");
-      // Muestra en la consola los campos vacíos
+      setAlertMessage('Los campos fueron ingresados incorrectamente: ');
       if (!formData.nombre) {
-        console.log("Nombre vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Nombre vacio");
       } if (!formData.apellido) {
-        console.log("Apellido vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Apellido vacio");
       } if (!formData.nombreusuario) {
-        console.log("Nombre de usuario vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Nombre de usuario vacio");
       } if (!formData.password) {
-        console.log("Contraseña vacia");
+        setAlertMessage(prevMessage => prevMessage + "\n- Contraseña vacia");
       } if (!formData.documento) {
-        console.log("Documento vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Documento vacio");
       } if (!formData.telefono) {
-        console.log("Telefono vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Telefono vacio");
       } if (!formData.email) {
-        console.log("Email vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Email vacio");
       } if (!formData.genero) {
-        console.log("Genero vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Genero vacio");
       } if (!formData.id_tipodocumento) {
-        console.log("Tipo de documento vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Tipo de documento vacio");
       }
+      setShowAlert(true);
+      window.scrollTo(0, 0);
       return;
     }
   
@@ -259,7 +262,7 @@ const RegisterCard = () => {
       <Container className="d-flex justify-content-center align-items-center register-container">
         <Card style={{ width: '100%', borderRadius: '0.3rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
-            <GenericAlert/>
+          <GenericAlert title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert} />
             <UploadImage wide='13' onFileChange={handleFileChange}/>
             <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
             <Form>
