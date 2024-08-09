@@ -257,28 +257,27 @@ const RegisterCard = () => {
   return (
     <>
       <Container className="d-flex justify-content-center align-items-center register-container">
-        <Card style={{ width: '100%', borderRadius: '0.3rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
+        <Card style={{ width: '80%', borderRadius: '0.3rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
             <GenericAlert/>
             <UploadImage wide='13' onFileChange={handleFileChange}/>
             <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
             <Form>
             <Row>
-              <Col style={{maxWidth:"50%"}} xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-
+              <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
                   <Form.Group className="mb-2" >
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre (*)</Form.Label>
                       <Form.Control name="nombre" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre"/>
                       <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2 SinError">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre de Usuario (*)</Form.Label>
                       <Form.Control name="nombreusuario" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre de usuario"  />
                       <Form.Label id='errorNombreusuario' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2 SinError">
+                  <Form.Group className="mb-2">
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Tipo de documento (*)</Form.Label>
                   <Form.Select name="id_tipodocumento" onBlur={handleInputChange} onChange={handleInputChange} aria-label="Default select example">
                           <option autoFocus hidden>Seleccione un tipo de documento</option>
@@ -288,52 +287,32 @@ const RegisterCard = () => {
                   </Form.Select>
                   </Form.Group>
 
-                  <Form.Group className="mb-2 SinError">
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
-                    <div>
-                      <Form.Check
-                        inline
-                        label="Hombre"
-                        name="genero"
-                        type="radio"
-                        value="1"
-                        onChange={handleInputChange}
-                      />
-                      <Form.Check
-                        inline
-                        label="Mujer"
-                        name="genero"
-                        type="radio"
-                        value="2"
-                        onChange={handleInputChange}
-                      />
-                      <Form.Check
-                        inline
-                        label="Prefiero no decir"
-                        name="genero"
-                        type="radio"
-                        value="3"
-                        onChange={handleInputChange}
-                      />
-                    </div>   
+                  <Form.Group className="mb-2">
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
+                    <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" >
+                      <option autoFocus hidden>Seleccione un genero</option>
+                      <option value="1">Masculino</option>
+                      <option value="2">Femenino</option>
+                      <option value="3">Prefiero no decir</option>
+                    </Form.Select>   
                   </Form.Group>
 
-                  <Form.Group className="mb-2 SinError">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
                     <Form.Control name="localidad" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Localidad"/>
                   </Form.Group>
 
-                  <Form.Group className="mb-2 SinError">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Calle (*)</Form.Label>
                     <Form.Control name="calle" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Calle"  />
                   </Form.Group>
 
-                  <Form.Group className="mb-2 SinError">
+                  <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de Calle (*)</Form.Label>
                     <Form.Control name="numero" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Numero"/>
                   </Form.Group>
               </Col>   
-              <Col style={{maxWidth:"50%"}} xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
+              <Col  xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
                   <Form.Group className="mb-2">
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido (*)</Form.Label>
                     <Form.Control name="apellido" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su apellido"/>
@@ -356,8 +335,8 @@ const RegisterCard = () => {
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
                       <InputGroup className="mb-2">
-                        <Form.Control name="cai" className="CAI" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" />
-                        <Form.Control name="telnum" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su telefono"/>
+                        <Form.Control name="cai" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" />
+                        <Form.Control name="telnum" style={{width:'70%'}} type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su telefono"/>
                       </InputGroup>
                       <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
