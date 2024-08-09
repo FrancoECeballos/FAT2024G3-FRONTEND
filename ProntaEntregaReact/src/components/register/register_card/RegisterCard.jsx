@@ -14,6 +14,7 @@ import postData from '../../../functions/postData.jsx';
 // Components
 import SendButton from '../../buttons/send_button/send_button.jsx';
 import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
+import GenericAlert from '../../alerts/generic_alert/GenericAlert.jsx'; 
 
 const RegisterCard = () => {
   const navigate = useNavigate();
@@ -57,13 +58,6 @@ const RegisterCard = () => {
     localidad: ""
   });
 
-  const generateUsername = (nombre, apellido, documento) => {
-    if (nombre && apellido && documento) {
-      return `${nombre.toLowerCase()}.${apellido.toLowerCase()}${documento.slice(5, 8)}`;
-    }
-    return '';
-  };
-
   const generatePhone = (cai, telnum) => {
     if (cai && telnum) {
       return `${cai} ${telnum}`;
@@ -82,7 +76,6 @@ const RegisterCard = () => {
         }
 
         const updatedData = { ...prevData, [name]: updatedValue };
-        console.log(updatedData);
         return updatedData;
       });
     } else {
@@ -93,11 +86,6 @@ const RegisterCard = () => {
         }
 
         const updatedData = { ...prevData, [name]: updatedValue };
-
-        if (name === "nombre" || name === "apellido" || name === "documento") {
-          const { nombre, apellido, documento } = updatedData;
-          updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
-        }
 
         if (name === "cai" || name === "telnum") {
           const { cai, telnum } = updatedData;
@@ -111,44 +99,72 @@ const RegisterCard = () => {
       if (name === "documento") {
         const regex = /^[0-9]+$/;
         const errorDocumento = document.getElementById("errorDocumento");
-        errorDocumento.innerHTML = !regex.test(value) && value !== "" ? "El documento es inválido" : "";
+        if (value === "") {
+          errorDocumento.innerHTML = "El documento no puede estar vacío";
+        } else {
+          errorDocumento.innerHTML = !regex.test(value) ? "El documento es inválido" : "";
+        }
       } else if (name === "email") {
         const regex = /@/;
         const errorEmail = document.getElementById("errorEmail");
-        errorEmail.innerHTML = !regex.test(value) && value !== "" ? "El email es inválido" : "";
-      } else if (name === "nombre" || name === "apellido") {
+        if (value === "") {
+          errorEmail.innerHTML = "El email no puede estar vacío";
+        } else {
+          errorEmail.innerHTML = !regex.test(value) ? "El email es inválido" : "";
+        }
+      } else if (name === "nombre" || name === "apellido" || name === "nombreusuario") {
         const regex = /^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/;
         const errorNombre = document.getElementById("errorNombre");
         const errorApellido = document.getElementById("errorApellido");
-        if (!regex.test(value) && value !== "") {
+        const errorNombreusuario = document.getElementById("errorNombreusuario");
+        if (value === "") {
+          if (name === "nombre") {
+            errorNombre.innerHTML = "El nombre no puede estar vacío";
+          } else if (name === "apellido") {
+            errorApellido.innerHTML = "El apellido no puede estar vacío";
+          } else if (name === "nombreusuario") {
+            errorNombreusuario.innerHTML = "El nombre de usuario no puede estar vacío";
+          }
+        } else if (!regex.test(value) && name !== "nombreusuario") {
           if (name === "nombre") {
             errorNombre.innerHTML = "El nombre no puede contener números ni caracteres especiales";
-          } else {
+          } else if (name === "apellido") {
             errorApellido.innerHTML = "El apellido no puede contener números ni caracteres especiales";
           }
         } else {
           if (name === "nombre") {
             errorNombre.innerHTML = "";
-          } else {
+          } else if (name === "apellido") {
             errorApellido.innerHTML = "";
+          } else if (name === "nombreusuario") {
+            errorNombreusuario.innerHTML = "";
           }
         }
       } else if (name === "telnum") {
         const regex = /^[0-9]{10}$/;
         const errorTelefono = document.getElementById("errorTelefono");
-        errorTelefono.innerHTML = !regex.test(value) && value !== "" ? "El teléfono necesita 10 numeros" : "";
+        if (value === "") {
+          errorTelefono.innerHTML = "El teléfono no puede estar vacío";
+        } else {
+          errorTelefono.innerHTML = !regex.test(value) ? "El teléfono necesita 10 numeros" : "";
+        }
       } else if (name === "password") {
         const errorPassword = document.getElementById("errorContrasenia");
-        errorPassword.innerHTML = value.length < 8 && value !== "" ? "La contraseña debe tener al menos 8 caracteres" : "";
+        if (value === "") {
+          errorPassword.innerHTML = "La contraseña no puede estar vacía";
+        } else {
+          errorPassword.innerHTML = value.length < 8 ? "La contraseña debe tener al menos 8 caracteres" : "";
+        }
       } else if (name === "password2") {
         const password = formData.password;
         const password2 = document.getElementById("FormConfirmar").value;
+        const errorConfirmarContrasenia = document.getElementById("errorConfirmar");
 
-        if (password !== password2) {
-          const errorConfirmarContrasenia = document.getElementById("errorConfirmar");
+        if (value === "") {
+          errorConfirmarContrasenia.innerHTML = "La confirmación de la contraseña no puede estar vacía";
+        } else if (password !== password2) {
           errorConfirmarContrasenia.innerHTML = "Las contraseñas no coinciden";
         } else {
-          const errorConfirmarContrasenia = document.getElementById("errorConfirmar");
           errorConfirmarContrasenia.innerHTML = "";
         }
       }
@@ -171,21 +187,21 @@ const RegisterCard = () => {
       // Muestra en la consola los campos vacíos
       if (!formData.nombre) {
         console.log("Nombre vacio");
-      } else if (!formData.apellido) {
+      } if (!formData.apellido) {
         console.log("Apellido vacio");
-      } else if (!formData.nombreusuario) {
+      } if (!formData.nombreusuario) {
         console.log("Nombre de usuario vacio");
-      } else if (!formData.password) {
+      } if (!formData.password) {
         console.log("Contraseña vacia");
-      } else if (!formData.documento) {
+      } if (!formData.documento) {
         console.log("Documento vacio");
-      } else if (!formData.telefono) {
+      } if (!formData.telefono) {
         console.log("Telefono vacio");
-      } else if (!formData.email) {
+      } if (!formData.email) {
         console.log("Email vacio");
-      } else if (!formData.genero) {
+      } if (!formData.genero) {
         console.log("Genero vacio");
-      } else if (!formData.id_tipodocumento) {
+      } if (!formData.id_tipodocumento) {
         console.log("Tipo de documento vacio");
       }
       return;
@@ -243,7 +259,8 @@ const RegisterCard = () => {
       <Container className="d-flex justify-content-center align-items-center register-container">
         <Card style={{ width: '100%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
-            <UploadImage wide='13'/>
+            <GenericAlert/>
+            <UploadImage wide='13' onFileChange={handleFileChange}/>
             <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
             <Form>
             <Row>
@@ -251,18 +268,19 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" >
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre (*)</Form.Label>
-                      <Form.Control name="nombre" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre"/>
+                      <Form.Control name="nombre" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre"/>
                       <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
                   <Form.Group className="mb-2 SinError">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre de Usuario (*)</Form.Label>
-                      <Form.Control name="nombre" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre de usuario"  />
+                      <Form.Control name="nombreusuario" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre de usuario"  />
+                      <Form.Label id='errorNombreusuario' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
                   <Form.Group className="mb-2 SinError">
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Tipo de documento (*)</Form.Label>
-                  <Form.Select name="id_tipodocumento" onChange={handleInputChange} aria-label="Default select example">
+                  <Form.Select name="id_tipodocumento" onBlur={handleInputChange} onChange={handleInputChange} aria-label="Default select example">
                           <option autoFocus hidden>Seleccione un tipo de documento</option>
                           {data.map((item) => (
                             <option key={item.id} value={item.id}>{item.nombre}</option>
@@ -278,7 +296,7 @@ const RegisterCard = () => {
                         label="Hombre"
                         name="genero"
                         type="radio"
-                        value="Hombre"
+                        value="1"
                         onChange={handleInputChange}
                       />
                       <Form.Check
@@ -286,7 +304,7 @@ const RegisterCard = () => {
                         label="Mujer"
                         name="genero"
                         type="radio"
-                        value="Mujer"
+                        value="2"
                         onChange={handleInputChange}
                       />
                       <Form.Check
@@ -294,44 +312,44 @@ const RegisterCard = () => {
                         label="Prefiero no decir"
                         name="genero"
                         type="radio"
-                        value="Prefiero no decir"
+                        value="3"
                         onChange={handleInputChange}
                       />
                     </div>   
                   </Form.Group>
 
                   <Form.Group className="mb-2 SinError">
-                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
-                  <Form.Control name="localidad" type="text" onChange={handleInputChange} placeholder="Ingrese su Localidad"/>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
+                    <Form.Control name="localidad" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Localidad"/>
                   </Form.Group>
 
                   <Form.Group className="mb-2 SinError">
-                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Calle (*)</Form.Label>
-                  <Form.Control name="calle" type="text" onChange={handleInputChange} placeholder="Ingrese su Calle"  />
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Calle (*)</Form.Label>
+                    <Form.Control name="calle" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Calle"  />
                   </Form.Group>
 
                   <Form.Group className="mb-2 SinError">
-                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de Calle (*)</Form.Label>
-                  <Form.Control name="numero" type="number" onChange={handleInputChange} placeholder="Ingrese su Numero"/>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de Calle (*)</Form.Label>
+                    <Form.Control name="numero" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Numero"/>
                   </Form.Group>
               </Col>
               
               <Col style={{maxWidth:"50%"}} xs={12} sm={6} md={6} lg={6} xl={6} xxl={6}>
                   <Form.Group className="mb-2">
-                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido(*)</Form.Label>
-                    <Form.Control name="apellido" type="text" onChange={handleInputChange} placeholder="Ingrese su apellido"/>
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido (*)</Form.Label>
+                    <Form.Control name="apellido" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su apellido"/>
                     <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
-                    <Form.Control name="email" type="email" onChange={handleInputChange} placeholder="Ingrese su email"/>
+                    <Form.Control name="email" type="email" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su email"/>
                     <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
-                    <Form.Control name="documento" type="documento" onChange={handleInputChange} placeholder="Ingrese su documento"/>
+                    <Form.Control name="documento" type="documento" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su documento"/>
                     <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
@@ -339,22 +357,22 @@ const RegisterCard = () => {
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
                       <InputGroup className="mb-2">
-                        <Form.Control name="cai" className="CAI" type="number" onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" />
-                        <Form.Control name="telnum" type="number" onChange={handleInputChange} placeholder="Ingrese su telefono"/>
+                        <Form.Control name="cai" className="CAI" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" />
+                        <Form.Control name="telnum" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su telefono"/>
                       </InputGroup>
                       <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña (*)</Form.Label>
-                    <Form.Control name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" />
+                    <Form.Control name="password" type="password" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su contraseña" />
                     <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
 
 
                   <Form.Group className="mb-2">
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
-                    <Form.Control name="password2" id='FormConfirmar' type="password" onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña"/>
+                    <Form.Control name="password2" id='FormConfirmar' type="password" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña"/>
                     <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
                   </Form.Group>
               </Col>

@@ -6,7 +6,7 @@ import defaultImage from '../../../assets/user_default.png';
 import SendButton from "../send_button/send_button";
 import './uploadImage.scss';
 
-function UploadImage ({wide}){
+function UploadImage ({wide = '15', onFileChange}){
 
     const handleFileButtonClick = () => {
         fileInputRef.current.click();
