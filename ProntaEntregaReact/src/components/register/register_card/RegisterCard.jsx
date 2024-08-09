@@ -206,7 +206,6 @@ const RegisterCard = () => {
         setAlertMessage(prevMessage => prevMessage + "\n- Tipo de documento vacio");
       }
       setShowAlert(true);
-      window.scrollTo(0, 0);
       return;
     }
   
@@ -262,9 +261,9 @@ const RegisterCard = () => {
       <Container className="d-flex justify-content-center align-items-center register-container">
         <Card style={{ width: '80%', borderRadius: '0.3rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
-          <GenericAlert title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert} />
             <UploadImage wide='13' onFileChange={handleFileChange}/>
             <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
+            <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert} />
             <Form>
             <Row>
               <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
