@@ -257,14 +257,14 @@ const RegisterCard = () => {
   return (
     <>
       <Container className="d-flex justify-content-center align-items-center register-container">
-        <Card style={{ width: '100%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
+        <Card style={{ width: '100%', borderRadius: '0.3rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
             <GenericAlert/>
             <UploadImage wide='13' onFileChange={handleFileChange}/>
             <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
             <Form>
             <Row>
-              <Col style={{maxWidth:"50%"}} xs={12} sm={6} md={6} lg={6} xl={6} xxl={6}>
+              <Col style={{maxWidth:"50%"}} xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
 
                   <Form.Group className="mb-2" >
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre (*)</Form.Label>
@@ -332,9 +332,8 @@ const RegisterCard = () => {
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de Calle (*)</Form.Label>
                     <Form.Control name="numero" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Numero"/>
                   </Form.Group>
-              </Col>
-              
-              <Col style={{maxWidth:"50%"}} xs={12} sm={6} md={6} lg={6} xl={6} xxl={6}>
+              </Col>   
+              <Col style={{maxWidth:"50%"}} xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
                   <Form.Group className="mb-2">
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido (*)</Form.Label>
                     <Form.Control name="apellido" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su apellido"/>
@@ -378,8 +377,8 @@ const RegisterCard = () => {
               </Col>
               </Row>
             </Form>
-                <div style={{ marginTop: '5%'}}>
-                  <SendButton onClick={handleSendData} text="Registrar" wide="15" />
+                <div style={{ marginTop: '5%',display:'flex', justifyContent:'end'}}>
+                  <SendButton onClick={handleSendData} text="Registrar" wide="10" backcolor="#02005D" letercolor='white' radius='0.2' shadow='none' size=''/>
                 </div>
           </Card.Body>
         </Card>

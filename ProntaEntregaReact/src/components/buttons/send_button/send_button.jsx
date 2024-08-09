@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 
-export default function SendButton({onClick,href, text = 'Enviar', wide = '10', children, backcolor = '#D9D9D9', letercolor = 'black', id, hid,shadow = '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}) {
+export default function SendButton({onClick,radius = 1,size = 1,href, text = 'Enviar', wide = '10', children, backcolor = '#D9D9D9', letercolor = 'black', id, hid,shadow = '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}) {
     return (
         <Button 
             onClick={onClick} 
@@ -9,13 +9,14 @@ export default function SendButton({onClick,href, text = 'Enviar', wide = '10', 
             href={href}
             style={{
                 id:`${id}`,
-                borderRadius:'1rem', 
+                borderRadius:`${radius}rem`, 
                 textAlign:'center',
                 width: `${wide}rem`, 
                 backgroundColor: `${backcolor}`, 
                 borderColor:'#D9D9D9', 
                 color:`${letercolor}`, 
-                boxShadow:`${shadow}`
+                boxShadow:`${shadow}`,
+                fontSize:`${size}rem`,
             }} 
             variant="primary" 
             type="submit"
