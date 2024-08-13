@@ -326,15 +326,15 @@ const Cuenta = () => {
                     <label for="telefono">Teléfono:</label>
                     <InputGroup className="groupderec">
                         <input disabled={!isEditing} style={{width:'3rem'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
-                        <input disabled={!isEditing} style={{width:'18.5rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
+                        <input disabled={!isEditing} style={{width:'17rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
                     </InputGroup>  
 
                     <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
                     <label for="direccion">Dirección:</label>
                     <InputGroup className="groupderec">
-                        <input disabled={!isEditing} style={{width:'8rem'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} style={{width:'8rem'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'7.5rem'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'7.5rem'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
                         <input disabled={!isEditing} style={{width:'5rem'}} name="id_direccion.numero" type="number"  value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
                     </InputGroup>  
 
@@ -344,8 +344,21 @@ const Cuenta = () => {
                         <option value="2">Femenino</option>
                         <option value="3">Prefiero no decir</option>
                     </Form.Select>
+                    <Col>
+                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "#D10000" : "#D9D9D9"} letercolor={isEditing ? "white" : "black"}/>
+                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="#D9D9D9" letercolor="black" disabled={!GuardarButtonIsValid}/>
+                </Col>
+                </Col>
+
+            <Row className="filabuton">
+                <Col>
+                    {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
+                </Col>
+                <Col>
+                    <SendButton text="Borrar Usuario" backcolor="#D10000" letercolor="white" onClick={handleDeleteUser}></SendButton>
                 </Col>
             </Row>
+                        </Row>
             <Row className="filaobras">
                 <Col>
                     <h3>Obras del Usuario</h3>
@@ -370,16 +383,7 @@ const Cuenta = () => {
                     {isStaff && <SendButton onClick={handleAddOObraToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
                 </Col>
             </Row>
-            <Row className="filabuton">
-                <Col>
-                    <SendButton text="Borrar Usuario" backcolor="#D10000" letercolor="white" onClick={handleDeleteUser}></SendButton>
-                </Col>
-                <Col>
-                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "#D10000" : "#D9D9D9"} letercolor={isEditing ? "white" : "black"}/>
-                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="#D9D9D9" letercolor="black" disabled={!GuardarButtonIsValid}/>
-                </Col>
-            </Row>
-        </div>
+              </div>
     );
 };
 
