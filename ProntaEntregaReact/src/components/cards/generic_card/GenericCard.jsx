@@ -1,12 +1,14 @@
 import React from "react";
 import { Card, Row, Col } from 'react-bootstrap';
 import noImg from '../../../assets/no_image.png';
+import './GenericCard.scss';
 
-function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, descrip5, children, onClick, cardStyle, imageStyle, wide, margin, borderRadius }) {
+function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, descrip5, children, onClick, cardStyle, imageStyle, wide, margin, borderRadius, hoverable = true }) {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', margin: `${margin || '1rem'}`, }}>
             <Card 
                 onClick={onClick} 
+                className={hoverable ? "hoverable" : ""}
                 style={{ 
                     ...cardStyle, 
                     width: `${wide || '80%'}`,
@@ -32,20 +34,16 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                             }} 
                         />
                     </Col>
-                    <Col xs={12} md={7} className="d-flex align-items-center">
-                        <div className="p-3">
-                            <h3>{titulo}</h3>
-                            <div>
-                                <p>{descrip1}</p>
-                                <p>{descrip2}</p>
-                                <p>{descrip3}</p>
-                                <p>{descrip4}</p>
-                                <p>{descrip5}</p>
-                            </div>
-                        </div>
-                    </Col>
-                    <Col xs={12} md={2} className="d-flex justify-content-end align-items-center">
-                        {children}
+                    <Col xs={12} md={9}>
+                        <Card.Body>
+                            <h3 style={{ marginBottom: '1rem' }}>{titulo}</h3>
+                            <Card.Text>{descrip1}</Card.Text>
+                            <Card.Text>{descrip2}</Card.Text>
+                            <Card.Text>{descrip3}</Card.Text>
+                            <Card.Text>{descrip4}</Card.Text>
+                            <Card.Text>{descrip5}</Card.Text>
+                            {children}
+                        </Card.Body>
                     </Col>
                 </Row>
             </Card>
