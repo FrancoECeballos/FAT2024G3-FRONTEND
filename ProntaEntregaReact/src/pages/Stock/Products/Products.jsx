@@ -6,7 +6,7 @@ import './Products.scss';
 
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
-import AcordeonCard from '../../../components/cards/acordeon_card/AcordeonCard.jsx';
+import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
 import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
 import GenericTable from '../../../components/tables/generic_table/GenericTable.jsx';
 
@@ -27,7 +27,6 @@ function Products() {
     const unidadMedidaRef = useRef(null);
     
     const [products, setProducts] = useState([]);
-    const [combinedProducts, setCombinedProducts] = useState([]);
 
     const [selectedOperacion, setSelectedOperacion] = useState('sumar');
 
@@ -48,7 +47,7 @@ function Products() {
             return;
         }
         fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
-            setCategoriaProductos(result);
+            setProducts(result);
         });
 
         fetchData(`/stock/${stockId}`, token).then((result) => {
@@ -61,7 +60,7 @@ function Products() {
 
     }, [token, navigate, stockId, categoriaID]);
 
-    const filteredProducts = combinedProducts.filter(product => {
+    const filteredProducts = products.filter(product => {
         return (
             product.nombre?.toLowerCase().includes(productSearchQuery.toLowerCase()) ||
             product.descripcion?.toLowerCase().includes(productSearchQuery.toLowerCase())
@@ -97,10 +96,6 @@ function Products() {
 
     const handleSearchChange = (value) => {
         setProductSearchQuery(value);
-    };
-
-    const handleDetailSearchChange = (value) => {
-        setDetailSearchQuery(value);
     };
 
     const newDetail = (product) => {
@@ -209,16 +204,6 @@ function Products() {
                             title='Todos'
                             onSelect={() => setSelectedCategoriaProducto('Todos')}
                         />
-                        {Array.isArray(categoriaProductos) && categoriaProductos.map((catProd) => {
-                            return (
-                                <Tab
-                                    style={{backgroundColor:'transparent'}}
-                                    key={catProd.id_categoriaproducto}
-                                    eventKey={catProd.id_categoriaproducto}
-                                    title={catProd.nombre}
-                                />
-                            );
-                        })}
                     </Tabs>
                 </div>
                 <Modal
@@ -273,15 +258,13 @@ function Products() {
                     }></Modal>
                 </div>
                 {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? sortedProducts.map(product => {
-                    const totalMultiplicacion = product.id_detalle ? product.id_detalle.reduce((sum, detail) => sum + detail.multiplicacion, 0) : 0;
                     return (
-                        <AcordeonCard
+                        <GenericCard
                             foto={product.imagen}
                             key={product.id_producto}
                             titulo={product.nombre}
                             acordeonTitle={`Ver almacén de: ${product.nombre}`}
                             descrip1={product.descripcion}
-                            descrip2={`Total: ${totalMultiplicacion} ${product.id_unidadmedida.identificador}`}
                             children={
                                 <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => newDetail(product.id_producto)} handleCloseModal={() => resetDetail()} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
                                     content={
@@ -303,11 +286,7 @@ function Products() {
                                             </InputGroup>
                                             <Form.Select name="id_unidadmedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
                                                 <option autoFocus hidden>Seleccionar...</option>
-                                                {unidadMedida
-                                                    .filter((item) => item.descripcion.includes(product.id_unidadmedida.nombre))
-                                                    .map((item) => (
-                                                        <option key={item.id} value={item.id}>{item.nombre}</option>
-                                                ))}
+                                                
                                             </Form.Select>
                                             <InputGroup className="mb-2">
                                                 <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
@@ -315,56 +294,6 @@ function Products() {
                                             </InputGroup>
                                         </div>
                                     } />
-                            }
-                            accordionChildren={
-                                <>
-                                    {(() => {
-                                        const filteredDetails = product.id_detalle.filter(detalle => {
-                                            return (
-                                                detalle.cantidad?.toString().includes(detailSearchQuery) ||
-                                                detalle.cantidadUnidades?.toString().includes(detailSearchQuery)
-                                            );
-                                        });
-                                        
-                                        const sortedDetails = [...filteredDetails].sort((a, b) => {
-                                            if (!detailOrderCriteria) return 0;
-                                            const aValue = a[detailOrderCriteria];
-                                            const bValue = b[detailOrderCriteria];
-                            
-                                            if (typeof aValue === 'string' && typeof bValue === 'string') {
-                                                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
-                                            }
-                            
-                                            if (typeof aValue === 'number' && typeof bValue === 'number') {
-                                                return bValue - aValue;
-                                            }
-                            
-                                            return 0;
-                                        });
-                            
-                                        return (
-                                            <>
-                                                <SearchBar onSearchChange={handleDetailSearchChange} onOrderChange={setDetailOrderCriteria} filters={detailFilters} />
-                                                <div className="little-cards-container" style={{marginTop: '1rem'}}>
-                                                    {Array.isArray(sortedDetails) && sortedDetails.map(detail => {
-                                                        return (
-                                                            <LittleCard
-                                                                key={detail.id_detallestockproducto}
-                                                                foto={detail.imagen}
-                                                                titulo={detail.titulo}
-                                                                descrip1={
-                                                                    detail.id_unidadmedida.paquete
-                                                                        ? `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador} ${detail.cantidadUnidades}`
-                                                                        : `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador}`
-                                                                }
-                                                            />
-                                                        );
-                                                    })}
-                                                </div>
-                                            </>
-                                        );
-                                    })()}
-                                </>
                             }
                         />
                     );

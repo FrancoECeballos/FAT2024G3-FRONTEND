@@ -19,7 +19,7 @@ const GenericTable = ({ headers, data, showCreateNew, createNewFunction }) => {
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
             {headers.map((header, cellIndex) => (
-              <td key={cellIndex}>{row[header]}</td>
+              <td key={cellIndex}>{row[header.toLowerCase()]}</td>
             ))}
           </tr>
         ))}
