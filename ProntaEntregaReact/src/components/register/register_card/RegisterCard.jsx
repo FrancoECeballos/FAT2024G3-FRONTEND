@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { InputGroup, Col, Row, Form, Container, Card} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
 
 // Assets and style
 import './RegisterCard.scss';
@@ -17,6 +19,9 @@ import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
 import GenericAlert from '../../alerts/generic_alert/GenericAlert.jsx'; 
 
 const RegisterCard = () => {
+
+  const [phone, setPhone] = useState('');
+
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
@@ -104,7 +109,7 @@ const RegisterCard = () => {
         if (value === "") {
           errorDocumento.innerHTML = "El documento no puede estar vacío";
         } else {
-          errorDocumento.innerHTML = !regex.test(value) ? "El documento es inválido" : "";
+          errorDocumento.innerHTML = !regex.test(value) ? "El documento es inválido" : "&nbsp;";
         }
       } else if (name === "email") {
         const regex = /@/;
@@ -112,7 +117,7 @@ const RegisterCard = () => {
         if (value === "") {
           errorEmail.innerHTML = "El email no puede estar vacío";
         } else {
-          errorEmail.innerHTML = !regex.test(value) ? "El email es inválido" : "";
+          errorEmail.innerHTML = !regex.test(value) ? "El email es inválido" : "&nbsp;";
         }
       } else if (name === "nombre" || name === "apellido" || name === "nombreusuario") {
         const regex = /^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/;
@@ -135,11 +140,11 @@ const RegisterCard = () => {
           }
         } else {
           if (name === "nombre") {
-            errorNombre.innerHTML = "";
+            errorNombre.innerHTML = "&nbsp;";
           } else if (name === "apellido") {
-            errorApellido.innerHTML = "";
+            errorApellido.innerHTML = "&nbsp;";
           } else if (name === "nombreusuario") {
-            errorNombreusuario.innerHTML = "";
+            errorNombreusuario.innerHTML = "&nbsp;";
           }
         }
       } else if (name === "telnum") {
@@ -148,14 +153,14 @@ const RegisterCard = () => {
         if (value === "") {
           errorTelefono.innerHTML = "El teléfono no puede estar vacío";
         } else {
-          errorTelefono.innerHTML = !regex.test(value) ? "El teléfono necesita 10 numeros" : "";
+          errorTelefono.innerHTML = !regex.test(value) ? "El teléfono necesita 10 numeros" : "&nbsp;";
         }
       } else if (name === "password") {
         const errorPassword = document.getElementById("errorContrasenia");
         if (value === "") {
           errorPassword.innerHTML = "La contraseña no puede estar vacía";
         } else {
-          errorPassword.innerHTML = value.length < 8 ? "La contraseña debe tener al menos 8 caracteres" : "";
+          errorPassword.innerHTML = value.length < 8 ? "La contraseña debe tener al menos 8 caracteres" : "&nbsp;";
         }
       } else if (name === "password2") {
         const password = formData.password;
@@ -167,7 +172,7 @@ const RegisterCard = () => {
         } else if (password !== password2) {
           errorConfirmarContrasenia.innerHTML = "Las contraseñas no coinciden";
         } else {
-          errorConfirmarContrasenia.innerHTML = "";
+          errorConfirmarContrasenia.innerHTML = "&nbsp;";
         }
       }
     }
@@ -267,100 +272,110 @@ const RegisterCard = () => {
             <Form>
             <Row>
               <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-                  <Form.Group className="mb-2" >
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre (*)</Form.Label>
-                      <Form.Control name="nombre" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre"/>
-                      <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                      <Form.Control style={{ height: '2.4rem' }} name="nombre" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre"/>
+                      <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre de Usuario (*)</Form.Label>
-                      <Form.Control name="nombreusuario" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre de usuario"  />
-                      <Form.Label id='errorNombreusuario' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                      <Form.Control style={{ height: '2.4rem' }} name="nombreusuario" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre de usuario"  />
+                      <Form.Label id='errorNombreusuario' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Tipo de documento (*)</Form.Label>
-                  <Form.Select name="id_tipodocumento" onBlur={handleInputChange} onChange={handleInputChange} aria-label="Default select example">
-                          <option autoFocus hidden>Seleccione un tipo de documento</option>
-                          {data.map((item) => (
-                            <option key={item.id} value={item.id}>{item.nombre}</option>
-                          ))}
+                  <Form.Select style={{ height: '2.4rem' }} name="id_tipodocumento" onBlur={handleInputChange} onChange={handleInputChange} aria-label="Default select example">
+                    <option autoFocus hidden>Seleccione un tipo de documento</option>
+                    {data.map((item) => (
+                      <option key={item.id} value={item.id}>{item.nombre}</option>
+                    ))}
                   </Form.Select>
+                  <Form.Label id='errorTipoDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
-                    <Form.Select name="genero" onChange={handleInputChange} aria-label="Default select example" >
+                    <Form.Select style={{ height: '2.4rem' }} name="genero" onChange={handleInputChange} aria-label="Default select example" >
                       <option autoFocus hidden>Seleccione un genero</option>
                       <option value="1">Masculino</option>
                       <option value="2">Femenino</option>
                       <option value="3">Prefiero no decir</option>
-                    </Form.Select>   
+                    </Form.Select>
+                  <Form.Label id='errorGenero' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
-                    <Form.Control name="localidad" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Localidad"/>
+                    <Form.Control style={{ height: '2.4rem' }} name="localidad" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Localidad"/>
+                    <Form.Label id='errorLocalidad' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Calle (*)</Form.Label>
-                    <Form.Control name="calle" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Calle"  />
+                    <Form.Control style={{ height: '2.4rem' }} name="calle" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Calle"  />
+                    <Form.Label id='errorCalle' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de Calle (*)</Form.Label>
-                    <Form.Control name="numero" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Numero"/>
+                    <Form.Control style={{ height: '2.4rem' }} name="numero" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Numero"/>
+                    <Form.Label id='errorNumero' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
               </Col>   
               <Col  xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
                   <Form.Group className="mb-2">
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido (*)</Form.Label>
-                    <Form.Control name="apellido" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su apellido"/>
-                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Control style={{ height: '2.4rem' }} name="apellido" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su apellido"/>
+                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
-                    <Form.Control name="email" type="email" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su email"/>
-                    <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Control style={{ height: '2.4rem' }} name="email" type="email" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su email"/>
+                    <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
-                    <Form.Control name="documento" type="documento" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su documento"/>
-                    <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Control style={{ height: '2.4rem' }} name="documento" type="documento" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su documento"/>
+                    <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Telefono (*)</Form.Label>
                       <InputGroup className="mb-2">
-                        <Form.Control name="cai" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="CAI (Codigo de acceso internacional) Ej: +54" />
-                        <Form.Control name="telnum" style={{width:'70%'}} type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su telefono"/>
+                      <PhoneInput
+                        defaultCountry="ar"
+                        value={phone}
+                        onChange={(phone) => setPhone(phone)}
+                        style={{ width: '100%', display: 'flex', height: '2.4rem' }} 
+                        inputStyle={{ width: '95%' }}
+                      />
                       </InputGroup>
-                      <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                      <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Contraseña (*)</Form.Label>
-                    <Form.Control name="password" type="password" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su contraseña" />
-                    <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Control style={{ height: '2.4rem' }} name="password" type="password" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su contraseña" />
+                    <Form.Label id='errorContrasenia' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
 
-                  <Form.Group className="mb-2">
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
-                    <Form.Control name="password2" id='FormConfirmar' type="password" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña"/>
-                    <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}> </Form.Label>
+                    <Form.Control style={{ height: '2.4rem' }} name="password2" id='FormConfirmar' type="password" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña"/>
+                    <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
               </Col>
               </Row>
             </Form>
-                <div style={{ marginTop: '5%',display:'flex', justifyContent:'end'}}>
-                  <SendButton onClick={handleSendData} text="Registrar" wide="10" backcolor="#02005D" letercolor='white' radius='0.2' shadow='none' size=''/>
-                </div>
+              <div style={{ marginTop: '5%',display:'flex', justifyContent:'end'}}>
+                <SendButton onClick={handleSendData} text="Registrar" wide="10" backcolor="#02005D" letercolor='white' radius='0.2' shadow='none'/>
+              </div>
           </Card.Body>
         </Card>
       </Container>
