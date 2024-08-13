@@ -19,7 +19,7 @@ const Cuenta = () => {
     const location = useLocation();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
-    const [isStaff, setIsStaff] = useState(location.state);
+    const [isStaff, setIsStaff] = useState(location.state || false);
     const [direc, setDirec] = useState([]);
 
     const [userObras, setUserObras] = useState([]);
@@ -85,6 +85,7 @@ const Cuenta = () => {
     }, [userDataDefault]);
 
     useEffect(() => {
+
         const updateUserState = (result) => {
             const transformedData = NullToEmpty(result);
             setUserData(transformedData);
@@ -300,7 +301,8 @@ const Cuenta = () => {
 
     return (
         <div class="micuenta">
-            <h1> <img src={userData.imagen} className="fotoperfil" />{` Bienvenido ${userDataDefault.nombreusuario}`}</h1>
+            <h1> <img src={userData.imagen} className="fotoperfil" />
+            {isStaff ? (<> Viendo el perfil de <strong>{userDataDefault.nombreusuario}</strong> </>) : (<> Bienvenido <strong>{userDataDefault.nombreusuario}</strong> </>)} </h1>
             <Row className="filainputs">
                 <Col>
                     <label for="nombre">Nombre:</label>

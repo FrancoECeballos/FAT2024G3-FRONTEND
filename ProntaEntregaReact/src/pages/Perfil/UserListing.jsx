@@ -7,14 +7,12 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericAccordeon from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
 
 import fetchData from '../../functions/fetchData';
+import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 
 function UserListing() {
     const navigate = useNavigate();
-    const [users, setUsers] = useState([]);
+    const [obras, setObras] = useState([]);
 
-    const { obraId } = useParams();
-
-    const [adminUser, setAdminUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const token = Cookies.get('token');
@@ -24,21 +22,39 @@ function UserListing() {
             navigate('/login');
             return;
         }
-        fetchData(`/userToken/${token}`).then((result) => {
-            setAdminUser(result);
-        });
-        fetchData(`/user/obra/${obraId}/`)
-            .then(data => {
-                console.log(data);
-                setUsers(data);
-            })
-            .catch(error => {
-                console.error('Hubo un error al obtener los usuarios', error);
+    
+        fetchData(`userToken/${token}/`, token).then(result => {
+            if (result.is_superuser) {
+                fetchData(`obra/`, token).then(result => {
+                    const obrasWithUsuarios = result.map(async obra => {
+                        const usuarios = await fetchData(`/user/obra/${obra.id_obra}/`, token);
+                        return { ...obra, usuarios };
+                    });
+                    Promise.all(obrasWithUsuarios).then(updatedObras => {
+                        setObras(updatedObras);
+                        console.log(updatedObras);
+                    }).catch(error => {
+                        console.error('Hubo un error al obtener los usuarios para las obras', error);
+                    });
+                });
+            } else {
+                fetchData(`/obra/user/${token}/`, token).then(result => {
+                    const obrasWithUsuarios = result.map(async obra => {
+                        const usuarios = await fetchData(`/user/obra/${obra.id_obra}/`, token);
+                        return { ...obra, usuarios };
+                    });
+                    Promise.all(obrasWithUsuarios).then(updatedObras => {
+                        setObras(updatedObras);
+                        console.log(updatedObras);
+                    }).catch(error => {
+                        console.error('Hubo un error al obtener los usuarios para las obras', error);
+                    });
+                });
+            }
+        }).catch(error => {
+            console.error('Hubo un error al obtener el token del usuario', error);
         });
 
-        fetchData(`/obra/${obraId}`, token).then((result) => {
-            setCurrentObra(result[0].nombre);
-        });
     }, [token, navigate]);
 
     const handleSearchChange = (value) => {
@@ -54,16 +70,16 @@ function UserListing() {
         { type: 'telefono', label: 'Teléfono' },
     ];
 
-    const filteredUsers = users.filter(user => {
+    const filteredObras = obras.filter(obra => {
         return (
-            user.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.documento?.toLowerCase().includes(searchQuery.toLowerCase())
+            obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            obra.documento?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
-    const sortedUsers = [...filteredUsers].sort((a, b) => {
+    const sortedObras = [...filteredObras].sort((a, b) => {
         if (!orderCriteria) return 0;
         if (a[orderCriteria]?.toLowerCase() < b[orderCriteria]?.toLowerCase()) return -1;
         if (a[orderCriteria]?.toLowerCase() > b[orderCriteria]?.toLowerCase()) return 1;
@@ -79,11 +95,33 @@ function UserListing() {
                     onOrderChange={setOrderCriteria} 
                     filters={filters}
                 />
-                <GenericAccordeon
-                    wide={'80%'}
-                    titulo="aaaaaaaaaa"
-                    children={["bbbbbbbbbb", "cccccccccccc", "dddddddddddd"]}
-                />
+                <div style={{marginTop: '1rem'}}>
+                    {sortedObras.map(obra => (
+                        <GenericAccordeon
+                            wide={'80%'}
+                            key={obra.id_obra}
+                            titulo={obra.nombre}
+                            foto={obra.imagen}
+                            descrip1={obra.descripcion}
+                            descrip2={obra.usuarios_registrados}
+                        >
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                {obra.usuarios.map(usuario => (
+                                    <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
+                                        <LittleCard
+                                            foto={usuario.imagen}
+                                            titulo={`${usuario.nombre} ${usuario.apellido}`}
+                                            descrip1={usuario.email}
+                                            descrip2={usuario.documento}
+                                            descrip3={usuario.telefono}
+                                            onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </GenericAccordeon>
+                    ))}
+                </div>
             </div>
         </div>
     );

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Accordion, Card } from 'react-bootstrap';
 
-const GenericAccordion = ({ wide, titulo, children }) => {
+const GenericAccordion = ({ wide, titulo, children, foto }) => {
     return (
-        <div style={{marginTop:"1rem", display: 'flex', justifyContent: 'center' }}>
+        <div style={{display: 'flex', justifyContent: 'center' }}>
             <Card style={{ width: `${wide}` }}>
                 <Accordion>
                     <Accordion.Item eventKey="0">
@@ -12,11 +12,9 @@ const GenericAccordion = ({ wide, titulo, children }) => {
                                 <h5>{titulo}</h5>
                             </div>
                         </Accordion.Header>
-                        {children.map((child, index) => (
-                            <Accordion.Body key={index}>
-                                {child}
-                            </Accordion.Body>
-                        ))}
+                        <Accordion.Body style={{backgroundColor: '#F5F5F5'}}>
+                            {children}
+                        </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
             </Card>

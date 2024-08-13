@@ -2,16 +2,15 @@ import React from "react";
 import { Card, Row, Col } from 'react-bootstrap';
 import noImg from '../../../assets/no_image.png';
 
-function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, descrip5, children, onClick, cardStyle, imageStyle }) {
+function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, descrip5, children, onClick, cardStyle, imageStyle, wide, margin, borderRadius }) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', margin: `${margin || '1rem'}`, }}>
             <Card 
                 onClick={onClick} 
                 style={{ 
                     ...cardStyle, 
-                    width: '80%',
-                    maxWidth: '80%',
-                    borderRadius: '1rem', 
+                    width: `${wide || '80%'}`,
+                    borderRadius: `${borderRadius || '1rem'}`,
                     boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', 
                     padding: '0.5rem',
                     justifyContent: 'space-between'
