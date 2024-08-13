@@ -10,8 +10,7 @@ import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 import fetchData from '../../functions/fetchData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Modal from '../../components/modals/Modal.jsx';
-import {InputGroup, Form, Button, Dropdown} from 'react-bootstrap';
-import postData from '../../functions/postData.jsx';
+import {Form, Dropdown} from 'react-bootstrap';
 
 function AutosComponent() {
     const navigate = useNavigate();
@@ -29,10 +28,10 @@ function AutosComponent() {
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [formData, setFormData] = useState({
         imagen: null,
-        "marca": "",
-        "modelo": "",
-        "patente": "",
-        "kilometros": "",
+        marca: "",
+        modelo: "",
+        patente: "",
+        kilometraje: "",
     });
 
     useEffect(() => {
@@ -209,7 +208,7 @@ function AutosComponent() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <Modal openButtonText='¿No encuentra su auto? Añadalo' openButtonWidth='20' title='Nuevo Auto' saveButtonText='Crear' handleSave={handleCreateAuto}  content={
+                        <Modal openButtonText='¿No encuentra su auto? Añadalo' hoverableButton={true} openButtonWidth='20' title='Nuevo Auto' saveButtonText='Crear' handleSave={handleCreateAuto}  content={
                             <div>
                                 <h2 className='centered'> Nuevo Auto </h2>
                                 <UploadImage wide='13' onFileChange={handleFileChange}/>

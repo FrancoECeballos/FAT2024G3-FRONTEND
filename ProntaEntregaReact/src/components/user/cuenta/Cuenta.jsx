@@ -294,96 +294,213 @@ const Cuenta = () => {
             setDirec(result);
         });
     };
-
-
-
-    return (
-        <div class="micuenta">
-            <h1> <img src={userData.imagen} className="fotoperfil" />{` Bienvenido ${userDataDefault.nombreusuario}`}</h1>
+        return (
+          <div className="micuenta">
+            <h1>
+              <img src={userData.imagen} className="fotoperfil" alt="Perfil" />
+              {`Bienvenido ${userDataDefault.nombreusuario}`}
+            </h1>
+            
             <Row className="filainputs">
-                <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
-                <div style={{maxWidth:'25rem'}}>
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" style={{width:'100%'}} name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
-                    
-                    <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: '#02005E' }}></Form.Label>
-
-                    <label for="apellido">Apellido:</label>
-                    <input type="text" id="apellido" style={{width:'100%'}} name="apellido" value={`${userData.apellido}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
-
-                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
-
-                    <label for="email">Correo electrónico:</label>
-                    <input type="email" id="email" style={{width:'100%'}} name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
-                    
-                    <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
+              <Col lg={6}>
+                <div className="form-container">
+                  <Form.Group controlId="nombre">
+                    <Form.Label>Nombre:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="nombre"
+                      value={userData.nombre || ''}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    />
+                  </Form.Group>
+                  
+                  <Form.Group controlId="apellido">
+                    <Form.Label>Apellido:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="apellido"
+                      value={userData.apellido || ''}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    />
+                  </Form.Group>
+                  
+                  <Form.Group controlId="email">
+                    <Form.Label>Correo electrónico:</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={userData.email || ''}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    />
+                  </Form.Group>
                 </div>
-                </Col>
+              </Col>
+              
+              <Col lg={6}>
+                <div className="form-container">
+                  <Form.Group controlId="telefono">
+                    <Form.Label>Teléfono:</Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type="text"
+                        name="cai"
+                        value={userData.telefono.split(' ')[0] || ''}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                      />
+                      <Form.Control
+                        type="number"
+                        name="telnum"
+                        value={userData.telefono.split(' ')[1] || ''}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                      />
+                    </InputGroup>
+                  </Form.Group>
+                  
+                  <Form.Group controlId="direccion">
+                    <Form.Label>Dirección:</Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type="text"
+                        name="id_direccion.localidad"
+                        value={userData.id_direccion?.localidad || ''}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                      />
+                      <Form.Control
+                        type="text"
+                        name="id_direccion.calle"
+                        value={userData.id_direccion?.calle || ''}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                      />
+                      <Form.Control
+                        type="number"
+                        name="id_direccion.numero"
+                        value={userData.id_direccion?.numero || ''}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                      />
+                    </InputGroup>
+                  </Form.Group>
+                  
+                  <Form.Group controlId="genero">
+                    <Form.Label>Género:</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="genero"
+                      value={userData.genero || 2}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    >
+                      <option value="1">Masculino</option>
+                      <option value="2">Femenino</option>
+                      <option value="3">Prefiero no decir</option>
+                    </Form.Control>
+                  </Form.Group>
+                </div>
                 
-                <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
-                <div style={{maxWidth:'25rem'}}>
-                    <label for="telefono">Teléfono:</label>
-                    <InputGroup className="groupderec">
-                        <input disabled={!isEditing} style={{width:'20%'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
-                        <input disabled={!isEditing} style={{width:'80%'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
-                    </InputGroup>  
-
-                    <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
-
-                    <label for="direccion">Dirección:</label>
-                    <InputGroup className="groupderec">
-                        <input disabled={!isEditing} style={{width:'33.3%'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} style={{width:'33.3%'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} style={{width:'33.3%'}} name="id_direccion.numero" type="number"  value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
-                    </InputGroup>  
-
-                    <label for="genero">Genero:</label>
-                    <Form.Select style={{width:'100%'}} className="genero" name="genero" id="genero" value={`${userData.genero}` || 2} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
-                        <option value="1">Masculino</option>
-                        <option value="2">Femenino</option>
-                        <option value="3">Prefiero no decir</option>
-                    </Form.Select>
-                    </div>
-            {!isStaff && <Button style={{marginTop:'2rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
-                </Col>
+                {!isStaff && (
+                  <Button
+                    className="logout-button"
+                    onClick={handleLogout}
+                  >
+                    Cerrar sesión
+                  </Button>
+                )}
+              </Col>
             </Row>
+            
             <Row className="filaobras">
-                <Col >
-                <div>
-                    <h3>Obras del Usuario</h3>
-                    <ul>
-                        {obraID.length === 0 ? (
-                            <p> Este usuario no pertenece<br/>a ninguna obra </p>
-                        ) : (
-                            obraID.map(userobra => (
-                                <li key={userobra.id_obra}>
-                                    {userobra.nombre}
-                                    {isStaff && <SendButton text="Delete" backcolor="#D10000" letercolor="white" wide="5" onClick={() => handleDeleteObraFromUser(userobra.id_obra)}></SendButton>}
-                                </li>
-                            ))
-                        )}
-                    </ul>
-                    {isStaff && <Form.Select style={{width:'200px'}} aria-label="Select object" value={selectedObject} onChange={e => setSelectedObject(e.target.value)}>
-                        <option disabled hidden value="">Select an object to add</option>
+              <Col>
+                <div className="obras-container">
+                  <h3>Obras del Usuario</h3>
+                  <ul>
+                    {obraID.length === 0 ? (
+                      <p>Este usuario no pertenece a ninguna obra</p>
+                    ) : (
+                      obraID.map(userobra => (
+                        <li key={userobra.id_obra}>
+                          {userobra.nombre}
+                          {isStaff && (
+                            <SendButton
+                              text="Eliminar"
+                              backcolor="#D10000"
+                              letercolor="white"
+                              onClick={() => handleDeleteObraFromUser(userobra.id_obra)}
+                            />
+                          )}
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                  {isStaff && (
+                    <div className="add-obra">
+                      <Form.Control
+                        as="select"
+                        aria-label="Select object"
+                        value={selectedObject}
+                        onChange={e => setSelectedObject(e.target.value)}
+                      >
+                        <option disabled hidden value="">
+                          Selecciona una obra para añadir
+                        </option>
                         {obras.map(obra => (
-                            !obraID.some(obraID => obraID.id_obra === obra.id_obra) ? <option key={obra.id_obra} value={obra.id_obra}>{obra.nombre}</option> : null
+                          !obraID.some(obraID => obraID.id_obra === obra.id_obra) && (
+                            <option key={obra.id_obra} value={obra.id_obra}>
+                              {obra.nombre}
+                            </option>
+                          )
                         ))}
-                    </Form.Select>}
-                    {isStaff && <SendButton onClick={handleAddOObraToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
+                      </Form.Control>
+                      <SendButton
+                        onClick={handleAddOObraToUser}
+                        text="Añadir"
+                        wide="5"
+                        letercolor="white"
+                        backcolor="blue"
+                        disabled={!selectedObject}
+                      />
+                    </div>
+                  )}
                 </div>
-                </Col>
+              </Col>
             </Row>
+            
             <Row className="filabuton">
-                <Col>
-                    <SendButton text="Borrar Usuario" backcolor="#D10000" letercolor="white" onClick={handleDeleteUser}></SendButton>
-                </Col>
-                <Col>
-                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "#D10000" : "#D9D9D9"} letercolor={isEditing ? "white" : "black"}/>
-                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="#D9D9D9" letercolor="black" disabled={!GuardarButtonIsValid}/>
-                </Col>
+              <Col>
+                <SendButton
+                  text="Borrar Usuario"
+                  backcolor="#D10000"
+                  letercolor="white"
+                  onClick={handleDeleteUser}
+                />
+              </Col>
+              <Col>
+                <SendButton
+                  onClick={handleEdit}
+                  text={isEditing ? "Cancelar" : "Editar"}
+                  wide="6"
+                  backcolor={isEditing ? "#D10000" : "#D9D9D9"}
+                  letercolor={isEditing ? "white" : "black"}
+                />
+                <SendButton
+                  hidden={!isEditing}
+                  onClick={handleSendData}
+                  text="Guardar"
+                  wide="6"
+                  backcolor="#D9D9D9"
+                  letercolor="black"
+                  disabled={!GuardarButtonIsValid}
+                />
+              </Col>
             </Row>
-        </div>
-    );
-};
-
-export default Cuenta;
+          </div>
+        );
+      };
+      
+      export default Cuenta;

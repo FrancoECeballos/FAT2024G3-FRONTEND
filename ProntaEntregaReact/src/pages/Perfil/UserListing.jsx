@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericAccordeon from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
+import GenericAccordion from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
 
 import fetchData from '../../functions/fetchData';
 import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
@@ -97,29 +97,30 @@ function UserListing() {
                 />
                 <div style={{marginTop: '1rem'}}>
                     {sortedObras.map(obra => (
-                        <GenericAccordeon
-                            wide={'80%'}
-                            key={obra.id_obra}
-                            titulo={obra.nombre}
-                            foto={obra.imagen}
-                            descrip1={obra.descripcion}
-                            descrip2={obra.usuarios_registrados}
-                        >
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                                {obra.usuarios.map(usuario => (
-                                    <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
-                                        <LittleCard
-                                            foto={usuario.imagen}
-                                            titulo={`${usuario.nombre} ${usuario.apellido}`}
-                                            descrip1={usuario.email}
-                                            descrip2={usuario.documento}
-                                            descrip3={usuario.telefono}
-                                            onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </GenericAccordeon>
+                        <div key={obra.id_obra} style={{ marginBottom: '0.1rem' }}>
+                            <GenericAccordion
+                                wide={'80%'}
+                                titulo={obra.nombre}
+                                foto={obra.imagen}
+                                descrip1={obra.descripcion}
+                                descrip2={obra.usuarios_registrados}
+                            >
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                    {obra.usuarios.map(usuario => (
+                                        <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
+                                            <LittleCard
+                                                foto={usuario.imagen}
+                                                titulo={`${usuario.nombre} ${usuario.apellido}`}
+                                                descrip1={usuario.email}
+                                                descrip2={usuario.documento}
+                                                descrip3={usuario.telefono}
+                                                onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </GenericAccordion>
+                        </div>
                     ))}
                 </div>
             </div>

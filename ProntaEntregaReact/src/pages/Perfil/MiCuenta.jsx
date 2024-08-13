@@ -1,5 +1,7 @@
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
+import { Col, Row } from 'react-bootstrap';
+
 import Cuenta from '../../components/user/cuenta/Cuenta';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 import Sidebar from '../../components/user/sidebar/Sidebar_perfil';
@@ -18,8 +20,14 @@ function MiCuenta(){
     return (
         <div style={{backgroundColor: '#ECECEC'}}>
             <FullNavbar/>
-            <Sidebar isAdmin={user.is_staff}/>
-            <Cuenta/>
+            <Row>
+                <Col xs={3} sm={3} md={3} lg={3} xl={3} xxl={3}>
+                    <Sidebar isAdmin={user.is_staff}/>
+                </Col>
+                <Col xs={9} sm={9} md={9} lg={9} xl={9} xxl={9}>
+                    <Cuenta/>
+                </Col>
+            </Row>
         </div>
     );
 };
