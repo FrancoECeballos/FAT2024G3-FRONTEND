@@ -1,7 +1,7 @@
 import React from 'react';
 import { Accordion, Card } from 'react-bootstrap';
 
-const GenericAccordion = ({ wide, titulo, children, foto }) => {
+const GenericAccordion = ({ wide, titulo, children }) => {
     return (
         <div style={{display: 'flex', justifyContent: 'center' }}>
             <Card style={{ width: `${wide}` }}>

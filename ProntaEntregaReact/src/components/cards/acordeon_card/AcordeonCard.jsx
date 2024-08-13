@@ -1,28 +1,28 @@
-import { disableCache } from "@iconify/react/dist/iconify.js";
+import './AcordeonCard.scss';
 import React from "react";
 import { Card, Row, Col } from 'react-bootstrap';
-
 import GenericAccordion from "../../accordions/generic_accordion/GenericAccordion.jsx";
 
-function AcordeonCard({foto, titulo, acordeonTitle, descrip1, descrip2, children, onClick, accordionChildren}){
+function AcordeonCard({foto, titulo, acordeonTitle, descrip1, descrip2, children, onClick, accordionChildren, hoverable = true}){
     return(
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem' }}>
-            <Card onClick={onClick} style={{ width: '90%', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', padding: '0.5rem' }}>
-                <Row className="g-0" style={{ padding: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Col xs={4} md={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <img src={foto} style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '1rem', objectFit: 'cover' }} />
+        <div className="acordeon-card-container">
+            <Card 
+                onClick={onClick} 
+                className={`acordeon-card ${hoverable ? "hoverable" : ""}`}
+            >
+                <Row className="g-0 acordeon-card-row">
+                    <Col xs={4} md={2} className="acordeon-card-col-img">
+                        <img src={foto} alt={titulo} />
                     </Col>
-                    <Col xs={6} md={8}>
-                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', marginLeft: '3rem' }}>
-                            <h3>{titulo}</h3>
-                            <div style={{ marginLeft: '1rem' }}>
-                                <p>{descrip1}</p>
-                                <p>{descrip2}</p>
-                                <GenericAccordion titulo={acordeonTitle} children={accordionChildren} />
-                            </div>
+                    <Col xs={6} md={8} className="acordeon-card-col-content">
+                        <h3>{titulo}</h3>
+                        <div className="description">
+                            <p>{descrip1}</p>
+                            <p>{descrip2}</p>
+                            <GenericAccordion titulo={acordeonTitle} children={accordionChildren} />
                         </div>
                     </Col>
-                    <Col xs={2} md={2} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <Col xs={2} md={2} className="acordeon-card-col-children">
                         {children}
                     </Col>
                 </Row>
@@ -30,4 +30,5 @@ function AcordeonCard({foto, titulo, acordeonTitle, descrip1, descrip2, children
         </div>
     );
 }
+
 export default AcordeonCard;
