@@ -16,7 +16,7 @@ import {InputGroup, Form, Button} from 'react-bootstrap';
 import postData from '../../../functions/postData.jsx';
 
 import comidaLogo from '../../../assets/comidaLogo.png';
-import medicinaLogo from '../../../assets/medicinaLogo.png';
+import ropaLogo from '../../../assets/ropaLogo.png';
 import mueblesLogo from '../../../assets/mueblesLogo.png';
 
 function Categories() {
@@ -30,7 +30,7 @@ function Categories() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
-    const images = [comidaLogo, medicinaLogo, mueblesLogo];
+    const images = [comidaLogo, ropaLogo, mueblesLogo];
 
     const [formCategoryData, setFormCategoryData] = useState({
         "nombre": "",
