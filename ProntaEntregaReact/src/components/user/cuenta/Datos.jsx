@@ -63,7 +63,7 @@ const Cuenta = () => {
                 {`Bienvenido ${userData.nombre + " " + userData.apellido}`}
             </h1>
             <Row className="filainputs">
-                <Col>
+                <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
                     <label htmlFor="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" value={userData.nombre} disabled />
 
@@ -77,7 +77,7 @@ const Cuenta = () => {
                     <input type="text" id="fecha_union" name="fecha_union" value={userData.fecha_union} disabled />
 
                 </Col>
-                <Col>
+                <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
                     <label htmlFor="telefono">Teléfono:</label>
                     <input type="text" id="telefono" name="telefono" value={userData.telefono} disabled />
 
