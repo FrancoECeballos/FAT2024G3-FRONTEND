@@ -19,7 +19,7 @@ const Cuenta = () => {
     const location = useLocation();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
-    const [isStaff, setIsStaff] = useState(location.state || false);
+    const [isStaff, setIsStaff] = useState(location.state);
     const [direc, setDirec] = useState([]);
 
     const [userObras, setUserObras] = useState([]);
@@ -85,7 +85,6 @@ const Cuenta = () => {
     }, [userDataDefault]);
 
     useEffect(() => {
-
         const updateUserState = (result) => {
             const transformedData = NullToEmpty(result);
             setUserData(transformedData);
@@ -301,10 +300,10 @@ const Cuenta = () => {
 
     return (
         <div class="micuenta">
-            <h1> <img src={userData.imagen} className="fotoperfil" />
-            {isStaff ? (<> Viendo el perfil de <strong>{userDataDefault.nombreusuario}</strong> </>) : (<> Bienvenido <strong>{userDataDefault.nombreusuario}</strong> </>)} </h1>
+            <h1> <img src={userData.imagen} className="fotoperfil" />{` Bienvenido ${userDataDefault.nombreusuario}`}</h1>
             <Row className="filainputs">
-                <Col>
+                <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
+                <div style={{maxWidth:'25rem'}}>
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
@@ -319,21 +318,24 @@ const Cuenta = () => {
                     <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
                     <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
+                </div>
                 </Col>
-                <Col>
+                
+                <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
+                <div style={{maxWidth:'25rem'}}>
                     <label for="telefono">Teléfono:</label>
                     <InputGroup className="groupderec">
-                        <input disabled={!isEditing} style={{width:'3rem'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
-                        <input disabled={!isEditing} style={{width:'17rem'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
+                        <input disabled={!isEditing} style={{width:'20%'}} name="cai" type="text" value={`${userData.telefono.split(' ')[0]}` || ''} onChange={handleInputChange} className="inputiz"/>
+                        <input disabled={!isEditing} style={{width:'80%'}} name="telnum" type="number" value={`${userData.telefono.split(' ')[1]}` || ''} onChange={handleInputChange}className="inputde" />
                     </InputGroup>  
 
                     <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
                     <label for="direccion">Dirección:</label>
                     <InputGroup className="groupderec">
-                        <input disabled={!isEditing} style={{width:'7.5rem'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} style={{width:'7.5rem'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
-                        <input disabled={!isEditing} style={{width:'5rem'}} name="id_direccion.numero" type="number"  value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'33.3%'}} name="id_direccion.localidad" type="text"  value={userData.id_direccion?.localidad || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'33.3%'}} name="id_direccion.calle" type="text" value={userData.id_direccion?.calle || ''} onChange={handleInputChange}/>
+                        <input disabled={!isEditing} style={{width:'33.3%'}} name="id_direccion.numero" type="number"  value={userData.id_direccion?.numero || ''} onChange={handleInputChange}/>
                     </InputGroup>  
 
                     <label for="genero">Genero:</label>
@@ -342,23 +344,13 @@ const Cuenta = () => {
                         <option value="2">Femenino</option>
                         <option value="3">Prefiero no decir</option>
                     </Form.Select>
-                    <Col>
-                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "#D10000" : "#D9D9D9"} letercolor={isEditing ? "white" : "black"}/>
-                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="#D9D9D9" letercolor="black" disabled={!GuardarButtonIsValid}/>
-                </Col>
-                </Col>
-
-            <Row className="filabuton">
-                <Col>
-                    {!isStaff && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
-                </Col>
-                <Col>
-                    <SendButton text="Borrar Usuario" backcolor="#D10000" letercolor="white" onClick={handleDeleteUser}></SendButton>
+                    </div>
+            {!isStaff && <Button style={{marginTop:'2rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
                 </Col>
             </Row>
-                        </Row>
             <Row className="filaobras">
-                <Col>
+                <Col >
+                <div>
                     <h3>Obras del Usuario</h3>
                     <ul>
                         {obraID.length === 0 ? (
@@ -379,9 +371,19 @@ const Cuenta = () => {
                         ))}
                     </Form.Select>}
                     {isStaff && <SendButton onClick={handleAddOObraToUser} text="Añadir" wide="5" letercolor="white" backcolor="blue" disabled={!selectedObject}></SendButton>}
+                </div>
                 </Col>
             </Row>
-              </div>
+            <Row className="filabuton">
+                <Col>
+                    <SendButton text="Borrar Usuario" backcolor="#D10000" letercolor="white" onClick={handleDeleteUser}></SendButton>
+                </Col>
+                <Col>
+                    <SendButton onClick={handleEdit} text={isEditing ? "Cancelar" : "Editar"}  wide="6" backcolor={isEditing ? "#D10000" : "#D9D9D9"} letercolor={isEditing ? "white" : "black"}/>
+                    <SendButton hid ={!isEditing} onClick={handleSendData} text="Guardar" wide="6" backcolor="#D9D9D9" letercolor="black" disabled={!GuardarButtonIsValid}/>
+                </Col>
+            </Row>
+        </div>
     );
 };
 
