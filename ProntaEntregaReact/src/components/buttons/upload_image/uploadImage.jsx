@@ -39,7 +39,7 @@ function UploadImage ({wide = '15', onFileChange}){
                 className="hidden-file-input"
                 onChange={handleInputChange}
             />
-            <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivo" wide={wide}>
+            <SendButton onClick={handleFileButtonClick} text="Seleccionar Archivo" wide={wide} backcolor="#02005D" letercolor='white' radius='0.2' shadow='none'>
                 <Icon icon="line-md:upload-loop" style={{ width: '1.5rem', height:"1.5rem", alignContent: 'center' }}></Icon>
             </SendButton>
             </div>

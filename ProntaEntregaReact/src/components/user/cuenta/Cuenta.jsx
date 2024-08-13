@@ -339,7 +339,7 @@ const Cuenta = () => {
                     </InputGroup>  
 
                     <label for="genero">Genero:</label>
-                    <Form.Select className="genero" name="genero" id="genero" value={`${userData.genero}` || 2} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
+                    <Form.Select style={{width:'100%'}} className="genero" name="genero" id="genero" value={`${userData.genero}` || 2} onChange={handleInputChange} aria-label="Default select example" disabled={!isEditing}>
                         <option value="1">Masculino</option>
                         <option value="2">Femenino</option>
                         <option value="3">Prefiero no decir</option>
