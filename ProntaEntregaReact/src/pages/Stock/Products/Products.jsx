@@ -29,65 +29,26 @@ function Products() {
     const [products, setProducts] = useState([]);
     const [combinedProducts, setCombinedProducts] = useState([]);
 
-    const [categoriaProductos, setCategoriaProductos] = useState([]);
     const [selectedOperacion, setSelectedOperacion] = useState('sumar');
 
     const [currentObra, setCurrentObra] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(false);
 
-    const [unidadMedida, setUnidadMedida] = useState([]);
     const [isPaquete, setIsPaquete] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
     const [showNewProductModal, setShowNewProductModal] = useState(false);
 
     const [productSearchQuery, setProductSearchQuery] = useState('');
-    const [detailSearchQuery, setDetailSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
-    const [detailOrderCriteria, setDetailOrderCriteria] = useState(null);
-
-    const fetchProducts = async (id, firstTime) => {
-        try {
-            const productsData = await fetchData(`obra/${stockId}/categoria_producto/${id}/${categoriaID}/`, token);
-            console.log(productsData);
-            const allProductsData = await fetchData(`productos/`, token);
-            console.log(allProductsData);
-    
-            const combinedProducts = allProductsData.map(product => {
-                const detalles = productsData.filter(item => item.id_producto.id_producto === product.id_producto);
-                return {
-                    ...product,
-                    ...(detalles.length > 0 && { id_detalle: detalles })
-                };
-            }).filter(product => product.id_detalle);
-    
-            if (firstTime) {
-                const nonCombinedProducts = allProductsData.filter(product => 
-                    !combinedProducts.some(combinedProduct => combinedProduct.id_producto === product.id_producto)
-                );
-        
-                setProducts(nonCombinedProducts);
-            }
-            setCombinedProducts(combinedProducts);
-        } catch (error) {
-            console.error('Error fetching products:', error);
-            setCombinedProducts([]);
-        }
-    };
 
     useEffect(() => {
         if (!token) {
             navigate('/login');
             return;
         }
-
-        fetchData(`unidad_medida/`, token).then((result) => {
-            setUnidadMedida(result);
-        });
-
-        fetchData(`catprod_obra/${categoriaID}/`, token).then((result) => {
+        fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
             setCategoriaProductos(result);
-            fetchProducts('Todos', true);
         });
 
         fetchData(`/stock/${stockId}`, token).then((result) => {
