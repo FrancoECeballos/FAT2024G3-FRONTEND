@@ -319,8 +319,6 @@ const Cuenta = () => {
                     <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
                     <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
-
-                    {!isStaff && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
                 </Col>
                 <Col>
                     <label for="telefono">Teléfono:</label>
@@ -352,7 +350,7 @@ const Cuenta = () => {
 
             <Row className="filabuton">
                 <Col>
-                    {!isAdmin && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
+                    {!isStaff && <Button style={{marginTop:'1rem', borderRadius:'10rem', width:'10rem', textAlign:'center', backgroundColor: '#D10000', borderColor:'#D10000', color:'white', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} onClick={handleLogout}>Cerrar sesión</Button>}
                 </Col>
                 <Col>
                     <SendButton text="Borrar Usuario" backcolor="#D10000" letercolor="white" onClick={handleDeleteUser}></SendButton>
