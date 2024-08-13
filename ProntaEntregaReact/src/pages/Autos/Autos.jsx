@@ -6,6 +6,7 @@ import axios from 'axios';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
+import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 import fetchData from '../../functions/fetchData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Modal from '../../components/modals/Modal.jsx';
@@ -27,6 +28,7 @@ function AutosComponent() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [formCategoryData, setFormCategoryData] = useState({
+        imagen: null,
         "marca": "",
         "modelo": "",
         "patente": "",
@@ -98,8 +100,13 @@ function AutosComponent() {
 
     const handleCreateAuto = async (id) => {
         try {
-            await axios.put(`http://localhost:8000/crear_transporte/`, 
+            const response = await axios.post(`http://localhost:8000/crear_transporte/`, 
                 formCategoryData,
+                { headers: { 'Authorization': `Token ${token}` } }
+            );
+            const autoId = response.data.id_transporte;
+            await axios.post(`http://localhost:8000/crear_detalle_transporte/`, 
+                { id_transporte: autoId, id_obra: obraId },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
             window.location.reload();
@@ -107,6 +114,13 @@ function AutosComponent() {
             console.error('Error updating auto:', error);
         }
     };
+
+    const handleFileChange = (file) => {
+        setFormCategoryData((prevData) => {
+          return { ...prevData, imagen: file };
+        });
+        console.log(formData);
+      };
 
     const handleUpdateAuto = async (id) => {
         try {
@@ -122,12 +136,16 @@ function AutosComponent() {
 
     const handleDeleteAuto = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/eliminar_transporte/${id}/`, 
+            await axios.delete(`http://localhost:8000/eliminar_detalle_transporte/${obraId}/${id}/`, 
                 { headers: { 'Authorization': `Token ${token}` } }
             );
             setAutos(prevAutos => prevAutos.filter(auto => auto.id_transporte !== id));
         } catch (error) {
-            console.error('Error deleting auto:', error);
+            if (error.response && error.response.data && error.response.data.error === "No se encontró un detalle de obra transporte con el ID proporcionado.") {
+                alert("No se encontró un auto con el ID proporcionado.");
+            } else {
+                console.error('Error deleting auto:', error);
+            }
         }
     };
 
@@ -194,6 +212,7 @@ function AutosComponent() {
                         <Modal openButtonText='¿No encuentra su auto? Añadalo' openButtonWidth='20' title='Nuevo Auto' saveButtonText='Crear' handleSave={handleCreateAuto}  content={
                             <div>
                                 <h2 className='centered'> Nuevo Auto </h2>
+                                <UploadImage wide='15' onFileChange={handleFileChange} />
                                 <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                 <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                 <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
@@ -254,7 +273,7 @@ function AutosComponent() {
                                                         text={maintenance.buttonText || 'Mantenimiento realizado'}
                                                         backcolor={maintenance.buttonColor || 'green'}
                                                         letercolor='white'
-                                                        onClick={() => handleMaintenanceRequest(auto.id_transporte, description)}
+                                                        onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
                                                     />
                                                 )}
                                                     <Modal 

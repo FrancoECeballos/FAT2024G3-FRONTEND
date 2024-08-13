@@ -15,7 +15,6 @@ import CrearPedido from './pages/Pedidos/CrearPedido.jsx';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-//importacion de los renders
 import Main from './pages/Main/Main.jsx'
 import DatosPersonales from './pages/Perfil/DatosPersonales.jsx';
 import Obras from './pages/Obras/Obras.jsx';
@@ -34,7 +33,7 @@ function App() {
         <Route path="/change_password" element={<ChangePassword />} />
         <Route path="/perfil/micuenta" element={<MiCuenta />} />
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
-        <Route path="/selectuser" element={<UserListing />}/>
+        <Route path="/userlisting" element={<UserListing />}/>
         <Route path="/perfil/datos_personales" element={<DatosPersonales />} />
         <Route path="/stock" element={<Stock />} />
         <Route path="/obra/:stockId/categoria" element={<Categories />} />

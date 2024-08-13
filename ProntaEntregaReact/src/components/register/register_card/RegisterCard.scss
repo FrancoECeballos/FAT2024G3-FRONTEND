@@ -4,6 +4,7 @@
   font-family: 'Rubik', sans-serif;
 }
 
+
 .hidden-file-input {
   display: none;
 }
@@ -64,15 +65,4 @@
     display: flex;
   }
 }
-.unified-input-left {
-  flex: 1;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: #EEEEEE;
-}
 
-.unified-input-right {
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-  background-color: #EEEEEE;
-}

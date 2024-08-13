@@ -389,8 +389,8 @@ function Products() {
                                                         return (
                                                             <LittleCard
                                                                 key={detail.id_detallestockproducto}
-                                                                foto={detail.id_producto.imagen}
-                                                                titulo={detail.id_unidadmedida.nombre}
+                                                                foto={detail.imagen}
+                                                                titulo={detail.titulo}
                                                                 descrip1={
                                                                     detail.id_unidadmedida.paquete
                                                                         ? `Cantidad: ${detail.cantidad} ${detail.id_unidadmedida.identificador} ${detail.cantidadUnidades}`

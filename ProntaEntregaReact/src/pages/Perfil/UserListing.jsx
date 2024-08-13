@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
-import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import GenericAccordeon from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
 
 import fetchData from '../../functions/fetchData';
 
 function UserListing() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
+
+    const { obraId } = useParams();
+
     const [adminUser, setAdminUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -25,13 +27,17 @@ function UserListing() {
         fetchData(`/userToken/${token}`).then((result) => {
             setAdminUser(result);
         });
-        fetchData('/user')
+        fetchData(`/user/obra/${obraId}/`)
             .then(data => {
-                console.log(data); // Verifica los datos obtenidos
+                console.log(data);
                 setUsers(data);
             })
             .catch(error => {
                 console.error('Hubo un error al obtener los usuarios', error);
+        });
+
+        fetchData(`/obra/${obraId}`, token).then((result) => {
+            setCurrentObra(result[0].nombre);
         });
     }, [token, navigate]);
 
@@ -68,25 +74,16 @@ function UserListing() {
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem'}}>
-                    <SendButton onClick={() => navigate('/perfil/micuenta')} text="Mi cuenta" wide='25' />
-                </div>
                 <SearchBar 
                     onSearchChange={handleSearchChange} 
                     onOrderChange={setOrderCriteria} 
-                    filters={filters} // Asegurarse de que filters se pase como un array
+                    filters={filters}
                 />
-                {Array.isArray(users) && sortedUsers.map(user => (
-                    adminUser && adminUser.email !== user.email && (
-                        <GenericCard 
-                            onClick={() => navigate('/perfil/micuenta/', {state: {user_email: `${user.email}`}})}
-                            key={user.id}
-                            titulo={`${user.nombre} ${user.apellido}`}
-                            foto={user.imagen}
-                            descrip1={user.email}
-                            descrip2={user.documento}                        />
-                    )
-                ))}
+                <GenericAccordeon
+                    wide={'80%'}
+                    titulo="aaaaaaaaaa"
+                    children={["bbbbbbbbbb", "cccccccccccc", "dddddddddddd"]}
+                />
             </div>
         </div>
     );
