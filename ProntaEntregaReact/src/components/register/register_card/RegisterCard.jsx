@@ -65,11 +65,12 @@ const RegisterCard = () => {
     localidad: ""
   });
 
-  const generatePhone = (cai, telnum) => {
-    if (cai && telnum) {
-      return `${cai} ${telnum}`;
-    }
-    return '';
+  const generatePhone = (phone) => {
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, telefono: phone };
+      console.log(updatedData);
+      return updatedData;
+    });
   };
 
   const handleInputChange = (event) => {
@@ -350,9 +351,11 @@ const RegisterCard = () => {
                       <PhoneInput
                         defaultCountry="ar"
                         value={phone}
-                        onChange={(phone) => setPhone(phone)}
+                        onChange={(phone) => generatePhone(phone)}
                         style={{ width: '100%', display: 'flex', height: '2.4rem' }} 
                         inputStyle={{ width: '95%' }}
+                        charAfterDialCode=" "
+                        disableFormatting={true}
                       />
                       </InputGroup>
                       <Form.Label id='errorTelefono' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>

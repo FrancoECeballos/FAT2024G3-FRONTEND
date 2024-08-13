@@ -48,6 +48,7 @@ function Products() {
         }
         fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
             setProducts(result);
+            console.log(result);
         });
 
         fetchData(`/stock/${stockId}`, token).then((result) => {
@@ -263,8 +264,8 @@ function Products() {
                             foto={product.imagen}
                             key={product.id_producto}
                             titulo={product.nombre}
-                            acordeonTitle={`Ver almacén de: ${product.nombre}`}
                             descrip1={product.descripcion}
+                            descrip2={`Cantidad: ${product.total} ${product.unidadmedida}`}
                             children={
                                 <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => newDetail(product.id_producto)} handleCloseModal={() => resetDetail()} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
                                     content={
