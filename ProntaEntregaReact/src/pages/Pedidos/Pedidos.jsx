@@ -19,9 +19,12 @@ function Pedidos() {
     const [orderCriteria, setOrderCriteria] = useState(null);
 
     const [formCategoryData, setFormCategoryData] = useState({
-        "nombre": "",
-        "descripcion": "",
-      });
+        "producto": "",
+        "obra": "",
+        "usuario": "",
+        "urgencia": "",
+        "cantidad": ""
+    });
 
     useEffect(() => {
         if (!token) {
@@ -93,8 +96,11 @@ function Pedidos() {
                         <Modal openButtonText='¿No encuentra su pedido? Añadalo' openButtonWidth='20' title='Nuevo Pedido' saveButtonText='Crear' handleSave={nuevopedido}  content={
                             <div>
                                 <h2 className='centered'> Nuevo Pedido </h2>
-                                <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="producto" type="text" placeholder="Producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="obra" type="text" placeholder="Obra" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="usuario" type="text" placeholder="Usuario" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="urgencia" type="text" placeholder="Urgencia" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Control name="cantidad" type="text" placeholder="Cantidad" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                             </div>
                         }></Modal>
                     </div>
