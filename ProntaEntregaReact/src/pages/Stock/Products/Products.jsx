@@ -48,7 +48,6 @@ function Products() {
         }
         fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
             setProducts(result);
-            console.log(result);
         });
 
         fetchData(`/stock/${stockId}`, token).then((result) => {
@@ -271,24 +270,9 @@ function Products() {
                                     content={
                                         <div>
                                             <h2 className='centered'> Producto: {product.nombre} </h2>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-                                                <Form.Label style={{ marginLeft: '1rem' }}>{isPaquete ? 'Peso' : 'Cantidad'}</Form.Label>
-                                                {isPaquete && (
-                                                    <Form.Label style={{ marginRight: '1rem' }}>Cantidad de Paquetes</Form.Label>
-                                                )}
-                                            </div>
                                             <InputGroup className="mb-2">
-                                                <Form.Control name="cantidad" type="number" ref={cantidadRef} onChange={fetchSelectedObject}
-                                                    style={!isPaquete ? { borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' } : null}
-                                                    className={isPaquete ? "unified-input-left" : null} />
-                                                {isPaquete && (
-                                                    <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" onChange={fetchSelectedObject} />
-                                                )}
+                                                <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}/>
                                             </InputGroup>
-                                            <Form.Select name="id_unidadmedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
-                                                <option autoFocus hidden>Seleccionar...</option>
-                                                
-                                            </Form.Select>
                                             <InputGroup className="mb-2">
                                                 <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
                                                 <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
