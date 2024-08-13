@@ -168,8 +168,7 @@ const Cuenta = () => {
             {descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`, 
             fechaingreso: today,
             id_obra: parseInt(selectedObject),
-            id_usuario: userData.id_usuario, 
-            id_tipousuario: 1}, token);
+            id_usuario: userData.id_usuario}, token);
         fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
             setUserObras(result);
             window.location.reload();
@@ -213,7 +212,7 @@ const Cuenta = () => {
             return updatedData;
           } 
           else {
-            if (field === "genero" || field === "id_direccion" || field === "id_tipousuario" || field === "id_tipodocumento" || field === "numero") {
+            if (field === "genero" || field === "id_direccion" || field === "id_tipodocumento" || field === "numero") {
                 updatedValue = parseInt(value, 10);
             }
         
@@ -278,7 +277,7 @@ const Cuenta = () => {
             id_direc = existingDireccion.id_direccion;
         };
     
-        const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento, id_tipousuario: userData.id_tipousuario.id_tipousuario };
+        const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento};
         setUserDataDefault(userData);
         setIsEditing(false);
     
