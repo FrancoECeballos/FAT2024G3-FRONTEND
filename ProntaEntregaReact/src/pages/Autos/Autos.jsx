@@ -27,11 +27,11 @@ function AutosComponent() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [formData, setFormData] = useState({
-        imagen: "",
+        imagen: null,
         marca: "",
         modelo: "",
         patente: "",
-        kilometros: "",
+        kilometraje: "",
     });
 
     useEffect(() => {
