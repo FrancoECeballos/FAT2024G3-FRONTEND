@@ -305,17 +305,17 @@ const Cuenta = () => {
                 <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
                 <div style={{maxWidth:'25rem'}}>
                     <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <input type="text" id="nombre" style={{width:'100%'}} name="nombre" value={`${userData.nombre}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
                     <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: '#02005E' }}></Form.Label>
 
                     <label for="apellido">Apellido:</label>
-                    <input type="text" id="apellido" name="apellido" value={`${userData.apellido}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <input type="text" id="apellido" style={{width:'100%'}} name="apellido" value={`${userData.apellido}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
 
                     <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
 
                     <label for="email">Correo electrónico:</label>
-                    <input type="email" id="email" name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
+                    <input type="email" id="email" style={{width:'100%'}} name="email" value={`${userData.email}` || ''} onChange={handleInputChange} disabled ={!isEditing}/>
                     
                     <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: '#D10000' }}> </Form.Label>
                 </div>
