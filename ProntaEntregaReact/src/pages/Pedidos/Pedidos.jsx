@@ -24,8 +24,8 @@ function Pedidos() {
     const [formData, setFormData] = useState({
         producto: "",
         obra: "",
-        usuario: usuario.nombre,
-        urgencia: "",
+        usuario: null,
+        urgencia: null,
         cantidad: ""
     });
 
@@ -34,13 +34,13 @@ function Pedidos() {
             navigate('/login');
             return;
         }
-
+    
         fetchData('/pedido/', token).then((result) => {
             setPedidos(result);
         }).catch(error => {
-            console.error('Error fetching orders:', error);
+            console.error('Error fetching pedidos:', error);
         });
-    }, [token, navigate]);
+    }, [token]);
 
     useEffect(() => {
         // Obtener productos, obras y usuarios desde el backend
@@ -59,11 +59,11 @@ function Pedidos() {
 
     const filteredPedidos = pedidos.filter(pedido => {
         return (
-            pedido.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            pedido.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido.id_usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+            pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
@@ -100,11 +100,18 @@ function Pedidos() {
             return updatedData;
         });
     };
+    
 
     const handleCreatePedido = () => {
-        postData('/crear_pedido/', formData, token).then((nuevoPedido) => {
+        // Verificar que todos los campos requeridos estén presentes
+        if (!formData.id_obra || !formData.id_producto || !formData.id_usuario) {
+            alert("Todos los campos son obligatorios.");
+            return;
+        }
+    
+        postData('crear_pedido/', formData, token).then((nuevoPedido) => {
             setPedidos([...pedidos, nuevoPedido]); // Actualiza el estado con el nuevo pedido
-        });
+        })
     };
 
     return (
@@ -115,23 +122,23 @@ function Pedidos() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='pedido-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal 
-                        openButtonText='¿No encuentra su pedido? Añadalo' 
-                        openButtonWidth='20' 
-                        title='Nuevo Pedido' 
-                        saveButtonText='Crear' 
-                        handleSave={handleCreatePedido} 
-                        content={
-                            <div>
-                                <h2 className='centered'> Nuevo Pedido </h2>
-                                <form onSubmit={(e) => { e.preventDefault(); handleCreatePedido(); }}>
-                                    <label>
-                                        Producto:
-                                        <select name="producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
-                                            {productos.map((producto, index) => (
-                                                <option key={`${producto.id}-${index}`} value={producto.id}>{producto.nombre}</option>
-                                            ))}
-                                        </select>
+                        <Modal 
+                            openButtonText='¿No encuentra su pedido? Añadalo' 
+                            openButtonWidth='20' 
+                            title='Nuevo Pedido' 
+                            saveButtonText='Crear' 
+                            handleSave={handleCreatePedido} 
+                            content={
+                                <div>
+                                    <h2 className='centered'> Nuevo Pedido </h2>
+                                    <form onSubmit={(e) => { e.preventDefault(); handleCreatePedido(); }}>
+                                        <label>
+                                            Producto:
+                                            <select name="producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                {productos.map((producto, index) => (
+                                                    <option key={`${producto.id}-${index}`} value={producto.id}>{producto.nombre}</option>
+                                                ))}
+                                            </select>
                                         </label>
                                         <label>
                                             Obra:
@@ -154,12 +161,12 @@ function Pedidos() {
                                         <Form.Control name="urgencia" type="text" placeholder="Urgencia" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                         <Form.Control name="cantidad" type="text" placeholder="Cantidad" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                         <button type="submit" style={{ display: 'none' }}>Crear Pedido</button>
-                                        </form>
-                            </div>
-                        }
-                    />
+                                    </form>
+                                </div>
+                            }
+                        />
                     </div>
-
+    
                     {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
                         sortedPedidos.map(pedido => (
                             <GenericCard
