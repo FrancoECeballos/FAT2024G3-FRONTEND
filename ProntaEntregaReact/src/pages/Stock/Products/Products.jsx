@@ -36,6 +36,7 @@ function Products() {
     const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
 
+    const [alertMessage, setAlertMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [showNewProductModal, setShowNewProductModal] = useState(false);
 
@@ -99,19 +100,39 @@ function Products() {
         setSelectedCardId({});
     };
 
-    const handleSave = (cantidad) => {
-        if (!detalle.cantidad || detalle.cantidad <= 0) {
+    const handleSave = (cantidad, total) => {
+        if (!cantidad || cantidad <= 0 || !Number.isInteger(cantidad) || cantidad > Number.MAX_SAFE_INTEGER) {
+            setAlertMessage('Por favor ingrese una cantidad válida');
             setShowAlert(true);
             return false; 
-        } 
+        }
+        if (selectedOperacion === 'restar' && cantidad > total) {
+            setAlertMessage('No puede restar más de lo que hay en stock');
+            setShowAlert(true);
+            return false; 
+        }
+        const currentDate = new Date().toISOString().slice(0, 10);
+        console.log("Current Date:", currentDate);
         setDetalle({
             ...detalle,
-            cantidad: selectedOperacion === 'sumar' ? cantidad : -cantidad,
-            fecha_creacion: new Date().toISOString().slice(0, 10)
+            cantidad: cantidad,
+            fecha_creacion: currentDate
         });
-        console.log(detalle);
-        resetDetail();
-        return true; 
+        if (selectedOperacion === 'sumar') {
+            postData(`AddDetallestockproducto/`, detalle, token).then((result) => {
+                console.log(result);
+                resetDetail();
+                window.location.reload();
+                return true; 
+            });
+        } else if (selectedOperacion === 'restar') {
+            postData(`SubtractDetallestockproducto/`, detalle, token).then((result) => {
+                console.log(result);
+                resetDetail();
+                window.location.reload();
+                return true; 
+            });
+        }
     };
 
     const newProduct = () => {
@@ -248,13 +269,14 @@ function Products() {
                             descrip1={product.descripcion}
                             descrip2={`Cantidad: ${product.total} ${product.unidadmedida}`}
                             children={
-                                <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseInt(cantidadRef.current.value, 10))}
+                                <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseInt(cantidadRef.current.value, 10), product.total)}
                                     content={
                                         <div>
-                                            <GenericAlert ptamaño="0.9" title="Error" description='Por favor ingrese una cantidad válida' type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
+                                            <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
                                             <h2 className='centered'> Producto: {product.nombre} </h2>
+                                            <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
                                             <InputGroup className="mb-2">
-                                                <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar'  ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} onKeyDown={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}}/>
+                                                <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar'  ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9]/.test(event.key) && event.key !== 'Backspace') {event.preventDefault();}}}/>
                                             </InputGroup>
                                             <InputGroup className="mb-2">
                                                 <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
