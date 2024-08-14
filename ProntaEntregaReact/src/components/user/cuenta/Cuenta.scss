@@ -31,11 +31,12 @@ h1 {
 
   Form.Label {
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: rem;
   }
 
   Form.Control {
-    margin-bottom: 1rem;
+    margin-top: 0 !important;
+    margin-bottom: 0.5rem;
     border-radius: 0.25rem;
     box-shadow: none;
     &:focus {

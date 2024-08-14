@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {InputGroup, Form, Button, Tabs, Tab} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import './Products.scss';
+import { Icon } from '@iconify/react';
 
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
@@ -269,6 +270,19 @@ function Products() {
                             descrip1={product.descripcion}
                             descrip2={`Cantidad: ${product.total} ${product.unidadmedida}`}
                             children={
+                                <div style={{ position: 'relative' }}>
+                                    <Icon 
+                                        icon="line-md:alert-circle-twotone" 
+                                        style={{
+                                            width: "2rem", 
+                                            height: "2rem", 
+                                            position: "absolute", 
+                                            top: "0.5rem", 
+                                            right: "0.5rem", 
+                                            color: "#858585"
+                                        }} 
+                                        onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
+                                    />
                                 <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseInt(cantidadRef.current.value, 10), product.total)}
                                     content={
                                         <div>
@@ -284,6 +298,7 @@ function Products() {
                                             </InputGroup>
                                         </div>
                                     } />
+                                </div>
                             }
                         />
                     );
