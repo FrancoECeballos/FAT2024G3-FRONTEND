@@ -8,14 +8,10 @@ import { Icon } from '@iconify/react';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
-import LittleCard from '../../../components/cards/little_card/LittleCard.jsx';
 import GenericTable from '../../../components/tables/generic_table/GenericTable.jsx';
-
-import addProd from '../../../assets/add_product.png';
 
 import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';
-import putData from '../../../functions/putData.jsx';
 import postData from '../../../functions/postData.jsx';
 import GenericAlert from '../../../components/alerts/generic_alert/GenericAlert.jsx';
 
@@ -33,7 +29,6 @@ function Products() {
     const [currentObra, setCurrentObra] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(false);
 
-    const [isPaquete, setIsPaquete] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
 
@@ -102,7 +97,7 @@ function Products() {
     };
 
     const handleSave = (cantidad, total) => {
-        if (!cantidad || cantidad <= 0 || !Number.isInteger(cantidad) || cantidad > Number.MAX_SAFE_INTEGER) {
+        if (!cantidad || cantidad <= 0 || isNaN(cantidad) || cantidad > Number.MAX_SAFE_FLOAT) {
             setAlertMessage('Por favor ingrese una cantidad válida');
             setShowAlert(true);
             return false; 
@@ -112,24 +107,17 @@ function Products() {
             setShowAlert(true);
             return false; 
         }
-        const currentDate = new Date().toISOString().slice(0, 10);
-        console.log("Current Date:", currentDate);
-        setDetalle({
+        const updatedDetalle = {
             ...detalle,
             cantidad: cantidad,
-            fecha_creacion: currentDate
-        });
+        };
         if (selectedOperacion === 'sumar') {
-            postData(`AddDetallestockproducto/`, detalle, token).then((result) => {
-                console.log(result);
-                resetDetail();
+            postData(`AddDetallestockproducto/`, updatedDetalle, token).then(() => {
                 window.location.reload();
                 return true; 
             });
         } else if (selectedOperacion === 'restar') {
-            postData(`SubtractDetallestockproducto/`, detalle, token).then((result) => {
-                console.log(result);
-                resetDetail();
+            postData(`SubtractDetallestockproducto/`, updatedDetalle, token).then(() => {
                 window.location.reload();
                 return true; 
             });
@@ -229,35 +217,6 @@ function Products() {
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
                                 <GenericTable headers={["nombre", "descripcion"]} data={products} showCreateNew={true} createNewFunction={() => setSelectedCardId(selectedCardId === 'New' ? {} : 'New')}></GenericTable>
                             </div>
-                            {selectedCardId && selectedCardId !== 'New' && Object.keys(selectedCardId).length > 0 && (
-                                <>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-                                        <Form.Label style={{ marginLeft: '1rem' }}>Cantidad</Form.Label>
-                                        {isPaquete && (
-                                            <Form.Label style={{ marginRight: '1rem' }}>Cantidad/Paquetes</Form.Label>
-                                        )}
-                                    </div>
-                                    <InputGroup className="mb-2">
-                                        <Form.Control name="cantidad" type="number" ref={cantidadRef} onChange={fetchSelectedObject}
-                                            style={!isPaquete ? { borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' } : null}
-                                            className={isPaquete ? "unified-input-left" : null} />
-                                        {isPaquete && (
-                                            <Form.Control name="cantidadUnidades" type="number" ref={cantidadUnidadesRef} className="unified-input-right" onChange={fetchSelectedObject} />
-                                        )}
-                                    </InputGroup>
-                                    <Form.Select name="id_unidadmedida" ref={unidadMedidaRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
-                                        <option autoFocus hidden>Seleccionar...</option>
-                                        {unidadMedida
-                                            .filter((item) => item.descripcion.includes(selectedCardId.id_unidadmedida.nombre))
-                                            .map((item) => (
-                                                <option key={item.id} value={item.id}>{item.nombre}</option>
-                                        ))}
-                                    </Form.Select>
-                                </>
-                            )}
-                            {selectedCardId && selectedCardId == 'New' && Object.keys(selectedCardId).length > 0 && (
-                                <p style={{marginTop: '1rem'}}>Para crear un nuevo producto, seleccióne el botón <strong>Crear</strong> y lo enviará a la inferfaz de creación.</p>
-                            )}
                         </div>
                     }></Modal>
                 </div>
@@ -283,15 +242,14 @@ function Products() {
                                         }} 
                                         onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
                                     />
-                                <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseInt(cantidadRef.current.value, 10), product.total)}
+                                <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
                                     content={
                                         <div>
                                             <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
                                             <h2 className='centered'> Producto: {product.nombre} </h2>
                                             <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
                                             <InputGroup className="mb-2">
-                                                <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar'  ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9]/.test(event.key) && event.key !== 'Backspace') {event.preventDefault();}}}/>
-                                            </InputGroup>
+                                            <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && event.key !== 'Backspace') {event.preventDefault();}}}/>                                            </InputGroup>
                                             <InputGroup className="mb-2">
                                                 <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
                                                 <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
