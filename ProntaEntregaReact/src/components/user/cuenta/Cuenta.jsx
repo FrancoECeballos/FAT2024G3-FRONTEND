@@ -9,8 +9,6 @@ import putData from '../../../functions/putData.jsx';
 import deleteData from '../../../functions/deleteData.jsx';
 import './Cuenta.scss';
 
-import user from '../../../assets/user_default.png';
-
 import SendButton from '../../buttons/send_button/send_button.jsx';
 
 
