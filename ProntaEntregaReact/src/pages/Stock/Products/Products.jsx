@@ -17,6 +17,7 @@ import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';
 import putData from '../../../functions/putData.jsx';
 import postData from '../../../functions/postData.jsx';
+import GenericAlert from '../../../components/alerts/generic_alert/GenericAlert.jsx';
 
 function Products() {
     const navigate = useNavigate();
@@ -24,8 +25,6 @@ function Products() {
     const token = Cookies.get('token');
 
     const cantidadRef = useRef(null);
-    const cantidadUnidadesRef = useRef(null);
-    const unidadMedidaRef = useRef(null);
     
     const [products, setProducts] = useState([]);
 
@@ -37,6 +36,8 @@ function Products() {
     const [isPaquete, setIsPaquete] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState({});
     const [detalle, setDetalle] = useState([]);
+
+    const [showAlert, setShowAlert] = useState(false);
     const [showNewProductModal, setShowNewProductModal] = useState(false);
 
     const [productSearchQuery, setProductSearchQuery] = useState('');
@@ -86,26 +87,32 @@ function Products() {
 
     const filters = [
         { type: 'nombre', label: 'Nombre Alfabético' },
-        { type: 'cantidad', label: 'Cantidad' },
-        { type: 'id_producto.id_unidadmedida.nombre', label: 'Unidad de Medida' },
-    ];
-
-    const detailFilters = [
-        { type: 'cantidad', label: 'Cantidad' },
-        { type: 'cantidadUnidades', label: 'Cantidad de Unidades' },
+        { type: 'total', label: 'Cantidad' },
+        { type: 'product.unidadmedida', label: 'Unidad de Medida' },
     ];
 
     const handleSearchChange = (value) => {
         setProductSearchQuery(value);
     };
 
-    const newDetail = (product) => {
-        setDetalle({ ...detalle, id_producto: product, id_stock: parseInt(stockId, 10) });
-    };
-
     const resetDetail = () => {
         setDetalle({});
         setSelectedCardId({});
+    };
+
+    const handleSave = (cantidad) => {
+        if (!detalle.cantidad || detalle.cantidad <= 0) {
+            setShowAlert(true);
+            return false; 
+        } 
+        setDetalle({
+            ...detalle,
+            cantidad: selectedOperacion === 'sumar' ? cantidad : -cantidad,
+            fecha_creacion: new Date().toISOString().slice(0, 10)
+        });
+        console.log(detalle);
+        resetDetail();
+        return true; 
     };
 
     const newProduct = () => {
@@ -134,31 +141,6 @@ function Products() {
             }
         } else if (selectedCardId == 'New') {
             setShowNewProductModal(true);
-        }
-    };
-
-    const handleSave = () => {
-        if (!detalle.id_unidadmedida) {
-            alert('Por favor seleccione una unidad de medida');
-            return;
-        } else if (!detalle.cantidad || detalle.cantidad <= 0) {
-            alert('Por favor ingrese una cantidad válida');
-            return;
-        } else if (detalle.cantidadUnidades !== undefined && detalle.cantidadUnidades < 0) {
-            alert('Por favor ingrese una cantidad de unidades válida');
-            return;
-        } else {
-            if (selectedOperacion === 'sumar') {
-                postData(`AddDetallestockproducto/`, detalle, token).then((result) => {
-                    resetDetail();
-                    window.location.reload();
-                });
-            } else if (selectedOperacion === 'restar') {
-                postData(`SubtractDetallestockproducto/`, detalle, token).then((result) => {
-                    resetDetail();
-                    window.location.reload();
-                });
-            }
         }
     };
 
@@ -280,53 +262,20 @@ function Products() {
                                         }} 
                                         onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
                                     />
-                                    <Modal 
-                                        openButtonText="Modificar Stock" 
-                                        openButtonWidth='10' 
-                                        handleShowModal={() => newDetail(product.id_producto)} 
-                                        handleCloseModal={() => resetDetail()} 
-                                        title="Modificar Stock" 
-                                        saveButtonText="Guardar" 
-                                        handleSave={() => handleSave(product.id_detallestockproducto)}
-                                        content={
-                                            <div>
-                                                <h2 className='centered'> Producto: {product.nombre} </h2>
-                                                <InputGroup className="mb-2">
-                                                    <Form.Control 
-                                                        name="cantidad" 
-                                                        type="number" 
-                                                        placeholder='Ingrese cuanto quiere restar/sumar' 
-                                                        ref={cantidadRef} 
-                                                        onChange={fetchSelectedObject} 
-                                                        style={{ 
-                                                            borderRadius: '10rem', 
-                                                            backgroundColor: '#F5F5F5', 
-                                                            boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', 
-                                                            marginTop: '1rem' 
-                                                        }}
-                                                    />
-                                                </InputGroup>
-                                                <InputGroup className="mb-2">
-                                                    <Button 
-                                                        className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} 
-                                                        style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} 
-                                                        tabIndex="0" 
-                                                        onClick={() => setSelectedOperacion('sumar')}
-                                                    > 
-                                                        Añadir 
-                                                    </Button>
-                                                    <Button 
-                                                        className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} 
-                                                        style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} 
-                                                        tabIndex="0" 
-                                                        onClick={() => setSelectedOperacion('restar')}
-                                                    > 
-                                                        Quitar 
-                                                    </Button>
-                                                </InputGroup>
-                                            </div>
-                                        } 
-                                    />
+                                <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseInt(cantidadRef.current.value, 10))}
+                                    content={
+                                        <div>
+                                            <GenericAlert ptamaño="0.9" title="Error" description='Por favor ingrese una cantidad válida' type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
+                                            <h2 className='centered'> Producto: {product.nombre} </h2>
+                                            <InputGroup className="mb-2">
+                                                <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar'  ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} onKeyDown={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}}/>
+                                            </InputGroup>
+                                            <InputGroup className="mb-2">
+                                                <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
+                                                <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
+                                            </InputGroup>
+                                        </div>
+                                    } />
                                 </div>
                             }
                         />
