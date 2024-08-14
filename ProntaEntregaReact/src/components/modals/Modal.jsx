@@ -44,8 +44,8 @@ function GenericModal({ openButtonText, openButtonWidth, handleShowModal, handle
             <Modal.Body>{content}</Modal.Body>
             <Modal.Footer>
                 <SendButton text="Cerrar" onClick={handleClose}/>
-                <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={() => { handleSave(); handleClose();}}/>
                 {showDeleteButton && <SendButton backcolor='#FF0000' letercolor='white' text="Eliminar" onClick={() => { deleteFunction(); handleClose();}}/>}
+                <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={() => { handleSave(); handleClose();}}/>
             </Modal.Footer>
         </Modal>
     </>
