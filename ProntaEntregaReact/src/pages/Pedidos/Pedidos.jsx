@@ -17,13 +17,16 @@ function Pedidos() {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+    const [productos, setProductos] = useState([]);
+    const [obras, setObras] = useState([]);
+    const [usuario, setUsuario] = useState('');
 
-    const [formCategoryData, setFormCategoryData] = useState({
-        "producto": "",
-        "obra": "",
-        "usuario": "",
-        "urgencia": "",
-        "cantidad": ""
+    const [formData, setFormData] = useState({
+        producto: "",
+        obra: "",
+        usuario: usuario.nombre,
+        urgencia: "",
+        cantidad: ""
     });
 
     useEffect(() => {
@@ -38,6 +41,21 @@ function Pedidos() {
             console.error('Error fetching orders:', error);
         });
     }, [token, navigate]);
+
+    useEffect(() => {
+        // Obtener productos, obras y usuarios desde el backend
+        fetchData('/productos', token).then(setProductos);
+        fetchData('obra', token).then(setObras);
+        fetchData('user', token).then(setUsuario);
+    }, [token]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token'); // O donde sea que guardes el token
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            setUsuario(decodedToken.nombre); // Ajusta esto según la estructura de tu token
+        }
+    }, []);
 
     const filteredPedidos = pedidos.filter(pedido => {
         return (
@@ -71,20 +89,21 @@ function Pedidos() {
         setSearchQuery(value);
     };
 
-    const handleInputChange = async (event) => {
+    const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setFormCategoryData((prevData) => {
+        setFormData((prevData) => {
             const updatedData = { ...prevData, [name]: value };
             console.log(updatedData);
             return updatedData;
         });
     };
 
-    const nuevopedido = () => {
-        postData('/crear_pedido', formCategoryData, token).then(() => {
-            window.location.reload();
+    const handleCreatePedido = () => {
+        postData('/crear_pedido/', formData, token).then((nuevoPedido) => {
+            setPedidos([...pedidos, nuevoPedido]); // Actualiza el estado con el nuevo pedido
         });
     };
+
     return (
         <div>
             <FullNavbar selectedPage='Pedidos'/>
@@ -93,16 +112,49 @@ function Pedidos() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='pedido-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <Modal openButtonText='¿No encuentra su pedido? Añadalo' openButtonWidth='20' title='Nuevo Pedido' saveButtonText='Crear' handleSave={nuevopedido}  content={
+                    <Modal 
+                        openButtonText='¿No encuentra su pedido? Añadalo' 
+                        openButtonWidth='20' 
+                        title='Nuevo Pedido' 
+                        saveButtonText='Crear' 
+                        handleSave={handleCreatePedido} 
+                        content={
                             <div>
                                 <h2 className='centered'> Nuevo Pedido </h2>
-                                <Form.Control name="producto" type="text" placeholder="Producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="obra" type="text" placeholder="Obra" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="usuario" type="text" placeholder="Usuario" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="urgencia" type="text" placeholder="Urgencia" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="cantidad" type="text" placeholder="Cantidad" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <form onSubmit={(e) => { e.preventDefault(); handleCreatePedido(); }}>
+                                    <label>
+                                        Producto:
+                                        <select name="producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                            {productos.map((producto, index) => (
+                                                <option key={`${producto.id}-${index}`} value={producto.id}>{producto.nombre}</option>
+                                            ))}
+                                        </select>
+                                        </label>
+                                        <label>
+                                            Obra:
+                                            <select name="obra" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                {obras.map((obra, index) => (
+                                                    <option key={`${obra.id}-${index}`} value={obra.id}>{obra.nombre}</option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <label>
+                                            Usuario:
+                                            <input
+                                                type="text"
+                                                name="usuario"
+                                                value={usuario ? usuario.nombre : ''}
+                                                readOnly
+                                                style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}
+                                            />
+                                        </label>
+                                        <Form.Control name="urgencia" type="text" placeholder="Urgencia" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Control name="cantidad" type="text" placeholder="Cantidad" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <button type="submit" style={{ display: 'none' }}>Crear Pedido</button>
+                                        </form>
                             </div>
-                        }></Modal>
+                        }
+                    />
                     </div>
 
                     {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
