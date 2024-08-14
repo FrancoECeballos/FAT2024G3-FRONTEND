@@ -140,7 +140,7 @@ function FullNavbar ({selectedPage}) {
             show={showOffcanvas}
             onHide={handleCloseOffcanvas}
             placement="end"
-            style={{ backgroundColor: 'white', color: 'white' ,width:"25%"}}
+            style={{ backgroundColor: 'white', color: 'white' }}
           >
             <Offcanvas.Header closeButton>
               <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />

@@ -404,16 +404,23 @@ const Cuenta = () => {
                     </Form.Control>
                   </Form.Group>
                 </div>
-                
-                {!isStaff && (
-                  <Button
-                    className="logout-button"
-                    onClick={handleLogout}
-                  >
-                    Cerrar sesión
-                  </Button>
-                )}
               </Col>
+              <SendButton
+                  onClick={handleEdit}
+                  text={isEditing ? "Cancelar" : "Editar"}
+                  wide="6"
+                  backcolor={isEditing ? "#D10000" : "#D9D9D9"}
+                  letercolor={isEditing ? "white" : "black"}
+                />
+                <SendButton
+                  hidden={!isEditing}
+                  onClick={handleSendData}
+                  text="Guardar"
+                  wide="6"
+                  backcolor="#D9D9D9"
+                  letercolor="black"
+                  disabled={!GuardarButtonIsValid}
+                />
             </Row>
             
             <Row className="filaobras">
@@ -482,22 +489,14 @@ const Cuenta = () => {
                 />
               </Col>
               <Col>
-                <SendButton
-                  onClick={handleEdit}
-                  text={isEditing ? "Cancelar" : "Editar"}
-                  wide="6"
-                  backcolor={isEditing ? "#D10000" : "#D9D9D9"}
-                  letercolor={isEditing ? "white" : "black"}
-                />
-                <SendButton
-                  hidden={!isEditing}
-                  onClick={handleSendData}
-                  text="Guardar"
-                  wide="6"
-                  backcolor="#D9D9D9"
-                  letercolor="black"
-                  disabled={!GuardarButtonIsValid}
-                />
+              {!isStaff && (
+                  <Button
+                    className="logout-button"
+                    onClick={handleLogout}
+                  >
+                    Cerrar sesión
+                  </Button>
+                )}
               </Col>
             </Row>
           </div>
