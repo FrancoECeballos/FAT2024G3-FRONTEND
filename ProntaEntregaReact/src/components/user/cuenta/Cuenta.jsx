@@ -8,6 +8,8 @@ import postData from '../../../functions/postData.jsx';
 import putData from '../../../functions/putData.jsx';
 import deleteData from '../../../functions/deleteData.jsx';
 import './Cuenta.scss';
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
 
 import user from '../../../assets/user_default.png';
 
@@ -25,6 +27,7 @@ const Cuenta = () => {
     const [userObras, setUserObras] = useState([]);
     const [obras, setObras] = useState([]);
     const [obraID, setObraID] = useState([]);
+    const [phone, setPhone] = useState('');
     const [selectedObject, setSelectedObject] = useState('');
     const today = new Date().toISOString().split('T')[0];
 
@@ -343,22 +346,16 @@ const Cuenta = () => {
                 <div className="form-container">
                   <Form.Group controlId="telefono">
                     <Form.Label>Teléfono:</Form.Label>
-                    <InputGroup>
-                      <Form.Control
-                        type="text"
-                        name="cai"
-                        value={userData.telefono.split(' ')[0] || ''}
-                        onChange={handleInputChange}
+                    <PhoneInput
+                        defaultCountry="ar"
+                        value={userData.telefono || ''}
+                        onChange={(phone) => generatePhone(phone)}
+                        style={{ width: '100%', display: 'flex', height: '2.4rem' }} 
+                        inputStyle={{ width: '95%' }}
+                        charAfterDialCode=" "
+                        disableFormatting={true}
                         disabled={!isEditing}
                       />
-                      <Form.Control
-                        type="number"
-                        name="telnum"
-                        value={userData.telefono.split(' ')[1] || ''}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                      />
-                    </InputGroup>
                   </Form.Group>
                   
                   <Form.Group controlId="direccion">

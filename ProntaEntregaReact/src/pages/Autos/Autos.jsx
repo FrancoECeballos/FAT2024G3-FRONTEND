@@ -12,6 +12,8 @@ import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import {Form, Dropdown} from 'react-bootstrap';
 
+import './Autos.scss';
+
 function AutosComponent() {
     const navigate = useNavigate();
     const { obraId } = useParams();
@@ -200,30 +202,38 @@ function AutosComponent() {
         <div>
             <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
-                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8%' }}>
-                    <h4 style={{ color: 'grey', cursor: 'pointer' }} onClick={() => navigate('/autos')} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>Autos</h4>
-                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentObra}</h4>
+                <div className="autos-navigation">
+                    <h4 className="autos-link" onClick={() => navigate('/autos')}>Autos</h4>
+                    <h4 className="autos-current"> // {currentObra}</h4>
                 </div>
-                <h2 style={{ marginLeft: '7rem' }}>Lista de Autos</h2>
+                <h2 className="autos-title">Lista de Autos</h2>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>
-                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <Modal openButtonText='¿No encuentra su auto? Añadalo' hoverableButton={true} openButtonWidth='20' title='Nuevo Auto' saveButtonText='Crear' handleSave={handleCreateAuto}  content={
-                            <div>
-                                <h2 className='centered'> Nuevo Auto </h2>
-                                <UploadImage wide='13' onFileChange={handleFileChange}/>
-                                <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            </div>
-                        }></Modal>
+                    <div className="auto-modal">
+                        <Modal 
+                            openButtonText='¿No encuentra su auto? Añadalo' 
+                            hoverableButton={true} 
+                            openButtonWidth='20' 
+                            title='Nuevo Auto' 
+                            saveButtonText='Crear' 
+                            handleSave={handleCreateAuto}  
+                            content={
+                                <div>
+                                    <h2 className='centered'> Nuevo Auto </h2>
+                                    <UploadImage wide='13' onFileChange={handleFileChange}/>
+                                    <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="form-control"/>
+                                    <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="form-control"/>
+                                    <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="form-control"/>
+                                    <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="form-control"/>
+                                </div>
+                            }
+                        />
                     </div>
                     {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
                         sortedAutos.map(auto => {
                             const maintenance = maintenanceStatus[auto.id_transporte] || {};
-                            const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
-                            const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
+                            const cardStyle = maintenance.isMaintained ? "card-maintained" : "";
+                            const imageStyle = maintenance.isMaintained ? "image-maintained" : "";
                             return (
                                 <GenericCard
                                     key={auto.id_transporte}
@@ -248,13 +258,13 @@ function AutosComponent() {
                                                         />
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                        <div className="dropdown-menu-content">
                                                             <input
                                                                 type="text"
                                                                 placeholder="Añada una descripción"
-                                                                style={{ marginBottom: '1rem', width: '100%' }}
                                                                 value={description}
                                                                 onChange={(e) => setDescription(e.target.value)}
+                                                                className="description-input"
                                                                 />
                                                                 <SendButton
                                                                     wide='15'
@@ -276,23 +286,20 @@ function AutosComponent() {
                                                     />
                                                 )}
                                                     <Modal 
-                                                        openButtonText='Actualizar Auto' 
-                                                        openButtonWidth='15' 
-                                                        title='Actualizar Auto' 
-                                                        saveButtonText='Actualizar' 
                                                         handleSave={() => handleUpdateAuto(auto.id_transporte)}
                                                         showButton={false}
                                                         showModal={autoModal === auto.id_transporte}
                                                         showDeleteButton={true}
                                                         deleteFunction={() => handleDeleteAuto(auto.id_transporte)}
-                                                        handleCloseModal={() => setAutoModal(false)}
+                                                        handleShowModal={() => setAutoModal(auto.id_transporte)}
+                                                        handleCloseModal={() => setAutoModal(null)}
                                                         content={
                                                             <div>
                                                                 <h2 className='centered'> Actualizar Auto </h2>
-                                                                <Form.Control name="marca" type="text" defaultValue= { auto.marca } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                                                <Form.Control name="modelo" type="text" defaultValue= { auto.modelo } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                                                <Form.Control name="patente" type="text" defaultValue= { auto.patente } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                                                <Form.Control name="kilometraje" type="text" defaultValue= { auto.kilometraje } onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                                                <Form.Control name="marca" type="text" defaultValue= { auto.marca } onChange={handleInputChange} className="form-control"/>
+                                                                <Form.Control name="modelo" type="text" defaultValue= { auto.modelo } onChange={handleInputChange} className="form-control"/>
+                                                                <Form.Control name="patente" type="text" defaultValue= { auto.patente } onChange={handleInputChange} className="form-control"/>
+                                                                <Form.Control name="kilometraje" type="text" defaultValue= { auto.kilometraje } onChange={handleInputChange} className="form-control"/>
                                                             </div>
                                                         }
                                                     />

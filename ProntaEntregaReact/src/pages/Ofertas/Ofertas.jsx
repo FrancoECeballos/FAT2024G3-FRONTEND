@@ -39,7 +39,10 @@ function Ofertas() {
     const filteredOfertas = ofertas.filter(oferta => {
         return (
             oferta.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            oferta.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase())
+            oferta.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            oferta.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
