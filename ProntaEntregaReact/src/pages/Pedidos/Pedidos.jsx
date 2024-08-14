@@ -42,7 +42,10 @@ function Pedidos() {
     const filteredPedidos = pedidos.filter(pedido => {
         return (
             pedido.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase())
+            pedido.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            pedido.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido.id_usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
