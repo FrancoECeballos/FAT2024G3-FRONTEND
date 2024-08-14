@@ -22,6 +22,7 @@ import Novedades from './pages/Novedades/Novedades.jsx';
 import ObrasAutos from './pages/Autos/ObrasAutos.jsx';
 import Autos from './pages/Autos/Autos.jsx';
 import Landing from './pages/Landing/Landing.jsx';
+import OneProduct from './pages/Stock/OneProduct/OneProduct.jsx';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/stock" element={<Stock />} />
         <Route path="/obra/:stockId/categoria" element={<Categories />} />
         <Route path="/obra/:stockId/categoria/:categoriaID" element={<Products />} />
+        <Route path="/obra/:stockId/categoria/:categoriaID/producto/:productoID" element={<OneProduct />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/obras" element={<Obras />} />

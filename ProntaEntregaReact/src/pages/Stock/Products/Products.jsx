@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {InputGroup, Form, Button, Tabs, Tab} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import './Products.scss';
+import { Icon } from '@iconify/react';
 
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
@@ -266,19 +267,67 @@ function Products() {
                             descrip1={product.descripcion}
                             descrip2={`Cantidad: ${product.total} ${product.unidadmedida}`}
                             children={
-                                <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => newDetail(product.id_producto)} handleCloseModal={() => resetDetail()} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(product.id_detallestockproducto)}
-                                    content={
-                                        <div>
-                                            <h2 className='centered'> Producto: {product.nombre} </h2>
-                                            <InputGroup className="mb-2">
-                                                <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}/>
-                                            </InputGroup>
-                                            <InputGroup className="mb-2">
-                                                <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
-                                                <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
-                                            </InputGroup>
-                                        </div>
-                                    } />
+                                <div style={{ position: 'relative' }}>
+                                    <Icon 
+                                        icon="line-md:alert-circle-twotone" 
+                                        style={{
+                                            width: "2rem", 
+                                            height: "2rem", 
+                                            position: "absolute", 
+                                            top: "0.5rem", 
+                                            right: "0.5rem", 
+                                            color: "#858585"
+                                        }} 
+                                        onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
+                                    />
+                                    <Modal 
+                                        openButtonText="Modificar Stock" 
+                                        openButtonWidth='10' 
+                                        handleShowModal={() => newDetail(product.id_producto)} 
+                                        handleCloseModal={() => resetDetail()} 
+                                        title="Modificar Stock" 
+                                        saveButtonText="Guardar" 
+                                        handleSave={() => handleSave(product.id_detallestockproducto)}
+                                        content={
+                                            <div>
+                                                <h2 className='centered'> Producto: {product.nombre} </h2>
+                                                <InputGroup className="mb-2">
+                                                    <Form.Control 
+                                                        name="cantidad" 
+                                                        type="number" 
+                                                        placeholder='Ingrese cuanto quiere restar/sumar' 
+                                                        ref={cantidadRef} 
+                                                        onChange={fetchSelectedObject} 
+                                                        style={{ 
+                                                            borderRadius: '10rem', 
+                                                            backgroundColor: '#F5F5F5', 
+                                                            boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', 
+                                                            marginTop: '1rem' 
+                                                        }}
+                                                    />
+                                                </InputGroup>
+                                                <InputGroup className="mb-2">
+                                                    <Button 
+                                                        className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} 
+                                                        style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} 
+                                                        tabIndex="0" 
+                                                        onClick={() => setSelectedOperacion('sumar')}
+                                                    > 
+                                                        Añadir 
+                                                    </Button>
+                                                    <Button 
+                                                        className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} 
+                                                        style={{ borderBlockColor: '#3E4692;', marginTop: '1rem', flex: 1 }} 
+                                                        tabIndex="0" 
+                                                        onClick={() => setSelectedOperacion('restar')}
+                                                    > 
+                                                        Quitar 
+                                                    </Button>
+                                                </InputGroup>
+                                            </div>
+                                        } 
+                                    />
+                                </div>
                             }
                         />
                     );
