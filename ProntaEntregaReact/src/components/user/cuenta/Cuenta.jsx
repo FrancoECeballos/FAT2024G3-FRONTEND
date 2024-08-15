@@ -489,12 +489,12 @@ const Cuenta = () => {
               </Col>
               <Col>
               {!isStaff && (
-                  <Button
-                    className="logout-button"
-                    onClick={handleLogout}
-                  >
-                    Cerrar sesión
-                  </Button>
+                  <SendButton
+                  text="Cerrar Sesion"
+                  backcolor="#D10000"
+                  letercolor="white"
+                  onClick={handleLogout}
+                  />
                 )}
               </Col>
             </Row>
