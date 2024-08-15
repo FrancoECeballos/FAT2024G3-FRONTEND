@@ -238,6 +238,7 @@ function Products() {
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})} handleSave={() => handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId)} handleCloseModal={() => {setShowAlert(false); resetDetail();}} content={
                         <div>
+                            <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
                             <h2 className='centered'> Elija el Producto </h2>
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
                                 <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} addNewButton={true} />
@@ -267,13 +268,15 @@ function Products() {
                                 <div style={{ position: 'relative' }}>
                                     <Icon 
                                         icon="line-md:alert-circle-twotone" 
+                                        className="hoverable-icon"
                                         style={{
                                             width: "2rem", 
                                             height: "2rem", 
                                             position: "absolute", 
                                             top: "0.5rem", 
                                             right: "0.5rem", 
-                                            color: "#858585"
+                                            color: "#858585",
+                                            transition: "transform 0.3s"
                                         }} 
                                         onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`, { state: { id_stock : stockId, id_categoria: categoriaID } })}
                                     />
