@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 
 import FullNavbar from "../../../components/navbar/full_navbar/FullNavbar";
 import ProductCard from "../../../components/cards/product_card/ProductCard";
@@ -7,25 +7,20 @@ import fetchData from "../../../functions/fetchData";
 import Cookies from 'js-cookie';
 
 function OneProduct() {
-  const [product, setProduct] = React.useState(null);
+  const [product, setProduct] = useState({});
   const { productoId } = useParams();
   const token = Cookies.get('token');
 
-  React.useEffect(() => {
-    console.log(productoId);
-    fetchProduct();
-    console.log(product);
-  }, []);
-
-  const fetchProduct = async () => {
+  useEffect(() => {
     try {
-      fetchData(`/producto/${productoId}`, token).then((result) => {
+      fetchData(`/producto/${parseInt(productoId, 10)}`, token).then((result) => {
         setProduct(result);
+        console.log(result);
       });
     } catch (error) {
       console.error("Error fetching product:", error);
     }
-  };
+  }, []);
 
   return (
     <div>
