@@ -14,8 +14,7 @@ function OneProduct() {
   useEffect(() => {
     try {
       fetchData(`/producto/${parseInt(productoId, 10)}`, token).then((result) => {
-        setProduct(result);
-        console.log(result);
+        setProduct(result[0]);
       });
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -25,8 +24,7 @@ function OneProduct() {
   return (
     <div>
       <FullNavbar />
-      <ProductCard product={product} />
-      <h1>OneProduct</h1>
+      <ProductCard product={product}/>
     </div>
   );
 }
