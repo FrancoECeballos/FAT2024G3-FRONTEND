@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import "./auto_complete_select.scss";
 
-function AutoCompleteSelect({ lists, selectedKey, onClick }) {
+function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange }) {
   const [inputValue, setInputValue] = useState("");
   const [filteredLists, setFilteredLists] = useState(lists);
   const [isListVisible, setIsListVisible] = useState(false);
@@ -10,7 +10,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick }) {
 
   useEffect(() => {
     setSelectedIndex(0);
-  }, [filteredLists]);
+  }, [filteredLists, inputValue]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -21,6 +21,12 @@ function AutoCompleteSelect({ lists, selectedKey, onClick }) {
     );
 
     setFilteredLists(newFilteredLists);
+    setIsListVisible(true);
+    setSelectedIndex(0);
+
+    if (onInputChange) {
+      onInputChange(null);
+    }
   };
 
   const handleInputFocus = () => {
@@ -33,47 +39,71 @@ function AutoCompleteSelect({ lists, selectedKey, onClick }) {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredLists.length > 0) {
-      const selectedItem = filteredLists[selectedIndex];
-      onClick(selectedItem.key);
-      setInputValue(selectedItem.label);
+      if (addNewButton && selectedIndex === filteredLists.length) {
+        onClick(inputValue);
+        setInputValue("Nuevo Producto");
+      } else {
+        const selectedItem = filteredLists[selectedIndex];
+        onClick(selectedItem.key);
+        setInputValue(selectedItem.label);
+      }
       setIsListVisible(false);
+    } else if (e.key === "ArrowDown") {
+      setSelectedIndex((prevIndex) => (prevIndex + 1) % (filteredLists.length + (addNewButton ? 1 : 0)));
+    } else if (e.key === "ArrowUp") {
+      setSelectedIndex((prevIndex) => (prevIndex - 1 + (filteredLists.length + (addNewButton ? 1 : 0))) % (filteredLists.length + (addNewButton ? 1 : 0)));
     }
   };
 
   return (
     <div className="auto-complete-select">
-      <Form.Control
-        type="text"
-        value={inputValue}
-        onChange={handleInputChange}
-        onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
-        onKeyDown={handleKeyDown}
-        placeholder="Seleccione una Opcion"
-        className="select-input"
-      />
-      {isListVisible && (
-        <div className="select-button-container">
-          <ul>
-            {filteredLists.map((item, index) => (
-              <li
-                key={item.key}
-                className={`select-button ${
-                  selectedKey === item.key ? "selected" : ""
-                } ${index === selectedIndex ? "highlighted" : ""}`}
-                onMouseDown={() => {
-                  onClick(item.key);
-                  setInputValue(item.label);
-                  setIsListVisible(false);
-                }}
-                onMouseEnter={() => setSelectedIndex(index)} // Update selectedIndex on mouse enter
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="form-container">
+        <Form.Control
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          onKeyDown={handleKeyDown}
+          placeholder="Seleccione una Opcion"
+          className="select-input"
+        />
+        {isListVisible && (
+          <div className="select-button-container">
+            <ul>
+              {filteredLists.map((item, index) => (
+                <li
+                  key={item.key}
+                  className={`select-button ${
+                    selectedKey === item.key ? "selected" : ""
+                  } ${index === selectedIndex ? "highlighted" : ""}`}
+                  onMouseDown={() => {
+                    onClick(item.key);
+                    setInputValue(item.label);
+                    setIsListVisible(false);
+                  }}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                >
+                  {item.label}
+                </li>
+              ))}
+              {addNewButton && (
+                <li
+                  className={`select-button`}
+                  onMouseDown={() => {
+                    onClick('New');
+                    setInputValue("Nuevo Producto");
+                    setIsListVisible(false);
+                  }}
+                  onMouseEnter={() => setSelectedIndex(filteredLists.length)}
+                >
+                  <strong>Agregar un nuevo Producto </strong>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

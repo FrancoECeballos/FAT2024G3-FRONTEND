@@ -11,9 +11,10 @@ import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx'
 import GenericTable from '../../../components/tables/generic_table/GenericTable.jsx';
 
 import fetchData from '../../../functions/fetchData';
-import Modal from '../../../components/modals/Modal.jsx';
 import postData from '../../../functions/postData.jsx';
+import Modal from '../../../components/modals/Modal.jsx';
 import GenericAlert from '../../../components/alerts/generic_alert/GenericAlert.jsx';
+import AutoCompleteSelect from '../../../components/buttons/selectable_button/auto_complete_select.jsx';
 
 function Products() {
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ function Products() {
     const cantidadRef = useRef(null);
     
     const [products, setProducts] = useState([]);
+    const [excludedProducts, setExcludedProducts] = useState([]);
 
     const [selectedOperacion, setSelectedOperacion] = useState('sumar');
 
@@ -44,8 +46,17 @@ function Products() {
             navigate('/login');
             return;
         }
+
         fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
             setProducts(result);
+            const productsID = result.map(product => product.id_producto);
+            postData(`GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token).then((result) => {
+                const transformedResult = result.map(product => ({
+                    key: product.id_producto,
+                    label: product.nombre
+                }));
+                setExcludedProducts(transformedResult);
+            });
         });
 
         fetchData(`/stock/${stockId}`, token).then((result) => {
@@ -113,15 +124,18 @@ function Products() {
         };
         if (selectedOperacion === 'sumar') {
             postData(`AddDetallestockproducto/`, updatedDetalle, token).then(() => {
-                window.location.reload();
                 return true; 
             });
         } else if (selectedOperacion === 'restar') {
             postData(`SubtractDetallestockproducto/`, updatedDetalle, token).then(() => {
-                window.location.reload();
                 return true; 
             });
         }
+    };
+
+    const setSelectedNewProduct = (product) => {
+        setSelectedCardId(product);
+        console.log(product);
     };
 
     const newProduct = () => {
@@ -215,7 +229,7 @@ function Products() {
                         <div>
                             <h2 className='centered'> Elija el Producto </h2>
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                                <GenericTable headers={["nombre", "descripcion"]} data={products} showCreateNew={true} createNewFunction={() => setSelectedCardId(selectedCardId === 'New' ? {} : 'New')}></GenericTable>
+                                <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} addNewButton={true} />
                             </div>
                         </div>
                     }></Modal>
@@ -240,7 +254,7 @@ function Products() {
                                             right: "0.5rem", 
                                             color: "#858585"
                                         }} 
-                                        onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
+                                        onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`, { state: { id_stock : stockId, id_categoria: categoriaID } })}
                                     />
                                 <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
                                     content={
