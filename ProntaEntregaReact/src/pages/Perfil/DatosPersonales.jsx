@@ -7,6 +7,8 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 import Sidebar from '../../components/user/sidebar/Sidebar_perfil';
 import fetchData from '../../functions/fetchData.jsx';
 
+
+
 function Datospersonales(){
     const token = Cookies.get('token');
     const [user, setUser] = useState({});

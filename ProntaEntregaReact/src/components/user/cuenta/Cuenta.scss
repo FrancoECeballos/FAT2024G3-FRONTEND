@@ -55,11 +55,10 @@ h1 {
 }
 
 .logout-button {
-  margin-top: 1.5rem;
-  border-radius: 2rem;
-  width: 100%;
+  padding-right: 0%;
+  width: 30%;
   background-color: #d10000;
-  border-color: #d10000;
+  border-color: white;
   color: white;
   box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.3);
   &:hover {
@@ -110,9 +109,9 @@ h1 {
   margin-top: 2rem;
 
   .btn {
-    border-radius: 2rem;
+    border-radius: 0.7rem;
     padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+    font-size: 1rem;
     box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.3);
   }
 }

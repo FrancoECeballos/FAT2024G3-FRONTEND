@@ -12,6 +12,7 @@ import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 function UserListing() {
     const navigate = useNavigate();
     const [obras, setObras] = useState([]);
+    const [usuariosSinObra, setUsuariosSinObra] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -53,6 +54,13 @@ function UserListing() {
             }
         }).catch(error => {
             console.error('Hubo un error al obtener el token del usuario', error);
+        });
+
+        fetchData(`user/obra/null/`, token).then(result => {
+            setUsuariosSinObra(result);
+            console.log(result);
+        }).catch(error => {
+            console.error('Hubo un error al obtener los usuarios sin obra', error);
         });
 
     }, [token, navigate]);
@@ -122,6 +130,27 @@ function UserListing() {
                             </GenericAccordion>
                         </div>
                     ))}
+                    <div key='NoObra' style={{ marginBottom: '0.1rem' }}>
+                        <GenericAccordion
+                            wide={'80%'}
+                            titulo='Usuarios sin Obra'
+                        >
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                {usuariosSinObra.map(usuario => (
+                                    <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
+                                        <LittleCard
+                                            foto={usuario.imagen}
+                                            titulo={`${usuario.nombre} ${usuario.apellido}`}
+                                            descrip1={usuario.email}
+                                            descrip2={usuario.documento}
+                                            descrip3={usuario.telefono}
+                                            onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </GenericAccordion>
+                    </div>
                 </div>
             </div>
         </div>

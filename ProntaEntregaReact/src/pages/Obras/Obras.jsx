@@ -99,7 +99,7 @@ function Stock() {
                         />
                     ))
                 ) : (
-                    <p>No hay obras disponibles.</p>
+                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay obras disponibles.</p>
                 )}
             </div>
         </div>
