@@ -21,7 +21,7 @@ const ProductDetails = ({ product }) => {
                         <strong>Descripción:</strong> {product.descripcion}
                     </p>
                     <p>
-                        <strong>Categoria:</strong> {product.id_categoria}
+                        <strong>Categoria:</strong> {product.id_categoria.nombre}
                     </p>
                     <p>
                         <strong>Unidad de medida:</strong> {product.cantidad_por_unidad} {product.unidadmedida}

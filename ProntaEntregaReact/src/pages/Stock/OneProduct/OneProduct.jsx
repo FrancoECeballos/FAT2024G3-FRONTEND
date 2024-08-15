@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 
 function OneProduct() {
   const [product, setProduct] = useState({});
+  const [loading, setLoading] = useState(true);
   const { productoId } = useParams();
   const token = Cookies.get('token');
 
@@ -15,16 +16,22 @@ function OneProduct() {
     try {
       fetchData(`/producto/${parseInt(productoId, 10)}`, token).then((result) => {
         setProduct(result[0]);
+        setLoading(false);
       });
     } catch (error) {
       console.error("Error fetching product:", error);
+      setLoading(false);
     }
-  }, []);
+  }, [productoId, token]);
 
   return (
     <div>
       <FullNavbar />
-      <ProductCard product={product}/>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ProductCard product={product}/>
+      )}
     </div>
   );
 }
