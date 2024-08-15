@@ -213,18 +213,18 @@ function AutosComponent() {
                         <Modal 
                             openButtonText='¿No encuentra su auto? Añadalo' 
                             hoverableButton={true} 
-                            openButtonWidth='20' 
+                            openButtonWidth='20'
                             title='Nuevo Auto' 
                             saveButtonText='Crear' 
-                            handleSave={handleCreateAuto}  
+                            handleSave={handleCreateAuto}
                             content={
                                 <div>
                                     <h2 className='centered'> Nuevo Auto </h2>
-                                    <UploadImage wide='13' onFileChange={handleFileChange}/>
-                                    <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="form-control"/>
-                                    <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="form-control"/>
-                                    <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="form-control"/>
-                                    <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="form-control"/>
+                                    <UploadImage wide='13' titulo='Imagen del auto' onFileChange={handleFileChange}/>
+                                    <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos"/>
+                                    <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos"/>
+                                    <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos"/>
+                                    <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos"/>
                                 </div>
                             }
                         />
@@ -296,10 +296,10 @@ function AutosComponent() {
                                                         content={
                                                             <div>
                                                                 <h2 className='centered'> Actualizar Auto </h2>
-                                                                <Form.Control name="marca" type="text" defaultValue= { auto.marca } onChange={handleInputChange} className="form-control"/>
-                                                                <Form.Control name="modelo" type="text" defaultValue= { auto.modelo } onChange={handleInputChange} className="form-control"/>
-                                                                <Form.Control name="patente" type="text" defaultValue= { auto.patente } onChange={handleInputChange} className="form-control"/>
-                                                                <Form.Control name="kilometraje" type="text" defaultValue= { auto.kilometraje } onChange={handleInputChange} className="form-control"/>
+                                                                <Form.Control name="marca" type="text" defaultValue= { auto.marca } onChange={handleInputChange} className="input-autos"/>
+                                                                <Form.Control name="modelo" type="text" defaultValue= { auto.modelo } onChange={handleInputChange} className="input-autos"/>
+                                                                <Form.Control name="patente" type="text" defaultValue= { auto.patente } onChange={handleInputChange} className="input-autos"/>
+                                                                <Form.Control name="kilometraje" type="text" defaultValue= { auto.kilometraje } onChange={handleInputChange} className="input-autos"/>
                                                             </div>
                                                         }
                                                     />
