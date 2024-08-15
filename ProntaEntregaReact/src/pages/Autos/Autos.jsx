@@ -33,7 +33,7 @@ function AutosComponent() {
         marca: "",
         modelo: "",
         patente: "",
-        kilometraje: "",
+        kilometraje: ""
     });
 
     useEffect(() => {
@@ -100,10 +100,17 @@ function AutosComponent() {
     };
 
     const handleCreateAuto = async (id) => {
+        const data = new FormData();
+        data.append('imagen', formData.imagen);
+        data.append('marca', formData.marca);
+        data.append('modelo', formData.modelo);
+        data.append('patente', formData.patente);
+        data.append('kilometraje', formData.kilometraje);
+
         try {
             const response = await axios.post(`http://localhost:8000/crear_transporte/`, 
-                formData,
-                { headers: { 'Authorization': `Token ${token}` } }
+                data,
+                { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'multipart/form-data' } }
             );
             const autoId = response.data.id_transporte;
             await axios.post(`http://localhost:8000/crear_detalle_transporte/`, 
@@ -116,12 +123,12 @@ function AutosComponent() {
         }
     };
 
-    const handleFileChange = (file) => {
-        setFormData((prevData) => {
-          return { ...prevData, imagen: file };
+    const handleFileChange = (event) => {
+        setFormData({
+            ...formData,
+            imagen: event.target.files[0]
         });
-        console.log(formData);
-      };
+    };
 
     const handleUpdateAuto = async (id) => {
         try {
@@ -189,12 +196,11 @@ function AutosComponent() {
         setSearchQuery(value);
     };
 
-    const handleInputChange = async (event) => {
+    const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setFormData((prevData) => {
-            const updatedData = { ...prevData, [name]: value };
-            console.log(updatedData);
-            return updatedData;
+        setFormData({
+            ...formData,
+            [name]: value
         });
     };
 
@@ -219,12 +225,14 @@ function AutosComponent() {
                             handleSave={handleCreateAuto}
                             content={
                                 <div>
-                                    <h2 className='centered'> Nuevo Auto </h2>
-                                    <UploadImage wide='13' titulo='Imagen del auto' onFileChange={handleFileChange}/>
-                                    <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos"/>
-                                    <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos"/>
-                                    <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos"/>
-                                    <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos"/>
+                                    <form encType="multipart/form-data">
+                                        <input type="file" name="imagen" onChange={handleFileChange} />
+                                        <input type="text" name="marca" value={formData.marca} onChange={handleInputChange} />
+                                        <input type="text" name="modelo" value={formData.modelo} onChange={handleInputChange} />
+                                        <input type="text" name="patente" value={formData.patente} onChange={handleInputChange} />
+                                        <input type="text" name="kilometraje" value={formData.kilometraje} onChange={handleInputChange} />
+                                        <button type="button" onClick={handleCreateAuto}>Crear Auto</button>
+                                    </form>
                                 </div>
                             }
                         />
