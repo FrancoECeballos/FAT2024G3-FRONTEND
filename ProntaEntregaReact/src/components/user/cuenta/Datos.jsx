@@ -81,6 +81,16 @@ const Datos = () => {
               <div className="form-container">
                 <label htmlFor="telefono">Teléfono:</label>
                 <input type="text" id="telefono" name="telefono" value={userData.telefono} disabled className="form-control" />
+
+                <label htmlFor="genero">Género:</label>
+                <select className="genero form-control" name="genero" id="genero" value={userData.genero} disabled>
+                  <option value="1">Masculino</option>
+                  <option value="2">Femenino</option>
+                  <option value="3">Prefiero no decir</option>
+                </select>
+                
+                <label htmlFor="tipo_documento">Documento:</label>
+                <input type="text" id="id_tipo_documento" name="id_tipo_documento" value={userData.documento} disabled className="form-control" />
     
                 <label htmlFor="direccion">Dirección:</label>
                 <InputGroup className="groupderec">
@@ -112,16 +122,7 @@ const Datos = () => {
                     className="form-control"
                   />
                 </InputGroup>
-    
-                <label htmlFor="genero">Género:</label>
-                <select className="genero form-control" name="genero" id="genero" value={userData.genero} disabled>
-                  <option value="1">Masculino</option>
-                  <option value="2">Femenino</option>
-                  <option value="3">Prefiero no decir</option>
-                </select>
-    
-                <label htmlFor="tipo_documento">Documento:</label>
-                <input type="text" id="id_tipo_documento" name="id_tipo_documento" value={userData.documento} disabled className="form-control" />
+
               </div>
             </Col>
           </Row>
