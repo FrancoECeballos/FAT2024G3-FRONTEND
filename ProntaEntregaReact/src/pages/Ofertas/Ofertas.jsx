@@ -14,27 +14,43 @@ function Ofertas() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [ofertas, setOfertas] = useState([]);
-
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
-
-    const [formCategoryData, setFormCategoryData] = useState({
-        "nombre": "",
-        "descripcion": "",
-      });
+    const [productos, setProductos] = useState([]);
+    const [obras, setObras] = useState([]);
+    const [usuarios, setUsuarios] = useState([]);
+    const [formData, setFormData] = useState({
+        producto: "",
+        obra: "",
+        usuario: "",
+        cantidad: ""
+    });
 
     useEffect(() => {
         if (!token) {
             navigate('/login');
             return;
         }
-
         fetchData('/oferta/', token).then((result) => {
             setOfertas(result);
         }).catch(error => {
             console.error('Error fetching orders:', error);
         });
-    }, [token, navigate]);
+        fetchData('/productos', token).then(setProductos);
+        fetchData('/obra', token).then(setObras);
+        fetchData('/user', token).then(setUsuarios)
+            .then(response => response.json())
+            .then(data => setUsuarios(data))
+            .catch(error => console.error('Error al cargar los usuarios:', error));
+    }, [token, navigate, formData.usuario]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token'); // O donde sea que guardes el token
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            setUsuario(decodedToken.nombre); // Ajusta esto según la estructura de tu token
+        }
+    }, []);
 
     const filteredOfertas = ofertas.filter(oferta => {
         return (
@@ -50,15 +66,12 @@ function Ofertas() {
         if (!orderCriteria) return 0;
         const aValue = a[orderCriteria];
         const bValue = b[orderCriteria];
-
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
-
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-
         return 0;
     });
 
@@ -73,19 +86,19 @@ function Ofertas() {
 
     const handleInputChange = async (event) => {
         const { name, value } = event.target;
-        setFormCategoryData((prevData) => {
+        setFormData((prevData) => {
             const updatedData = { ...prevData, [name]: value };
             console.log(updatedData);
             return updatedData;
         });
     };
 
-    const nuevaoferta = () => {
-        postData('/crear_oferta', formCategoryData, token).then(() => {
-            window.location.reload();
-        });
+    const handleCreateOferta = () => {
+        // Verificar que todos los campos requeridos estén presentes
+        postData('crear_oferta/', formData, token).then((nuevaOferta) => {
+            setOfertas([...ofertas, nuevaOferta]); // Actualiza el estado con el nuevo pedido
+        })
     };
-
 
     return (
         <div>
@@ -95,13 +108,49 @@ function Ofertas() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='oferta-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <Modal openButtonText='¿No encuentra su oferta? Añadala' openButtonWidth='20' title='Nueva Oferta' saveButtonText='Crear' handleSave={nuevaoferta}  content={
-                            <div>
-                                <h2 className='centered'> Nueva Oferta </h2>
-                                <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            </div>
-                        }></Modal>
+                        <Modal
+                            openButtonText='¿No encuentra su pedido? Añadalo' 
+                            openButtonWidth='20' 
+                            title='Nuevo Oferta' 
+                            saveButtonText='Crear' 
+                            handleSave={handleCreateOferta} 
+                            content={
+                                <div>
+                                    <h2 className='centered'> Nuevo Oferta </h2>
+                                    <form onSubmit={(e) => { e.preventDefault(); handleCreateOferta(); }}>
+                                        <label>
+                                            Producto:
+                                            <select name="producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                <option value="">Seleccione su producto</option>
+                                                {productos.map((producto, index) => (
+                                                    <option key={`${producto.id}-${index}`} value={producto.id}>{producto.nombre}</option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <label>
+                                            Obra:
+                                            <select name="obra" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                <option value="">Seleccione su obra</option>
+                                                {obras.map((obra, index) => (
+                                                    <option key={`${obra.id}-${index}`} value={obra.id}>{obra.nombre}</option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <label>
+                                            Usuario:
+                                            <select name="usuario" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                <option value="">Seleccione su usuario</option>
+                                                {usuarios.map((usuario, index) => (
+                                                    <option key={`${usuario.id}-${index}`} value={usuario.id}>{usuario.nombre}</option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <Form.Control name="cantidad" type="text" placeholder="Cantidad" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <button type="submit" style={{ display: 'none' }}>Crear Pedido</button>
+                                    </form>
+                                </div>
+                            }
+                        />
                     </div>
                     {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
                         sortedOfertas.map(oferta => (
