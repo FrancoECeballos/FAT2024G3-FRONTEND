@@ -368,7 +368,7 @@ const RegisterCard = () => {
                   </Form.Group>
 
 
-                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem',borderRadius:'none'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Confirmar contraseña (*)</Form.Label>
                     <Form.Control style={{ height: '2.4rem' }} name="password2" id='FormConfirmar' type="password" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese nuevamente su contraseña"/>
                     <Form.Label id='errorConfirmar' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
