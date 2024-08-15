@@ -11,6 +11,7 @@
 
 .register-container {
   margin-top: 8%;
+
   @media (min-width: 1200px) {
     .user-image {
       width: 80%;
@@ -61,8 +62,17 @@
     }
   }
   
-  .unified-input {
-    display: flex;
+  .unified-input-left {
+    flex: 1;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    background-color: #EEEEEE;
+  }
+  
+  
+  .unified-input-right {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: #EEEEEE;
   }
 }
-

@@ -423,7 +423,7 @@ const Cuenta = () => {
             
             <Row className="filaobras">
               <Col>
-                <div className="obras-container">
+                <div className="obras-container" style={{marginTop: '1rem'}}>
                   <h3>Obras del Usuario</h3>
                   <ul>
                     {obraID.length === 0 ? (
