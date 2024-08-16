@@ -147,7 +147,11 @@ const Cuenta = () => {
         event.preventDefault();
         const url = (`/user/delete/${userData.email}/`);
         const result = await deleteData(url, token);
-        navigate('/selectuser');
+        if (!isStaff) {
+          navigate('/login');
+        } else {
+          navigate('/userlisting');
+        }
     };
 
     const handleDeleteObraFromUser = async(id) => {
