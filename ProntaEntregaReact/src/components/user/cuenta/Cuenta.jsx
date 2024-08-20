@@ -406,7 +406,7 @@ const Cuenta = () => {
               <SendButton
                   onClick={handleEdit}
                   text={isEditing ? "Cancelar" : "Editar"}
-                  wide="6"
+                  wide="5"
                   backcolor={isEditing ? "#D10000" : "#D9D9D9"}
                   letercolor={isEditing ? "white" : "black"}
                 />
