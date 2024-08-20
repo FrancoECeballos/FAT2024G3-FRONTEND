@@ -18,6 +18,7 @@ export default function SendButton({
   hid,
   shadow = '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)',
   hoverable = true,  // hoverable es true por defecto
+  disabled = false   // nuevo prop para manejar el estado deshabilitado
 }) {
   return (
     <Button
@@ -30,14 +31,15 @@ export default function SendButton({
         borderRadius: `${radius}rem`,
         textAlign: 'center',
         width: `${wide}rem`,
-        backgroundColor: `${backcolor}`,
+        backgroundColor: disabled ? '#D9D9D9' : backcolor,  // Cambiar color si está deshabilitado
         borderColor: '#D9D9D9',
-        color: `${letercolor}`,
+        color: disabled ? 'gray' : letercolor, // Cambiar color del texto si está deshabilitado
         boxShadow: `${shadow}`,
         fontSize: `${size}rem`,
       }}
       variant="primary"
       type="submit"
+      disabled={disabled} // Aplicar el estado deshabilitado
     >
       {text}
       {children}
