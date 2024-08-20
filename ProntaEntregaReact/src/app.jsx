@@ -39,7 +39,7 @@ function App() {
         <Route path="/stock" element={<Stock />} />
         <Route path="/obra/:stockId/categoria" element={<Categories />} />
         <Route path="/obra/:stockId/categoria/:categoriaID" element={<Products />} />
-        <Route path="/obra/:obraId/categoria/:categoriaId/producto/:productoId" element={<OneProduct />} />
+        <Route path="/obra/:stockId/categoria/:categoriaId/producto/:productoId" element={<OneProduct />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/obras" element={<Obras />} />
