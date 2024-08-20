@@ -215,7 +215,7 @@ function Products() {
                                 <>
                                     <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange}/>
                                     <InputGroup className="mb-2">
-                                        <Form.Control className='unified-input unified-input-left' name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Control className='unified-input unified-input-left' name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem 0rem 0rem 10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                         <Form.Select className='unified-input unified-input-right' name="unidad_medida" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
                                             <option value="0">Unidad/es</option>
                                             <option value="1">Kilogramo/s</option>
@@ -224,7 +224,7 @@ function Products() {
                                         </Form.Select>
                                     </InputGroup>
                                     <InputGroup className="mb-2">
-                                        <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '0rem 10rem 10rem 0rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                     </InputGroup>
                                     <InputGroup className="mb-2">
                                         <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>

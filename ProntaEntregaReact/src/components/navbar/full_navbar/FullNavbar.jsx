@@ -70,7 +70,7 @@ function FullNavbar ({selectedPage}) {
   };
 
   return (
-    <Navbar expand={expand} className="full-navbar">
+    <Navbar style={{}} expand={expand} className="full-navbar">
       <Container fluid>
         <div>
           <Navbar.Brand>
