@@ -8,6 +8,7 @@ import { Icon } from '@iconify/react';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
+import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
@@ -101,6 +102,13 @@ function Products() {
         setProductSearchQuery(value);
     };
 
+    const handleFileChange = (file) => {
+        setFormData((prevData) => {
+          return { ...prevData, imagen: file };
+        });
+        console.log(formData);
+      };
+
     const resetDetail = () => {
         setDetalle({});
         setSelectedCardId({});
@@ -191,10 +199,10 @@ function Products() {
                         if (cantidadRef.current) {
                             handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
                         } else { setAlertMessage('Por favor seleccione un producto'); setShowAlert(true);}
-                    }} handleCloseModal={() => {setShowAlert(false); resetDetail();}} content={
+                    }} handleCloseModal={() => {setShowAlert(false); resetDetail(); setSelectedCardId(); cantidadRef.current = 0;}} content={
                         <div>
                             <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
-                            <h2 className='centered'> Elija el Producto </h2>
+                            {selectedCardId === 'New' ? <h2 className='centered'> Cree un Producto </h2> : <h2 className='centered'> Elija el Producto </h2>}
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
                                 <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} onInputChange={() => { setSelectedCardId(); cantidadRef.current = 0; }} addNewButton={true} />
                             </div>
@@ -204,9 +212,16 @@ function Products() {
                                 </InputGroup>
                             }
                             {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
-                                <InputGroup className="mb-2">
-                                    <Form.Label style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}/>Precione el boton 'Crear' para añadir un nuevo producto<Form.Label/>
-                                </InputGroup>
+                                <>
+                                    <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange}/>
+                                    <InputGroup className="mb-2">
+                                        <Form.Control className='unified-input unified-input-left' name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Control className='unified-input unified-input-right' name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                    </InputGroup>
+                                    <InputGroup className="mb-2">
+                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                    </InputGroup>
+                                </>
                             }
                         </div>
                     }></Modal>
