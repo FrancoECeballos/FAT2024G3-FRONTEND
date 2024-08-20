@@ -40,9 +40,9 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredLists.length > 0) {
       if (addNewButton && selectedIndex === filteredLists.length) {
-        onClick(inputValue);
+        onClick('New');
         setInputValue("Nuevo Producto");
-      } else {
+      } else if (selectedIndex >= 0 && selectedIndex < filteredLists.length) {
         const selectedItem = filteredLists[selectedIndex];
         onClick(selectedItem.key);
         setInputValue(selectedItem.label);
