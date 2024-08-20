@@ -8,25 +8,30 @@ import Cookies from 'js-cookie';
 
 function OneProduct() {
   const [product, setProduct] = useState({});
+  const [loading, setLoading] = useState(true);
   const { productoId } = useParams();
   const token = Cookies.get('token');
 
   useEffect(() => {
     try {
       fetchData(`/producto/${parseInt(productoId, 10)}`, token).then((result) => {
-        setProduct(result);
-        console.log(result);
+        setProduct(result[0]);
+        setLoading(false);
       });
     } catch (error) {
       console.error("Error fetching product:", error);
+      setLoading(false);
     }
-  }, []);
+  }, [productoId, token]);
 
   return (
     <div>
       <FullNavbar />
-      <ProductCard product={product} />
-      <h1>OneProduct</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ProductCard product={product}/>
+      )}
     </div>
   );
 }

@@ -1,27 +1,35 @@
 import React from 'react';
-import { Card, Button } from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 
-const ProductCard = ({ product }) => {
+const ProductDetails = ({ product }) => {
+    console.log(product);
     return (
-        <Card className="mb-4 shadow-sm" style={{ width: '18rem', borderRadius: '1rem', backgroundColor: '#f9f9f9' }}>
-            <Card.Img variant="top" src={product.imagen || 'https://via.placeholder.com/150'} alt={product.nombre} style={{ borderRadius: '1rem 1rem 0 0', height: '200px', objectFit: 'cover' }} />
-            <Card.Body>
-                <Card.Title>{product.nombre}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">{product.categoria}</Card.Subtitle>
-                <Card.Text>
-                    <strong>Descripción:</strong> {product.descripcion}<br />
-                    <strong>Cantidad:</strong> {product.total} {product.unidadmedida}<br />
-                    <strong>Precio:</strong> ${product.precio}<br />
-                    <strong>Stock:</strong> {product.stock}<br />
-                    <strong>Fecha de Ingreso:</strong> {product.fechaIngreso}
-                </Card.Text>
-                <div className="d-flex justify-content-between">
-                    <Button variant="primary" onClick={() => onEditClick(product.id)}>Editar</Button>
-                    <Button variant="danger" onClick={() => onDeleteClick(product.id)}>Eliminar</Button>
-                </div>
-            </Card.Body>
-        </Card>
+        <Container style={{marginTop: "1rem"}} fluid className="product-details-page d-flex align-items-center justify-content-center vh-100">
+            <Row className="w-100">
+                <Col md={6} className="d-flex justify-content-center">
+                    <img 
+                        src={product.imagen || 'https://via.placeholder.com/400x400'} 
+                        alt={product.nombre} 
+                        className="img-fluid" 
+                        style={{ maxWidth: '100%', borderRadius: '1rem' }}
+                    />
+                </Col>
+                <Col md={6} className="d-flex flex-column justify-content-center">
+                    <h1>{product.nombre}</h1>
+                    <h4 className="text-muted mb-4">{product.categoria}</h4>
+                    <p>
+                        <strong>Descripción:</strong> {product.descripcion}
+                    </p>
+                    <p>
+                        <strong>Categoria:</strong> {product.id_categoria.nombre}
+                    </p>
+                    <p>
+                        <strong>Unidad de medida:</strong> {product.cantidad_por_unidad} {product.unidadmedida}
+                    </p>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
-export default ProductCard;
+export default ProductDetails;

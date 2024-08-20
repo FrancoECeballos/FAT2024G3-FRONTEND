@@ -6,10 +6,10 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
   const [inputValue, setInputValue] = useState("");
   const [filteredLists, setFilteredLists] = useState(lists);
   const [isListVisible, setIsListVisible] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
-    setSelectedIndex(0);
+    setSelectedIndex(-1);
   }, [filteredLists, inputValue]);
 
   const handleInputChange = (e) => {
@@ -22,7 +22,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
 
     setFilteredLists(newFilteredLists);
     setIsListVisible(true);
-    setSelectedIndex(0);
+    setSelectedIndex(-1);
 
     if (onInputChange) {
       onInputChange(null);
@@ -88,7 +88,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
             ))}
             {addNewButton && (
               <li
-                className={`select-button`}
+                className={`select-button ${filteredLists.length === selectedIndex ? "highlighted" : ""}`}
                 onMouseDown={() => {
                   onClick('New');
                   setInputValue("Nuevo Producto");

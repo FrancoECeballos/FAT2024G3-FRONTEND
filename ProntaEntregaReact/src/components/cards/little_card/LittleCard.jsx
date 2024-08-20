@@ -17,7 +17,7 @@ function LittleCard({ foto, titulo, descrip1, selected, onSelect, hoverable = tr
       onClick={handleCardClick} 
       className={`card ${selected ? 'selected' : 'not-selected'} ${hoverable ? 'hoverable' : ''}`}
     >
-      <Card.Img variant="top" src={foto || notPic} style={{ width: "10rem", justifyContent: "center", margin: "auto", marginTop: "0.5rem", maxHeight: '8rem' }} />
+      <Card.Img variant="top" src={foto || notPic} style={{ width: "10rem", justifyContent: "center", margin: "auto", marginTop: "0.5rem", height: '9rem' }} />
       <Card.Body>
         <Card.Title>{titulo}</Card.Title>
         <Card.Text>

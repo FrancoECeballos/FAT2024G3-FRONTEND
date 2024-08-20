@@ -147,7 +147,11 @@ const Cuenta = () => {
         event.preventDefault();
         const url = (`/user/delete/${userData.email}/`);
         const result = await deleteData(url, token);
-        navigate('/selectuser');
+        if (!isStaff) {
+          navigate('/login');
+        } else {
+          navigate('/userlisting');
+        }
     };
 
     const handleDeleteObraFromUser = async(id) => {
@@ -166,7 +170,8 @@ const Cuenta = () => {
             {descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`, 
             fechaingreso: today,
             id_obra: parseInt(selectedObject),
-            id_usuario: userData.id_usuario}, token);
+            id_usuario: userData.id_usuario,
+            id_tipousuario: 1}, token);
         fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
             setUserObras(result);
             window.location.reload();
