@@ -16,11 +16,12 @@ function LittleCard({ foto, titulo, descrip1, selected, onSelect, hoverable = tr
     <Card 
       onClick={handleCardClick} 
       className={`card ${selected ? 'selected' : 'not-selected'} ${hoverable ? 'hoverable' : ''}`}
+      style={{maxHeight:'20rem', mixWidth:'15rem'}}
     >
       <Card.Img variant="top" src={foto || notPic} style={{ width: "10rem", justifyContent: "center", margin: "auto", marginTop: "0.5rem", height: '9rem' }} />
       <Card.Body>
         <Card.Title>{titulo}</Card.Title>
-        <Card.Text>
+        <Card.Text style={{maxWidth:"15rem",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
           {descrip1}
         </Card.Text>
       </Card.Body>
