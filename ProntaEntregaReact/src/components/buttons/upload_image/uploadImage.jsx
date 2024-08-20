@@ -6,7 +6,7 @@ import defaultImage from '../../../assets/user_default.png';
 import SendButton from "../send_button/send_button";
 import './uploadImage.scss';
 
-function UploadImage ({wide = '15', onFileChange,titulo="Imagen de perfil"}) {
+function UploadImage ({wide = '15', onFileChange, titulo="Imagen de perfil"}) {
 
     const handleFileButtonClick = () => {
         fileInputRef.current.click();

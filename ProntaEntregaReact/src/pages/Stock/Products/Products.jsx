@@ -8,7 +8,6 @@ import { Icon } from '@iconify/react';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
-import GenericTable from '../../../components/tables/generic_table/GenericTable.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
@@ -146,43 +145,12 @@ function Products() {
 
     const setSelectedNewProduct = (product) => {
         setSelectedCardId(product);
-        console.log(product);
-    };
-
-    const newProduct = () => {
-        if (selectedCardId != 'New') {
-            const updatedDetalle = {
-                ...detalle,
-                id_producto: selectedCardId.id_producto,
-                id_stock: parseInt(stockId, 10),
-                cantidadUnidades: detalle.cantidadUnidades !== undefined ? detalle.cantidadUnidades : 1
-            };
-            setDetalle(updatedDetalle);
-
-            if (!updatedDetalle.id_unidadmedida) {
-                alert('Por favor seleccione una unidad de medida');
-                return;
-            } else if (!updatedDetalle.cantidad || updatedDetalle.cantidad <= 0) {
-                alert('Por favor ingrese una cantidad válida');
-                return;
-            } else if (updatedDetalle.cantidadUnidades !== undefined && updatedDetalle.cantidadUnidades < 0) {
-                alert('Por favor ingrese una cantidad de unidades válida');
-                return;
-            } else {
-                postData(`detallestockproducto/`, updatedDetalle, token).then((result) => {
-                    resetDetail();
-                });
-            }
-        } else if (selectedCardId == 'New') {
-            setShowNewProductModal(true);
-        }
     };
 
     const fetchSelectedObject = async (event) => {
         const { name, value } = event.target;
         setDetalle((prevData) => {
             const updatedData = { ...prevData, [name]: parseInt(value, 10) };
-            console.log(updatedData);
             return updatedData;
         });
     };
@@ -217,25 +185,18 @@ function Products() {
                         />
                     </Tabs>
                 </div>
-                <Modal
-                    openButtonText="Open Modal :D"
-                    openButtonWidth="200px"
-                    title="Crear un nuevo Producto"
-                    content={<div>
-                        <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                        <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                    </div>}
-                    saveButtonText={selectedCardId === 'New' ? 'Crear' : 'Agregar'}
-                    showModal={showNewProductModal}
-                    showButton={false}
-                />
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})} handleSave={() => handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId)} handleCloseModal={() => {setShowAlert(false); resetDetail();}} content={
+                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
+                    handleSave={() => {
+                        if (cantidadRef.current) {
+                            handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
+                        } else { setAlertMessage('Por favor seleccione un producto'); setShowAlert(true);}
+                    }} handleCloseModal={() => {setShowAlert(false); resetDetail();}} content={
                         <div>
                             <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
                             <h2 className='centered'> Elija el Producto </h2>
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                                <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} onChange={fetchSelectedObject} addNewButton={true} />
+                                <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} onInputChange={() => { setSelectedCardId(); cantidadRef.current = 0; }} addNewButton={true} />
                             </div>
                             {selectedCardId && selectedCardId !== 'New' && selectedCardId !== -1 &&
                                 <InputGroup className="mb-2">
