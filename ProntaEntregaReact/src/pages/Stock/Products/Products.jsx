@@ -37,15 +37,15 @@ function Products() {
     const [detalle, setDetalle] = useState([]);
     const [newProduct, setNewProduct] = useState({
         nombre: "",
-        unidad_medida: "0",
         descripcion: "",
-        cantidad: "",
+        unidadmedida: 0,
+        descripcion: "",
         imagen: null,
+        id_categoria: parseInt(categoriaID, 10),
       });
 
     const [alertMessage, setAlertMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
-    const [showNewProductModal, setShowNewProductModal] = useState(false);
 
     const [productSearchQuery, setProductSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -125,11 +125,41 @@ function Products() {
         setProductSearchQuery(value);
     };
 
+    const handleProductInputChange = (event) => {
+        const { name, value } = event.target;
+        setNewProduct((prevProduct) => {
+            const updatedProduct = { 
+                ...prevProduct, 
+                [name]: name === 'unidadmedida' ? parseInt(value, 10) : value 
+            };
+            return updatedProduct;
+        });
+        console.log(newProduct);
+    };
+
     const handleFileChange = (file) => {
         setNewProduct((prevProduct) => ({
           ...prevProduct,
           imagen: file,
         }));
+        console.log(newProduct);
+    };
+
+    const handleCreateProduct = async () => {
+        try {
+            if (!newProduct.nombre || !newProduct.descripcion || !newProduct.unidadmedida) {
+                setAlertMessage('Por favor complete todos los campos');
+                setShowAlert(true);
+                return false;
+            }
+            const createdProduct = await postData(`crear_productos/`, newProduct, token);
+            handleSave(parseFloat(cantidadRef.current.value), null, createdProduct.id_producto);
+        } catch (error) {
+            console.error('Error fetching user or posting data:', error);
+            setAlertMessage('Ocurrió un error. Por favor, inténtelo de nuevo.');
+            setShowAlert(true);
+            return false;
+        }
     };
 
     const resetDetail = () => {
@@ -173,9 +203,6 @@ function Products() {
             return false;
         }
     };
-
-    const handleCreateProduct = async () => {
-    }
 
     const setSelectedNewProduct = (product) => {
         setSelectedCardId(product);
@@ -223,8 +250,15 @@ function Products() {
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
                     handleSave={() => {
                         if (cantidadRef.current) {
-                            handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
-                        } else { setAlertMessage('Por favor seleccione un producto'); setShowAlert(true);}
+                            if (selectedCardId === 'New') {
+                                handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
+                            } else {
+                                handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
+                            }
+                        } else {
+                            setAlertMessage('Por favor seleccione un producto');
+                            setShowAlert(true);
+                        }
                     }} handleCloseModal={() => {setShowAlert(false); resetDetail(); setSelectedCardId(); cantidadRef.current = 0;}} content={
                         <div>
                             <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
@@ -241,8 +275,8 @@ function Products() {
                                 <>
                                     <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
                                     <InputGroup className="mb-2">
-                                        <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem 0rem 0rem 10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                        <Form.Select name="unidad_medida" style={{ borderRadius: '0rem 10rem 10rem 0rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                        <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleProductInputChange} onChange={handleProductInputChange} className="nombre-input" />
+                                        <Form.Select name="unidadmedida" onChange={handleProductInputChange} className="unidad-medida-select">
                                             <option value="0">Unidad/es</option>
                                             <option value="1">Kilogramo/s</option>
                                             <option value="2">Litro/s</option>
@@ -250,10 +284,10 @@ function Products() {
                                         </Form.Select>
                                     </InputGroup>
                                     <InputGroup className="mb-2">
-                                        <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleProductInputChange} onChange={handleProductInputChange} className="descripcion-input" />
                                     </InputGroup>
                                     <InputGroup className="mb-2">
-                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} className="cantidad-input" onKeyDown={(event) => { if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) { event.preventDefault(); } }} />
                                     </InputGroup>
                                 </>
                             }

@@ -37,3 +37,30 @@
 .hoverable-icon:hover {
     transform: scale(1.15);
 }
+
+.nombre-input {
+    border-radius: 10rem 0rem 0rem 10rem;
+    background-color: #F5F5F5;
+    box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
+    margin-top: 1rem;
+}
+
+.unidad-medida-select {
+    border-radius: 0rem 10rem 10rem 0rem;
+    background-color: #F5F5F5;
+    box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
+    margin-top: 1rem;
+}
+
+.descripcion-input {
+    border-radius: 10rem;
+    background-color: #F5F5F5;
+    box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
+    margin-top: 1rem;
+}
+
+.cantidad-input {
+    border-radius: 10rem;
+    background-color: #F5F5F5;
+    box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
+}
