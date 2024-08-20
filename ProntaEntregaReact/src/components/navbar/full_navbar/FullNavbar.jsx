@@ -131,10 +131,10 @@ function FullNavbar ({selectedPage}) {
           </Modal>
 
           <Navbar.Brand>
-            <Icon icon="line-md:account" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.7rem', color: '#02005E'}} onClick={handleSuperUserAuth}/>
+            <Icon icon="line-md:account" style={{ width: '2rem', height: '2rem', marginRight: '0.3rem', marginLeft: '0.3rem', color: '#02005E'}} onClick={handleSuperUserAuth}/>
           </Navbar.Brand>  
           <Navbar.Brand>
-            <Icon icon="line-md:menu" style={{ width: '2rem', height: '2rem', marginRight: '0.7rem', marginLeft: '0.3rem', color: '#02005E' }} onClick={handleShowOffcanvas} />
+            <Icon icon="line-md:menu" style={{ width: '2rem', height: '2rem', marginRight: '0.3rem', marginLeft: '0.2rem', color: '#02005E' }} onClick={handleShowOffcanvas} />
           </Navbar.Brand>
           <Navbar.Offcanvas
             show={showOffcanvas}

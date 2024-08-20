@@ -31,7 +31,7 @@
 	  }
 
 	.logo {
-		width: 4rem;
+		width: 3.5rem;
 		margin: 0;
 	}
 	
@@ -56,7 +56,7 @@
 		display: none !important;
 	}
 
-	@media (max-width: 767px) {
+	@media (max-width: 840px) {
 		.full-navbar {
 		  .nav-link {
 			display: none;
