@@ -17,6 +17,7 @@ import './Autos.scss';
 function AutosComponent() {
     const navigate = useNavigate();
     const { obraId } = useParams();
+    const { autoId } = useParams();
     const token = Cookies.get('token');
 
     const [currentObra, setCurrentObra] = useState(false);
@@ -108,16 +109,17 @@ function AutosComponent() {
         data.append('kilometraje', formData.kilometraje);
 
         try {
-            const response = await axios.post(`http://localhost:8000/crear_transporte/`, 
+            
+            await axios.post(`http://localhost:8000/crear_transporte/`, 
                 data,
-                { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'multipart/form-data' } }
+                { headers: { 'Authorization': `Token ${token}`} }
             );
-            const autoId = response.data.id_transporte;
+            console.log(autoId);
             await axios.post(`http://localhost:8000/crear_detalle_transporte/`, 
-                { id_transporte: autoId, id_obra: obraId },
+                { id_obra: obraId, id_transporte: autoId },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
-            window.location.reload();
+           
         } catch (error) {
             console.error('Error updating auto:', error);
         }
@@ -225,14 +227,12 @@ function AutosComponent() {
                             handleSave={handleCreateAuto}
                             content={
                                 <div>
-                                    <form encType="multipart/form-data">
-                                        <input type="file" name="imagen" onChange={handleFileChange} />
-                                        <input type="text" name="marca" value={formData.marca} onChange={handleInputChange} />
-                                        <input type="text" name="modelo" value={formData.modelo} onChange={handleInputChange} />
-                                        <input type="text" name="patente" value={formData.patente} onChange={handleInputChange} />
-                                        <input type="text" name="kilometraje" value={formData.kilometraje} onChange={handleInputChange} />
-                                        <button type="button" onClick={handleCreateAuto}>Crear Auto</button>
-                                    </form>
+                                    <h2 className='centered'> Nuevo Auto </h2>
+                                    <input type="file" name="imagen" onChange={handleFileChange} />
+                                    <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos"/>
+                                    <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos"/>
+                                    <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos"/>
+                                    <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos"/>
                                 </div>
                             }
                         />

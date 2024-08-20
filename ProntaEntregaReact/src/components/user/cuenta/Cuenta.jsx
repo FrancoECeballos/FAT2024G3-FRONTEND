@@ -147,7 +147,11 @@ const Cuenta = () => {
         event.preventDefault();
         const url = (`/user/delete/${userData.email}/`);
         const result = await deleteData(url, token);
-        navigate('/selectuser');
+        if (!isStaff) {
+          navigate('/login');
+        } else {
+          navigate('/userlisting');
+        }
     };
 
     const handleDeleteObraFromUser = async(id) => {
@@ -155,24 +159,33 @@ const Cuenta = () => {
         const url = (`/user/obras/delete/${aux.id_detalleobrausuario}/`);
         const result = await deleteData(url, token);
         fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
-            setUserObras(result);
+          setUserObras(result);
             window.location.reload();
         });
     };
 
     const handleAddOObraToUser = async() => {
-        const url = (`user/obras/post/`);
-        const result = await postData(url, 
-            {descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`, 
-            fechaingreso: today,
-            id_obra: parseInt(selectedObject),
-            id_usuario: userData.id_usuario,
-            id_tipousuario: 1}, token);
-        fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
-            setUserObras(result);
-            window.location.reload();
-        });
+      if (!selectedObject) {
+        // No hay ninguna obra seleccionada, no hagas nada
+        return;
+      }
+    
+      const url = `user/obras/post/`;
+      const result = await postData(url, 
+        {
+          descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`, 
+          fechaingreso: today,
+          id_obra: parseInt(selectedObject),
+          id_usuario: userData.id_usuario,
+          id_tipousuario: 1
+        }, 
+        token
+      );
+      
+      // Recargar la página para actualizar la lista de obras
+      window.location.reload();
     };
+    
 
     const handleEdit = () => {
         if (isEditing) { 
@@ -407,7 +420,7 @@ const Cuenta = () => {
               <SendButton
                   onClick={handleEdit}
                   text={isEditing ? "Cancelar" : "Editar"}
-                  wide="6"
+                  wide="5"
                   backcolor={isEditing ? "#D10000" : "#D9D9D9"}
                   letercolor={isEditing ? "white" : "black"}
                 />
@@ -448,29 +461,32 @@ const Cuenta = () => {
                   {isStaff && (
                     <div className="add-obra">
                       <Form.Control
-                        as="select"
-                        aria-label="Select object"
-                        value={selectedObject}
-                        onChange={e => setSelectedObject(e.target.value)}
+                          as="select"
+                          aria-label="Select object"
+                          value={selectedObject}
+                          onChange={e => {
+                              setSelectedObject(e.target.value);
+                              setGuardarButtonIsValid(e.target.value !== "");  // Habilitar el botón si se selecciona una obra
+                          }}
                       >
-                        <option disabled hidden value="">
-                          Selecciona una obra para añadir
-                        </option>
-                        {obras.map(obra => (
-                          !obraID.some(obraID => obraID.id_obra === obra.id_obra) && (
-                            <option key={obra.id_obra} value={obra.id_obra}>
-                              {obra.nombre}
-                            </option>
-                          )
-                        ))}
+                          <option disabled hidden value="">
+                              Selecciona una obra para añadir
+                          </option>
+                          {obras.map(obra => (
+                              !obraID.some(obraID => obraID.id_obra === obra.id_obra) && (
+                                  <option key={obra.id_obra} value={obra.id_obra}>
+                                      {obra.nombre}
+                                  </option>
+                              )
+                          ))}
                       </Form.Control>
                       <SendButton
-                        onClick={handleAddOObraToUser}
-                        text="Añadir"
-                        wide="5"
-                        letercolor="white"
-                        backcolor="blue"
-                        disabled={!selectedObject}
+                          onClick={handleAddOObraToUser}
+                          text="Añadir"
+                          wide="5"
+                          letercolor="white"
+                          backcolor="blue"
+                          disabled={!GuardarButtonIsValid}
                       />
                     </div>
                   )}

@@ -8,7 +8,7 @@ import { Icon } from '@iconify/react';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
-import GenericTable from '../../../components/tables/generic_table/GenericTable.jsx';
+import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
@@ -102,6 +102,13 @@ function Products() {
         setProductSearchQuery(value);
     };
 
+    const handleFileChange = (file) => {
+        setFormData((prevData) => {
+          return { ...prevData, imagen: file };
+        });
+        console.log(formData);
+      };
+
     const resetDetail = () => {
         setDetalle({});
         setSelectedCardId({});
@@ -146,46 +153,9 @@ function Products() {
 
     const setSelectedNewProduct = (product) => {
         setSelectedCardId(product);
-        console.log(product);
-    };
-
-    const newProduct = () => {
-        if (selectedCardId != 'New') {
-            const updatedDetalle = {
-                ...detalle,
-                id_producto: selectedCardId.id_producto,
-                id_stock: parseInt(stockId, 10),
-                cantidadUnidades: detalle.cantidadUnidades !== undefined ? detalle.cantidadUnidades : 1
-            };
-            setDetalle(updatedDetalle);
-
-            if (!updatedDetalle.id_unidadmedida) {
-                alert('Por favor seleccione una unidad de medida');
-                return;
-            } else if (!updatedDetalle.cantidad || updatedDetalle.cantidad <= 0) {
-                alert('Por favor ingrese una cantidad válida');
-                return;
-            } else if (updatedDetalle.cantidadUnidades !== undefined && updatedDetalle.cantidadUnidades < 0) {
-                alert('Por favor ingrese una cantidad de unidades válida');
-                return;
-            } else {
-                postData(`detallestockproducto/`, updatedDetalle, token).then((result) => {
-                    resetDetail();
-                });
-            }
-        } else if (selectedCardId == 'New') {
-            setShowNewProductModal(true);
-        }
     };
 
     const fetchSelectedObject = async (event) => {
-        if (event.target.name === 'id_unidadmedida') {
-            setIsPaquete(unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete)
-            if (!unidadMedida.find(item => item.id === parseInt(event.target.value, 10)).paquete) {
-                setDetalle({ ...detalle, cantidadUnidades: 1 });
-            }
-        }
-
         const { name, value } = event.target;
         setDetalle((prevData) => {
             const updatedData = { ...prevData, [name]: parseInt(value, 10) };
@@ -223,35 +193,43 @@ function Products() {
                         />
                     </Tabs>
                 </div>
-                <Modal
-                    openButtonText="Open Modal :D"
-                    openButtonWidth="200px"
-                    title="Crear un nuevo Producto"
-                    content={<div>
-                        <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                        <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                    </div>}
-                    saveButtonText={selectedCardId === 'New' ? 'Crear' : 'Agregar'}
-                    showModal={showNewProductModal}
-                    showButton={false}
-                />
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})} handleSave={() => handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId)} handleCloseModal={() => {setShowAlert(false); resetDetail();}} content={
+                    <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
+                    handleSave={() => {
+                        if (cantidadRef.current) {
+                            handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
+                        } else { setAlertMessage('Por favor seleccione un producto'); setShowAlert(true);}
+                    }} handleCloseModal={() => {setShowAlert(false); resetDetail(); setSelectedCardId(); cantidadRef.current = 0;}} content={
                         <div>
                             <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
-                            <h2 className='centered'> Elija el Producto </h2>
+                            {selectedCardId === 'New' ? <h2 className='centered'> Cree un Producto </h2> : <h2 className='centered'> Elija el Producto </h2>}
                             <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                                <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} addNewButton={true} />
+                                <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} onInputChange={() => { setSelectedCardId(); cantidadRef.current = 0; }} addNewButton={true} />
                             </div>
-                            {selectedCardId && selectedCardId !== 'New' &&
+                            {selectedCardId && selectedCardId !== 'New' && selectedCardId !== -1 &&
                                 <InputGroup className="mb-2">
                                     <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                 </InputGroup>
                             }
-                            {selectedCardId && selectedCardId === 'New' &&
-                                <InputGroup className="mb-2">
-                                    <Form.Label style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}/>Precione el boton 'Crear' para añadir un nuevo producto<Form.Label/>
-                                </InputGroup>
+                            {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
+                                <>
+                                    <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange}/>
+                                    <InputGroup className="mb-2">
+                                        <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem 0rem 0rem 10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Select name="unidad_medida" style={{ borderRadius: '0rem 10rem 10rem 0rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                            <option value="0">Unidad/es</option>
+                                            <option value="1">Kilogramo/s</option>
+                                            <option value="2">Litro/s</option>
+                                            <option value="3">Metro/s</option>
+                                        </Form.Select>
+                                    </InputGroup>
+                                    <InputGroup className="mb-2">
+                                        <Form.Control name="descripcion" type="text" placeholder="Descripción" style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                    </InputGroup>
+                                    <InputGroup className="mb-2">
+                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                    </InputGroup>
+                                </>
                             }
                         </div>
                     }></Modal>

@@ -31,16 +31,28 @@ const RegisterCard = () => {
     fetchData('/tipo_documento/').then((result) => {
       setData(result);
     });
-  }, []);
 
-  const [direc, setDirec] = useState([]);
-  
-  useEffect(() => {
     fetchData('/direcciones/').then((result) => {
       setDirec(result);
     });
+
+    const img = new Image();
+    img.src = defaultImage;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob((blob) => {
+        const file = new File([blob], 'user_default.png', { type: 'image/png' });
+        setFormData((prevData) => ({ ...prevData, imagen: file }));
+      });
+    };
   }, []);
 
+  const [direc, setDirec] = useState([]);
+ 
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -240,7 +252,6 @@ const RegisterCard = () => {
     const updatedFormData = { ...formData, id_direccion };
     setFormData(updatedFormData);
   
-    // Crea un FormData para enviar con Axios
     const formDataToSend = new FormData();
     Object.entries(updatedFormData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
