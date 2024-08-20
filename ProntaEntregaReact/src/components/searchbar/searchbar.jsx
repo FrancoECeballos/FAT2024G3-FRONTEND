@@ -1,5 +1,6 @@
 import React from "react";
 import { Dropdown } from 'react-bootstrap';
+import './searchbar.scss';
 
 const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
     const [selectedItem, setSelectedItem] = React.useState(null);
@@ -24,7 +25,8 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
             />
             <Dropdown>
                 <Dropdown.Toggle 
-                    id="dropdown-basic" 
+                    id="dropdown-basic"
+                    className="dropdown-toggle-custom"
                     style={{ border: '0px', color: 'black', borderRadius: '10rem', backgroundColor: '#E7E7E7', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '100%', textAlign: 'center' }}>
                     {selectedItem || "Ordenar Por"}
                 </Dropdown.Toggle>
