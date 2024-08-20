@@ -17,6 +17,7 @@ import './Autos.scss';
 function AutosComponent() {
     const navigate = useNavigate();
     const { obraId } = useParams();
+    const { autoId } = useParams();
     const token = Cookies.get('token');
 
     const [currentObra, setCurrentObra] = useState(false);
@@ -108,16 +109,17 @@ function AutosComponent() {
         data.append('kilometraje', formData.kilometraje);
 
         try {
-            const response = await axios.post(`http://localhost:8000/crear_transporte/`, 
+            
+            await axios.post(`http://localhost:8000/crear_transporte/`, 
                 data,
                 { headers: { 'Authorization': `Token ${token}`} }
             );
-            const autoId = response.data.id_transporte;
+            console.log(autoId);
             await axios.post(`http://localhost:8000/crear_detalle_transporte/`, 
-                { id_transporte: autoId, id_obra: obraId },
+                { id_obra: obraId, id_transporte: autoId },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
-            window.location.reload();
+           
         } catch (error) {
             console.error('Error updating auto:', error);
         }
