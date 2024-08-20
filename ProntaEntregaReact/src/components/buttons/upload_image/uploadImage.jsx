@@ -1,12 +1,12 @@
 import {React, useState, useRef} from "react";
 import { Icon } from "@iconify/react";
 
-import defaultImage from '../../../assets/user_default.png';
+import profileImage from '../../../assets/user_default.png';
 
 import SendButton from "../send_button/send_button";
 import './uploadImage.scss';
 
-function UploadImage ({wide = '15', onFileChange, titulo="Imagen de perfil"}) {
+function UploadImage ({wide = '15', onFileChange, titulo="Imagen de perfil", defaultImage = profileImage}) {
 
     const handleFileButtonClick = () => {
         fileInputRef.current.click();

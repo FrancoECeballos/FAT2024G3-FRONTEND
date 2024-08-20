@@ -10,6 +10,8 @@ import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
 import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 
+import defaultImage from '../../../assets/no_image.png';
+
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 import Modal from '../../../components/modals/Modal.jsx';
@@ -33,6 +35,13 @@ function Products() {
 
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [detalle, setDetalle] = useState([]);
+    const [newProduct, setNewProduct] = useState({
+        nombre: "",
+        unidad_medida: "0",
+        descripcion: "",
+        cantidad: "",
+        imagen: null,
+      });
 
     const [alertMessage, setAlertMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
@@ -66,6 +75,20 @@ function Products() {
         fetchData(`/categoria/${categoriaID}`, token).then((result) => {
             setCurrentCategory(result[0].nombre);
         });
+
+        const img = new Image();
+        img.src = defaultImage;
+        img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob) => {
+            const file = new File([blob], 'no_image.png', { type: 'image/png' });
+            setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
+        });
+        };
 
     }, [token, navigate, stockId, categoriaID]);
 
@@ -103,11 +126,11 @@ function Products() {
     };
 
     const handleFileChange = (file) => {
-        setFormData((prevData) => {
-          return { ...prevData, imagen: file };
-        });
-        console.log(formData);
-      };
+        setNewProduct((prevProduct) => ({
+          ...prevProduct,
+          imagen: file,
+        }));
+    };
 
     const resetDetail = () => {
         setDetalle({});
@@ -150,6 +173,9 @@ function Products() {
             return false;
         }
     };
+
+    const handleCreateProduct = async () => {
+    }
 
     const setSelectedNewProduct = (product) => {
         setSelectedCardId(product);
@@ -213,7 +239,7 @@ function Products() {
                             }
                             {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
                                 <>
-                                    <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange}/>
+                                    <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
                                     <InputGroup className="mb-2">
                                         <Form.Control name="nombre" type="text" placeholder="Nombre" style={{ borderRadius: '10rem 0rem 0rem 10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                         <Form.Select name="unidad_medida" style={{ borderRadius: '0rem 10rem 10rem 0rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
