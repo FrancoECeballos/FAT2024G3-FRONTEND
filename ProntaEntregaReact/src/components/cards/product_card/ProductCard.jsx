@@ -11,7 +11,7 @@ const ProductDetails = ({ product }) => {
                         src={product.imagen || 'https://via.placeholder.com/400x400'} 
                         alt={product.nombre} 
                         className="img-fluid" 
-                        style={{ maxWidth: '100%', borderRadius: '1rem' }}
+                        style={{ maxWidth: '70%', borderRadius: '1rem' }}
                     />
                 </Col>
                 <Col md={6} className="d-flex flex-column justify-content-center">
