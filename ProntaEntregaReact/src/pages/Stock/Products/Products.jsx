@@ -26,6 +26,7 @@ function Products() {
     const token = Cookies.get('token');
 
     const cantidadRef = useRef(null);
+    const pedidoCardRef = useRef(null);
     
     const [products, setProducts] = useState([]);
     const [excludedProducts, setExcludedProducts] = useState([]);
@@ -61,7 +62,7 @@ function Products() {
         }
 
         fetchData(`userToken/${token}`, token).then((result) => {
-            setUser(result[0]);
+            setUser(result);
         });
 
         fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
@@ -222,6 +223,25 @@ function Products() {
         });
     };
 
+    const handleCreatePedido = () => {
+        if (pedidoCardRef.current) {
+            const pedidoForm = pedidoCardRef.current.getPedidoForm();
+            const { obras, ...pedidoFormWithoutObras } = pedidoForm;
+            
+            postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+                console.log('Pedido creado:', result);
+                const obrasPromises = obras.map((obra) => 
+                    postData('crear_detalle_pedido/', { id_stock: obra, id_producto: pedidoForm.id_producto }, token)
+                );
+                return Promise.all(obrasPromises);
+            }).then((detalleResults) => {
+                console.log('Detalles de pedido creados:', detalleResults);
+            }).catch((error) => {
+                console.error('Error al crear el pedido o los detalles del pedido:', error);
+            });
+        }
+    };
+
     return (
         <div>
             <FullNavbar selectedPage='Stock'/>
@@ -334,11 +354,11 @@ function Products() {
                                         } 
                                     />
                                     
-                                    <Modal openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
+                                    <Modal openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => setShowAlert(false)} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedido}
                                         content={
                                             <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
                                                 <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido'>
-                                                    <PedidoCard productDefault={product} user={user} stock={stockId}/>
+                                                    <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
                                                 </Tab>
                                                 <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta'>
                                                     <div style={{marginTop: '5%'}}>
