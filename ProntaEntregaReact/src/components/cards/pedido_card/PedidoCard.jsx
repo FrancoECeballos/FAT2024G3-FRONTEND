@@ -103,11 +103,13 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
 
                             <Form.Group className="mb-2" controlId="formBasicObras">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
-                                <GenericAccordion style={{marginLeft: '5%'}}
-                                    children={obras.map(obra => (
-                                        <SelectableCard key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)}/>
-                                    ))}
-                                />
+                                <div style={{marginLeft: "4rem"}}>
+                                    <GenericAccordion wide={"20rem"} 
+                                        children={obras.map(obra => (
+                                            <SelectableCard key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)}/>
+                                        ))}
+                                    />
+                                </div>
                             </Form.Group>
 
                         </Form>

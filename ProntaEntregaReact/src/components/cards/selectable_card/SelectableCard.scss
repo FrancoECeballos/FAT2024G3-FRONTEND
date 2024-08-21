@@ -1,12 +1,11 @@
 .card {
     border: 1px solid #ccc;
-    padding: 16px;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .card.selected {
-    background-color: #e0f7fa;
-    border-color: #00796b;
+    background-color: #e1e1ff;
+    border-color: #949494;
 }
