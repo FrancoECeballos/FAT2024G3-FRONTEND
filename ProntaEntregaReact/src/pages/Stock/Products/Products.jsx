@@ -294,8 +294,10 @@ function Products() {
                         </div>
                     }></Modal>
                 </div>
+                <div className='cardCategori'>
                 {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? sortedProducts.map(product => {
                     return (
+                   
                         <GenericCard
                             foto={product.imagen}
                             key={product.id_producto}
@@ -334,13 +336,17 @@ function Products() {
                                             </div>
                                         } 
                                     />
+                                    
                                 </div>
+                                
                             }
                         />
+                    
                     );
                 }) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay Productos disponibles.</p>
                 )}
+                </div>
             </div>
         </div>
     );
