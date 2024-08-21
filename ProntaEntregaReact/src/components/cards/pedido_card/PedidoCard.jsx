@@ -109,11 +109,13 @@ const PedidoCard = ({productDefault, user, stock}) => {
 
                             <Form.Group className="mb-2" controlId="formBasicObras">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
-                                <GenericAccordion style={{marginLeft: '5%'}}
-                                    children={obras.map(obra => (
-                                        <SelectableCard key={obra.id_obra} id={obra.id_obra} titulo={obra.nombre} foto={obra.imagen} onCardSelect={handleCardSelection} isSelected={selectedObras.includes(obra.id_obra)}/>
-                                    ))}
-                                />
+                                <div style={{marginLeft: "4rem"}}>
+                                    <GenericAccordion wide={"20rem"} 
+                                        children={obras.map(obra => (
+                                            <SelectableCard key={obra.id_obra} id={obra.id_obra} titulo={obra.nombre} foto={obra.imagen} onCardSelect={handleCardSelection} isSelected={selectedObras.includes(obra.id_obra)}/>
+                                        ))}
+                                    />
+                                </div>
                             </Form.Group>
 
                         </Form>
