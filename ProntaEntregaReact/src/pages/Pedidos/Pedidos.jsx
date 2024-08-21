@@ -24,8 +24,8 @@ function Pedidos() {
     const [formData, setFormData] = useState({
         producto: "",
         obra: "",
-        usuario: null,
-        urgencia: null,
+        usuario: "",
+        urgencia: "",
         cantidad: ""
     });
 
@@ -43,9 +43,8 @@ function Pedidos() {
     }, [token]);
 
     useEffect(() => {
-        // Obtener productos, obras y usuarios desde el backend
+        // Obtener productos y usuarios desde el backend
         fetchData('/productos', token).then(setProductos);
-        fetchData('obra', token).then(setObras);
         fetchData('user', token).then(setUsuario);
     }, [token]);
 
@@ -54,6 +53,12 @@ function Pedidos() {
         if (token) {
             const decodedToken = jwtDecode(token);
             setUsuario(decodedToken.nombre); // Ajusta esto según la estructura de tu token
+
+            // Obtener obras del usuario
+            fetchData('obra', token).then((obras) => {
+                const obrasFiltradas = obras.filter(obra => obra.usuarioId === decodedToken.id);
+                setObras(obrasFiltradas);
+            });
         }
     }, []);
 
@@ -100,18 +105,27 @@ function Pedidos() {
             return updatedData;
         });
     };
-    
 
     const handleCreatePedido = () => {
         // Verificar que todos los campos requeridos estén presentes
-        if (!formData.id_obra || !formData.id_producto || !formData.id_usuario) {
+        if (!formData.obra || !formData.producto || !formData.usuario) {
             alert("Todos los campos son obligatorios.");
             return;
         }
-    
-        postData('crear_pedido/', formData, token).then((nuevoPedido) => {
+
+        const fechaInicio = new Date();
+        const fechaVencimiento = new Date();
+        fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
+
+        const pedidoData = {
+            ...formData,
+            fechainicio: fechaInicio.toISOString().split('T')[0],
+            fechavencimiento: fechaVencimiento.toISOString().split('T')[0]
+        };
+
+        postData('crear_pedido/', pedidoData, token).then((nuevoPedido) => {
             setPedidos([...pedidos, nuevoPedido]); // Actualiza el estado con el nuevo pedido
-        })
+        });
     };
 
     return (
@@ -166,23 +180,24 @@ function Pedidos() {
                             }
                         />
                     </div>
-    
-                    {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
-                        sortedPedidos.map(pedido => (
-                            <GenericCard
-                                key={pedido.id_pedido}
-                                titulo={`Pedido: ${pedido.id_producto.nombre}`}
-                                foto={pedido.id_producto.imagen}
-                                descrip1={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
-                                descrip2={<><strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
-                                descrip3={<><strong>Urgencia:</strong> {pedido.urgente} <strong>Cantidad:</strong> {pedido.cantidad}</>}
-                                descrip4={<><strong>Fecha Inicio:</strong> {pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} {pedido.horainicio}</>}
-                                descrip5={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} {pedido.horavencimiento}</>}
-                            />
-                        ))
-                    ) : (
-                        <p style={{marginLeft: '7rem', marginTop: '1rem'}}> No hay pedidos disponibles.</p>
-                    )}
+                    <div className='cardCategori'>
+                        {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
+                            sortedPedidos.map(pedido => (
+                                <GenericCard
+                                    key={pedido.id_pedido}
+                                    titulo={`Pedido: ${pedido.id_producto.nombre}`}
+                                    foto={pedido.id_producto.imagen}
+                                    descrip1={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
+                                    descrip2={<><strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
+                                    descrip3={<><strong>Urgencia:</strong> {pedido.urgente} <strong>Cantidad:</strong> {pedido.cantidad}</>}
+                                    descrip4={<><strong>Fecha Inicio:</strong> {pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} {pedido.horainicio}</>}
+                                    descrip5={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} {pedido.horavencimiento}</>}
+                                />
+                            ))
+                        ) : (
+                            <p style={{marginLeft: '7rem', marginTop: '1rem'}}> No hay pedidos disponibles.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
