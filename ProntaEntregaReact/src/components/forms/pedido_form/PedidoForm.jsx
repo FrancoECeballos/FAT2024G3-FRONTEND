@@ -3,26 +3,50 @@ import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
 
 // Assets and style
 import './CrearPedido.scss';
+import GenericAccordion from '../../accordions/generic_accordion/GenericAccordion.jsx';
+import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 
 // Functions
 import fetchData from '../../../functions/fetchData.jsx';
 import postData from '../../../functions/postData.jsx';
 
-// Components
-import SendButton from '../../buttons/send_button/send_button.jsx';
-
 const CrearPedido = ({productDefault, user, stock}) => {
+    const [obras, setObras] = useState([]);
+    const [selectedObras, setSelectedObras] = useState([]);
+
     const today = new Date();
     const formattedDate = today.toLocaleDateString('en-GB').split('/').reverse().join('-');
-    const formattedTime = today.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'});    
+    
+    const nextMonth = new Date(today.setMonth(today.getMonth() + 1));
+    const formattedNextMonthDate = nextMonth.toLocaleDateString('en-GB').split('/').reverse().join('-');
+
     const [pedidoForm, setPedidoForm] = useState({
         "producto": "",
+        "fechaInicio": formattedDate,
         "cantidad": ""
     });
+
+    useEffect(() => {
+        fetchData('obra/').then((data) => {
+            setObras(data);
+        });
+    }, []);
+
+    useEffect(() => {
+        console.log(selectedObras);
+    }, [selectedObras]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setPedidoForm((prevPedido) => ({ ...prevPedido, [name]: value }));
+    };
+
+    const handleCardSelection = (key) => {
+        setSelectedObras(prevObras => 
+            prevObras.includes(key) 
+                ? prevObras.filter(k => k !== key) 
+                : [...prevObras, key]
+        );
     };
 
     const handleSendData = async (event) => {
@@ -50,14 +74,37 @@ const CrearPedido = ({productDefault, user, stock}) => {
                             </Form.Group>}
 
                             <Form.Group className="mb-2" controlId="formBasicFechaInicio">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha/Hora Inicio (*)</Form.Label>
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
                                 <Form.Control name="fechaInicio" type="date" onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
-                                <Form.Control name="horaInicio" type="time" onChange={handleInputChange} defaultValue={formattedTime} min={formattedTime} />
+                            </Form.Group>
+
+                            <Form.Group className="mb-2" controlId="formBasicFechaFin">
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha esta como el mes siguiente por defecto</strong></Form.Label>
+                                <Form.Control name="fechaVencimiento" type="date" onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicCantidad">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad (*)</Form.Label>
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Pedida (*)</Form.Label>
                                 <Form.Control name="cantidad" type="number" onChange={handleInputChange} placeholder="Ingrese la cantidad" />
+                            </Form.Group>
+
+                            <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Urgencia (*)</Form.Label>
+                                <Form.Control name="urgencia" as="select" onChange={handleInputChange}>
+                                    <option value="1">No es urgente</option>
+                                    <option value="2">Ligeramente Urgente</option>
+                                    <option value="3">Muy Urgente</option>
+                                    <option value="4">Inmediato</option>
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group className="mb-2" controlId="formBasicObras">
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
+                                <GenericAccordion style={{marginLeft: '5%'}}
+                                    children={obras.map(obra => (
+                                        <SelectableCard key={obra.id_obra} id={obra.id_obra} titulo={obra.nombre} foto={obra.imagen} onCardSelect={handleCardSelection} isSelected={selectedObras.includes(obra.id_obra)}/>
+                                    ))}
+                                />
                             </Form.Group>
 
                         </Form>
