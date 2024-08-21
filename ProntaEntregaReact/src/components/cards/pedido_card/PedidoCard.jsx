@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
 
-import './PedidoCard.scss';
+// Assets and style
 import GenericAccordion from '../../accordions/generic_accordion/GenericAccordion.jsx';
-import SelectableCard from '../selectable_card/SelectableCard.jsx';
+import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 
+// Functions
 import fetchData from '../../../functions/fetchData.jsx';
 import postData from '../../../functions/postData.jsx';
 
@@ -19,9 +20,14 @@ const PedidoCard = ({productDefault, user, stock}) => {
     const formattedNextMonthDate = nextMonth.toLocaleDateString('en-GB').split('/').reverse().join('-');
 
     const [pedidoForm, setPedidoForm] = useState({
-        "producto": "",
         "fechaInicio": formattedDate,
-        "cantidad": ""
+        "fechaVencimiento": formattedNextMonthDate,
+        "id_obra": "",
+        "id_usuario": user ? user.id_usuario : "",
+        "cantidad": "",
+        "urgencia": 1,
+        "id_producto": productDefault.id_producto,
+        "id_estadoPedido": 3
     });
 
     useEffect(() => {
@@ -30,13 +36,18 @@ const PedidoCard = ({productDefault, user, stock}) => {
         });
     }, []);
 
-    useEffect(() => {
-        console.log(selectedObras);
-    }, [selectedObras]);
-
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setPedidoForm((prevPedido) => ({ ...prevPedido, [name]: value }));
+        let transformedValue = value;
+
+        switch (name) {
+            case 'cantidad': case 'urgencia':
+                transformedValue = parseInt(value, 10); break;
+            case 'fechaInicio': case 'fechaVencimiento':
+                transformedValue = new Date(value).toISOString().split('T')[0]; break;
+            default: break;
+        }
+        setPedidoForm((prevPedido) => ({ ...prevPedido, [name]: transformedValue }));
     };
 
     const handleCardSelection = (key) => {
@@ -83,7 +94,7 @@ const PedidoCard = ({productDefault, user, stock}) => {
 
                             <Form.Group className="mb-2" controlId="formBasicCantidad">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Pedida (*)</Form.Label>
-                                <Form.Control name="cantidad" type="number" onChange={handleInputChange} placeholder="Ingrese la cantidad" />
+                                <Form.Control name="cantidad" type="number" onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicUrgencia">
