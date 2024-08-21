@@ -152,22 +152,24 @@ function Ofertas() {
                             }
                         />
                     </div>
-                    {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
-                        sortedOfertas.map(oferta => (
-                            <GenericCard
-                                key={oferta.id_oferta}
-                                titulo={`Oferta: ${oferta.id_producto.nombre}`}
-                                foto={oferta.id_producto.imagen}
-                                descrip1={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
-                                descrip2={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                descrip3={<><strong>Estado:</strong> {oferta.id_estadooferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad}</>}
-                                descrip4={<><strong>Fecha Inicio:</strong> {oferta.fechainicio ? oferta.fechainicio.split('-').reverse().join('/') : ''} {oferta.horainicio}</>}
-                                descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''} {oferta.horavencimiento}</>}
-                            />
-                        ))
-                    ) : (
-                        <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay ofertas disponibles.</p>
-                    )}
+                    <div className='cardCategori'>
+                        {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
+                            sortedOfertas.map(oferta => (
+                                <GenericCard
+                                    key={oferta.id_oferta}
+                                    titulo={`Oferta: ${oferta.id_producto.nombre}`}
+                                    foto={oferta.id_producto.imagen}
+                                    descrip1={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
+                                    descrip2={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                    descrip3={<><strong>Estado:</strong> {oferta.id_estadooferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad}</>}
+                                    descrip4={<><strong>Fecha Inicio:</strong> {oferta.fechainicio ? oferta.fechainicio.split('-').reverse().join('/') : ''} {oferta.horainicio}</>}
+                                    descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''} {oferta.horavencimiento}</>}
+                                />
+                            ))
+                        ) : (
+                            <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay ofertas disponibles.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
