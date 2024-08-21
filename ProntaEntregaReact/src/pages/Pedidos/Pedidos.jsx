@@ -24,8 +24,8 @@ function Pedidos() {
     const [formData, setFormData] = useState({
         producto: "",
         obra: "",
-        usuario: null,
-        urgencia: null,
+        usuario: "",
+        urgencia: "",
         cantidad: ""
     });
 
@@ -43,9 +43,8 @@ function Pedidos() {
     }, [token]);
 
     useEffect(() => {
-        // Obtener productos, obras y usuarios desde el backend
+        // Obtener productos y usuarios desde el backend
         fetchData('/productos', token).then(setProductos);
-        fetchData('obra', token).then(setObras);
         fetchData('user', token).then(setUsuario);
     }, [token]);
 
@@ -54,6 +53,12 @@ function Pedidos() {
         if (token) {
             const decodedToken = jwtDecode(token);
             setUsuario(decodedToken.nombre); // Ajusta esto según la estructura de tu token
+
+            // Obtener obras del usuario
+            fetchData('obra', token).then((obras) => {
+                const obrasFiltradas = obras.filter(obra => obra.usuarioId === decodedToken.id);
+                setObras(obrasFiltradas);
+            });
         }
     }, []);
 
@@ -100,18 +105,27 @@ function Pedidos() {
             return updatedData;
         });
     };
-    
 
     const handleCreatePedido = () => {
         // Verificar que todos los campos requeridos estén presentes
-        if (!formData.id_obra || !formData.id_producto || !formData.id_usuario) {
+        if (!formData.obra || !formData.producto || !formData.usuario) {
             alert("Todos los campos son obligatorios.");
             return;
         }
-    
-        postData('crear_pedido/', formData, token).then((nuevoPedido) => {
+
+        const fechaInicio = new Date();
+        const fechaVencimiento = new Date();
+        fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
+
+        const pedidoData = {
+            ...formData,
+            fechainicio: fechaInicio.toISOString().split('T')[0],
+            fechavencimiento: fechaVencimiento.toISOString().split('T')[0]
+        };
+
+        postData('crear_pedido/', pedidoData, token).then((nuevoPedido) => {
             setPedidos([...pedidos, nuevoPedido]); // Actualiza el estado con el nuevo pedido
-        })
+        });
     };
 
     return (
