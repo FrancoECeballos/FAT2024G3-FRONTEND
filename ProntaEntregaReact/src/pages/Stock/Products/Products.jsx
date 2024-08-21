@@ -12,6 +12,8 @@ import UploadImage from '../../../components/buttons/upload_image/uploadImage.js
 
 import defaultImage from '../../../assets/no_image.png';
 
+import CrearPedido from '../../../components/forms/pedido_form/PedidoForm.jsx';
+
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 import Modal from '../../../components/modals/Modal.jsx';
@@ -29,12 +31,14 @@ function Products() {
     const [excludedProducts, setExcludedProducts] = useState([]);
 
     const [selectedOperacion, setSelectedOperacion] = useState('sumar');
+    const [pedidoOrOferta, setPedidoOrOferta] = useState('pedido');
 
     const [currentObra, setCurrentObra] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(false);
 
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [detalle, setDetalle] = useState([]);
+    const [user, setUser] = useState({});
     const [newProduct, setNewProduct] = useState({
         nombre: "",
         descripcion: "",
@@ -55,6 +59,10 @@ function Products() {
             navigate('/login');
             return;
         }
+
+        fetchData(`userToken/${token}`, token).then((result) => {
+            setUser(result[0]);
+        });
 
         fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
             setProducts(result);
@@ -169,8 +177,6 @@ function Products() {
 
     const handleSave = async (cantidad, total, producto) => {
         try {
-            const user = await fetchData(`userToken/${token}`, token);
-    
             if (!cantidad || cantidad <= 0 || isNaN(cantidad) || cantidad > Number.MAX_SAFE_FLOAT) {
                 setAlertMessage('Por favor ingrese una cantidad válida');
                 setShowAlert(true);
@@ -216,14 +222,6 @@ function Products() {
         });
     };
 
-    const handleSelect = (k) => {
-        if (k === 'Todos') {
-            fetchProducts('Todos');
-        } else {
-            fetchProducts((Number(k)), false);
-        }
-    };
-
     return (
         <div>
             <FullNavbar selectedPage='Stock'/>
@@ -235,8 +233,7 @@ function Products() {
                 </div>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
-                    <Tabs
-                        onSelect={handleSelect}>
+                    <Tabs>
                         <Tab
                             style={{backgroundColor:'transparent'}}
                             key='Todos'
@@ -332,6 +329,28 @@ function Products() {
                                                     <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
                                                 </InputGroup>
                                             </div>
+                                        } 
+                                    />
+                                    
+                                    <Modal openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
+                                        content={
+                                            <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
+                                                <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido'>
+                                                    <CrearPedido productDefault={product} user={user} stock={stockId}/>
+                                                </Tab>
+                                                <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta'>
+                                                    <div style={{marginTop: '5%'}}>
+                                                        <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
+                                                        <h2 className='centered'>
+                                                            {pedidoOrOferta === 'pedido' ? 'Crear Pedido de ' : 'Crear Oferta de '} {product.nombre}
+                                                        </h2>
+                                                        <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
+                                                        <InputGroup className="mb-2">
+                                                            <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                                        </InputGroup>
+                                                    </div>
+                                                </Tab>
+                                            </Tabs>
                                         } 
                                     />
                                 </div>
