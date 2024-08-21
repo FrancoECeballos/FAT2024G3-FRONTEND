@@ -19,13 +19,14 @@ function Pedidos() {
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [productos, setProductos] = useState([]);
     const [obras, setObras] = useState([]);
-    const [usuario, setUsuario] = useState('');
+    const [usuarios, setUsuarios] = useState([]);
+    const [usuarioLogueado, setUsuarioLogueado] = useState(null);
 
     const [formData, setFormData] = useState({
         producto: "",
         obra: "",
         usuario: "",
-        urgencia: "",
+        urgencia: 1, // Valor inicial de urgencia
         cantidad: ""
     });
 
@@ -43,24 +44,39 @@ function Pedidos() {
     }, [token]);
 
     useEffect(() => {
-        // Obtener productos y usuarios desde el backend
         fetchData('/productos', token).then(setProductos);
-        fetchData('user', token).then(setUsuario);
+        fetchData(`/userToken/${token}`, token).then(setUsuarioLogueado);
     }, [token]);
 
     useEffect(() => {
-        const token = localStorage.getItem('token'); // O donde sea que guardes el token
         if (token) {
-            const decodedToken = jwtDecode(token);
-            setUsuario(decodedToken.nombre); // Ajusta esto según la estructura de tu token
-
-            // Obtener obras del usuario
-            fetchData('obra', token).then((obras) => {
-                const obrasFiltradas = obras.filter(obra => obra.usuarioId === decodedToken.id);
-                setObras(obrasFiltradas);
+            fetchData(`/userToken/${token}`, token).then((result) => {
+                const email = result.email;
+                if (result.is_superuser) {
+                    fetchData('/obra/', token).then((result) => {
+                        setObras(result);
+                    }).catch(error => {
+                        console.error('Error fetching obras for admin', error);
+                    });
+                } else {
+                    fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
+                        const obraIds = result.map(obra => obra.id_obra);
+                        const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
+                        Promise.all(obraPromises).then(obras => {
+                            setObras(obras.flat());
+                        }).catch(error => {
+                            console.error('Error fetching obras by ID', error);
+                        });
+                    }).catch(error => {
+                        console.error('Error fetching obras for user', error);
+                    });
+                }
+            }).catch(error => {
+                console.error('Error fetching user data:', error);
             });
+
         }
-    }, []);
+    }, [token]);
 
     const filteredPedidos = pedidos.filter(pedido => {
         return (
@@ -106,13 +122,14 @@ function Pedidos() {
         });
     };
 
-    const handleCreatePedido = () => {
-        // Verificar que todos los campos requeridos estén presentes
-        if (!formData.obra || !formData.producto || !formData.usuario) {
-            alert("Todos los campos son obligatorios.");
-            return;
-        }
+    const handleUrgenciaChange = (nivel) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            urgencia: nivel
+        }));
+    };
 
+    const handleCreatePedido = () => {
         const fechaInicio = new Date();
         const fechaVencimiento = new Date();
         fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
@@ -124,7 +141,7 @@ function Pedidos() {
         };
 
         postData('crear_pedido/', pedidoData, token).then((nuevoPedido) => {
-            setPedidos([...pedidos, nuevoPedido]); // Actualiza el estado con el nuevo pedido
+            setPedidos([...pedidos, nuevoPedido]);
         });
     };
 
@@ -149,6 +166,7 @@ function Pedidos() {
                                         <label>
                                             Producto:
                                             <select name="producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                <option value="">Seleccione su producto</option>
                                                 {productos.map((producto, index) => (
                                                     <option key={`${producto.id}-${index}`} value={producto.id}>{producto.nombre}</option>
                                                 ))}
@@ -157,6 +175,7 @@ function Pedidos() {
                                         <label>
                                             Obra:
                                             <select name="obra" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                <option value="">Seleccione su obra</option>
                                                 {obras.map((obra, index) => (
                                                     <option key={`${obra.id}-${index}`} value={obra.id}>{obra.nombre}</option>
                                                 ))}
@@ -164,15 +183,22 @@ function Pedidos() {
                                         </label>
                                         <label>
                                             Usuario:
-                                            <input
-                                                type="text"
-                                                name="usuario"
-                                                value={usuario ? usuario.nombre : ''}
-                                                readOnly
-                                                style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}
-                                            />
+                                            <select name="usuario" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
+                                                <option value="">Seleccione un usuario</option>
+                                                {usuarios.map((usuario, index) => (
+                                                    <option key={`${usuario.id}-${index}`} value={usuario.id}>{usuario.nombre}</option>
+                                                ))}
+                                                {usuarioLogueado && <option value={usuarioLogueado.id}>{usuarioLogueado.nombre}</option>}
+                                            </select>
                                         </label>
-                                        <Form.Control name="urgencia" type="text" placeholder="Urgencia" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <div>
+                                            <label>Urgencia:</label>
+                                            <div>
+                                                <Button variant={formData.urgencia === 1 ? 'primary' : 'secondary'} onClick={() => handleUrgenciaChange(1)}>Urgencia 1</Button>
+                                                <Button variant={formData.urgencia === 2 ? 'primary' : 'secondary'} onClick={() => handleUrgenciaChange(2)}>Urgencia 2</Button>
+                                                <Button variant={formData.urgencia === 3 ? 'primary' : 'secondary'} onClick={() => handleUrgenciaChange(3)}>Urgencia 3</Button>
+                                            </div>
+                                        </div>
                                         <Form.Control name="cantidad" type="text" placeholder="Cantidad" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                                         <button type="submit" style={{ display: 'none' }}>Crear Pedido</button>
                                     </form>
@@ -180,24 +206,23 @@ function Pedidos() {
                             }
                         />
                     </div>
-                    <div className='cardCategori'>
-                        {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
-                            sortedPedidos.map(pedido => (
-                                <GenericCard
-                                    key={pedido.id_pedido}
-                                    titulo={`Pedido: ${pedido.id_producto.nombre}`}
-                                    foto={pedido.id_producto.imagen}
-                                    descrip1={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
-                                    descrip2={<><strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
-                                    descrip3={<><strong>Urgencia:</strong> {pedido.urgente} <strong>Cantidad:</strong> {pedido.cantidad}</>}
-                                    descrip4={<><strong>Fecha Inicio:</strong> {pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} {pedido.horainicio}</>}
-                                    descrip5={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} {pedido.horavencimiento}</>}
-                                />
-                            ))
-                        ) : (
-                            <p style={{marginLeft: '7rem', marginTop: '1rem'}}> No hay pedidos disponibles.</p>
-                        )}
-                    </div>
+    
+                    {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
+                        sortedPedidos.map(pedido => (
+                            <GenericCard
+                                key={pedido.id_pedido}
+                                titulo={`Pedido: ${pedido.id_producto.nombre}`}
+                                foto={pedido.id_producto.imagen}
+                                descrip1={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
+                                descrip2={<><strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
+                                descrip3={<><strong>Urgencia:</strong> {pedido.urgente} <strong>Cantidad:</strong> {pedido.cantidad}</>}
+                                descrip4={<><strong>Fecha Inicio:</strong> {pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''} {pedido.horainicio}</>}
+                                descrip5={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''} {pedido.horavencimiento}</>}
+                            />
+                        ))
+                    ) : (
+                        <p style={{marginLeft: '7rem', marginTop: '1rem'}}> No hay pedidos disponibles.</p>
+                    )}
                 </div>
             </div>
         </div>
