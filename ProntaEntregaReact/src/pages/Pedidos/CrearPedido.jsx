@@ -1,13 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
-import CrearPedido from '../../components/forms/pedido_form/PedidoForm.jsx';
+import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 
 function Form (){
   return (
     <div style={{backgroundColor: '#ECECEC'}}>
       <FullNavbar selectedPage='Pedidos'/>
-      <CrearPedido />
+      <PedidoCard />
     </div>
   );
 };

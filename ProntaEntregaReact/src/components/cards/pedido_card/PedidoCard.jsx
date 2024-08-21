@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
 
-// Assets and style
-import './CrearPedido.scss';
+import './PedidoCard.scss';
 import GenericAccordion from '../../accordions/generic_accordion/GenericAccordion.jsx';
-import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
+import SelectableCard from '../selectable_card/SelectableCard.jsx';
 
-// Functions
 import fetchData from '../../../functions/fetchData.jsx';
 import postData from '../../../functions/postData.jsx';
 
-const CrearPedido = ({productDefault, user, stock}) => {
+const PedidoCard = ({productDefault, user, stock}) => {
     const [obras, setObras] = useState([]);
     const [selectedObras, setSelectedObras] = useState([]);
 
@@ -115,4 +113,4 @@ const CrearPedido = ({productDefault, user, stock}) => {
     );
 }
 
-export default CrearPedido;
+export default PedidoCard;

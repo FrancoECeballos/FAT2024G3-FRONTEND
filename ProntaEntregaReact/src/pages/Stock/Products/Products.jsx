@@ -12,7 +12,7 @@ import UploadImage from '../../../components/buttons/upload_image/uploadImage.js
 
 import defaultImage from '../../../assets/no_image.png';
 
-import CrearPedido from '../../../components/forms/pedido_form/PedidoForm.jsx';
+import PedidoCard from '../../../components/cards/pedido_card/PedidoCard.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
@@ -338,7 +338,7 @@ function Products() {
                                         content={
                                             <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
                                                 <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido'>
-                                                    <CrearPedido productDefault={product} user={user} stock={stockId}/>
+                                                    <PedidoCard productDefault={product} user={user} stock={stockId}/>
                                                 </Tab>
                                                 <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta'>
                                                     <div style={{marginTop: '5%'}}>
