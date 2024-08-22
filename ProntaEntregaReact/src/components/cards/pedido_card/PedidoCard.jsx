@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
+import { InputGroup, Col, Row, Form, Container, Card, Button } from 'react-bootstrap';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
 
@@ -7,10 +7,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const [obras, setObras] = useState([]);
 
     const today = new Date();
-    const formattedDate = today.toLocaleDateString('en-GB').split('/').reverse().join('-');
+    const formattedDate = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
     
-    const nextMonth = new Date(today.setMonth(today.getMonth() + 1));
-    const formattedNextMonthDate = nextMonth.toLocaleDateString('en-GB').split('/').reverse().join('-');
+    const nextMonth = new Date(today);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const formattedNextMonthDate = nextMonth.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
     const [pedidoForm, setPedidoForm] = useState({
         "fechaInicio": formattedDate,
@@ -33,24 +34,36 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         let transformedValue = value;
-
+    
         switch (name) {
             case 'cantidad': case 'urgente':
                 transformedValue = parseInt(value, 10); break;
-            case 'fechaInicio': case 'fechaVencimiento':
-                transformedValue = new Date(value).toISOString().split('T')[0]; break;
             default: break;
         }
-        setPedidoForm((prevPedido) => ({ ...prevPedido, [name]: transformedValue }));
+        setPedidoForm((prevPedido) => {
+            const updatedForm = { ...prevPedido, [name]: transformedValue };
+            console.log('Formulario de Pedido Actualizado:', updatedForm);
+            return updatedForm;
+        });
     };
 
     const handleCardSelection = (key) => {
-        setPedidoForm(prevForm => ({
-            ...prevForm,
-            obras: prevForm.obras.includes(key)
-                ? prevForm.obras.filter(k => k !== key)
-                : [...prevForm.obras, key]
-        }));
+        setPedidoForm(prevForm => {
+            const updatedForm = {
+                ...prevForm,
+                obras: prevForm.obras.includes(key)
+                    ? prevForm.obras.filter(k => k !== key)
+                    : [...prevForm.obras, key]
+            };
+            console.log('Formulario de Pedido Actualizado:', updatedForm);
+            return updatedForm;
+        });
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log('Formulario de Pedido Enviado:', pedidoForm);
+        // Aquí puedes añadir la lógica para enviar el formulario al servidor
     };
 
     useImperativeHandle(ref, () => ({
@@ -60,7 +73,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     return (
         <Card style={{ width: '100%' }}>
             <Card.Body>
-                <Form>
+                <Form onSubmit={handleSubmit}>
                     <Row className="g-0"> {/* Asegúrate de eliminar cualquier espacio entre columnas */}
                         <Col xs={12} md={8}> {/* Ajusta los tamaños para diferentes dispositivos */}
                             <h2>
@@ -76,12 +89,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
 
                             <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
-                                <Form.Control name="fechaInicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
+                                <Form.Control name="fechaInicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} />
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicFechaFin">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha está como el mes siguiente por defecto</strong></Form.Label>
-                                <Form.Control name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                                <Form.Control name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} />
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicCantidad">
