@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } f
 import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
+import './PedidoCard.scss';
 
 const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const [obras, setObras] = useState([]);
@@ -62,7 +63,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
             <Card.Body>
                 <Form>
                     <Row className="g-0"> {/* Asegúrate de eliminar cualquier espacio entre columnas */}
-                        <Col xs={12} md={8}> {/* Ajusta los tamaños para diferentes dispositivos */}
+                        <Col xs={12} md={5} style={{marginRight:"2rem"}}> {/* Ajusta los tamaños para diferentes dispositivos */}
                             <h2>
                                 {productDefault ? `Crear Pedido de ${productDefault.nombre}` : 'Crear Pedido'}
                             </h2>
@@ -99,12 +100,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                                 </Form.Control>
                             </Form.Group>
                         </Col>
-                        <Col xs={12} md={4}> {/* Asegúrate de que esta columna no ocupe más espacio del necesario */}
-                            <Form.Group className="mb-2" controlId="formBasicObras">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
-                                <div style={{ marginLeft: "1rem" }}> {/* Ajusta el margen si es necesario */}
+                        <Col xs={12} md={6}>
+                            <Form.Group  className="mb-2" controlId="formBasicObras">
+                                <Form.Label className="font-rubik " style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
+                                <div className='cardscasas'> {/* Ajusta el margen si es necesario */}
                                     {obras.map(obra => (
-                                        <SelectableCard wide={"1rem"} key={obra.id_stock} id={obra.id_stock} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)} />
+                                        <SelectableCard mar={"0.2rem"} pad={"0px"} height={"5rem"} wide={"98%"} key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)} />
                                     ))}
                                 </div>
                             </Form.Group>
