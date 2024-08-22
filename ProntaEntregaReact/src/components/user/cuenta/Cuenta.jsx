@@ -425,7 +425,7 @@ const Cuenta = () => {
                   wide="5"
                   backcolor={isEditing ? "#D10000" : "#D9D9D9"}
                   letercolor={isEditing ? "white" : "black"}
-                  style={{ marginRight: '10px' }} // Margen a la derecha
+                  style={{ marginRight: '3rem' }} // Margen a la derecha
                 />
                 <SendButton
                   hidden={!isEditing}
@@ -435,7 +435,7 @@ const Cuenta = () => {
                   backcolor="#D9D9D9"
                   letercolor="black"
                   disabled={!GuardarButtonIsValid}
-                  style={{ marginLeft: '10px' }} // Margen a la izquierda (opcional)
+                  style={{ marginLeft: '3rem' }} // Margen a la izquierda (opcional)
                 />
               </Col>
 
