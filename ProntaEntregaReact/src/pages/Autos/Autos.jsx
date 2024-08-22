@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { Button, Form } from 'react-bootstrap';
+import Dropdown from 'react-bootstrap/Dropdown';
 import axios from 'axios';
-
+import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 import fetchData from '../../functions/fetchData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
+
 import Modal from '../../components/modals/Modal.jsx';
-import {Form, Dropdown} from 'react-bootstrap';
 
 import './Autos.scss';
 
@@ -21,11 +22,12 @@ function AutosComponent() {
     const token = Cookies.get('token');
 
     const [currentObra, setCurrentObra] = useState(false);
-    const [autoModal, setAutoModal] = useState();
-
+    const [autoModal, setAutoModal] = useState(null);
+    const [maintenanceModal, setMaintenanceModal] = useState(false);
     const [autos, setAutos] = useState([]);
-    const [maintenanceStatus, setMaintenanceStatus] = useState({}); 
+    const [maintenanceStatus, setMaintenanceStatus] = useState({});
     const [description, setDescription] = useState('');
+    const [selectedAutoId, setSelectedAutoId] = useState(null);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -76,15 +78,15 @@ function AutosComponent() {
             }
         }));
         try {
-            await axios.put(`http://localhost:8000/editar_transporte/${id}/`, 
+            await axios.put(`http://localhost:8000/editar_transporte/${id}/`,
                 { necesita_mantenimiento: newStatus, descripcion_mantenimiento: description },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
             // Actualizar la lista de autos
             setAutos(prevAutos => prevAutos.map(auto =>
                 auto.id_transporte === id
-                ? { ...auto, necesita_mantenimiento: newStatus, descripcion_mantenimiento: description}
-                : auto
+                    ? { ...auto, necesita_mantenimiento: newStatus, descripcion_mantenimiento: description }
+                    : auto
             ));
         } catch (error) {
             console.error('Error updating maintenance status:', error);
@@ -109,17 +111,16 @@ function AutosComponent() {
         data.append('kilometraje', formData.kilometraje);
 
         try {
-            
-            await axios.post(`http://localhost:8000/crear_transporte/`, 
+            await postData(`http://localhost:8000/crear_transporte/`,
                 data,
-                { headers: { 'Authorization': `Token ${token}`} }
+                { headers: { 'Authorization': `Token ${token}` } }
             );
             console.log(autoId);
-            await axios.post(`http://localhost:8000/crear_detalle_transporte/`, 
+            await postData(`http://localhost:8000/crear_detalle_transporte/`,
                 { id_obra: obraId, id_transporte: autoId },
                 { headers: { 'Authorization': `Token ${token}` } }
             );
-           
+
         } catch (error) {
             console.error('Error updating auto:', error);
         }
@@ -134,7 +135,7 @@ function AutosComponent() {
 
     const handleUpdateAuto = async (id) => {
         try {
-            await axios.put(`http://localhost:8000/editar_transporte/${id}/`, 
+            await axios.put(`http://localhost:8000/editar_transporte/${id}/`,
                 formData,
                 { headers: { 'Authorization': `Token ${token}` } }
             );
@@ -146,7 +147,7 @@ function AutosComponent() {
 
     const handleDeleteAuto = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/eliminar_detalle_transporte/${obraId}/${id}/`, 
+            await axios.delete(`http://localhost:8000/eliminar_detalle_transporte/${obraId}/${id}/`,
                 { headers: { 'Authorization': `Token ${token}` } }
             );
             setAutos(prevAutos => prevAutos.filter(auto => auto.id_transporte !== id));
@@ -206,36 +207,68 @@ function AutosComponent() {
         });
     };
 
+    const handleMaintenanceClick = (id_transporte) => {
+        setSelectedAutoId(id_transporte);
+        setMaintenanceModal(true);
+    };
+
+    const handleMaintenanceSave = () => {
+        handleMaintenanceRequest(selectedAutoId, description);
+        setMaintenanceModal(false);
+    };
+
+    const handleEditAutoClick = (auto) => {
+        setFormData({
+            marca: auto.marca,
+            modelo: auto.modelo,
+            patente: auto.patente,
+            kilometraje: auto.kilometraje
+        });
+        setAutoModal(auto.id_transporte);
+    };
+
+    const handleEditAutoSave = () => {
+        handleUpdateAuto(autoModal);
+        setAutoModal(null);
+    };
+
+
     return (
         <div>
-            <FullNavbar selectedPage='Autos'/>
+            <FullNavbar selectedPage='Autos' />
             <div className='margen-arriba'>
                 <div className="autos-navigation">
                     <h4 className="autos-link" onClick={() => navigate('/autos')}>Autos</h4>
                     <h4 className="autos-current"> // {currentObra}</h4>
                 </div>
                 <h2 className="autos-title">Lista de Autos</h2>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={[]} />
                 <div className='auto-list'>
-                    <div className="auto-modal">
-                        <Modal 
-                            openButtonText='¿No encuentra su auto? Añadalo' 
-                            hoverableButton={true} 
-                            openButtonWidth='20'
-                            title='Nuevo Auto' 
-                            saveButtonText='Crear' 
-                            handleSave={handleCreateAuto}
-                            content={
-                                <div>
-                                    <h2 className='centered'> Nuevo Auto </h2>
-                                    <input type="file" name="imagen" onChange={handleFileChange} />
-                                    <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos"/>
-                                    <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos"/>
-                                    <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos"/>
-                                    <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos"/>
-                                </div>
-                            }
-                        />
+                <div className="auto-modal">
+                        <Button variant="primary" onClick={() => setAutoModal('new')}>
+                            ¿No encuentra su auto? Añadalo
+                        </Button>
+                        <Modal show={autoModal === 'new'} onHide={() => setAutoModal(null)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Nuevo Auto</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <h2 className='centered'> Nuevo Auto </h2>
+                                <input type="file" name="imagen" onChange={handleFileChange} />
+                                <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
+                                <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
+                                <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
+                                <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos" />
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={() => setAutoModal(null)}>
+                                    Cancelar
+                                </Button>
+                                <Button variant="primary" onClick={handleCreateAuto}>
+                                    Crear
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                     {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
                         sortedAutos.map(auto => {
@@ -252,76 +285,89 @@ function AutosComponent() {
                                     descrip3={auto.descripcion_mantenimiento !== '' && (<><strong>Mantenimiento:</strong> {auto.descripcion_mantenimiento}</>)}
                                     cardStyle={cardStyle}
                                     imageStyle={imageStyle}
-                                    onClick={() => setAutoModal(auto.id_transporte)}
                                     children={
                                         <>
                                             {!maintenance.isMaintained ? (
                                                 <Dropdown>
-                                                    <Dropdown.Toggle as="div">
-                                                        <SendButton 
-                                                            wide='15'
-                                                            text={maintenance.buttonText || 'Solicitar Mantenimiento'}
-                                                            backcolor={maintenance.buttonColor || '#3E4692'}
-                                                            letercolor='white'
-                                                        />
-                                                    </Dropdown.Toggle>
-                                                    <Dropdown.Menu>
-                                                        <div className="dropdown-menu-content">
-                                                            <input
-                                                                type="text"
-                                                                placeholder="Añada una descripción"
-                                                                value={description}
-                                                                onChange={(e) => setDescription(e.target.value)}
-                                                                className="description-input"
-                                                                />
-                                                                <SendButton
-                                                                    wide='15'
-                                                                    text='Enviar'
-                                                                    backcolor='#3E4692'
-                                                                    letercolor='white'
-                                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, description)}
-                                                                />
-                                                            </div>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
-                                                ) : (
-                                                    <SendButton
-                                                        wide='15'
-                                                        text={maintenance.buttonText || 'Mantenimiento realizado'}
-                                                        backcolor={maintenance.buttonColor || 'green'}
-                                                        letercolor='white'
-                                                        onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
-                                                    />
-                                                )}
-                                                    <Modal 
-                                                        handleSave={() => handleUpdateAuto(auto.id_transporte)}
-                                                        showButton={false}
-                                                        showModal={autoModal === auto.id_transporte}
-                                                        showDeleteButton={true}
-                                                        deleteFunction={() => handleDeleteAuto(auto.id_transporte)}
-                                                        handleShowModal={() => setAutoModal(auto.id_transporte)}
-                                                        handleCloseModal={() => setAutoModal(null)}
-                                                        content={
-                                                            <div>
-                                                                <h2 className='centered'> Actualizar Auto </h2>
-                                                                <Form.Control name="marca" type="text" defaultValue= { auto.marca } onChange={handleInputChange} className="input-autos"/>
-                                                                <Form.Control name="modelo" type="text" defaultValue= { auto.modelo } onChange={handleInputChange} className="input-autos"/>
-                                                                <Form.Control name="patente" type="text" defaultValue= { auto.patente } onChange={handleInputChange} className="input-autos"/>
-                                                                <Form.Control name="kilometraje" type="text" defaultValue= { auto.kilometraje } onChange={handleInputChange} className="input-autos"/>
-                                                            </div>
-                                                        }
-                                                    />
-                                            </>
-                                        }
-                                    />
-                                );
-                            })
-                        ) : (
-                            <p>No se encontraron autos.</p>
-                        )}
-                    </div>
+                                                    
+                                                </Dropdown>
+                                            ) : (
+                                                <SendButton
+                                                    wide='15'
+                                                    text={maintenance.buttonText || 'Mantenimiento realizado'}
+                                                    backcolor={maintenance.buttonColor || 'green'}
+                                                    letercolor='white'
+                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
+                                                />
+                                            )}
+                                            <Button
+                                                style={{ float: 'right' }}
+                                                onClick={() => handleMaintenanceClick(auto.id_transporte)}
+                                            >
+                                                {maintenance.buttonText || 'Solicitar Mantenimiento'}
+                                            </Button>
+                                            <div>
+                                                <Button onClick={() => handleEditAutoClick(auto)}>Editar Auto</Button>
+                                                <Modal
+                                                    show={autoModal === auto.id_transporte}
+                                                    onHide={() => setAutoModal(null)}
+                                                >
+                                                    <Modal.Header closeButton>
+                                                        <Modal.Title>Actualizar Auto</Modal.Title>
+                                                    </Modal.Header>
+                                                    <Modal.Body>
+                                                        <Form.Control name="marca" type="text" value={formData.marca} onChange={handleInputChange} className="input-autos" />
+                                                        <Form.Control name="modelo" type="text" value={formData.modelo} onChange={handleInputChange} className="input-autos" />
+                                                        <Form.Control name="patente" type="text" value={formData.patente} onChange={handleInputChange} className="input-autos" />
+                                                        <Form.Control name="kilometraje" type="text" value={formData.kilometraje} onChange={handleInputChange} className="input-autos" />
+                                                    </Modal.Body>
+                                                    <Modal.Footer>
+                                                        <Button variant="secondary" onClick={() => setAutoModal(null)}>
+                                                            Cancelar
+                                                        </Button>
+                                                        <Button variant="primary" onClick={handleEditAutoSave}>
+                                                            Guardar
+                                                        </Button>
+                                                    </Modal.Footer>
+                                                </Modal>
+                                            </div>
+                                        </>
+                                    }
+                                />
+                            );
+                        })
+                    ) : (
+                        <p>No se encontraron autos.</p>
+                    )}
                 </div>
             </div>
-        );
-    }
+
+            {/* Modal de Mantenimiento */}
+            <Modal show={maintenanceModal} onHide={() => setMaintenanceModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Solicitar Mantenimiento</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Control
+                        as="textarea"
+                        rows={3}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Descripción del mantenimiento"
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setMaintenanceModal(false)}>
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={handleMaintenanceSave}>
+                        Guardar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </div>
+    );
+};
+
+
 export default AutosComponent;
