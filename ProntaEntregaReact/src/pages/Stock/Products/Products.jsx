@@ -13,6 +13,7 @@ import UploadImage from '../../../components/buttons/upload_image/uploadImage.js
 import defaultImage from '../../../assets/no_image.png';
 
 import PedidoCard from '../../../components/cards/pedido_card/PedidoCard.jsx';
+import OfertaCard from '../../../components/cards/oferta_card/OfertaCard.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
@@ -27,6 +28,7 @@ function Products() {
 
     const cantidadRef = useRef(null);
     const pedidoCardRef = useRef(null);
+    const ofertaCardRef = useRef(null);
     
     const [products, setProducts] = useState([]);
     const [excludedProducts, setExcludedProducts] = useState([]);
@@ -231,7 +233,7 @@ function Products() {
             postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
                 console.log('Pedido creado:', result);
                 const obrasPromises = obras.map((obra) => 
-                    postData('crear_detalle_pedido/', { id_stock: obra, id_producto: pedidoForm.id_producto }, token)
+                    postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
                 );
                 return Promise.all(obrasPromises);
             }).then((detalleResults) => {
@@ -361,16 +363,7 @@ function Products() {
                                                     <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
                                                 </Tab>
                                                 <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta'>
-                                                    <div style={{marginTop: '5%'}}>
-                                                        <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
-                                                        <h2 className='centered'>
-                                                            {pedidoOrOferta === 'pedido' ? 'Crear Pedido de ' : 'Crear Oferta de '} {product.nombre}
-                                                        </h2>
-                                                        <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
-                                                        <InputGroup className="mb-2">
-                                                            <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
-                                                        </InputGroup>
-                                                    </div>
+                                                    <OfertaCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
                                                 </Tab>
                                             </Tabs>
                                         } 
