@@ -104,7 +104,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
                                 <div style={{ marginLeft: "1rem" }}> {/* Ajusta el margen si es necesario */}
                                     {obras.map(obra => (
-                                        <SelectableCard wide={"1rem"} key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)} />
+                                        <SelectableCard wide={"1rem"} key={obra.id_stock} id={obra.id_stock} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)} />
                                     ))}
                                 </div>
                             </Form.Group>
