@@ -2,13 +2,13 @@ import React from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
 import './SelectableCard.scss';
 
-const SelectableCard = ({ id, titulo, foto, onCardSelect, isSelected }) => {
+const SelectableCard = ({ wide, id, titulo, foto, onCardSelect, isSelected }) => {
     const toggleSelection = () => {
         onCardSelect(id);
     };
 
     return (
-        <Card className={`card ${isSelected ? 'selected' : ''}`} onClick={toggleSelection}>
+        <Card style={{width:{wide}}} className={`card ${isSelected ? 'selected' : ''}`} onClick={toggleSelection}>
             <Card.Body>
                 <Row>
                     <Col xs={4} s={4} m={4} l={4} xl={4}>

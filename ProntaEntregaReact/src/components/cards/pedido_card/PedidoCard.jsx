@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
-import GenericAccordion from '../../accordions/generic_accordion/GenericAccordion.jsx';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
-import postData from '../../../functions/postData.jsx';
 
 const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const [obras, setObras] = useState([]);
@@ -44,7 +42,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
             default: break;
         }
         setPedidoForm((prevPedido) => ({ ...prevPedido, [name]: transformedValue }));
-        console.log(pedidoForm);
     };
 
     const handleCardSelection = (key) => {
@@ -54,7 +51,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                 ? prevForm.obras.filter(k => k !== key)
                 : [...prevForm.obras, key]
         }));
-        console.log(pedidoForm);
     };
 
     useImperativeHandle(ref, () => ({
@@ -62,19 +58,21 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     }));
 
     return (
-        <Card style={{ width: '100%'}}>
+        <Card style={{ width: '100%' }}>
             <Card.Body>
-                <Row>
-                    <Col xs={12} sm={8} md={8} lg={8} xl={8} xxl={8}>
-                        <Form>
-                            <h2 className='centered'>
+                <Form>
+                    <Row className="g-0"> {/* Asegúrate de eliminar cualquier espacio entre columnas */}
+                        <Col xs={12} md={8}> {/* Ajusta los tamaños para diferentes dispositivos */}
+                            <h2>
                                 {productDefault ? `Crear Pedido de ${productDefault.nombre}` : 'Crear Pedido'}
                             </h2>
 
-                            { !productDefault && <Form.Group className="mb-2" controlId="formBasicProducto">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                                <Form.Control name="producto" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese el producto" />
-                            </Form.Group>}
+                            {!productDefault && (
+                                <Form.Group className="mb-2" controlId="formBasicProducto">
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
+                                    <Form.Control name="producto" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese el producto" />
+                                </Form.Group>
+                            )}
 
                             <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
@@ -82,7 +80,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicFechaFin">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha esta como el mes siguiente por defecto</strong></Form.Label>
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha está como el mes siguiente por defecto</strong></Form.Label>
                                 <Form.Control name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
                             </Form.Group>
 
@@ -100,21 +98,19 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                                     <option value="4">Inmediato</option>
                                 </Form.Control>
                             </Form.Group>
-
+                        </Col>
+                        <Col xs={12} md={4}> {/* Asegúrate de que esta columna no ocupe más espacio del necesario */}
                             <Form.Group className="mb-2" controlId="formBasicObras">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
-                                <div style={{marginLeft: "4rem"}}>
-                                    <GenericAccordion wide={"20rem"} 
-                                        children={obras.map(obra => (
-                                            <SelectableCard key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)}/>
-                                        ))}
-                                    />
+                                <div style={{ marginLeft: "1rem" }}> {/* Ajusta el margen si es necesario */}
+                                    {obras.map(obra => (
+                                        <SelectableCard wide={"1rem"} key={obra.id_stock} id={obra.id_stock} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)} />
+                                    ))}
                                 </div>
                             </Form.Group>
-
-                        </Form>
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </Form>
             </Card.Body>
         </Card>
     );

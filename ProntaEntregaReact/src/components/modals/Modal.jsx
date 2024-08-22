@@ -3,7 +3,7 @@
     import Modal from 'react-bootstrap/Modal';
     import './Modal.scss';
 
-    function GenericModal({ openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteFunction}) {
+    function GenericModal({ tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteFunction}) {
         const [show, setShow] = useState(false);
 
         useEffect(() => {
@@ -44,7 +44,7 @@
                 hid={!showButton}
             />
 
-            <Modal centered show={show} onHide={handleClose}>
+            <Modal size={tamaño} centered show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
