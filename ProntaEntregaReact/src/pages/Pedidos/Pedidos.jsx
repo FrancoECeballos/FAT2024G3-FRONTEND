@@ -36,7 +36,7 @@ function Pedidos() {
             return;
         }
     
-        fetchData('/pedido/', token).then((result) => {
+        fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
             setPedidos(result);
         }).catch(error => {
             console.error('Error fetching pedidos:', error);
