@@ -102,11 +102,9 @@ function AutosComponent() {
         data.append('kilometraje', formData.kilometraje);
 
         try {
-            await postData(`crear_transporte/`, data, token).then((result) => {
-                postData(`crear_detalle_transporte/`,{ id_obra: obraId, id_transporte: result.id_transporte }, token).then(
-                    window.location.reload()
-                );
-            });
+            const result = await postData(`crear_transporte/`, data, token);
+            await postData(`crear_detalle_transporte/`, { id_obra: obraId, id_transporte: result.id_transporte }, token);
+            window.location.reload();
         } catch (error) {
             console.error('Error updating auto:', error);
         }
