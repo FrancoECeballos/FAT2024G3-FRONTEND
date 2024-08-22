@@ -354,7 +354,7 @@ function Products() {
                                         } 
                                     />
                                     
-                                    <Modal openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => setShowAlert(false)} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedido}
+                                    <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => setShowAlert(false)} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedido}
                                         content={
                                             <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
                                                 <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido'>
