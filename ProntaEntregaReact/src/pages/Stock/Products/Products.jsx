@@ -67,7 +67,7 @@ function Products() {
             setUser(result);
         });
 
-        fetchData(`GetProductoByStock/${stockId}/${categoriaID}/`, token).then((result) => {
+        fetchData(`GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token).then((result) => {
             setProducts(result);
             const productsID = result.map(product => product.id_producto);
             postData(`GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token).then((result) => {
