@@ -27,6 +27,7 @@ const Cuenta = () => {
     const today = new Date().toISOString().split('T')[0];
 
     const [GuardarButtonIsValid, setGuardarButtonIsValid] = useState(false);
+    const [AñadirButtonIsValid, setAñadirButtonIsValid] = useState(false);
 
     const NullToEmpty = (data) => {
         if (data === null || data === undefined) return "";
@@ -191,6 +192,7 @@ const Cuenta = () => {
         if (isEditing) { 
             setIsEditing(false);
             setUserData(userDataDefault);
+            setGuardarButtonIsValid(false);
         } else {
             setIsEditing(true);
         }
@@ -233,6 +235,7 @@ const Cuenta = () => {
             if (field === "nombre" || field === "apellido" || field === "documento") {
                 const { nombre, apellido, documento } = updatedData;
                 updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
+                setGuardarButtonIsValid(true);
             }
 
             if (field === "cai" || field === "telnum") {
@@ -266,7 +269,7 @@ const Cuenta = () => {
             const errorTelefono = document.getElementById("errorTelefono");
             errorTelefono.innerHTML = !regex.test(value) && value !== "" ? "El teléfono necesita 10 numeros" : "";
         }
-        
+      setGuardarButtonIsValid(true);
     };
 
     const handleSendData = async(event) => {
@@ -305,6 +308,7 @@ const Cuenta = () => {
         fetchData('/direcciones/').then((result) => {
             setDirec(result);
         });
+        setGuardarButtonIsValid(false);
     };
         return (
           <div className="micuenta">
@@ -432,8 +436,8 @@ const Cuenta = () => {
                   onClick={handleSendData}
                   text="Guardar"
                   wide="6"
-                  backcolor="#D9D9D9"
-                  letercolor="black"
+                  backcolor={isEditing ? "green" : "green"}
+                  letercolor={isEditing ? "white" : "black"}
                   disabled={!GuardarButtonIsValid}
                   style={{ marginLeft: '3rem' }} // Margen a la izquierda (opcional)
                 />
@@ -473,7 +477,7 @@ const Cuenta = () => {
                           value={selectedObject}
                           onChange={e => {
                               setSelectedObject(e.target.value);
-                              setGuardarButtonIsValid(e.target.value !== "");  // Habilitar el botón si se selecciona una obra
+                              setAñadirButtonIsValid(e.target.value !== "");  // Habilitar el botón si se selecciona una obra
                           }}
                       >
                           <option disabled hidden value="">
@@ -493,7 +497,7 @@ const Cuenta = () => {
                           wide="5"
                           letercolor="white"
                           backcolor="blue"
-                          disabled={!GuardarButtonIsValid}
+                          disabled={!AñadirButtonIsValid}
                       />
                     </div>
                   )}
