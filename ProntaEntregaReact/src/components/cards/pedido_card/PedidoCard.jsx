@@ -72,7 +72,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     }));
 
     return (
-        <Card style={{ width: '100%' }}>
+        <Card className='no-border-card' style={{ width: '100%' }}>
             <Card.Body>
                 <Form onSubmit={handleSubmit}>
                     <Row className="g-0"> {/* Asegúrate de eliminar cualquier espacio entre columnas */}
