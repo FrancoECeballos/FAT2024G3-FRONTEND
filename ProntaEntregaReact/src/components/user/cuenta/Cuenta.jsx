@@ -417,13 +417,15 @@ const Cuenta = () => {
                   </Form.Group>
                 </div>
               </Col>
-              <Col>
-              <SendButton
+              
+              <Col style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <SendButton
                   onClick={handleEdit}
                   text={isEditing ? "Cancelar" : "Editar"}
                   wide="5"
                   backcolor={isEditing ? "#D10000" : "#D9D9D9"}
                   letercolor={isEditing ? "white" : "black"}
+                  style={{ marginRight: '10px' }} // Margen a la derecha
                 />
                 <SendButton
                   hidden={!isEditing}
@@ -433,8 +435,11 @@ const Cuenta = () => {
                   backcolor="#D9D9D9"
                   letercolor="black"
                   disabled={!GuardarButtonIsValid}
+                  style={{ marginLeft: '10px' }} // Margen a la izquierda (opcional)
                 />
               </Col>
+
+
             </Row>
             
             <Row className="filaobras">
