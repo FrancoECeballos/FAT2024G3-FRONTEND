@@ -417,6 +417,7 @@ const Cuenta = () => {
                   </Form.Group>
                 </div>
               </Col>
+              <Col>
               <SendButton
                   onClick={handleEdit}
                   text={isEditing ? "Cancelar" : "Editar"}
@@ -433,6 +434,7 @@ const Cuenta = () => {
                   letercolor="black"
                   disabled={!GuardarButtonIsValid}
                 />
+              </Col>
             </Row>
             
             <Row className="filaobras">
