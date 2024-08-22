@@ -31,9 +31,9 @@ export default function SendButton({
         borderRadius: `${radius}rem`,
         textAlign: 'center',
         width: `${wide}rem`,
-        backgroundColor: disabled ? '#D9D9D9' : backcolor,  // Cambiar color si está deshabilitado
+        backgroundColor: disabled ? 'grey' : backcolor,  // Cambiar color si está deshabilitado
         borderColor: '#D9D9D9',
-        color: disabled ? 'gray' : letercolor, // Cambiar color del texto si está deshabilitado
+        color: disabled ? 'white' : letercolor, // Cambiar color del texto si está deshabilitado
         boxShadow: `${shadow}`,
         fontSize: `${size}rem`,
       }}
@@ -41,7 +41,7 @@ export default function SendButton({
       type="submit"
       
     >
-      {text}
+      {text}  
       {children}
     </Button>
   );

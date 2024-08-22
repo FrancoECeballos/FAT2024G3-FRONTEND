@@ -436,8 +436,8 @@ const Cuenta = () => {
                   onClick={handleSendData}
                   text="Guardar"
                   wide="6"
-                  backcolor="#D9D9D9"
-                  letercolor="black"
+                  backcolor={isEditing ? "green" : "green"}
+                  letercolor={isEditing ? "white" : "black"}
                   disabled={!GuardarButtonIsValid}
                   style={{ marginLeft: '3rem' }} // Margen a la izquierda (opcional)
                 />
