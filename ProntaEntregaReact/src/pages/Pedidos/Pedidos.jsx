@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import Modal from '../../components/modals/Modal.jsx';
-import {InputGroup, Form, Button} from 'react-bootstrap';
+import { InputGroup, Form, Button } from 'react-bootstrap';
 import postData from '../../functions/postData.jsx';
+import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
 function Pedidos() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [pedidos, setPedidos] = useState([]);
-
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [productos, setProductos] = useState([]);
@@ -41,73 +40,34 @@ function Pedidos() {
         }).catch(error => {
             console.error('Error fetching pedidos:', error);
         });
-    }, [token]);
 
-    useEffect(() => {
         fetchData('/productos', token).then(setProductos);
-        fetchData(`/userToken/${token}`, token).then(setUsuarioLogueado);
-    }, [token]);
 
-    useEffect(() => {
-        if (token) {
-            fetchData(`/userToken/${token}`, token).then((result) => {
-                const email = result.email;
-                if (result.is_superuser) {
-                    fetchData('/obra/', token).then((result) => {
-                        setObras(result);
+        fetchData(`/userToken/${token}`, token).then((result) => {
+            setUsuarioLogueado(result);
+            const email = result.email;
+
+            if (result.is_superuser) {
+                fetchData('/obra/', token).then(setObras).catch(error => {
+                    console.error('Error fetching obras for admin', error);
+                });
+            } else {
+                fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
+                    const obraIds = result.map(obra => obra.id_obra);
+                    const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
+                    Promise.all(obraPromises).then(obras => {
+                        setObras(obras.flat());
                     }).catch(error => {
-                        console.error('Error fetching obras for admin', error);
+                        console.error('Error fetching obras by ID', error);
                     });
-                } else {
-                    fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
-                        const obraIds = result.map(obra => obra.id_obra);
-                        const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
-                        Promise.all(obraPromises).then(obras => {
-                            setObras(obras.flat());
-                        }).catch(error => {
-                            console.error('Error fetching obras by ID', error);
-                        });
-                    }).catch(error => {
-                        console.error('Error fetching obras for user', error);
-                    });
-                }
-            }).catch(error => {
-                console.error('Error fetching user data:', error);
-            });
-
-        }
+                }).catch(error => {
+                    console.error('Error fetching obras for user', error);
+                });
+            }
+        }).catch(error => {
+            console.error('Error fetching user data:', error);
+        });
     }, [token]);
-
-    const filteredPedidos = pedidos.filter(pedido => {
-        return (
-            pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    });
-
-    const sortedPedidos = [...filteredPedidos].sort((a, b) => {
-        if (!orderCriteria) return 0;
-        const aValue = a[orderCriteria];
-        const bValue = b[orderCriteria];
-
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-            return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
-        }
-
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-            return bValue - aValue;
-        }
-
-        return 0;
-    });
-
-    const filters = [
-        { type: 'fechainicio', label: 'Fecha Inicio' },
-        { type: 'fechavencimiento', label: 'Fecha Vencimiento' }
-    ];
 
     const handleSearchChange = (value) => {
         setSearchQuery(value);
@@ -145,20 +105,59 @@ function Pedidos() {
         });
     };
 
+    const deletePedido = (pedidoId) => {
+        postData(`editar_detalle_pedido/${pedidoId}/`, token).then(() => {
+            setPedidos((prevPedidos) => prevPedidos.filter(pedido => pedido.id_pedido !== pedidoId));
+        }).catch(error => {
+            console.error('Error deleting pedido:', error);
+        });
+    };
+
+    const filteredPedidos = pedidos.filter(pedido => {
+        return (
+            pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    });
+
+    const sortedPedidos = [...filteredPedidos].sort((a, b) => {
+        if (!orderCriteria) return 0;
+        const aValue = a[orderCriteria];
+        const bValue = b[orderCriteria];
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+        }
+
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return bValue - aValue;
+        }
+
+        return 0;
+    });
+
+    const filters = [
+        { type: 'fechainicio', label: 'Fecha Inicio' },
+        { type: 'fechavencimiento', label: 'Fecha Vencimiento' }
+    ];
+
     return (
         <div>
-            <FullNavbar selectedPage='Pedidos'/>
+            <FullNavbar selectedPage='Pedidos' />
             <div className='margen-arriba'>
-                <h2 style={{marginLeft: '7rem'}}>Pedidos</h2>
+                <h2 style={{ marginLeft: '7rem' }}>Pedidos</h2>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='pedido-list'>
-                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <Modal 
-                            openButtonText='¿No encuentra su pedido? Añadalo' 
-                            openButtonWidth='20' 
-                            title='Nuevo Pedido' 
-                            saveButtonText='Crear' 
-                            handleSave={handleCreatePedido} 
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
+                        <Modal
+                            openButtonText='¿No encuentra su pedido? Añadalo'
+                            openButtonWidth='20'
+                            title='Nuevo Pedido'
+                            saveButtonText='Crear'
+                            handleSave={handleCreatePedido}
                             content={
                                 <div>
                                     <h2 className='centered'> Nuevo Pedido </h2>
@@ -218,10 +217,15 @@ function Pedidos() {
                                     descrip3={<><strong>Urgencia:</strong> {pedido.urgente} <strong>Cantidad:</strong> {pedido.cantidad}</>}
                                     descrip4={<><strong>Fecha Inicio:</strong> {pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''}</>}
                                     descrip5={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                    children={
+                                        <SendButton
+                                            onClick={() => deletePedido(pedido.id_pedido)}
+                                        />
+                                    }
                                 />
                             ))
                         ) : (
-                            <p style={{marginLeft: '7rem', marginTop: '1rem'}}> No hay pedidos disponibles.</p>
+                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}> No hay pedidos disponibles.</p>
                         )}
                     </div>
                 </div>

@@ -192,6 +192,7 @@ const Cuenta = () => {
         if (isEditing) { 
             setIsEditing(false);
             setUserData(userDataDefault);
+            setGuardarButtonIsValid(false);
         } else {
             setIsEditing(true);
         }
@@ -234,6 +235,7 @@ const Cuenta = () => {
             if (field === "nombre" || field === "apellido" || field === "documento") {
                 const { nombre, apellido, documento } = updatedData;
                 updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
+                setGuardarButtonIsValid(true);
             }
 
             if (field === "cai" || field === "telnum") {
@@ -306,6 +308,7 @@ const Cuenta = () => {
         fetchData('/direcciones/').then((result) => {
             setDirec(result);
         });
+        setGuardarButtonIsValid(false);
     };
         return (
           <div className="micuenta">
@@ -433,8 +436,8 @@ const Cuenta = () => {
                   onClick={handleSendData}
                   text="Guardar"
                   wide="6"
-                  backcolor="#D9D9D9"
-                  letercolor="black"
+                  backcolor={isEditing ? "green" : "green"}
+                  letercolor={isEditing ? "white" : "black"}
                   disabled={!GuardarButtonIsValid}
                   style={{ marginLeft: '3rem' }} // Margen a la izquierda (opcional)
                 />
