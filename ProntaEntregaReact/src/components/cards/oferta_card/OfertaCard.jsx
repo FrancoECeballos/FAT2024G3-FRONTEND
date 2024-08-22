@@ -5,6 +5,8 @@ import SelectableCard from '../selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
 import postData from '../../../functions/postData.jsx';
 
+import './OfertaCard.scss';
+
 const OfertaCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const [obras, setObras] = useState([]);
 
@@ -48,38 +50,33 @@ const OfertaCard = forwardRef(({ productDefault, user, stock }, ref) => {
     }));
 
     return (
-        <Card style={{ width: '100%'}}>
+        <Card className="no-border-card">
             <Card.Body>
-                <Row>
-                    <Col xs={12} sm={8} md={8} lg={8} xl={8} xxl={8}>
-                        <Form>
-                            <h2 className='centered'>
-                                {productDefault ? `Crear Oferta de ${productDefault.nombre}` : 'Crear Oferta'}
-                            </h2>
+                <Form style={{marginLeft:"1rem"}}>
+                    <h2 className='centered'>
+                        {productDefault ? `Crear Oferta de ${productDefault.nombre}` : 'Crear Oferta'}
+                    </h2>
 
-                            { !productDefault && <Form.Group className="mb-2" controlId="formBasicProducto">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                                <Form.Control name="producto" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese el producto" />
-                            </Form.Group>}
+                    { !productDefault && <Form.Group className="mb-2" controlId="formBasicProducto">
+                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
+                        <Form.Control name="producto" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese el producto" />
+                    </Form.Group>}
 
-                            <Form.Group className="mb-2" controlId="formBasicFechaInicio">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
-                                <Form.Control name="fechaInicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
-                            </Form.Group>
+                    <Form.Group className="mb-2" controlId="formBasicFechaInicio">
+                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
+                        <Form.Control style={{width:"70%"}} name="fechaInicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
+                    </Form.Group>
 
-                            <Form.Group className="mb-2" controlId="formBasicFechaFin">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha esta como el mes siguiente por defecto</strong></Form.Label>
-                                <Form.Control name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
-                            </Form.Group>
+                    <Form.Group className="mb-2" controlId="formBasicFechaFin">
+                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha esta como el mes siguiente por defecto</strong></Form.Label>
+                        <Form.Control style={{width:"70%"}} name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                    </Form.Group>
 
-                            <Form.Group className="mb-2" controlId="formBasicCantidad">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Pedida (*)</Form.Label>
-                                <Form.Control name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
-                            </Form.Group>
-
-                        </Form>
-                    </Col>
-                </Row>
+                    <Form.Group className="mb-2" controlId="formBasicCantidad">
+                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Pedida (*)</Form.Label>
+                        <Form.Control name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                    </Form.Group>
+                </Form>
             </Card.Body>
         </Card>
     );
