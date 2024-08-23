@@ -15,8 +15,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const formattedNextMonthDate = nextMonth.toISOString().split('T')[0];
 
     const [pedidoForm, setPedidoForm] = useState({
-        "fechaInicio": formattedDate,
-        "fechaVencimiento": formattedNextMonthDate,
+        "fechainicio": formattedDate,
+        "fechavencimiento": formattedNextMonthDate,
         "id_obra": stock ? stock : "",
         "id_usuario": user ? user.id_usuario : "",
         "cantidad": 0,
@@ -75,8 +75,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
         <Card className='no-border-card' style={{ width: '100%' }}>
             <Card.Body>
                 <Form onSubmit={handleSubmit}>
-                    <Row className="g-0"> {/* Asegúrate de eliminar cualquier espacio entre columnas */}
-                        <Col xs={12} md={5} style={{marginRight:"2rem"}}> {/* Ajusta los tamaños para diferentes dispositivos */}
+                    <Row className="g-0">
+                        <Col xs={12} md={5} style={{marginRight:"2rem"}}>
                             <h2>
                                 {productDefault ? `Crear Pedido de ${productDefault.nombre}` : 'Crear Pedido'}
                             </h2>
@@ -90,12 +90,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
 
                             <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
-                                <Form.Control name="fechaInicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} />
+                                <Form.Control name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicFechaFin">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
-                                <Form.Control name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} />
+                                <Form.Control name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
                                 <p style={{fontSize: '0.7rem'}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
                             </Form.Group>
 
