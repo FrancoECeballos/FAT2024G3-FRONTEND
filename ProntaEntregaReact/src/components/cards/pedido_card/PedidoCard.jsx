@@ -8,11 +8,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const [obras, setObras] = useState([]);
 
     const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const formattedDate = today.toISOString().split('T')[0];
     
     const nextMonth = new Date(today);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
-    const formattedNextMonthDate = nextMonth.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const formattedNextMonthDate = nextMonth.toISOString().split('T')[0];
 
     const [pedidoForm, setPedidoForm] = useState({
         "fechaInicio": formattedDate,
@@ -94,8 +94,9 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicFechaFin">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha está como el mes siguiente por defecto</strong></Form.Label>
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
                                 <Form.Control name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} />
+                                <p style={{fontSize: '0.7rem'}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicCantidad">
@@ -118,7 +119,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                                 <Form.Label className="font-rubik " style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
                                 <div className='cardscasas'> {/* Ajusta el margen si es necesario */}
                                     {obras.map(obra => (
-                                        <SelectableCard mar={"0.2rem"} pad={"0px"} height={"5rem"} wide={"98%"} key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)} />
+                                        <SelectableCard mar={"0.2rem"} pad={"0px"} height={"5rem"} wide={"98%"} key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)}/>
                                     ))}
                                 </div>
                             </Form.Group>

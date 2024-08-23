@@ -225,22 +225,33 @@ function Products() {
         });
     };
 
-    const handleCreatePedido = () => {
-        if (pedidoCardRef.current) {
-            const pedidoForm = pedidoCardRef.current.getPedidoForm();
-            const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-            
-            postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-                console.log('Pedido creado:', result);
-                const obrasPromises = obras.map((obra) => 
-                    postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
-                );
-                return Promise.all(obrasPromises);
-            }).then((detalleResults) => {
-                console.log('Detalles de pedido creados:', detalleResults);
-            }).catch((error) => {
-                console.error('Error al crear el pedido o los detalles del pedido:', error);
-            });
+    const handleCreatePedidoOrOferta = () => {
+        if (pedidoOrOferta === 'pedido') {
+            if (pedidoCardRef.current) {
+                const pedidoForm = pedidoCardRef.current.getPedidoForm();
+                const { obras, ...pedidoFormWithoutObras } = pedidoForm;
+                
+                postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+                    console.log('Pedido creado:', result);
+                    const obrasPromises = obras.map((obra) => 
+                        postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
+                    );
+                    return Promise.all(obrasPromises);
+                }).then((detalleResults) => {
+                    console.log('Detalles de pedido creados:', detalleResults);
+                }).catch((error) => {
+                    console.error('Error al crear el pedido o los detalles del pedido:', error);
+                });
+            } 
+        } else if (pedidoOrOferta === 'oferta') {
+            if (ofertaCardRef.current) {
+                const ofertaForm = ofertaCardRef.current.getOfertaForm();
+                postData('crear_oferta/', ofertaForm, token).then((result) => {
+                    console.log('Oferta creada:', result);
+                }).catch((error) => {
+                    console.error('Error al crear la oferta:', error);
+                });
+            }
         }
     };
 
@@ -356,14 +367,14 @@ function Products() {
                                         } 
                                     />
                                     
-                                    <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => setShowAlert(false)} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedido}
+                                    <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta}
                                         content={
                                             <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
-                                                <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido'>
+                                                <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>
                                                     <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
                                                 </Tab>
-                                                <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta'>
-                                                    <OfertaCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
+                                                <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta' onClick={() => setPedidoOrOferta('oferta')}>
+                                                    <OfertaCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={ofertaCardRef}/>
                                                 </Tab>
                                             </Tabs>
                                         } 

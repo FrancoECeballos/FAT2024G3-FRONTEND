@@ -46,7 +46,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock }, ref) => {
     };
 
     useImperativeHandle(ref, () => ({
-        getofertaForm: () => ofertaForm
+        getOfertaForm: () => ofertaForm
     }));
 
     return (
