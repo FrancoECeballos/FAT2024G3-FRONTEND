@@ -323,14 +323,14 @@ function Products() {
                             descrip1={product.descripcion}
                             descrip2={`Cantidad: ${product.total} ${product.unidadmedida}`}
                             children={
-                                <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'relative', display:"flex" }}>
                                     <Icon 
                                         icon="line-md:alert-circle-twotone" 
                                         className="hoverable-icon"
                                         style={{ width: "2rem", height: "2rem", position: "absolute", top: "0.5rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
                                         onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
                                     />
-                                    <Modal openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
+                                    <Modal buttonTextColor="black" buttonColor="#D9D9D9" openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
                                         content={
                                             <div>
                                                 <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
@@ -346,19 +346,21 @@ function Products() {
                                             </div>
                                         } 
                                     />
+                                    <div style={{marginLeft:"1rem"}}>
+                                        <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta}
+                                            content={
+                                                <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
+                                                    <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>
+                                                        <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
+                                                    </Tab>
+                                                    <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta' onClick={() => setPedidoOrOferta('oferta')}>
+                                                        <OfertaCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={ofertaCardRef}/>
+                                                    </Tab>
+                                                </Tabs>
+                                            } 
+                                        />
+                                    </div>
                                     
-                                    <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta}
-                                        content={
-                                            <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
-                                                <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>
-                                                    <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
-                                                </Tab>
-                                                <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta' onClick={() => setPedidoOrOferta('oferta')}>
-                                                    <OfertaCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={ofertaCardRef}/>
-                                                </Tab>
-                                            </Tabs>
-                                        } 
-                                    />
                                     
                                 </div>
                                 

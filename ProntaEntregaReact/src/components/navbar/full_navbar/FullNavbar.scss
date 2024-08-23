@@ -8,8 +8,11 @@
 		margin-left: 0.7rem;
 		margin-right: 0.7rem;
 		position: relative;
-			transition: color 1s ease;
-	  
+		transition: color 1s ease;
+
+		&:hover {
+			color: #02005E;
+		}
 	  
 		&::before {
 			height: 290%;
@@ -38,15 +41,10 @@
 	.nav-link {
 		display: flex;
 		flex-direction: row;
-		align-items: center;
 		padding: 0;
 		padding-left: 0.5rem;
 		padding-right: 0.5rem;
 		color: #02005E;
-	  
-		&:hover {
-		  color: black;
-		}
 	  }
 	.botons-derecha {
 		align-items: right;
@@ -69,16 +67,6 @@
 		align-items: center;
 		justify-content: flex-end;
 	  }
-
-  
-	.offcanvas-link {
-	  color: white;
-	}
-  
-	.custom-offcanvas {
-	  background-color: #A11818;
-	  color: white;
-	}
   
 	.custom-dropdown-item {
 		background-color: transparent !important;
@@ -87,5 +75,15 @@
 		&:active {
 		  background-color: transparent !important;
 		  color: inherit !important;
+		}
+	}
+
+	.hoverable {
+		cursor: pointer;
+		transition: transform 0.2s !important;
+
+		&:hover {
+			color: #02005E !important;
+			transform: scale(1.05) !important;
 		}
 	}
