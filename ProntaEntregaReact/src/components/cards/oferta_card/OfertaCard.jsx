@@ -17,8 +17,8 @@ const OfertaCard = forwardRef(({ productDefault, user, stock }, ref) => {
     const formattedNextMonthDate = nextMonth.toLocaleDateString('en-GB').split('/').reverse().join('-');
 
     const [ofertaForm, setOfertaForm] = useState({
-        "fechaInicio": formattedDate,
-        "fechaVencimiento": formattedNextMonthDate,
+        "fechainicio": formattedDate,
+        "fechavencimiento": formattedNextMonthDate,
         "id_obra": stock ? stock : "",
         "id_usuario": user ? user.id_usuario : "",
         "cantidad": 0,
@@ -46,7 +46,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock }, ref) => {
     };
 
     useImperativeHandle(ref, () => ({
-        getofertaForm: () => ofertaForm
+        getOfertaForm: () => ofertaForm
     }));
 
     return (
@@ -64,17 +64,18 @@ const OfertaCard = forwardRef(({ productDefault, user, stock }, ref) => {
 
                     <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
-                        <Form.Control style={{width:"70%"}} name="fechaInicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
+                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formBasicFechaFin">
-                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*) <br/><strong>Esta fecha esta como el mes siguiente por defecto</strong></Form.Label>
-                        <Form.Control style={{width:"70%"}} name="fechaVencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
+                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                        <p style={{fontSize:"0.7rem"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formBasicCantidad">
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Pedida (*)</Form.Label>
-                        <Form.Control name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                     </Form.Group>
                 </Form>
             </Card.Body>
