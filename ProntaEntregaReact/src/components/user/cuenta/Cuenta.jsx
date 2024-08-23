@@ -192,6 +192,7 @@ const Cuenta = () => {
         if (isEditing) { 
             setIsEditing(false);
             setUserData(userDataDefault);
+            setGuardarButtonIsValid(false);
         } else {
             setIsEditing(true);
         }

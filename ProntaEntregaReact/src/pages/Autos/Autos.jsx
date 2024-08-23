@@ -9,25 +9,26 @@ import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 import fetchData from '../../functions/fetchData';
+import postData from '../../functions/postData';
+import putData from '../../functions/putData';
+import deleteData from '../../functions/deleteData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
 import Modal from '../../components/modals/Modal.jsx';
+import defaultImage from '../../assets/no_image.png';
 
 import './Autos.scss';
 
 function AutosComponent() {
     const navigate = useNavigate();
     const { obraId } = useParams();
-    const { autoId } = useParams();
     const token = Cookies.get('token');
 
     const [currentObra, setCurrentObra] = useState(false);
     const [autoModal, setAutoModal] = useState(null);
-    const [maintenanceModal, setMaintenanceModal] = useState(false);
     const [autos, setAutos] = useState([]);
     const [maintenanceStatus, setMaintenanceStatus] = useState({});
     const [description, setDescription] = useState('');
-    const [selectedAutoId, setSelectedAutoId] = useState(null);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -64,41 +65,31 @@ function AutosComponent() {
             setCurrentObra(result[0].nombre);
         });
 
+        const img = new Image();
+        img.src = defaultImage;
+        img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob) => {
+            const file = new File([blob], 'no_image.png', { type: 'image/png' });
+            setFormData((prevData) => ({ ...prevData, imagen: file }));
+        })};
+
     }, [token, navigate]);
 
-    const handleMaintenanceRequest = async (id, description) => {
+    const handleMaintenanceRequest = async (id) => {
         const currentStatus = maintenanceStatus[id]?.isMaintained || false;
         const newStatus = !currentStatus;
-        setMaintenanceStatus(prevState => ({
-            ...prevState,
-            [id]: {
-                isMaintained: newStatus,
-                buttonColor: newStatus ? 'green' : '#3E4692',
-                buttonText: newStatus ? 'Mantenimiento realizado' : 'Solicitar Mantenimiento'
-            }
-        }));
+        const currentDescription = description || '';
+    
         try {
-            await axios.put(`http://localhost:8000/editar_transporte/${id}/`,
-                { necesita_mantenimiento: newStatus, descripcion_mantenimiento: description },
-                { headers: { 'Authorization': `Token ${token}` } }
-            );
-            // Actualizar la lista de autos
-            setAutos(prevAutos => prevAutos.map(auto =>
-                auto.id_transporte === id
-                    ? { ...auto, necesita_mantenimiento: newStatus, descripcion_mantenimiento: description }
-                    : auto
-            ));
+            await putData(`editar_transporte/${id}/`, { necesita_mantenimiento: newStatus, descripcion_mantenimiento: currentDescription }, token);
+            window.location.reload();
         } catch (error) {
             console.error('Error updating maintenance status:', error);
-            setMaintenanceStatus(prevState => ({
-                ...prevState,
-                [id]: {
-                    ...prevState[id],
-                    isMaintained: currentStatus,
-                    buttonColor: currentStatus ? 'green' : '#3E4692',
-                    buttonText: currentStatus ? 'Mantenimiento realizado' : 'Solicitar Mantenimiento'
-                }
-            }));
         }
     };
 
@@ -111,16 +102,9 @@ function AutosComponent() {
         data.append('kilometraje', formData.kilometraje);
 
         try {
-            await postData(`http://localhost:8000/crear_transporte/`,
-                data,
-                { headers: { 'Authorization': `Token ${token}` } }
-            );
-            console.log(autoId);
-            await postData(`http://localhost:8000/crear_detalle_transporte/`,
-                { id_obra: obraId, id_transporte: autoId },
-                { headers: { 'Authorization': `Token ${token}` } }
-            );
-
+            const result = await postData(`crear_transporte/`, data, token);
+            await postData(`crear_detalle_transporte/`, { id_obra: obraId, id_transporte: result.id_transporte }, token);
+            window.location.reload();
         } catch (error) {
             console.error('Error updating auto:', error);
         }
@@ -135,10 +119,7 @@ function AutosComponent() {
 
     const handleUpdateAuto = async (id) => {
         try {
-            await axios.put(`http://localhost:8000/editar_transporte/${id}/`,
-                formData,
-                { headers: { 'Authorization': `Token ${token}` } }
-            );
+            await putData(`editar_transporte/${id}/`, formData, token);
             window.location.reload();
         } catch (error) {
             console.error('Error updating auto:', error);
@@ -147,10 +128,9 @@ function AutosComponent() {
 
     const handleDeleteAuto = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/eliminar_detalle_transporte/${obraId}/${id}/`,
-                { headers: { 'Authorization': `Token ${token}` } }
-            );
+            await deleteData(`eliminar_detalle_transporte/${obraId}/${id}/`,token);
             setAutos(prevAutos => prevAutos.filter(auto => auto.id_transporte !== id));
+            window.location.reload();
         } catch (error) {
             if (error.response && error.response.data && error.response.data.error === "No se encontró un detalle de obra transporte con el ID proporcionado.") {
                 alert("No se encontró un auto con el ID proporcionado.");
@@ -205,16 +185,7 @@ function AutosComponent() {
             ...formData,
             [name]: value
         });
-    };
-
-    const handleMaintenanceClick = (id_transporte) => {
-        setSelectedAutoId(id_transporte);
-        setMaintenanceModal(true);
-    };
-
-    const handleMaintenanceSave = () => {
-        handleMaintenanceRequest(selectedAutoId, description);
-        setMaintenanceModal(false);
+        console.log(formData);
     };
 
     const handleEditAutoClick = (auto) => {
@@ -242,39 +213,24 @@ function AutosComponent() {
                     <h4 className="autos-current"> // {currentObra}</h4>
                 </div>
                 <h2 className="autos-title">Lista de Autos</h2>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={[]} />
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>
                 <div className="auto-modal">
-                        <Button variant="primary" onClick={() => setAutoModal('new')}>
-                            ¿No encuentra su auto? Añadalo
-                        </Button>
-                        <Modal show={autoModal === 'new'} onHide={() => setAutoModal(null)}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Nuevo Auto</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <h2 className='centered'> Nuevo Auto </h2>
-                                <input type="file" name="imagen" onChange={handleFileChange} />
-                                <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
-                                <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
-                                <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
-                                <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos" />
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button variant="secondary" onClick={() => setAutoModal(null)}>
-                                    Cancelar
-                                </Button>
-                                <Button variant="primary" onClick={handleCreateAuto}>
-                                    Crear
-                                </Button>
-                            </Modal.Footer>
-                        </Modal>
-                    </div>
+                    <Modal title='Nuevo Auto' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su auto? Añadalo' content={
+                        <>
+                            <input type="file" name="imagen" onChange={handleFileChange} />
+                            <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
+                            <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
+                            <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
+                            <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos" />
+                        </>
+                    }/>
+                </div>
                     {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
                         sortedAutos.map(auto => {
                             const maintenance = maintenanceStatus[auto.id_transporte] || {};
-                            const cardStyle = maintenance.isMaintained ? "card-maintained" : "";
-                            const imageStyle = maintenance.isMaintained ? "image-maintained" : "";
+                            const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
+                            const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
                             return (
                                 <GenericCard
                                     key={auto.id_transporte}
@@ -288,9 +244,15 @@ function AutosComponent() {
                                     children={
                                         <>
                                             {!maintenance.isMaintained ? (
-                                                <Dropdown>
-                                                    
-                                                </Dropdown>
+                                                <Modal title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte)} content={
+                                                    <Form.Control
+                                                        as="textarea"
+                                                        rows={3}
+                                                        defaultValue={description}
+                                                        onChange={(e) => setDescription(e.target.value)}
+                                                        placeholder="Descripción del mantenimiento"
+                                                    />
+                                                }/>
                                             ) : (
                                                 <SendButton
                                                     wide='15'
@@ -300,37 +262,14 @@ function AutosComponent() {
                                                     onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
                                                 />
                                             )}
-                                            <Button
-                                                style={{ float: 'right' }}
-                                                onClick={() => handleMaintenanceClick(auto.id_transporte)}
-                                            >
-                                                {maintenance.buttonText || 'Solicitar Mantenimiento'}
-                                            </Button>
-                                            <div>
-                                                <Button onClick={() => handleEditAutoClick(auto)}>Editar Auto</Button>
-                                                <Modal
-                                                    show={autoModal === auto.id_transporte}
-                                                    onHide={() => setAutoModal(null)}
-                                                >
-                                                    <Modal.Header closeButton>
-                                                        <Modal.Title>Actualizar Auto</Modal.Title>
-                                                    </Modal.Header>
-                                                    <Modal.Body>
-                                                        <Form.Control name="marca" type="text" value={formData.marca} onChange={handleInputChange} className="input-autos" />
-                                                        <Form.Control name="modelo" type="text" value={formData.modelo} onChange={handleInputChange} className="input-autos" />
-                                                        <Form.Control name="patente" type="text" value={formData.patente} onChange={handleInputChange} className="input-autos" />
-                                                        <Form.Control name="kilometraje" type="text" value={formData.kilometraje} onChange={handleInputChange} className="input-autos" />
-                                                    </Modal.Body>
-                                                    <Modal.Footer>
-                                                        <Button variant="secondary" onClick={() => setAutoModal(null)}>
-                                                            Cancelar
-                                                        </Button>
-                                                        <Button variant="primary" onClick={handleEditAutoSave}>
-                                                            Guardar
-                                                        </Button>
-                                                    </Modal.Footer>
-                                                </Modal>
-                                            </div>
+                                            <Modal openButtonText='Actualizar Auto' title='Actualizar Auto' handleShowModal={() => handleEditAutoClick(auto)} handleSave={handleEditAutoSave} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto.id_transporte)} content={
+                                                <>
+                                                    <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
+                                                    <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />
+                                                    <Form.Control name="patente" type="text" defaultValue={auto.patente} onChange={handleInputChange} className="input-autos" />
+                                                    <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
+                                                </>
+                                            }/>
                                         </>
                                     }
                                 />
@@ -342,29 +281,7 @@ function AutosComponent() {
                 </div>
             </div>
 
-            {/* Modal de Mantenimiento */}
-            <Modal show={maintenanceModal} onHide={() => setMaintenanceModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Solicitar Mantenimiento</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form.Control
-                        as="textarea"
-                        rows={3}
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Descripción del mantenimiento"
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setMaintenanceModal(false)}>
-                        Cancelar
-                    </Button>
-                    <Button variant="primary" onClick={handleMaintenanceSave}>
-                        Guardar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            
         </div>
     );
 };
