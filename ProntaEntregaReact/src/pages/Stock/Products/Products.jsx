@@ -265,17 +265,7 @@ function Products() {
                     <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentCategory}</h4>
                 </div>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
-                    <Tabs>
-                        <Tab
-                            style={{backgroundColor:'transparent'}}
-                            key='Todos'
-                            eventKey='Todos'
-                            title='Todos'
-                            onSelect={() => setSelectedCategoriaProducto('Todos')}
-                        />
-                    </Tabs>
-                </div>
+
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='¿No encuentra el producto? Añadalo' openButtonWidth='20' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
                     handleSave={() => {
