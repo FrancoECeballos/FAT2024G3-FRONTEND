@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { InputGroup, Col, Row, Form, Container, Card, Button } from 'react-bootstrap';
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { InputGroup, Col, Row, Form, Card, Button } from 'react-bootstrap';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
 import './PedidoCard.scss';
@@ -50,14 +50,24 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
 
     const handleCardSelection = (key) => {
         setPedidoForm(prevForm => {
+            const isAlreadySelected = prevForm.obras.includes(key);
+            const updatedObras = isAlreadySelected
+                ? prevForm.obras.filter(k => k !== key)
+                : [key, ...prevForm.obras];
+
             const updatedForm = {
                 ...prevForm,
-                obras: prevForm.obras.includes(key)
-                    ? prevForm.obras.filter(k => k !== key)
-                    : [...prevForm.obras, key]
+                obras: updatedObras
             };
+
             console.log('Formulario de Pedido Actualizado:', updatedForm);
             return updatedForm;
+        });
+
+        setObras(prevObras => {
+            const selectedObra = prevObras.find(obra => obra.id_obra.id_obra === key);
+            const remainingObras = prevObras.filter(obra => obra.id_obra.id_obra !== key);
+            return [selectedObra, ...remainingObras];
         });
     };
 
