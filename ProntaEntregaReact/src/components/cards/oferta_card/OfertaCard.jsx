@@ -74,7 +74,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock }, ref) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formBasicCantidad">
-                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Pedida (*)</Form.Label>
+                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Ofrecida (*)</Form.Label>
                         <Form.Control style={{width:"70%", border:"1px solid grey"}} name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                     </Form.Group>
                 </Form>
