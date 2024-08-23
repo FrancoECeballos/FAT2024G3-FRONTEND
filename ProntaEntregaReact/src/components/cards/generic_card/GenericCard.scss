@@ -3,7 +3,7 @@
     flex: 0 0 auto;
     border-style: solid;
     box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s;
+    transition: transform 0.2s !important;
   
     &.selected {
       border-color: blue;
@@ -19,7 +19,7 @@
       cursor: pointer;
   
       &:hover {
-        transform: scale(1.05);
+        transform: scale(1.01) !important;
       }
     }
 }

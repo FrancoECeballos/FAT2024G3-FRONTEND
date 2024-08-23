@@ -3,7 +3,7 @@
     import Modal from 'react-bootstrap/Modal';
     import './Modal.scss';
 
-    function GenericModal({ tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteFunction}) {
+    function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteFunction}) {
         const [show, setShow] = useState(false);
 
         useEffect(() => {
@@ -38,8 +38,8 @@
                 className="btn-modal"
                 onClick={handleShow}
                 text={openButtonText}
-                backcolor='#3E4692'
-                letercolor='white'
+                backcolor= {buttonColor || "#3E4692"}
+                letercolor={buttonTextColor || "white"}
                 wide={openButtonWidth}
                 hid={!showButton}
             />
