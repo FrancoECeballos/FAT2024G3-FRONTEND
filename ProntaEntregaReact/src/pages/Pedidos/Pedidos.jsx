@@ -5,8 +5,10 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
+import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
-import { InputGroup, Form, Button } from 'react-bootstrap';
+import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
+import GenericAccordion from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../functions/postData.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
@@ -16,9 +18,6 @@ function Pedidos() {
     const [pedidos, setPedidos] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
-    const [productos, setProductos] = useState([]);
-    const [obras, setObras] = useState([]);
-    const [usuarios, setUsuarios] = useState([]);
     const [usuarioLogueado, setUsuarioLogueado] = useState(null);
 
     const [formData, setFormData] = useState({
@@ -34,34 +33,21 @@ function Pedidos() {
             navigate('/login');
             return;
         }
-    
-        fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
-            setPedidos(result);
-        }).catch(error => {
-            console.error('Error fetching pedidos:', error);
-        });
-
-        fetchData('/productos', token).then(setProductos);
 
         fetchData(`/userToken/${token}`, token).then((result) => {
             setUsuarioLogueado(result);
-            const email = result.email;
 
             if (result.is_superuser) {
-                fetchData('/obra/', token).then(setObras).catch(error => {
-                    console.error('Error fetching obras for admin', error);
+                fetchData(`get_pedido_for_admin/`, token).then((result) => {
+                    setPedidos(result);
+                }).catch(error => {
+                    console.error('Error fetching pedidos:', error);
                 });
             } else {
-                fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
-                    const obraIds = result.map(obra => obra.id_obra);
-                    const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
-                    Promise.all(obraPromises).then(obras => {
-                        setObras(obras.flat());
-                    }).catch(error => {
-                        console.error('Error fetching obras by ID', error);
-                    });
+                fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
+                    setPedidos(result);
                 }).catch(error => {
-                    console.error('Error fetching obras for user', error);
+                    console.error('Error fetching pedidos:', error);
                 });
             }
         }).catch(error => {
@@ -106,43 +92,51 @@ function Pedidos() {
     };
 
     const deletePedido = (pedidoId) => {
-        postData(`editar_detalle_pedido/${pedidoId}/`, token).then(() => {
+        deleteData(`delete_detalle_pedido/${pedidoId}/`, token).then(() => {
             setPedidos((prevPedidos) => prevPedidos.filter(pedido => pedido.id_pedido !== pedidoId));
+            window.location.reload();
         }).catch(error => {
             console.error('Error deleting pedido:', error);
         });
     };
 
-    const filteredPedidos = pedidos.filter(pedido => {
-        return (
-            pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    });
-
+    const filters = [
+        { type: 'pedido.fechainicio', label: 'Fecha Inicio' },
+        { type: 'pedido.fechavencimiento', label: 'Fecha Vencimiento' },
+        { type: 'pedido.id_producto.nombre', label: 'Nombre del Producto' },
+        { type: 'pedido.id_obra.nombre', label: 'Nombre de la Obra' },
+        { type: 'pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
+    ];
+    
+    const filteredPedidos = pedidos.map(obra => {
+        const filteredPedidosInObra = obra.pedidos.filter(pedido => {
+            return (
+                pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        });
+        return { ...obra, pedidos: filteredPedidosInObra };
+    }).filter(obra => obra.pedidos.length > 0);
+    
     const sortedPedidos = [...filteredPedidos].sort((a, b) => {
         if (!orderCriteria) return 0;
-        const aValue = a[orderCriteria];
-        const bValue = b[orderCriteria];
-
+        const [entity, field] = orderCriteria.split('.');
+        const aValue = entity === 'pedido' ? a.pedidos[0][field] : a[entity][field];
+        const bValue = entity === 'pedido' ? b.pedidos[0][field] : b[entity][field];
+    
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
-
+    
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-
+    
         return 0;
     });
-
-    const filters = [
-        { type: 'fechainicio', label: 'Fecha Inicio' },
-        { type: 'fechavencimiento', label: 'Fecha Vencimiento' }
-    ];
 
     return (
         <div>
@@ -160,68 +154,31 @@ function Pedidos() {
                             handleSave={handleCreatePedido}
                             content={
                                 <div>
-                                    <h2 className='centered'> Nuevo Pedido </h2>
-                                    <form onSubmit={(e) => { e.preventDefault(); handleCreatePedido(); }}>
-                                        <label>
-                                            Producto:
-                                            <select name="producto" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
-                                                <option value="">Seleccione su producto</option>
-                                                {productos.map((producto, index) => (
-                                                    <option key={`${producto.id}-${index}`} value={producto.id}>{producto.nombre}</option>
-                                                ))}
-                                            </select>
-                                        </label>
-                                        <label>
-                                            Obra:
-                                            <select name="obra" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
-                                                <option value="">Seleccione su obra</option>
-                                                {obras.map((obra, index) => (
-                                                    <option key={`${obra.id}-${index}`} value={obra.id}>{obra.nombre}</option>
-                                                ))}
-                                            </select>
-                                        </label>
-                                        <label>
-                                            Usuario:
-                                            <select name="usuario" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }}>
-                                                <option value="">Seleccione un usuario</option>
-                                                {usuarios.map((usuario, index) => (
-                                                    <option key={`${usuario.id}-${index}`} value={usuario.id}>{usuario.nombre}</option>
-                                                ))}
-                                                {usuarioLogueado && <option value={usuarioLogueado.id}>{usuarioLogueado.nombre}</option>}
-                                            </select>
-                                        </label>
-                                        <div>
-                                            <label>Urgencia:</label>
-                                            <div>
-                                                <Button variant={formData.urgencia === 1 ? 'primary' : 'secondary'} onClick={() => handleUrgenciaChange(1)}>Urgencia 1</Button>
-                                                <Button variant={formData.urgencia === 2 ? 'primary' : 'secondary'} onClick={() => handleUrgenciaChange(2)}>Urgencia 2</Button>
-                                                <Button variant={formData.urgencia === 3 ? 'primary' : 'secondary'} onClick={() => handleUrgenciaChange(3)}>Urgencia 3</Button>
-                                            </div>
-                                        </div>
-                                        <Form.Control name="cantidad" type="text" placeholder="Cantidad" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                        <button type="submit" style={{ display: 'none' }}>Crear Pedido</button>
-                                    </form>
+                                    <PedidoCard/>
                                 </div>
                             }
                         />
                     </div>
                     <div className='cardCategori'>
                         {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
-                            sortedPedidos.map(pedido => (
-                                <GenericCard
-                                    key={pedido.id_pedido}
-                                    titulo={`Pedido: ${pedido.id_producto.nombre}`}
-                                    foto={pedido.id_producto.imagen}
-                                    descrip1={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
-                                    descrip2={<><strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
-                                    descrip3={<><strong>Urgencia:</strong> {pedido.urgente} <strong>Cantidad:</strong> {pedido.cantidad}</>}
-                                    descrip4={<><strong>Fecha Inicio:</strong> {pedido.fechainicio ? pedido.fechainicio.split('-').reverse().join('/') : ''}</>}
-                                    descrip5={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento ? pedido.fechavencimiento.split('-').reverse().join('/') : ''}</>}
-                                    children={
-                                        <SendButton
-                                            onClick={() => deletePedido(pedido.id_pedido)}
+                            sortedPedidos.map(obra => (
+                                <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
+                                    children={obra.pedidos.map(pedido => (
+                                        <GenericCard
+                                            key={pedido.id_pedido}
+                                            foto={pedido.id_producto.imagen}
+                                            titulo={pedido.id_producto.nombre}
+                                            descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                                            descrip2={`Urgencia: ${pedido.urgente}`}
+                                            descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
+                                            descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
+                                            descrip5={`Obra: ${pedido.id_obra.nombre}`}
+                                            descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
+                                            children={
+                                                <SendButton backcolor="#D10000" letercolor="white" text='Rechazar Pedido' onClick={() => deletePedido(pedido.id_detalleobrapedido)}/>
+                                            }
                                         />
-                                    }
+                                    ))}
                                 />
                             ))
                         ) : (
