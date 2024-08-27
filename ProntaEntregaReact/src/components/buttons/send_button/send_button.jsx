@@ -17,15 +17,15 @@ export default function SendButton({
   id,
   hid,
   shadow = '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)',
-  hoverable = true,  // hoverable es true por defecto
-  disabled = false   // nuevo prop para manejar el estado deshabilitado
+  hoverable = true,
+  disabled = false
 }) {
   return (
     <Button
       onClick={onClick}
       hidden={hid}
       href={href}
-      className={hoverable ? 'send-button hoverable' : 'send-button'}
+      className={hoverable ? 'hoverable-send-button' : 'send-button'}
       style={{
         id: `${id}`,
         borderRadius: `${radius}rem`,
