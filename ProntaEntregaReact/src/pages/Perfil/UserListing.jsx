@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
@@ -79,20 +79,33 @@ function UserListing() {
     ];
 
     const filteredObras = obras.filter(obra => {
-        return (
-            obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.documento?.toLowerCase().includes(searchQuery.toLowerCase())
+        // Verificar las propiedades de la obra
+        const obraMatches = obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            obra.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            obra.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            obra.documento?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+        // Verificar los nombres de los usuarios asociados a la obra
+        const usuariosMatches = obra.usuarios?.some(usuario => 
+            usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
+    
+        return obraMatches || usuariosMatches;
     });
-
+    
     const sortedObras = [...filteredObras].sort((a, b) => {
         if (!orderCriteria) return 0;
         if (a[orderCriteria]?.toLowerCase() < b[orderCriteria]?.toLowerCase()) return -1;
         if (a[orderCriteria]?.toLowerCase() > b[orderCriteria]?.toLowerCase()) return 1;
         return 0;
     });
+
+    const filteredUsuariosSinObra = usuariosSinObra.filter(usuario => 
+        usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        usuario.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        usuario.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        usuario.documento?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div>
@@ -130,27 +143,32 @@ function UserListing() {
                             </GenericAccordion>
                         </div>
                     ))}
-                    <div key='NoObra' style={{ marginBottom: '0.1rem' }}>
-                        <GenericAccordion
-                            wide={'80%'}
-                            titulo='Usuarios sin Obra'
-                        >
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                                {usuariosSinObra.map(usuario => (
-                                    <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
-                                        <LittleCard
-                                            foto={usuario.imagen}
-                                            titulo={`${usuario.nombre} ${usuario.apellido}`}
-                                            descrip1={usuario.email}
-                                            descrip2={usuario.documento}
-                                            descrip3={usuario.telefono}
-                                            onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </GenericAccordion>
-                    </div>
+                    {filteredUsuariosSinObra.length > 0 && (
+                        <div key='NoObra' style={{ marginBottom: '0.1rem' }}>
+                            <GenericAccordion
+                                wide={'80%'}
+                                titulo='Usuarios sin Obra'
+                            >
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                    {filteredUsuariosSinObra.map(usuario => (
+                                        <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
+                                            <LittleCard
+                                                foto={usuario.imagen}
+                                                titulo={`${usuario.nombre} ${usuario.apellido}`}
+                                                descrip1={usuario.email}
+                                                descrip2={usuario.documento}
+                                                descrip3={usuario.telefono}
+                                                onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </GenericAccordion>
+                        </div>
+                    )}
+                    {sortedObras.length === 0 && filteredUsuariosSinObra.length === 0 && (
+                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras y/o usuarios disponibles.</p>
+                    )}
                 </div>
             </div>
         </div>
