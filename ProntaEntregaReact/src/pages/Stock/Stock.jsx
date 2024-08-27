@@ -84,8 +84,8 @@ function Stock() {
         setSearchQuery(value);
     };
 
-    if (Array.isArray(sortedObras) && sortedObras.length === 1) {
-        const obra = sortedObras[0];
+    if (Array.isArray(obras) && obras.length === 1) {
+        const obra = obras[0];
         navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } });
     }
     

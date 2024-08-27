@@ -21,7 +21,7 @@ import fetchUser from '../../../functions/fetchUser.jsx';
 
 import Modal from '../../../components/modals/Modal.jsx';
 import GenericAlert from '../../../components/alerts/generic_alert/GenericAlert.jsx';
-import AutoCompleteSelect from '../../../components/buttons/selectable_button/auto_complete_select.jsx';
+import AutoCompleteSelect from '../../../components/selects/auto_complete_select/auto_complete_select.jsx';
 
 function Products() {
     const navigate = useNavigate();
