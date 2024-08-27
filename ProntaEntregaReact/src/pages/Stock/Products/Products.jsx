@@ -17,6 +17,8 @@ import OfertaCard from '../../../components/cards/oferta_card/OfertaCard.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
+import fetchUser from '../../../functions/fetchUser.jsx';
+
 import Modal from '../../../components/modals/Modal.jsx';
 import GenericAlert from '../../../components/alerts/generic_alert/GenericAlert.jsx';
 import AutoCompleteSelect from '../../../components/buttons/selectable_button/auto_complete_select.jsx';
@@ -41,7 +43,7 @@ function Products() {
 
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [detalle, setDetalle] = useState([]);
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(fetchUser()); 
     const [newProduct, setNewProduct] = useState({
         nombre: "",
         descripcion: "",
@@ -62,10 +64,6 @@ function Products() {
             navigate('/login');
             return;
         }
-
-        fetchData(`userToken/${token}`, token).then((result) => {
-            setUser(result);
-        });
 
         fetchData(`GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token).then((result) => {
             setProducts(result);
@@ -129,7 +127,7 @@ function Products() {
     const filters = [
         { type: 'nombre', label: 'Nombre Alfabético' },
         { type: 'total', label: 'Cantidad' },
-        { type: 'product.unidadmedida', label: 'Unidad de Medida' },
+        { type: 'unidadmedida', label: 'Unidad de Medida' },
     ];
 
     const handleSearchChange = (value) => {
@@ -158,15 +156,17 @@ function Products() {
 
     const handleCreateProduct = async () => {
         try {
-            if (!newProduct.nombre || !newProduct.descripcion || !newProduct.unidadmedida) {
-                setAlertMessage('Por favor complete todos los campos');
-                setShowAlert(true);
-                return false;
-            }
-            const createdProduct = await postData(`crear_productos/`, newProduct, token);
+            const data = new FormData();
+            data.append('imagen', newProduct.imagen);
+            data.append('nombre', newProduct.nombre);
+            data.append('descripcion', newProduct.descripcion);
+            data.append('unidadmedida', newProduct.unidadmedida);
+            data.append('id_categoria', newProduct.id_categoria);
+
+            const createdProduct = await postData(`crear_productos/`, data, token);
             handleSave(parseFloat(cantidadRef.current.value), null, createdProduct.id_producto);
         } catch (error) {
-            console.error('Error fetching user or posting data:', error);
+            console.error('Error creating product:', error);
             setAlertMessage('Ocurrió un error. Por favor, inténtelo de nuevo.');
             setShowAlert(true);
             return false;
@@ -329,15 +329,7 @@ function Products() {
                                     <Icon 
                                         icon="line-md:alert-circle-twotone" 
                                         className="hoverable-icon"
-                                        style={{
-                                            width: "2rem", 
-                                            height: "2rem", 
-                                            position: "absolute", 
-                                            top: "0.5rem", 
-                                            right: "0.5rem", 
-                                            color: "#858585",
-                                            transition: "transform 0.3s"
-                                        }} 
+                                        style={{ width: "2rem", height: "2rem", position: "absolute", top: "0.5rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
                                         onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
                                     />
                                     <Modal buttonTextColor="black" buttonColor="#D9D9D9" openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
