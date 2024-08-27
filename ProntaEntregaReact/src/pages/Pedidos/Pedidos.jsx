@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
@@ -101,6 +102,12 @@ function Pedidos() {
         });
     };
 
+    const createAportePedido = (pedidoId) => {
+        postData('crear_aporte_pedido/', { id_pedido: pedidoId }, token).then(() => {
+            window.location.reload();
+        });
+    };
+
     const filters = [
         { type: 'pedido.fechainicio', label: 'Fecha Inicio' },
         { type: 'pedido.fechavencimiento', label: 'Fecha Vencimiento' },
@@ -171,10 +178,9 @@ function Pedidos() {
                                             titulo={pedido.id_producto.nombre}
                                             descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
                                             descrip2={`Urgencia: ${pedido.urgente}`}
-                                            descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
-                                            descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
-                                            descrip5={`Obra: ${pedido.id_obra.nombre}`}
-                                            descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
+                                            descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
+                                            descrip4={`Obra: ${pedido.id_obra.nombre}`}
+                                            descrip5={`Usuario: ${pedido.id_usuario.nombre}`}
                                             children={
                                                 <>
                                                 <Icon 
@@ -184,7 +190,27 @@ function Pedidos() {
                                                     onClick={() => setSelectedPedidoId(`${pedido.id_pedido} ${obra.obra.id_obra}`)}
                                                 />
                                                     <Modal showButton={false} showDeleteButton={true} showModal={selectedPedidoId === `${pedido.id_pedido} ${obra.obra.id_obra}`} saveButtonText={'Tomar'}
-                                                    handleCloseModal={() => setSelectedPedidoId(null)} deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)} deleteButtonText={'Rechazar'}/>
+                                                        handleCloseModal={() => setSelectedPedidoId(null)} deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)} deleteButtonText={'Rechazar'}
+                                                        title={'Tomar Pedido'} handleSave={() => createAportePedido()} content={
+                                                            <div>
+                                                                <GenericCard
+                                                                    key={pedido.id_pedido}
+                                                                    foto={pedido.id_producto.imagen}
+                                                                    titulo={pedido.id_producto.nombre}
+                                                                    descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                                                                    descrip2={`Urgencia: ${pedido.urgente}`}
+                                                                    descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
+                                                                    descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
+                                                                    descrip5={`Obra: ${pedido.id_obra.nombre}`}
+                                                                    descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
+                                                                />
+                                                                <Form.Group className="mb-2" controlId="formBasicCantidad">
+                                                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Ingrese la cantidad que quiere pedir</Form.Label>
+                                                                    <Form.Control name="cantidad" type="number" placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                                                </Form.Group>
+                                                            </div>
+                                                        }
+                                                    />
                                                 </>
                                             }
                                         />
