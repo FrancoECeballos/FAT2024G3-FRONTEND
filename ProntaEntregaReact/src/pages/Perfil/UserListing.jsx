@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
@@ -100,6 +100,13 @@ function UserListing() {
         return 0;
     });
 
+    const filteredUsuariosSinObra = usuariosSinObra.filter(usuario => 
+        usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        usuario.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        usuario.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        usuario.documento?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div>
             <FullNavbar />
@@ -136,14 +143,14 @@ function UserListing() {
                             </GenericAccordion>
                         </div>
                     ))}
-                    {usuariosSinObra.length > 0 && (
+                    {filteredUsuariosSinObra.length > 0 && (
                         <div key='NoObra' style={{ marginBottom: '0.1rem' }}>
                             <GenericAccordion
                                 wide={'80%'}
                                 titulo='Usuarios sin Obra'
                             >
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                                    {usuariosSinObra.map(usuario => (
+                                    {filteredUsuariosSinObra.map(usuario => (
                                         <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
                                             <LittleCard
                                                 foto={usuario.imagen}
@@ -158,6 +165,9 @@ function UserListing() {
                                 </div>
                             </GenericAccordion>
                         </div>
+                    )}
+                    {sortedObras.length === 0 && filteredUsuariosSinObra.length === 0 && (
+                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras y/o usuarios disponibles.</p>
                     )}
                 </div>
             </div>
