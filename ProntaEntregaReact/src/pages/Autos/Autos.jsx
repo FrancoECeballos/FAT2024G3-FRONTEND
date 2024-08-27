@@ -93,28 +93,33 @@ function AutosComponent() {
         }
     };
 
-    const handleCreateAuto = async (id) => {
+    const handleCreateAuto = async () => {
+        if (!formData.imagen) {
+            console.error('No image file selected');
+            return;
+        }
+    
         const data = new FormData();
         data.append('imagen', formData.imagen);
         data.append('marca', formData.marca);
         data.append('modelo', formData.modelo);
         data.append('patente', formData.patente);
         data.append('kilometraje', formData.kilometraje);
-
+    
         try {
             const result = await postData(`crear_transporte/`, data, token);
             await postData(`crear_detalle_transporte/`, { id_obra: obraId, id_transporte: result.id_transporte }, token);
             window.location.reload();
         } catch (error) {
-            console.error('Error updating auto:', error);
+            console.error('Error creating auto:', error);
         }
     };
 
-    const handleFileChange = (event) => {
-        setFormData({
-            ...formData,
-            imagen: event.target.files[0]
-        });
+    const handleFileChange = (file) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            imagen: file,
+        }));
     };
 
     const handleUpdateAuto = async (id) => {
@@ -218,7 +223,7 @@ function AutosComponent() {
                 <div className="auto-modal">
                     <Modal title='Nuevo Auto' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su auto? Añadalo' content={
                         <>
-                            <input type="file" name="imagen" onChange={handleFileChange} />
+                            <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
                             <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
                             <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
                             <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
