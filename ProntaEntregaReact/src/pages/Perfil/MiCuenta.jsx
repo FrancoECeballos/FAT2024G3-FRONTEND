@@ -18,13 +18,13 @@ function MiCuenta(){
     }, [token]);
 
     return (
-        <div style={{backgroundColor: '#ECECEC'}}>
+        <div style={{backgroundColor: '#ECECEC',overflowX:"hidden", position:'fixed',width:"100%"}}>
             <FullNavbar/>
             <Row>
                 <Col xs={3} sm={3} md={3} lg={3} xl={3} xxl={3}>
                     <Sidebar isAdmin={user.is_staff}/>
                 </Col>
-                <Col style={{overflowY: "scroll", overflowX:"hidden", width:"100%", height:"100vh"}} xs={9} sm={9} md={9} lg={9} xl={9} xxl={9}>
+                <Col style={{overflowY: "scroll", overflowX:"hidden", width:"70%", height:"100vh",scrollbarWidth:"none"}} xs={9} sm={9} md={9} lg={9} xl={9} xxl={9}>
                     <Cuenta/>
                 </Col>
             </Row>
