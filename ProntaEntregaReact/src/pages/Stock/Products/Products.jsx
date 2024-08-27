@@ -156,15 +156,17 @@ function Products() {
 
     const handleCreateProduct = async () => {
         try {
-            if (!newProduct.nombre || !newProduct.descripcion || !newProduct.unidadmedida) {
-                setAlertMessage('Por favor complete todos los campos');
-                setShowAlert(true);
-                return false;
-            }
-            const createdProduct = await postData(`crear_productos/`, newProduct, token);
+            const data = new FormData();
+            data.append('imagen', newProduct.imagen);
+            data.append('nombre', newProduct.nombre);
+            data.append('descripcion', newProduct.descripcion);
+            data.append('unidadmedida', newProduct.unidadmedida);
+            data.append('id_categoria', newProduct.id_categoria);
+
+            const createdProduct = await postData(`crear_productos/`, data, token);
             handleSave(parseFloat(cantidadRef.current.value), null, createdProduct.id_producto);
         } catch (error) {
-            console.error('Error fetching user or posting data:', error);
+            console.error('Error creating product:', error);
             setAlertMessage('Ocurrió un error. Por favor, inténtelo de nuevo.');
             setShowAlert(true);
             return false;
