@@ -10,13 +10,13 @@ import Modal from '../../components/modals/Modal.jsx';
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 import GenericAccordion from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../functions/postData.jsx';
-import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import { Icon } from '@iconify/react';
 
 function Pedidos() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [pedidos, setPedidos] = useState([]);
-    const [showPedidoModal, setShowPedidoModal] = useState(false);
+    const [selectedPedidoId, setSelectedPedidoId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [usuarioLogueado, setUsuarioLogueado] = useState(null);
@@ -25,7 +25,7 @@ function Pedidos() {
         producto: "",
         obra: "",
         usuario: "",
-        urgencia: 1, // Valor inicial de urgencia
+        urgencia: 1,
         cantidad: ""
     });
 
@@ -166,7 +166,6 @@ function Pedidos() {
                                 <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
                                     children={obra.pedidos.map(pedido => (
                                         <GenericCard
-                                            onClick={setShowPedidoModal(true)}
                                             key={pedido.id_pedido}
                                             foto={pedido.id_producto.imagen}
                                             titulo={pedido.id_producto.nombre}
@@ -178,7 +177,14 @@ function Pedidos() {
                                             descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
                                             children={
                                                 <>
-                                                    <Modal showButton={false} showDeleteButton={true} showModal={showPedidoModal} deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)}/>
+                                                <Icon 
+                                                    icon="line-md:edit-twotone" 
+                                                    className="hoverable-icon"
+                                                    style={{ width: "2rem", height: "2rem", position: "absolute", top: "0.5rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
+                                                    onClick={() => setSelectedPedidoId(`${pedido.id_pedido} ${obra.obra.id_obra}`)}
+                                                />
+                                                    <Modal showButton={false} showDeleteButton={true} showModal={selectedPedidoId === `${pedido.id_pedido} ${obra.obra.id_obra}`} saveButtonText={'Tomar'}
+                                                    handleCloseModal={() => setSelectedPedidoId(null)} deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)} deleteButtonText={'Rechazar'}/>
                                                 </>
                                             }
                                         />

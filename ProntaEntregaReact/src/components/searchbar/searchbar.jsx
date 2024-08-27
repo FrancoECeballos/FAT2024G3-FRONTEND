@@ -33,8 +33,8 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
 
                 <Dropdown.Menu>
                     {filters.map(filter => (
-                        <div>
-                            <Dropdown.Item key={filter.type} onClick={() => { handleFilterChange(filter.type, filter.label); }}>
+                        <div key={filter.type}>
+                            <Dropdown.Item onClick={() => { handleFilterChange(filter.type, filter.label); }}>
                                 {filter.label}
                             </Dropdown.Item>
                             <div style={{border:"1px solid #D9D9D9"}}></div>
@@ -47,4 +47,3 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
 };
 
 export default SearchBar;
-                       
