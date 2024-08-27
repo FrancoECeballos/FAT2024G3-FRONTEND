@@ -6,6 +6,7 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
+import fetchUser from '../../functions/fetchUser';
 import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
@@ -20,7 +21,7 @@ function Pedidos() {
     const [selectedPedidoId, setSelectedPedidoId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
-    const [usuarioLogueado, setUsuarioLogueado] = useState(null);
+    const [user, setUser] = useState(fetchUser());
 
     const [formData, setFormData] = useState({
         producto: "",
@@ -37,8 +38,6 @@ function Pedidos() {
         }
 
         fetchData(`/userToken/${token}`, token).then((result) => {
-            setUsuarioLogueado(result);
-
             if (result.is_superuser) {
                 fetchData(`get_pedido_for_admin/`, token).then((result) => {
                     setPedidos(result);
@@ -155,6 +154,7 @@ function Pedidos() {
                 <div className='pedido-list'>
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                         <Modal
+                            tamaño={'lg'}
                             openButtonText='¿No encuentra su pedido? Añadalo'
                             openButtonWidth='20'
                             title='Nuevo Pedido'
@@ -162,7 +162,7 @@ function Pedidos() {
                             handleSave={handleCreatePedido}
                             content={
                                 <div>
-                                    <PedidoCard/>
+                                    <PedidoCard user={user} stocksDisponibles={pedidos}/>
                                 </div>
                             }
                         />
@@ -197,7 +197,7 @@ function Pedidos() {
                                                                     key={pedido.id_pedido}
                                                                     foto={pedido.id_producto.imagen}
                                                                     titulo={pedido.id_producto.nombre}
-                                                                    descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                                                                    descrip1={`Cantidad: ${"hola"} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
                                                                     descrip2={`Urgencia: ${pedido.urgente}`}
                                                                     descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
                                                                     descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
@@ -205,7 +205,7 @@ function Pedidos() {
                                                                     descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
                                                                 />
                                                                 <Form.Group className="mb-2" controlId="formBasicCantidad">
-                                                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Ingrese la cantidad que quiere pedir</Form.Label>
+                                                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Ingrese la cantidad que quiere aportar</Form.Label>
                                                                     <Form.Control name="cantidad" type="number" placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                                                 </Form.Group>
                                                             </div>

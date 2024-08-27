@@ -4,7 +4,7 @@ import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
 import './PedidoCard.scss';
 
-const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
+const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibles, stocksDisponibles }, ref) => {
     const [obras, setObras] = useState([]);
 
     const today = new Date();
@@ -21,7 +21,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
         "id_usuario": user ? user.id_usuario : "",
         "cantidad": 0,
         "urgente": 1,
-        "id_producto": productDefault.id_producto,
+        "id_producto": productDefault ? productDefault.id_producto: "",
         "id_estadoPedido": 3,
         "obras": []
     });
@@ -37,7 +37,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
         let transformedValue = value;
     
         switch (name) {
-            case 'cantidad': case 'urgente':
+            case 'cantidad': case 'urgente': case 'id_obra': case 'id_producto':
                 transformedValue = parseInt(value, 10); break;
             default: break;
         }
@@ -123,10 +123,36 @@ const PedidoCard = forwardRef(({ productDefault, user, stock }, ref) => {
                                     <option value="4">Inmediato</option>
                                 </Form.Control>
                             </Form.Group>
+
+                            {!stock && (
+                                <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que Pide (*)</Form.Label>
+                                    <Form.Control name="id_obra" as="select" onChange={handleInputChange} defaultValue="">
+                                        <option value="" hidden>Seleccione una Obra</option>
+                                        {stocksDisponibles.map(stock => (
+                                            <option key={stock.stock[0].id_stock} value={stock.stock[0].id_stock}>{stock.stock[0].id_obra.nombre}</option>
+                                        ))}
+                                    </Form.Control>
+                                </Form.Group>
+                            )}
+
+                            {/*!productDefault && (
+                                <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Urgencia (*)</Form.Label>
+                                    <Form.Control name="urgente" as="select" onChange={handleInputChange}>
+                                        <option value="" selected hidden>Seleccione un Producto</option>
+                                        {productosDisponibles.map(producto => (
+                                            <option key={producto.id_producto} value={producto.id_producto}>{producto.nombre}</option>
+                                        ))}
+                                    </Form.Control>
+                                </Form.Group>
+                            )*/}
+
+
                         </Col>
                         <Col xs={12} md={6}>
                             <Form.Group  className="mb-2" controlId="formBasicObras">
-                                <Form.Label className="font-rubik " style={{ fontSize: '0.8rem' }}>Obras (*)</Form.Label>
+                                <Form.Label className="font-rubik " style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
                                 <div className='cardscasas'> {/* Ajusta el margen si es necesario */}
                                     {obras.map(obra => (
                                         <SelectableCard mar={"0.2rem"} pad={"0px"} height={"5rem"} wide={"98%"} key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)}/>
