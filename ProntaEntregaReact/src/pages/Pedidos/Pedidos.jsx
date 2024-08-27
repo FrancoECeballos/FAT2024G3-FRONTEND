@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
@@ -16,6 +16,8 @@ import { Icon } from '@iconify/react';
 function Pedidos() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
+    const [cantidad, setCantidad] = useState('');
+    const [error, setError] = useState('');
     const [pedidos, setPedidos] = useState([]);
     const [selectedPedidoId, setSelectedPedidoId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -63,19 +65,27 @@ function Pedidos() {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setFormData((prevData) => {
-            const updatedData = { ...prevData, [name]: value };
-            console.log(updatedData);
-            return updatedData;
-        });
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value
+        }));
     };
 
     const handleUrgenciaChange = (nivel) => {
-        setFormData((prevData) => ({
-            ...prevData,
+        setFormData(prevFormData => ({
+            ...prevFormData,
             urgencia: nivel
         }));
     };
+
+    const handleChange = (event) => {
+        setCantidad(event.target.value);
+        if (event.target.value === '') {
+          setError('La cantidad no puede estar vacía');
+        } else {
+          setError('');
+        }
+      };
 
     const handleCreatePedido = () => {
         const fechaInicio = new Date();
@@ -102,11 +112,30 @@ function Pedidos() {
         });
     };
 
-    const createAportePedido = (pedidoId) => {
-        postData('crear_aporte_pedido/', { id_pedido: pedidoId }, token).then(() => {
-            window.location.reload();
+    const createAportePedido = (pedidoId, usuarioId, fecha, cantidad) => {
+        const data = {
+            id_pedido: pedidoId,
+            id_usuario: usuarioId,
+            fecha: fecha,
+            cantidad: cantidad
+        };
+    
+        postData('crear_aporte_pedido/', data, token).then(() => {
+            console.log('Aporte del pedido creado');
+            // Aquí puedes agregar lógica adicional, como actualizar el estado o mostrar una notificación
+        }).catch(error => {
+            console.error('Error creating aporte pedido:', error);
         });
     };
+
+    const handleSubmit = () => {
+        if (cantidad === '') {
+          setError('La cantidad no puede estar vacía');
+        } else {
+          // Lógica para manejar el envío del formulario
+          console.log('Cantidad enviada:', cantidad);
+        }
+      };
 
     const filters = [
         { type: 'pedido.fechainicio', label: 'Fecha Inicio' },
@@ -147,84 +176,109 @@ function Pedidos() {
     });
 
     return (
-        <div>
-            <FullNavbar selectedPage='Pedidos' />
-            <div className='margen-arriba'>
-                <h2 style={{ marginLeft: '7rem' }}>Pedidos</h2>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                <div className='pedido-list'>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
-                        <Modal
-                            openButtonText='¿No encuentra su pedido? Añadalo'
-                            openButtonWidth='20'
-                            title='Nuevo Pedido'
-                            saveButtonText='Crear'
-                            handleSave={handleCreatePedido}
-                            content={
-                                <div>
-                                    <PedidoCard/>
-                                </div>
-                            }
-                        />
-                    </div>
-                    <div className='cardCategori'>
-                        {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
-                            sortedPedidos.map(obra => (
-                                <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
-                                    children={obra.pedidos.map(pedido => (
-                                        <GenericCard hoverable={false}
-                                            key={pedido.id_pedido}
-                                            foto={pedido.id_producto.imagen}
-                                            titulo={pedido.id_producto.nombre}
-                                            descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
-                                            descrip2={`Urgencia: ${pedido.urgente}`}
-                                            descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
-                                            descrip4={`Obra: ${pedido.id_obra.nombre}`}
-                                            descrip5={`Usuario: ${pedido.id_usuario.nombre}`}
-                                            children={
-                                                <>
-                                                <Icon 
-                                                    icon="line-md:edit-twotone" 
-                                                    className="hoverable-icon"
-                                                    style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }} 
-                                                    onClick={() => setSelectedPedidoId(`${pedido.id_pedido} ${obra.obra.id_obra}`)}
-                                                />
-                                                    <Modal showButton={false} showDeleteButton={true} showModal={selectedPedidoId === `${pedido.id_pedido} ${obra.obra.id_obra}`} saveButtonText={'Tomar'}
-                                                        handleCloseModal={() => setSelectedPedidoId(null)} deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)} deleteButtonText={'Rechazar'}
-                                                        title={'Tomar Pedido'} handleSave={() => createAportePedido()} content={
-                                                            <div>
-                                                                <GenericCard
-                                                                    key={pedido.id_pedido}
-                                                                    foto={pedido.id_producto.imagen}
-                                                                    titulo={pedido.id_producto.nombre}
-                                                                    descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
-                                                                    descrip2={`Urgencia: ${pedido.urgente}`}
-                                                                    descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
-                                                                    descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
-                                                                    descrip5={`Obra: ${pedido.id_obra.nombre}`}
-                                                                    descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
-                                                                />
-                                                                <Form.Group className="mb-2" controlId="formBasicCantidad">
-                                                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Ingrese la cantidad que quiere pedir</Form.Label>
-                                                                    <Form.Control name="cantidad" type="number" placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
-                                                                </Form.Group>
-                                                            </div>
-                                                        }
-                                                    />
-                                                </>
-                                            }
-                                        />
-                                    ))}
-                                />
-                            ))
-                        ) : (
-                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}> No hay pedidos disponibles.</p>
-                        )}
-                    </div>
+    <div>
+      <FullNavbar selectedPage='Pedidos' />
+      <div className='margen-arriba'>
+        <h2 style={{ marginLeft: '7rem' }}>Pedidos</h2>
+        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+        <div className='pedido-list'>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
+            <Modal
+              openButtonText='¿No encuentra su pedido? Añadalo'
+              openButtonWidth='20'
+              title='Nuevo Pedido'
+              saveButtonText='Crear'
+              handleSave={handleCreatePedido}
+              content={
+                <div>
+                  <PedidoCard />
                 </div>
-            </div>
+              }
+            />
+          </div>
+          <div className='cardCategori'>
+            {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
+              sortedPedidos.map(obra => (
+                <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
+                  children={obra.pedidos.map(pedido => (
+                    <GenericCard hoverable={false}
+                      key={pedido.id_pedido}
+                      foto={pedido.id_producto.imagen}
+                      titulo={pedido.id_producto.nombre}
+                      descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                      descrip2={`Urgencia: ${pedido.urgente}`}
+                      descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
+                      descrip4={`Obra: ${pedido.id_obra.nombre}`}
+                      descrip5={`Usuario: ${pedido.id_usuario.nombre}`}
+                      children={
+                        <>
+                          <Icon
+                            icon="line-md:edit-twotone"
+                            className="hoverable-icon"
+                            style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
+                            onClick={() => setSelectedPedidoId(`${pedido.id_pedido} ${obra.obra.id_obra}`)}
+                          />
+                          <Modal
+                            showButton={false}
+                            showDeleteButton={true}
+                            showModal={selectedPedidoId === `${pedido.id_pedido} ${obra.obra.id_obra}`}
+                            saveButtonText={'Tomar'}
+                            handleCloseModal={() => setSelectedPedidoId(null)}
+                            deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)}
+                            deleteButtonText={'Rechazar'}
+                            title={'Tomar Pedido'}
+                            handleSave={() => createAportePedido(pedido.id_pedido, usuarioLogueado.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                            content={
+                              <div>
+                                <GenericCard
+                                  key={pedido.id_pedido}
+                                  foto={pedido.id_producto.imagen}
+                                  titulo={pedido.id_producto.nombre}
+                                  descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                                  descrip2={`Urgencia: ${pedido.urgente}`}
+                                  descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
+                                  descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
+                                  descrip5={`Obra: ${pedido.id_obra.nombre}`}
+                                  descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
+                                />
+                                <Form.Group className="mb-2" controlId="formBasicCantidad">
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                    Ingrese la cantidad que quiere pedir
+                                </Form.Label>
+                                <Form.Control
+                                    name="cantidad"
+                                    type="number"
+                                    placeholder="Ingrese la cantidad"
+                                    value={cantidad}
+                                    onChange={handleChange}
+                                    onKeyDown={(event) => {
+                                    if (
+                                        !/[0-9.]/.test(event.key) &&
+                                        !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)
+                                    ) {
+                                        event.preventDefault();
+                                    }
+                                    }}
+                                />
+                                {error && <p style={{ color: 'red' }}>{error}</p>}
+                                </Form.Group>
+                              </div>
+                            }
+                          />
+                        </>
+                      }
+                    />
+                  ))}
+                />
+              ))
+            ) : (
+              <p style={{ marginLeft: '7rem', marginTop: '1rem' }}> No hay pedidos disponibles.</p>
+            )}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default Pedidos;
