@@ -74,7 +74,7 @@ const Datos = () => {
                 <input type="email" id="email" name="email" value={userData.email} disabled className="form-control" />
     
                 <label htmlFor="fecha_union">Fecha de unión:</label>
-                <input type="text" id="fecha_union" name="fecha_union" value={userData.fecha_union} disabled className="form-control" />
+                <input type="text" id="fecha_union" name="fecha_union" value={userData.fechaUnion} disabled className="form-control" />
               </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={6}>
