@@ -79,14 +79,20 @@ function UserListing() {
     ];
 
     const filteredObras = obras.filter(obra => {
-        return (
-            obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            obra.documento?.toLowerCase().includes(searchQuery.toLowerCase())
+        // Verificar las propiedades de la obra
+        const obraMatches = obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            obra.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            obra.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            obra.documento?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+        // Verificar los nombres de los usuarios asociados a la obra
+        const usuariosMatches = obra.usuarios?.some(usuario => 
+            usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
+    
+        return obraMatches || usuariosMatches;
     });
-
+    
     const sortedObras = [...filteredObras].sort((a, b) => {
         if (!orderCriteria) return 0;
         if (a[orderCriteria]?.toLowerCase() < b[orderCriteria]?.toLowerCase()) return -1;
@@ -130,27 +136,29 @@ function UserListing() {
                             </GenericAccordion>
                         </div>
                     ))}
-                    <div key='NoObra' style={{ marginBottom: '0.1rem' }}>
-                        <GenericAccordion
-                            wide={'80%'}
-                            titulo='Usuarios sin Obra'
-                        >
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                                {usuariosSinObra.map(usuario => (
-                                    <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
-                                        <LittleCard
-                                            foto={usuario.imagen}
-                                            titulo={`${usuario.nombre} ${usuario.apellido}`}
-                                            descrip1={usuario.email}
-                                            descrip2={usuario.documento}
-                                            descrip3={usuario.telefono}
-                                            onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </GenericAccordion>
-                    </div>
+                    {usuariosSinObra.length > 0 && (
+                        <div key='NoObra' style={{ marginBottom: '0.1rem' }}>
+                            <GenericAccordion
+                                wide={'80%'}
+                                titulo='Usuarios sin Obra'
+                            >
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                    {usuariosSinObra.map(usuario => (
+                                        <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
+                                            <LittleCard
+                                                foto={usuario.imagen}
+                                                titulo={`${usuario.nombre} ${usuario.apellido}`}
+                                                descrip1={usuario.email}
+                                                descrip2={usuario.documento}
+                                                descrip3={usuario.telefono}
+                                                onSelect={() => navigate(`/perfil/micuenta`, { state: { user_email: usuario.email } })}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </GenericAccordion>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
