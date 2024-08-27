@@ -16,6 +16,7 @@ function Pedidos() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [pedidos, setPedidos] = useState([]);
+    const [showPedidoModal, setShowPedidoModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [usuarioLogueado, setUsuarioLogueado] = useState(null);
@@ -165,6 +166,7 @@ function Pedidos() {
                                 <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
                                     children={obra.pedidos.map(pedido => (
                                         <GenericCard
+                                            onClick={setShowPedidoModal(true)}
                                             key={pedido.id_pedido}
                                             foto={pedido.id_producto.imagen}
                                             titulo={pedido.id_producto.nombre}
@@ -175,7 +177,9 @@ function Pedidos() {
                                             descrip5={`Obra: ${pedido.id_obra.nombre}`}
                                             descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
                                             children={
-                                                <SendButton backcolor="#D10000" letercolor="white" text='Rechazar Pedido' onClick={() => deletePedido(pedido.id_detalleobrapedido)}/>
+                                                <>
+                                                    <Modal showButton={false} showDeleteButton={true} showModal={showPedidoModal} deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)}/>
+                                                </>
                                             }
                                         />
                                     ))}

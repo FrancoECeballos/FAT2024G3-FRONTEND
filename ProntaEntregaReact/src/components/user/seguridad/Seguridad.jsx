@@ -1,5 +1,4 @@
 import React from "react";
-import './Seguridad.scss';
 import user from '../../../assets/user_default.png';
 
 const Seguridad = () => {

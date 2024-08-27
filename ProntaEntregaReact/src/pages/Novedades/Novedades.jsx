@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
-import SelectButton from '../../components/buttons/selectable_button/select_button.jsx';
-import AutoCompleteSelect from '../../components/buttons/selectable_button/auto_complete_select.jsx';
+import SelectButton from '../../components/selects/select_button/select_button.jsx';
+import AutoCompleteSelect from '../../components/selects/auto_complete_select/auto_complete_select.jsx';
 import Cookies from 'js-cookie';
 
 import fetchData from '../../functions/fetchData.jsx';
