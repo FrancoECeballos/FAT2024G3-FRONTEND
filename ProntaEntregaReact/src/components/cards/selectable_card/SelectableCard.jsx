@@ -10,7 +10,7 @@ function SelectableCard ({ wide, id, titulo, foto, onCardSelect, isSelected, hei
     return (
         <Card 
             style={{width:`${wide}`, height:`${height}`, marginTop:`${mar}`, boxShadow:`${shadow}`}} 
-            className={`card ${isSelected ? 'selected' : ''} ${hoverable ? 'hoverable' : ''}`} 
+            className={`card ${isSelected ? 'selected' : ''} ${hoverable ? 'hoverable-selectable-card' : ''}`} 
             onClick={toggleSelection}
         >
             <Card.Body style={{padding:`${pad}`}}>

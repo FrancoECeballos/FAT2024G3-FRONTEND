@@ -1,10 +1,10 @@
 .send-button {
     transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, font-weight 0s, transform 0.3s;
+}
 
-    &.hoverable:hover {
-        background-color: darken(#D9D9D9, 10%);
-        color: white;
-        box-shadow: 0.15rem 0.35rem 0.25rem rgba(0, 0, 0, 0.4);
-        transform: scale(1.02);
-    }
+.hoverable-send-button:hover {
+    background-color: darken(#D9D9D9, 10%);
+    color: white;
+    box-shadow: 0.15rem 0.35rem 0.25rem rgba(0, 0, 0, 0.4);
+    transform: scale(1.02);
 }

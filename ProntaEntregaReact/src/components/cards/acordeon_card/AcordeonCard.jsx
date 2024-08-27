@@ -8,7 +8,7 @@ function AcordeonCard({foto, titulo, acordeonTitle, descrip1, descrip2, children
         <div className="acordeon-card-container">
             <Card 
                 onClick={onClick} 
-                className={`acordeon-card ${hoverable ? "hoverable" : ""}`}
+                className={`acordeon-card ${hoverable ? "hoverable-acordeon-card" : ""}`}
             >
                 <Row className="g-0 acordeon-card-row">
                     <Col xs={4} md={2} className="acordeon-card-col-img">
