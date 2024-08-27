@@ -92,7 +92,7 @@ function Ofertas() {
                 <div className='oferta-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                         <Modal
-                            openButtonText='¿No encuentra su pedido? Añadalo' 
+                            openButtonText='¿No encuentra su oferta? Añadala' 
                             openButtonWidth='20' 
                             title='Nuevo Oferta' 
                             saveButtonText='Crear' 

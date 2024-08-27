@@ -172,7 +172,7 @@ function Pedidos() {
                             sortedPedidos.map(obra => (
                                 <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
                                     children={obra.pedidos.map(pedido => (
-                                        <GenericCard
+                                        <GenericCard hoverable={false}
                                             key={pedido.id_pedido}
                                             foto={pedido.id_producto.imagen}
                                             titulo={pedido.id_producto.nombre}
@@ -186,7 +186,7 @@ function Pedidos() {
                                                 <Icon 
                                                     icon="line-md:edit-twotone" 
                                                     className="hoverable-icon"
-                                                    style={{ width: "2rem", height: "2rem", position: "absolute", top: "0.5rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
+                                                    style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }} 
                                                     onClick={() => setSelectedPedidoId(`${pedido.id_pedido} ${obra.obra.id_obra}`)}
                                                 />
                                                     <Modal showButton={false} showDeleteButton={true} showModal={selectedPedidoId === `${pedido.id_pedido} ${obra.obra.id_obra}`} saveButtonText={'Tomar'}
