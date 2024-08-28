@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericAccordion from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
+import Loading from '../../components/loading/loading.jsx'; // Importa el componente Loading
 
 import fetchData from '../../functions/fetchData';
 import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
@@ -13,7 +14,7 @@ function UserListing() {
     const navigate = useNavigate();
     const [obras, setObras] = useState([]);
     const [usuariosSinObra, setUsuariosSinObra] = useState([]);
-
+    const [isLoading, setIsLoading] = useState(true); // Estado para el loading
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const token = Cookies.get('token');
@@ -24,38 +25,33 @@ function UserListing() {
             return;
         }
     
-        fetchData(`userToken/${token}/`, token).then(result => {
-            if (result.is_superuser) {
-                fetchData(`obra/`, token).then(result => {
-                    const obrasWithUsuarios = result.map(async obra => {
+        const fetchObras = async () => {
+            try {
+                const userToken = await fetchData(`userToken/${token}/`, token);
+                if (userToken.is_superuser) {
+                    const obras = await fetchData(`obra/`, token);
+                    const obrasWithUsuarios = await Promise.all(obras.map(async obra => {
                         const usuarios = await fetchData(`/user/obra/${obra.id_obra}/`, token);
                         return { ...obra, usuarios };
-                    });
-                    Promise.all(obrasWithUsuarios).then(updatedObras => {
-                        setObras(updatedObras);
-                        console.log(updatedObras);
-                    }).catch(error => {
-                        console.error('Hubo un error al obtener los usuarios para las obras', error);
-                    });
-                });
-            } else {
-                fetchData(`/obra/user/${token}/`, token).then(result => {
-                    const obrasWithUsuarios = result.map(async obra => {
+                    }));
+                    setObras(obrasWithUsuarios);
+                } else {
+                    const obras = await fetchData(`/obra/user/${token}/`, token);
+                    const obrasWithUsuarios = await Promise.all(obras.map(async obra => {
                         const usuarios = await fetchData(`/user/obra/${obra.id_obra}/`, token);
                         return { ...obra, usuarios };
-                    });
-                    Promise.all(obrasWithUsuarios).then(updatedObras => {
-                        setObras(updatedObras);
-                        console.log(updatedObras);
-                    }).catch(error => {
-                        console.error('Hubo un error al obtener los usuarios para las obras', error);
-                    });
-                });
+                    }));
+                    setObras(obrasWithUsuarios);
+                }
+            } catch (error) {
+                console.error('Hubo un error al obtener las obras y los usuarios', error);
+            } finally {
+                setIsLoading(false); // Desactiva el loading cuando los datos estén listos
             }
-        }).catch(error => {
-            console.error('Hubo un error al obtener el token del usuario', error);
-        });
+        };
 
+        fetchObras();
+        
         fetchData(`user/obra/null/`, token).then(result => {
             setUsuariosSinObra(result);
             console.log(result);
@@ -79,13 +75,11 @@ function UserListing() {
     ];
 
     const filteredObras = obras.filter(obra => {
-        // Verificar las propiedades de la obra
         const obraMatches = obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             obra.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             obra.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             obra.documento?.toLowerCase().includes(searchQuery.toLowerCase());
     
-        // Verificar los nombres de los usuarios asociados a la obra
         const usuariosMatches = obra.usuarios?.some(usuario => 
             usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -106,6 +100,10 @@ function UserListing() {
         usuario.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         usuario.documento?.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    if (isLoading) {
+        return <div><FullNavbar/><Loading /></div> ; // Muestra el componente de loading mientras los datos se cargan
+    }
 
     return (
         <div>
