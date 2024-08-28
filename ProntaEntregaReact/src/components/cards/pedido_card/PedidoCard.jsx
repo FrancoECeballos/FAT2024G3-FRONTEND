@@ -1,11 +1,16 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-import { InputGroup, Col, Row, Form, Card, Button } from 'react-bootstrap';
+import { Col, Row, Form, Card } from 'react-bootstrap';
+import Cookies from 'js-cookie';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
 import './PedidoCard.scss';
 
 const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibles, stocksDisponibles }, ref) => {
+    const token = Cookies.get('token');
     const [obras, setObras] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [products, setProducts] = useState([]);
 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -30,7 +35,30 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibl
         fetchData('stock/').then((data) => {
             setObras(data);
         });
+
+        fetchData('categoria/', token).then((result) => {
+            setCategories(result);
+        }).catch(error => {
+            console.error('Error fetching categories:', error);
+        });
+
+        console.log(user);
     }, []);
+
+    const handleCategoryChange = (event) => {
+        const selectedValue = event.target.value;
+        setSelectedCategory(selectedValue);
+        setPedidoForm((prevPedido) => { return { ...prevPedido, id_producto: "" }; });
+        handleFetchProducts(pedidoForm.id_obra, selectedValue);
+    };
+
+    const handleFetchProducts = (id_stock, id_categoria) => {
+        fetchData(`GetDetallestockproducto_Total/${id_stock}/${id_categoria}/`, token).then((result) => {
+            setProducts(result);
+        }).catch(error => {
+            console.error('Error fetching products:', error);
+        });
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -74,7 +102,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibl
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log('Formulario de Pedido Enviado:', pedidoForm);
-        // Aquí puedes añadir la lógica para enviar el formulario al servidor
     };
 
     useImperativeHandle(ref, () => ({
@@ -136,18 +163,29 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibl
                                 </Form.Group>
                             )}
 
-                            {/*!productDefault && (
+                            {!stock && (pedidoForm.id_obra != "") && (
                                 <Form.Group className="mb-2" controlId="formBasicUrgencia">
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Urgencia (*)</Form.Label>
-                                    <Form.Control name="urgente" as="select" onChange={handleInputChange}>
-                                        <option value="" selected hidden>Seleccione un Producto</option>
-                                        {productosDisponibles.map(producto => (
-                                            <option key={producto.id_producto} value={producto.id_producto}>{producto.nombre}</option>
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
+                                    <Form.Control name="categoria" as="select" defaultValue="" onChange={handleCategoryChange}>
+                                        <option value="" hidden>Categoria</option>
+                                        {categories.map(categoria => (
+                                            <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>
                                         ))}
                                     </Form.Control>
                                 </Form.Group>
-                            )*/}
+                            )}
 
+                            {!stock && (pedidoForm.id_obra != "") && (selectedCategory != "") && (products != null) && (
+                                <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
+                                    <Form.Control name="id_producto" as="select" defaultValue="" onChange={handleInputChange}>
+                                        <option value="" hidden>Producto</option>
+                                        {products.map(product => (
+                                            <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
+                                        ))}
+                                    </Form.Control>
+                                </Form.Group>
+                            )}
 
                         </Col>
                         <Col xs={12} md={6}>

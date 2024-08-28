@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import Cookies from 'js-cookie';
@@ -19,6 +19,8 @@ function Pedidos() {
     const token = Cookies.get('token');
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
+    const pedidoCardRef = useRef(null);
+
     const [pedidos, setPedidos] = useState([]);
     const [selectedPedidoId, setSelectedPedidoId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -48,6 +50,7 @@ function Pedidos() {
                 });
             } else {
                 fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
+                    console.log(result);
                     setPedidos(result);
                 }).catch(error => {
                     console.error('Error fetching pedidos:', error);
@@ -56,6 +59,8 @@ function Pedidos() {
         }).catch(error => {
             console.error('Error fetching user data:', error);
         });
+
+        console.log(user);
     }, [token]);
 
     const handleSearchChange = (value) => {
@@ -127,14 +132,24 @@ function Pedidos() {
         });
     };
 
-    const handleSubmit = () => {
-        if (cantidad === '') {
-          setError('La cantidad no puede estar vacía');
-        } else {
-          // Lógica para manejar el envío del formulario
-          console.log('Cantidad enviada:', cantidad);
+    const handleCrearPedido = () => {
+        if (pedidoCardRef.current) {
+            const pedidoForm = pedidoCardRef.current.getPedidoForm();
+            const { obras, ...pedidoFormWithoutObras } = pedidoForm;
+            
+            postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+                console.log('Pedido creado:', result);
+                const obrasPromises = obras.map((obra) => 
+                    postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
+                );
+                return Promise.all(obrasPromises);
+            }).then((detalleResults) => {
+                console.log('Detalles de pedido creados:', detalleResults);
+            }).catch((error) => {
+                console.error('Error al crear el pedido o los detalles del pedido:', error);
+            });
         }
-      };
+    };
 
     const filters = [
         { type: 'pedido.fechainicio', label: 'Fecha Inicio' },
@@ -183,17 +198,17 @@ function Pedidos() {
         <div className='pedido-list'>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
             <Modal
-                            tamaño={'lg'}
-              openButtonText='¿No encuentra su pedido? Añadalo'
-              openButtonWidth='20'
-              title='Nuevo Pedido'
-              saveButtonText='Crear'
-              handleSave={handleCreatePedido}
-              content={
-                <div>
-                  <PedidoCard  user={user} stocksDisponibles={pedidos}/>
-                </div>
-              }
+                tamaño={'lg'}
+                openButtonText='¿No encuentra su pedido? Añadalo'
+                openButtonWidth='20'
+                title='Nuevo Pedido'
+                saveButtonText='Crear'
+                handleSave={handleCreatePedido}
+                content={
+                    <div>
+                        <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef}/>
+                    </div>
+                }
             />
           </div>
           <div className='cardCategori'>
@@ -205,7 +220,7 @@ function Pedidos() {
                       key={pedido.id_pedido}
                       foto={pedido.id_producto.imagen}
                       titulo={pedido.id_producto.nombre}
-                      descrip1={`Cantidad: ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                      descrip1={`Cantidad: ${pedido.progreso} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
                       descrip2={`Urgencia: ${pedido.urgente}`}
                       descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
                       descrip4={`Obra: ${pedido.id_obra.nombre}`}
@@ -227,14 +242,14 @@ function Pedidos() {
                             deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)}
                             deleteButtonText={'Rechazar'}
                             title={'Tomar Pedido'}
-                            handleSave={() => createAportePedido(pedido.id_pedido, usuarioLogueado.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                            handleSave={() => createAportePedido(pedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
                             content={
                               <div>
                                 <GenericCard
                                   key={pedido.id_pedido}
                                   foto={pedido.id_producto.imagen}
                                   titulo={pedido.id_producto.nombre}
-                                  descrip1={`Cantidad: ${"hola"} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                                  descrip1={`Cantidad: ${pedido.progreso} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
                                   descrip2={`Urgencia: ${pedido.urgente}`}
                                   descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
                                   descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
