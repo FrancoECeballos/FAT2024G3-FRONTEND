@@ -13,6 +13,7 @@ import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 import GenericAccordion from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../functions/postData.jsx';
 import { Icon } from '@iconify/react';
+import Loading from '../../components/loading/loading.jsx';
 
 function Pedidos() {
     const navigate = useNavigate();
@@ -26,6 +27,8 @@ function Pedidos() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState(fetchUser());
+    const [isLoading, setIsLoading] = useState(true); // Estado para el loading
+
 
     const [formData, setFormData] = useState({
         producto: "",
@@ -42,6 +45,8 @@ function Pedidos() {
         }
 
         fetchData(`/userToken/${token}`, token).then((result) => {
+            setUsuarioLogueado(result);
+
             if (result.is_superuser) {
                 fetchData(`get_pedido_for_admin/`, token).then((result) => {
                     setPedidos(result);
@@ -50,7 +55,6 @@ function Pedidos() {
                 });
             } else {
                 fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
-                    console.log(result);
                     setPedidos(result);
                 }).catch(error => {
                     console.error('Error fetching pedidos:', error);
@@ -59,8 +63,6 @@ function Pedidos() {
         }).catch(error => {
             console.error('Error fetching user data:', error);
         });
-
-        console.log(user);
     }, [token]);
 
     const handleSearchChange = (value) => {
@@ -189,6 +191,37 @@ function Pedidos() {
         return 0;
     });
 
+useEffect(() => {
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        fetchData(`/userToken/${token}`, token).then((result) => {
+            setUsuarioLogueado(result);
+
+            if (result.is_superuser) {
+                fetchData(`get_pedido_for_admin/`, token).then((result) => {
+                    setPedidos(result);
+                }).catch(error => {
+                    console.error('Error fetching pedidos:', error);
+                });
+            } else {
+                fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
+                    setPedidos(result);
+                }).catch(error => {
+                    console.error('Error fetching pedidos:', error);
+                });
+            }
+        }).catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+        setIsLoading(false); 
+    }, [token]);
+
+    if (isLoading) {
+        return <Loading />; // Muestra el componente de loading mientras los datos se cargan
+    }
     return (
     <div>
       <FullNavbar selectedPage='Pedidos' />

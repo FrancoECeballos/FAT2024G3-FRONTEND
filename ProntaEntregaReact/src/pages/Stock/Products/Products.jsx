@@ -9,6 +9,7 @@ import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
 import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
+import Loading from '../../../components/loading/loading.jsx';
 
 import defaultImage from '../../../assets/no_image.png';
 
@@ -31,6 +32,7 @@ function Products() {
     const cantidadRef = useRef(null);
     const pedidoCardRef = useRef(null);
     const ofertaCardRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(true); // Estado para el loading
     
     const [products, setProducts] = useState([]);
     const [excludedProducts, setExcludedProducts] = useState([]);
@@ -84,6 +86,7 @@ function Products() {
         fetchData(`/categoria/${categoriaID}`, token).then((result) => {
             setCurrentCategory(result[0].nombre);
         });
+        setIsLoading(false); 
 
         const img = new Image();
         img.src = defaultImage;
@@ -255,6 +258,9 @@ function Products() {
         }
     };
 
+    if (isLoading) {
+        return <div><FullNavbar/><Loading /></div> ; // Muestra el componente de loading mientras los datos se cargan
+    }
     return (
         <div>
             <FullNavbar selectedPage='Stock'/>
