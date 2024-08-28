@@ -27,14 +27,6 @@ function Pedidos() {
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState(fetchUser());
 
-    const [formData, setFormData] = useState({
-        producto: "",
-        obra: "",
-        usuario: "",
-        urgencia: 1,
-        cantidad: ""
-    });
-
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -67,21 +59,6 @@ function Pedidos() {
         setSearchQuery(value);
     };
 
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            [name]: value
-        }));
-    };
-
-    const handleUrgenciaChange = (nivel) => {
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            urgencia: nivel
-        }));
-    };
-
     const handleChange = (event) => {
         setCantidad(event.target.value);
         if (event.target.value === '') {
@@ -92,19 +69,22 @@ function Pedidos() {
       };
 
     const handleCreatePedido = () => {
-        const fechaInicio = new Date();
-        const fechaVencimiento = new Date();
-        fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
-
-        const pedidoData = {
-            ...formData,
-            fechainicio: fechaInicio.toISOString().split('T')[0],
-            fechavencimiento: fechaVencimiento.toISOString().split('T')[0]
-        };
-
-        postData('crear_pedido/', pedidoData, token).then((nuevoPedido) => {
-            setPedidos([...pedidos, nuevoPedido]);
-        });
+        if (pedidoCardRef.current) {
+            const pedidoForm = pedidoCardRef.current.getPedidoForm();
+            const { obras, ...pedidoFormWithoutObras } = pedidoForm;
+            
+            postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+                console.log('Pedido creado:', result);
+                const obrasPromises = obras.map((obra) => 
+                    postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
+                );
+                return Promise.all(obrasPromises);
+            }).then((detalleResults) => {
+                console.log('Detalles de pedido creados:', detalleResults);
+            }).catch((error) => {
+                console.error('Error al crear el pedido o los detalles del pedido:', error);
+            });
+        }
     };
 
     const deletePedido = (pedidoId) => {
@@ -126,29 +106,9 @@ function Pedidos() {
     
         postData('crear_aporte_pedido/', data, token).then(() => {
             console.log('Aporte del pedido creado');
-            // Aquí puedes agregar lógica adicional, como actualizar el estado o mostrar una notificación
         }).catch(error => {
             console.error('Error creating aporte pedido:', error);
         });
-    };
-
-    const handleCrearPedido = () => {
-        if (pedidoCardRef.current) {
-            const pedidoForm = pedidoCardRef.current.getPedidoForm();
-            const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-            
-            postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-                console.log('Pedido creado:', result);
-                const obrasPromises = obras.map((obra) => 
-                    postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
-                );
-                return Promise.all(obrasPromises);
-            }).then((detalleResults) => {
-                console.log('Detalles de pedido creados:', detalleResults);
-            }).catch((error) => {
-                console.error('Error al crear el pedido o los detalles del pedido:', error);
-            });
-        }
     };
 
     const filters = [
