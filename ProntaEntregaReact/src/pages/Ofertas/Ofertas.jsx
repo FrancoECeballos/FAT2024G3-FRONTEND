@@ -13,12 +13,16 @@ import Modal from '../../components/modals/Modal.jsx';
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
 
+import Loading from '../../components/loading/loading.jsx';
+
 function Ofertas() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [ofertas, setOfertas] = useState([]);
     const ofertaCardRef = useRef(null);
     const [selectedOfertaId, setSelectedOfertaId] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
@@ -50,16 +54,22 @@ function Ofertas() {
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+            } 
+        };
+
+        const fetchDataAsync = async () => {
+            try {
+            await fetchUserData();
+            const result = await fetchData('/oferta/', token);
+            setOfertas(result);
+            } catch (error) {
+            console.error('Error fetching orders:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        fetchUserData().then(() => {
-            fetchData('/oferta/', token).then((result) => {
-                setOfertas(result);
-            }).catch(error => {
-                console.error('Error fetching orders:', error);
-            });
-        });
+        fetchDataAsync();
     }, [token, navigate]);
 
     const filteredOfertas = ofertas.filter(oferta => {
@@ -114,21 +124,33 @@ function Ofertas() {
         }
     };
 
-    const createAportePedido = (pedidoId, usuarioId, fecha, cantidad) => {
+    const createAporteOferta = (ofertaId, usuarioId, fecha, cantidad) => {
+        const oferta = ofertas.find(oferta => oferta.id_oferta === ofertaId);
+        const cantidadRestante = oferta.cantidad - oferta.progreso;
+
+        if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
+            setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${oferta.id_producto.unidadmedida}`);
+            return;
+        }
+
         const data = {
-            id_pedido: pedidoId,
+            id_oferta: ofertaId,
             id_usuario: usuarioId,
             fecha: fecha,
             cantidad: cantidad
         };
     
-        postData('crear_aporte_pedido/', data, token).then(() => {
-            console.log('Aporte del pedido creado');
+        postData('crear_detalle_oferta/', data, token).then(() => {
+            console.log('Aporte de la oferta creado');
+            window.location.reload();
         }).catch(error => {
-            console.error('Error creating aporte pedido:', error);
+            console.error('Error creating aporte oferta:', error);
         });
     };
 
+    if (isLoading) {
+        return <div><FullNavbar/><Loading /></div> ;
+    }
     return (
         <div>
             <FullNavbar selectedPage='Ofertas' />
@@ -155,9 +177,10 @@ function Ofertas() {
                                     key={oferta.id_oferta}
                                     titulo={`${oferta.id_producto.nombre}`}
                                     foto={oferta.id_producto.imagen}
-                                    descrip1={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
-                                    descrip2={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                    descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                    descrip1={`Cantidad: ${oferta.progreso} / ${oferta.cantidad} ${oferta.id_producto.unidadmedida}`}
+                                    descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
+                                    descrip3={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                    descrip4={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
                                     descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
                                     children={
                                         <>
@@ -173,7 +196,7 @@ function Ofertas() {
                                             saveButtonText={'Tomar'}
                                             handleCloseModal={() => setSelectedOfertaId(null)}
                                             title={'Tomar Oferta'}
-                                            handleSave={() => createAportePedido(oferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                                            handleSave={() => createAporteOferta(oferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
                                             content={
                                               <div>
                                                 <GenericCard
@@ -205,8 +228,9 @@ function Ofertas() {
                                                     }
                                                     }}
                                                 />
-                                                {error && <p style={{ color: 'red' }}>{error}</p>}
-                                                </Form.Group>
+                                                
+                                                {error && <p style={{ color: 'red', fontSize: '1rem', marginTop: '3%' }}>{error}</p>}                                                </Form.Group>
+                                                
                                               </div>
                                             }
                                           />
