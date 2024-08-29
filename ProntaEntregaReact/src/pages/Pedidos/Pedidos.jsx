@@ -165,7 +165,7 @@ function Pedidos() {
     });
 
     if (isLoading) {
-        return <Loading />;
+        return <div><FullNavbar selectedPage='Pedidos' /><Loading /></div>;
     }
 
     return (
