@@ -114,18 +114,19 @@ function Ofertas() {
         }
     };
 
-    const createAportePedido = (pedidoId, usuarioId, fecha, cantidad) => {
+    const createAporteOferta = (ofertaId, usuarioId, fecha, cantidad) => {
         const data = {
-            id_pedido: pedidoId,
+            id_oferta: ofertaId,
             id_usuario: usuarioId,
             fecha: fecha,
             cantidad: cantidad
         };
     
-        postData('crear_aporte_pedido/', data, token).then(() => {
-            console.log('Aporte del pedido creado');
+        postData('crear_detalle_oferta/', data, token).then(() => {
+            console.log('Aporte de la oferta creado');
+            window.location.reload();
         }).catch(error => {
-            console.error('Error creating aporte pedido:', error);
+            console.error('Error creating aporte oferta:', error);
         });
     };
 
@@ -155,9 +156,10 @@ function Ofertas() {
                                     key={oferta.id_oferta}
                                     titulo={`${oferta.id_producto.nombre}`}
                                     foto={oferta.id_producto.imagen}
-                                    descrip1={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
-                                    descrip2={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                    descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                    descrip1={`Cantidad: ${oferta.progreso} / ${oferta.cantidad} ${oferta.id_producto.unidadmedida}`}
+                                    descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
+                                    descrip3={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                    descrip4={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
                                     descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
                                     children={
                                         <>
@@ -173,7 +175,7 @@ function Ofertas() {
                                             saveButtonText={'Tomar'}
                                             handleCloseModal={() => setSelectedOfertaId(null)}
                                             title={'Tomar Oferta'}
-                                            handleSave={() => createAportePedido(oferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                                            handleSave={() => createAporteOferta(oferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
                                             content={
                                               <div>
                                                 <GenericCard

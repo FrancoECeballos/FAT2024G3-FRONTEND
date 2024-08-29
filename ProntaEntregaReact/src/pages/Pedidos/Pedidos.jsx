@@ -120,6 +120,7 @@ function Pedidos() {
     
         postData('crear_aporte_pedido/', data, token).then(() => {
             console.log('Aporte del pedido creado');
+            window.location.reload();
         }).catch(error => {
             console.error('Error creating aporte pedido:', error);
         });
