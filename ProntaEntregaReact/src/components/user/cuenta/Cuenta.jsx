@@ -440,8 +440,6 @@ const Cuenta = () => {
                   style={{ marginLeft: '3rem' }} // Margen a la izquierda (opcional)
                 />
               </Col>
-
-
             </Row>
             
             <Row className="filaobras">

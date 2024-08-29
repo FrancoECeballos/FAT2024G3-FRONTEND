@@ -5,8 +5,7 @@ import {Row, Col} from 'react-bootstrap';
 
 const Sidebar = ({ isAdmin = false }) => {
   return (
-    <div className="sidebar">
-      <Row>
+      <Row className="sidebar">
         <Col>
           <SelectableButton texto="Mi cuenta" link="/perfil/micuenta" />
           <SelectableButton
@@ -23,7 +22,6 @@ const Sidebar = ({ isAdmin = false }) => {
           ) : null}
         </Col>
       </Row>
-    </div>
   );
 };
 
