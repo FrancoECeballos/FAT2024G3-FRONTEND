@@ -6,6 +6,7 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Footer from '../../components/footer/Footer.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
+import Loading from '../../components/loading/loading.jsx';
 
 import './ObrasAutos.scss';
 
@@ -18,6 +19,7 @@ function ObrasAutos() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (!token) {
@@ -47,7 +49,8 @@ function ObrasAutos() {
                 }).catch(error => {
                     console.error('Error fetching obra for user', error);
                 });
-            }
+            } 
+            setIsLoading(false);
         }).catch(error => {
             console.error('Error fetching user data:', error);
         });
@@ -88,6 +91,9 @@ function ObrasAutos() {
         navigate(`/autos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}});
     }
 
+    if (isLoading) {
+        return <div><FullNavbar/><Loading /></div> ;
+    }
     return (
         <div>
             <FullNavbar selectedPage='Autos'/>
