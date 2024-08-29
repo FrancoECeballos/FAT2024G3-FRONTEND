@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  margin-top: 2rem;
+  margin: 0 auto; /* Asegura que el div esté centrado en su contenedor */
   background-color: #f9f9f9;
 }
 
