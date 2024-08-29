@@ -13,7 +13,7 @@ import Modal from '../../components/modals/Modal.jsx';
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
 
-import Loading from '../../components/loading/loading.jsx'; // Importa el componente Loading
+import Loading from '../../components/loading/loading.jsx';
 
 function Ofertas() {
     const navigate = useNavigate();
@@ -141,7 +141,7 @@ function Ofertas() {
     };
 
     if (isLoading) {
-        return <div><FullNavbar/><Loading /></div> ; // Muestra el componente de loading mientras los datos se cargan
+        return <div><FullNavbar/><Loading /></div> ;
     }
     return (
         <div>

@@ -12,6 +12,8 @@ import './Stock.scss';
 
 import fetchData from '../../functions/fetchData';
 
+import Loading from '../../components/loading/loading.jsx';
+
 function Stock() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -19,39 +21,40 @@ function Stock() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
 
     useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userData = await fetchData(`/userToken/${token}`, token);
+                setIsAdmin(userData.is_superuser);
+                const email = userData.email;
+                if (userData.is_superuser) {
+                    const result = await fetchData('/stock/', token);
+                    setObras(result);
+                } else {
+                    const result = await fetchData(`/user/stockEmail/${email}/`, token);
+                    const obraIds = result.map(obra => obra.id_obra.id_obra);
+                    const obraPromises = obraIds.map(id => fetchData(`/stock/${id}`, token));
+                    const obras = await Promise.all(obraPromises);
+                    const uniqueObras = Array.from(new Set(obras.flat().map(obra => JSON.stringify(obra)))).map(str => JSON.parse(str));
+                    console.log("Fetched Obras:", uniqueObras);
+                    setObras(uniqueObras);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         if (!token) {
             navigate('/login');
             return;
         }
-        fetchData(`/userToken/${token}`, token).then((result) => {
-            setIsAdmin(result.is_superuser);
-            const email = result.email;
-            if (result.is_superuser) {
-                fetchData('/stock/', token).then((result) => {
-                    setObras(result);
-                }).catch(error => {
-                    console.error('Error fetching obras for admin', error);
-                });
-            } else {
-                fetchData(`/user/stockEmail/${email}/`, token).then((result) => {
-                    const obraIds = result.map(obra => obra.id_obra.id_obra);
-                    const obraPromises = obraIds.map(id => fetchData(`/stock/${id}`, token));
-                    Promise.all(obraPromises).then(obras => {
-                        const uniqueObras = Array.from(new Set(obras.flat().map(obra => JSON.stringify(obra)))).map(str => JSON.parse(str));
-                        console.log("Fetched Obras:", uniqueObras);
-                        setObras(uniqueObras);
-                    }).catch(error => {
-                        console.error('Error fetching obras by ID', error);
-                    });
-                }).catch(error => {
-                    console.error('Error fetching obra for user', error);
-                });
-            }
-        }).catch(error => {
-            console.error('Error fetching user data:', error);
-        });
+
+        fetchUserData();
     }, [token, navigate]);
 
     const filteredObras = obras.filter(obra => {
@@ -87,6 +90,10 @@ function Stock() {
     if (Array.isArray(obras) && obras.length === 1) {
         const obra = obras[0];
         navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } });
+    }
+    
+    if (isLoading) {
+        return <div><FullNavbar/><Loading /></div> ;
     }
     
     return (
