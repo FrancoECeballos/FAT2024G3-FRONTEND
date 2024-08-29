@@ -11,24 +11,23 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [products, setProducts] = useState([]);
-
+    
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
-    
     const nextMonth = new Date(today);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     const formattedNextMonthDate = nextMonth.toISOString().split('T')[0];
-
+    
     const [pedidoForm, setPedidoForm] = useState({
-        "fechainicio": formattedDate,
-        "fechavencimiento": formattedNextMonthDate,
-        "id_obra": stock ? stock : "",
-        "id_usuario": user ? user.id_usuario : "",
-        "cantidad": 0,
-        "urgente": 1,
-        "id_producto": productDefault ? productDefault.id_producto: "",
-        "id_estadoPedido": 3,
-        "obras": []
+        fechainicio: formattedDate,
+        fechavencimiento: formattedNextMonthDate,
+        id_obra: stock ? stock : "",
+        id_usuario: user ? user.id_usuario : "",
+        cantidad: 0,
+        urgente: 1,
+        id_producto: productDefault ? productDefault.id_producto : "",
+        id_estadoPedido: 3,
+        obras: []
     });
 
     useEffect(() => {
@@ -41,12 +40,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         }).catch(error => {
             console.error('Error fetching categories:', error);
         });
-    }, []);
+    }, [token]);
 
     const handleCategoryChange = (event) => {
         const selectedValue = event.target.value;
         setSelectedCategory(selectedValue);
-        setPedidoForm((prevPedido) => { return { ...prevPedido, id_producto: "" }; });
+        setPedidoForm(prevForm => ({ ...prevForm, id_producto: "" }));
         handleFetchProducts(pedidoForm.id_obra, selectedValue);
     };
 
@@ -82,28 +81,22 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             resetCategoryAndProducts();
         }
     
-        setPedidoForm((prevPedido) => {
-            const updatedForm = { ...prevPedido, [name]: transformedValue };
-    
-            if (name === 'id_obra') {
-                updatedForm.obras = []; // Desselecciona todas las obras previamente seleccionadas
-            }
-    
-            console.log('Formulario de Pedido Actualizado:', updatedForm);
-            return updatedForm;
-        });
+        setPedidoForm(prevPedido => ({
+            ...prevPedido,
+            [name]: transformedValue,
+            obras: name === 'id_obra' ? [] : prevPedido.obras // Deselecciona todas las obras si se cambia la obra
+        }));
 
         if (name === "cantidad") {
             const regex = /^[0-9]+$/;
             const errorCantidad = document.getElementById("errorCantidad");
             if (value === "") {
-                errorCantidad.innerHTML = "La cantidad no puede estar vacia";
+                errorCantidad.innerHTML = "La cantidad no puede estar vacía";
             } else {
                 errorCantidad.innerHTML = !regex.test(value) ? "La cantidad es inválida" : "&nbsp;";
             }
         }
     };
-    
 
     const handleCardSelection = (key) => {
         setPedidoForm(prevForm => {
@@ -111,22 +104,20 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             const updatedObras = isAlreadySelected
                 ? prevForm.obras.filter(k => k !== key)
                 : [key, ...prevForm.obras];
-
-            const updatedForm = {
+            
+            return {
                 ...prevForm,
                 obras: updatedObras
             };
-
-            console.log('Formulario de Pedido Actualizado:', updatedForm);
-            return updatedForm;
-        });
-
-        setObras(prevObras => {
-            const selectedObra = prevObras.find(obra => obra.id_obra.id_obra === key);
-            const remainingObras = prevObras.filter(obra => obra.id_obra.id_obra !== key);
-            return [selectedObra, ...remainingObras];
         });
     };
+
+    // Reordenar las obras: las seleccionadas al principio
+    const orderedObras = [...obras].sort((a, b) => {
+        const aIsSelected = pedidoForm.obras.includes(a.id_obra.id_obra);
+        const bIsSelected = pedidoForm.obras.includes(b.id_obra.id_obra);
+        return aIsSelected && !bIsSelected ? -1 : !aIsSelected && bIsSelected ? 1 : 0;
+    });
 
     useImperativeHandle(ref, () => ({
         getPedidoForm: () => pedidoForm
@@ -185,7 +176,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (
+                            {!stock && (pedidoForm.id_obra !== "") && (
                                 <Form.Group className="mb-2" controlId="formBasicCategoria">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
                                     <Form.Control name="categoria" as="select" value={selectedCategory} onChange={handleCategoryChange}>
@@ -198,7 +189,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (selectedCategory != "") && (products != null) && (
+                            {!stock && (pedidoForm.id_obra !== "") && (selectedCategory !== "") && (products !== null) && (
                                 <Form.Group className="mb-2" controlId="formBasicProducto">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
                                     <Form.Control name="id_producto" as="select" defaultValue="" onChange={handleInputChange}>
@@ -210,13 +201,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                     <Form.Label id='errorProducto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                                 </Form.Group>
                             )}
-
                         </Col>
                         <Col xs={12} md={6}>
                             <Form.Group style={{marginTop:"13%"}} className="mb-2" controlId="formBasicObras">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
-                                <div className='cardscasas'> {/* Ajusta el margen si es necesario */}
-                                    {obras
+                                <div className='cardscasas'>
+                                    {orderedObras
                                         .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra) // Filtra la obra seleccionada
                                         .map(obra => (
                                             <SelectableCard 
