@@ -27,7 +27,7 @@ function Pedidos() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState({});
-    const [isLoading, setIsLoading] = useState(true); // Estado para el loading
+    const [isLoading, setIsLoading] = useState(true);
 
     const [pedidoForm, setPedidoForm] = useState({
         id_producto: '',
