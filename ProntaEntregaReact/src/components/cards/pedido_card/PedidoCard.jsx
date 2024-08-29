@@ -58,6 +58,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         });
     };
 
+    const resetCategoryAndProducts = () => {
+        setSelectedCategory("");
+        setProducts([]);
+    };
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         let transformedValue = value;
@@ -71,6 +76,10 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                 break;
             default:
                 break;
+        }
+    
+        if (name === 'id_obra') {
+            resetCategoryAndProducts();
         }
     
         setPedidoForm((prevPedido) => {
@@ -178,8 +187,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
 
                             {!stock && (pedidoForm.id_obra != "") && (
                                 <Form.Group className="mb-2" controlId="formBasicCategoria">
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                                    <Form.Control name="categoria" as="select" defaultValue="" onChange={handleCategoryChange}>
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
+                                    <Form.Control name="categoria" as="select" value={selectedCategory} onChange={handleCategoryChange}>
                                         <option value="" hidden>Categoria</option>
                                         {categories.map(categoria => (
                                             <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>
