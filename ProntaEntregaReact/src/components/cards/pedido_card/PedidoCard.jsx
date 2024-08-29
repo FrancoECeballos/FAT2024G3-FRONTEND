@@ -83,6 +83,16 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             console.log('Formulario de Pedido Actualizado:', updatedForm);
             return updatedForm;
         });
+
+        if (name === "cantidad") {
+            const regex = /^[0-9]+$/;
+            const errorCantidad = document.getElementById("errorCantidad");
+            if (value === "") {
+                errorCantidad.innerHTML = "La cantidad no puede estar vacia";
+            } else {
+                errorCantidad.innerHTML = !regex.test(value) ? "La cantidad es inválida" : "&nbsp;";
+            }
+        }
     };
     
 
@@ -109,11 +119,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         });
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log('Formulario de Pedido Enviado:', pedidoForm);
-    };
-
     useImperativeHandle(ref, () => ({
         getPedidoForm: () => pedidoForm
     }));
@@ -121,7 +126,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     return (
         <Card className='no-border-card' style={{ width: '100%' }}>
             <Card.Body>
-                <Form onSubmit={handleSubmit}>
+                <Form>
                     <Row className="g-0">
                         <Col xs={12} md={5} style={{marginRight:"2rem"}}>
                             <h2>
@@ -131,17 +136,20 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                             <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
                                 <Form.Control name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
+                                <Form.Label id='errorFechaInicio' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicFechaFin">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
                                 <Form.Control name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
-                                <p style={{fontSize: '0.7rem'}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
+                                <p style={{fontSize: '0.7rem', margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
+                                <Form.Label id='errorFechaFin' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicCantidad">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Pedida (*)</Form.Label>
                                 <Form.Control name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                <Form.Label id='errorCantidad' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicUrgencia">
@@ -152,10 +160,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                     <option value="3">Muy Urgente</option>
                                     <option value="4">Inmediato</option>
                                 </Form.Control>
+                                <Form.Label id='errorUrgencia' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
 
                             {!stock && (
-                                <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                                <Form.Group className="mb-2" controlId="formBasicRequestingObra">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que Pide (*)</Form.Label>
                                     <Form.Control name="id_obra" as="select" onChange={handleInputChange} defaultValue="">
                                         <option value="" hidden>Seleccione una Obra</option>
@@ -163,11 +172,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                             <option key={stock.stock[0].id_stock} value={stock.stock[0].id_stock}>{stock.stock[0].id_obra.nombre}</option>
                                         ))}
                                     </Form.Control>
+                                    <Form.Label id='errorRequestingObra' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                                 </Form.Group>
                             )}
 
                             {!stock && (pedidoForm.id_obra != "") && (
-                                <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                                <Form.Group className="mb-2" controlId="formBasicCategoria">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
                                     <Form.Control name="categoria" as="select" defaultValue="" onChange={handleCategoryChange}>
                                         <option value="" hidden>Categoria</option>
@@ -175,11 +185,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                             <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>
                                         ))}
                                     </Form.Control>
+                                    <Form.Label id='errorCategoria' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                                 </Form.Group>
                             )}
 
                             {!stock && (pedidoForm.id_obra != "") && (selectedCategory != "") && (products != null) && (
-                                <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                                <Form.Group className="mb-2" controlId="formBasicProducto">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
                                     <Form.Control name="id_producto" as="select" defaultValue="" onChange={handleInputChange}>
                                         <option value="" hidden>Producto</option>
@@ -187,12 +198,13 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                             <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
                                         ))}
                                     </Form.Control>
+                                    <Form.Label id='errorProducto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                                 </Form.Group>
                             )}
 
                         </Col>
                         <Col xs={12} md={6}>
-                            <Form.Group className="mb-2" controlId="formBasicObras">
+                            <Form.Group style={{marginTop:"13%"}} className="mb-2" controlId="formBasicObras">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
                                 <div className='cardscasas'> {/* Ajusta el margen si es necesario */}
                                     {obras
@@ -212,6 +224,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                             />
                                         ))}
                                 </div>
+                                <Form.Label id='errorObrasRequested' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
                         </Col>
                     </Row>
