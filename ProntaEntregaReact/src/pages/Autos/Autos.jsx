@@ -255,8 +255,11 @@ function AutosComponent() {
                                     imageStyle={imageStyle}
                                     children={
                                         <>
+                                    <div>    
+                                        <div>
                                             {!maintenance.isMaintained ? (
-                                                <Modal title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte)} content={
+                                                <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte)}                             
+                                                content={
                                                     <Form.Control
                                                         as="textarea"
                                                         rows={3}
@@ -274,6 +277,8 @@ function AutosComponent() {
                                                     onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
                                                 />
                                             )}
+                                            </div>
+                                            <div style={{marginTop:"1rem", marginRight: "1rem"}}>
                                             <Modal openButtonText='Actualizar Auto' title='Actualizar Auto' handleShowModal={() => handleEditAutoClick(auto)} handleSave={handleEditAutoSave} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto.id_transporte)} content={
                                                 <>
                                                     <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
@@ -282,6 +287,9 @@ function AutosComponent() {
                                                     <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
                                                 </>
                                             }/>
+                                    
+                                            </div>
+                                    </div>
                                         </>
                                     }
                                 />
