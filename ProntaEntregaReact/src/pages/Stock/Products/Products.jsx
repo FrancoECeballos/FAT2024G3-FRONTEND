@@ -67,15 +67,26 @@ function Products() {
             return;
         }
 
-        fetchData(`GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token).then((result) => {
-            setProducts(result);
-            const productsID = result.map(product => product.id_producto);
-            postData(`GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token).then((result) => {
-                const transformedResult = result.map(product => ({
-                    key: product.id_producto,
-                    label: product.nombre
-                }));
-                setExcludedProducts(transformedResult);
+        const fetchUserData = async () => {
+            try {
+                const userData = await fetchUser();
+                setUser(userData);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData().then(() => {
+            fetchData(`GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token).then((result) => {
+                setProducts(result);
+                const productsID = result.map(product => product.id_producto);
+                postData(`GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token).then((result) => {
+                    const transformedResult = result.map(product => ({
+                        key: product.id_producto,
+                        label: product.nombre
+                    }));
+                    setExcludedProducts(transformedResult);
+                });
             });
         });
 

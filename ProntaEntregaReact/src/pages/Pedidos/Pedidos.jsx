@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
@@ -26,9 +26,8 @@ function Pedidos() {
     const [selectedPedidoId, setSelectedPedidoId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
-    const [user, setUser] = useState(fetchUser());
+    const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true); // Estado para el loading
-
 
     useEffect(() => {
         if (!token) {
@@ -36,24 +35,37 @@ function Pedidos() {
             return;
         }
 
-        fetchData(`/userToken/${token}`, token).then((result) => {
-            setUsuarioLogueado(result);
-
-            if (result.is_superuser) {
-                fetchData(`get_pedido_for_admin/`, token).then((result) => {
-                    setPedidos(result);
-                }).catch(error => {
-                    console.error('Error fetching pedidos:', error);
-                });
-            } else {
-                fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
-                    setPedidos(result);
-                }).catch(error => {
-                    console.error('Error fetching pedidos:', error);
-                });
+        const fetchUserData = async () => {
+            try {
+                const userData = await fetchUser();
+                setUser(userData);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
             }
-        }).catch(error => {
-            console.error('Error fetching user data:', error);
+        };
+
+        fetchUserData().then(() => {
+            fetchData(`/userToken/${token}`, token).then((result) => {
+                if (result.is_superuser) {
+                    fetchData(`get_pedido_for_admin/`, token).then((result) => {
+                        setPedidos(result);
+                        setIsLoading(false); 
+                    }).catch(error => {
+                        console.error('Error fetching pedidos:', error);
+                        setIsLoading(false); 
+                    });
+                } else {
+                    fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
+                        setPedidos(result);
+                        setIsLoading(false); 
+                    }).catch(error => {
+                        console.error('Error fetching pedidos:', error);
+                        setIsLoading(false); 
+                    });
+                }
+            }).catch(error => {
+                console.error('Error fetching user data:', error);
+            });
         });
     }, [token]);
 
@@ -68,7 +80,7 @@ function Pedidos() {
         } else {
           setError('');
         }
-      };
+    };
 
     const handleCreatePedido = () => {
         if (pedidoCardRef.current) {
@@ -151,37 +163,10 @@ function Pedidos() {
         return 0;
     });
 
-useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
-        fetchData(`/userToken/${token}`, token).then((result) => {
-            setUsuarioLogueado(result);
-
-            if (result.is_superuser) {
-                fetchData(`get_pedido_for_admin/`, token).then((result) => {
-                    setPedidos(result);
-                }).catch(error => {
-                    console.error('Error fetching pedidos:', error);
-                });
-            } else {
-                fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
-                    setPedidos(result);
-                }).catch(error => {
-                    console.error('Error fetching pedidos:', error);
-                });
-            }
-        }).catch(error => {
-            console.error('Error fetching user data:', error);
-        });
-        setIsLoading(false); 
-    }, [token]);
-
     if (isLoading) {
-        return <Loading />; // Muestra el componente de loading mientras los datos se cargan
+        return <Loading />;
     }
+
     return (
     <div>
       <FullNavbar selectedPage='Pedidos' />
@@ -217,7 +202,6 @@ useEffect(() => {
                       descrip2={`Urgencia: ${pedido.urgente}`}
                       descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
                       descrip4={`Obra: ${pedido.id_obra.nombre}`}
-                      descrip5={`Usuario: ${pedido.id_usuario.nombre}`}
                       children={
                         <>
                           <Icon
@@ -247,7 +231,7 @@ useEffect(() => {
                                   descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
                                   descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
                                   descrip5={`Obra: ${pedido.id_obra.nombre}`}
-                                  descrip6={`Usuario: ${pedido.id_usuario.nombre}`}
+                                  descrip6={`Usuario: ${pedido.id_usuario.nombre} ${pedido.id_usuario.apellido}`}
                                 />
                                 <Form.Group className="mb-2" controlId="formBasicCantidad">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>

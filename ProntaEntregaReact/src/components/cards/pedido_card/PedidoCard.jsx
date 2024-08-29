@@ -5,7 +5,7 @@ import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
 import './PedidoCard.scss';
 
-const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibles, stocksDisponibles }, ref) => {
+const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles }, ref) => {
     const token = Cookies.get('token');
     const [obras, setObras] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -41,8 +41,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibl
         }).catch(error => {
             console.error('Error fetching categories:', error);
         });
-
-        console.log(user);
     }, []);
 
     const handleCategoryChange = (event) => {
@@ -117,13 +115,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, productosDisponibl
                             <h2>
                                 {productDefault ? `Crear Pedido de ${productDefault.nombre}` : 'Crear Pedido'}
                             </h2>
-
-                            {!productDefault && (
-                                <Form.Group className="mb-2" controlId="formBasicProducto">
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                                    <Form.Control name="producto" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese el producto" />
-                                </Form.Group>
-                            )}
 
                             <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>

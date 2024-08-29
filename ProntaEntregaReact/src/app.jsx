@@ -1,7 +1,9 @@
 import React from 'react'
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
-import ChangePassword from './pages/ChangePassword.jsx';
+import ChangePassword from './pages/password/ChangePassword.jsx';
+import ForgotAccount from './pages/password/ForgotAccount.jsx';
+
 import MiCuenta from './pages/Perfil/MiCuenta.jsx';
 import Stock from './pages/Stock/Stock.jsx';
 import SeguridadYPrivacidad from './pages/Perfil/SeguridadYPrivacidad.jsx';
@@ -31,6 +33,7 @@ function App() {
         <Route index element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot_password" element={<ForgotAccount />} />
         <Route path="/change_password" element={<ChangePassword />} />
         <Route path="/perfil/micuenta" element={<MiCuenta />} />
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
