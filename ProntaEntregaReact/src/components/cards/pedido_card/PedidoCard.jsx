@@ -63,16 +63,28 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         let transformedValue = value;
     
         switch (name) {
-            case 'cantidad': case 'urgente': case 'id_obra': case 'id_producto':
-                transformedValue = parseInt(value, 10); break;
-            default: break;
+            case 'cantidad':
+            case 'urgente':
+            case 'id_obra':
+            case 'id_producto':
+                transformedValue = parseInt(value, 10);
+                break;
+            default:
+                break;
         }
+    
         setPedidoForm((prevPedido) => {
             const updatedForm = { ...prevPedido, [name]: transformedValue };
+    
+            if (name === 'id_obra') {
+                updatedForm.obras = []; // Desselecciona todas las obras previamente seleccionadas
+            }
+    
             console.log('Formulario de Pedido Actualizado:', updatedForm);
             return updatedForm;
         });
     };
+    
 
     const handleCardSelection = (key) => {
         setPedidoForm(prevForm => {
@@ -180,12 +192,25 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
 
                         </Col>
                         <Col xs={12} md={6}>
-                            <Form.Group  className="mb-2" controlId="formBasicObras">
-                                <Form.Label className="font-rubik " style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
+                            <Form.Group className="mb-2" controlId="formBasicObras">
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
                                 <div className='cardscasas'> {/* Ajusta el margen si es necesario */}
-                                    {obras.map(obra => (
-                                        <SelectableCard mar={"0.2rem"} pad={"0px"} height={"5rem"} wide={"98%"} key={obra.id_obra.id_obra} id={obra.id_obra.id_obra} titulo={obra.id_obra.nombre} foto={obra.id_obra.imagen} onCardSelect={handleCardSelection} isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)}/>
-                                    ))}
+                                    {obras
+                                        .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra) // Filtra la obra seleccionada
+                                        .map(obra => (
+                                            <SelectableCard 
+                                                mar={"0.2rem"} 
+                                                pad={"0px"} 
+                                                height={"5rem"} 
+                                                wide={"98%"} 
+                                                key={obra.id_obra.id_obra} 
+                                                id={obra.id_obra.id_obra} 
+                                                titulo={obra.id_obra.nombre} 
+                                                foto={obra.id_obra.imagen} 
+                                                onCardSelect={handleCardSelection} 
+                                                isSelected={pedidoForm.obras.includes(obra.id_obra.id_obra)}
+                                            />
+                                        ))}
                                 </div>
                             </Form.Group>
                         </Col>
