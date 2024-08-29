@@ -32,7 +32,7 @@ function Products() {
     const cantidadRef = useRef(null);
     const pedidoCardRef = useRef(null);
     const ofertaCardRef = useRef(null);
-    const [isLoading, setIsLoading] = useState(true); // Estado para el loading
+    const [isLoading, setIsLoading] = useState(true);
     
     const [products, setProducts] = useState([]);
     const [excludedProducts, setExcludedProducts] = useState([]);
@@ -253,6 +253,7 @@ function Products() {
                     return Promise.all(obrasPromises);
                 }).then((detalleResults) => {
                     console.log('Detalles de pedido creados:', detalleResults);
+                    window.location.reload();
                 }).catch((error) => {
                     console.error('Error al crear el pedido o los detalles del pedido:', error);
                 });
@@ -262,6 +263,7 @@ function Products() {
                 const ofertaForm = ofertaCardRef.current.getOfertaForm();
                 postData('crear_oferta/', ofertaForm, token).then((result) => {
                     console.log('Oferta creada:', result);
+                    window.location.reload();
                 }).catch((error) => {
                     console.error('Error al crear la oferta:', error);
                 });

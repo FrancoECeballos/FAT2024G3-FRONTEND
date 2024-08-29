@@ -41,7 +41,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
         setOfertaForm((prevOferta) => { return { ...prevOferta, id_producto: "" }; });
         handleFetchProducts(ofertaForm.id_obra, selectedValue);
     };
-
+    
     const handleFetchProducts = (id_stock, id_categoria) => {
         fetchData(`GetDetallestockproducto_Total/${id_stock}/${id_categoria}/`, token).then((result) => {
             setProducts(result);
@@ -49,20 +49,30 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
             console.error('Error fetching products:', error);
         });
     };
-
+    
+    const resetCategoryAndProducts = () => {
+        setSelectedCategory("");
+        setProducts([]);
+    };
+    
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         let transformedValue = value;
-
+    
         switch (name) {
             case 'cantidad': case 'urgente': case 'id_obra': case 'id_producto':
                 transformedValue = parseInt(value, 10); break;
             default: break;
         }
+    
+        if (name === 'id_obra') {
+            resetCategoryAndProducts();
+        }
+    
         setOfertaForm((prevOferta) => ({ ...prevOferta, [name]: transformedValue }));
         console.log(ofertaForm);
     };
-
+    
     useImperativeHandle(ref, () => ({
         getOfertaForm: () => ofertaForm
     }));
@@ -105,9 +115,9 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
 
                     {!stock && (ofertaForm.id_obra != "") && (
                         <Form.Group className="mb-2" controlId="formBasicUrgencia">
-                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="categoria" as="select" defaultValue="" onChange={handleCategoryChange}>
-                                <option value="" hidden>Categoria</option>
+                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
+                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="categoria" as="select" value={selectedCategory} onChange={handleCategoryChange}>
+                                <option value="" hidden>Categoría</option>
                                 {categories.map(categoria => (
                                     <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>
                                 ))}
