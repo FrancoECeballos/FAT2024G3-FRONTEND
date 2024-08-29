@@ -29,6 +29,16 @@ function Pedidos() {
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true); // Estado para el loading
 
+    const [pedidoForm, setPedidoForm] = useState({
+        id_producto: '',
+        cantidad: '',
+        urgente: '',
+        fechainicio: '',
+        fechavencimiento: '',
+        id_obra: '',
+        id_usuario: ''
+    });
+
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -80,6 +90,18 @@ function Pedidos() {
         } else {
           setError('');
         }
+    };
+
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setPedidoForm(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const isFormValid = () => {
+        return Object.values(pedidoForm).every(field => field !== '');
     };
 
     const handleCreatePedido = () => {
@@ -183,9 +205,10 @@ function Pedidos() {
                 title='Nuevo Pedido'
                 saveButtonText='Crear'
                 handleSave={handleCreatePedido}
+                saveButtonDisabled={!isFormValid()} // Deshabilitar el botón si el formulario no es válido
                 content={
                     <div>
-                        <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef}/>
+                        <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef} onChange={handleFormChange} />
                     </div>
                 }
             />

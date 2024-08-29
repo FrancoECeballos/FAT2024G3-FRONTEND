@@ -3,7 +3,7 @@
     import Modal from 'react-bootstrap/Modal';
     import './Modal.scss';
 
-    function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteButtonText, deleteFunction}) {
+    function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteButtonText, deleteFunction, saveButtonDisabled = false}) {
         const [show, setShow] = useState(false);
 
         useEffect(() => {
@@ -35,28 +35,28 @@
     return (
         <>
             <SendButton
-                className="btn-modal"
-                onClick={handleShow}
-                text={openButtonText}
-                backcolor= {buttonColor || "#3E4692"}
-                letercolor={buttonTextColor || "white"}
-                wide={openButtonWidth}
-                hid={!showButton}
+            className="btn-modal"
+            onClick={handleShow}
+            text={openButtonText}
+            backcolor={buttonColor || "#3E4692"}
+            letercolor={buttonTextColor || "white"}
+            wide={openButtonWidth}
+            hid={!showButton}
             />
 
             <Modal size={tamaño} centered show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{content}</Modal.Body>
-                <Modal.Footer>
-                    <SendButton text="Cerrar" onClick={handleClose}/>
-                    {showDeleteButton && <SendButton backcolor='#FF0000' letercolor='white' text={deleteButtonText ? deleteButtonText : "Eliminar"} onClick={() => { deleteFunction(); handleClose();}}/>}
-                    <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={handleSaveAndClose}/>
-                </Modal.Footer>
+            <Modal.Header closeButton>
+                <Modal.Title>{title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{content}</Modal.Body>
+            <Modal.Footer>
+                <SendButton text="Cerrar" onClick={handleClose}/>
+                {showDeleteButton && <SendButton backcolor='#FF0000' letercolor='white' text={deleteButtonText ? deleteButtonText : "Eliminar"} onClick={() => { deleteFunction(); handleClose();}}/>}
+                <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={handleSaveAndClose} disabled={saveButtonDisabled}/>
+            </Modal.Footer>
             </Modal>
         </>
-    );
+        );
 }
 
 export default GenericModal;
