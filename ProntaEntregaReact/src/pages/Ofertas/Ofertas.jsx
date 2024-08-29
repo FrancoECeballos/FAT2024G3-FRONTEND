@@ -13,12 +13,16 @@ import Modal from '../../components/modals/Modal.jsx';
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
 
+import Loading from '../../components/loading/loading.jsx';
+
 function Ofertas() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [ofertas, setOfertas] = useState([]);
     const ofertaCardRef = useRef(null);
     const [selectedOfertaId, setSelectedOfertaId] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
@@ -50,16 +54,22 @@ function Ofertas() {
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+            } 
+        };
+
+        const fetchDataAsync = async () => {
+            try {
+            await fetchUserData();
+            const result = await fetchData('/oferta/', token);
+            setOfertas(result);
+            } catch (error) {
+            console.error('Error fetching orders:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        fetchUserData().then(() => {
-            fetchData('/oferta/', token).then((result) => {
-                setOfertas(result);
-            }).catch(error => {
-                console.error('Error fetching orders:', error);
-            });
-        });
+        fetchDataAsync();
     }, [token, navigate]);
 
     const filteredOfertas = ofertas.filter(oferta => {
@@ -138,6 +148,9 @@ function Ofertas() {
         });
     };
 
+    if (isLoading) {
+        return <div><FullNavbar/><Loading /></div> ;
+    }
     return (
         <div>
             <FullNavbar selectedPage='Ofertas' />
