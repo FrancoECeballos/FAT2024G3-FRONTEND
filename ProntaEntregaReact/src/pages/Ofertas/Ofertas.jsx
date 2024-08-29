@@ -115,6 +115,14 @@ function Ofertas() {
     };
 
     const createAporteOferta = (ofertaId, usuarioId, fecha, cantidad) => {
+        const oferta = ofertas.find(oferta => oferta.id_oferta === ofertaId);
+        const cantidadRestante = oferta.cantidad - oferta.progreso;
+
+        if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
+            setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${oferta.id_producto.unidadmedida}`);
+            return;
+        }
+
         const data = {
             id_oferta: ofertaId,
             id_usuario: usuarioId,
@@ -207,8 +215,9 @@ function Ofertas() {
                                                     }
                                                     }}
                                                 />
-                                                {error && <p style={{ color: 'red' }}>{error}</p>}
-                                                </Form.Group>
+                                                
+                                                {error && <p style={{ color: 'red', fontSize: '1rem', marginTop: '3%' }}>{error}</p>}                                                </Form.Group>
+                                                
                                               </div>
                                             }
                                           />
