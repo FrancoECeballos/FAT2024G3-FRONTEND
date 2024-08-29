@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Icon } from '@iconify/react';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
-import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import Modal from '../../components/modals/Modal.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 
@@ -13,7 +14,6 @@ function Stock() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [obras, setObras] = useState([]);
-    const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
@@ -23,27 +23,16 @@ function Stock() {
             return;
         }
         fetchData(`/userToken/${token}`, token).then((result) => {
-            console.log("User Token Result:", result);
-            setIsAdmin(result.is_superuser);
-            const email = result.email;
             if (result.is_superuser) {
                 fetchData('/obra/', token).then((result) => {
-                    console.log("Obras for Admin:", result);
                     setObras(result);
                 }).catch(error => {
                     console.error('Error fetching obras for admin', error);
                 });
             } else {
-                fetchData(`/user/obrasEmail/${email}/`, token).then((result) => {
-                    console.log("Obras for User:", result);
-                    const obraIds = result.map(obra => obra.id_obra);
-                    const obraPromises = obraIds.map(id => fetchData(`/obra/${id}`, token));
-                    Promise.all(obraPromises).then(obras => {
-                        console.log("Fetched Obras:", obras);
-                        setObras(obras.flat());
-                    }).catch(error => {
-                        console.error('Error fetching obras by ID', error);
-                    });
+                fetchData(`/user/obrasEmail/${result.email}/`, token).then((result) => {
+                    setObras(result);
+                    console.log(result);
                 }).catch(error => {
                     console.error('Error fetching obras for user', error);
                 });
@@ -96,6 +85,23 @@ function Stock() {
                             titulo={obra.nombre}
                             descrip1={`Usuarios Registrados: ${obra.usuarios_registrados}`}
                             descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
+                            children={
+                                <>
+                                    {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
+                                        <Icon
+                                            icon="line-md:edit-twotone"
+                                            className="hoverable-icon"
+                                            style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
+                                        />
+                                    )}
+                                    <Modal
+                                        showButton={false}
+                                        saveButtonText={'Tomar'}
+                                        title={'Editar Obra'}
+                                        content={""}
+                                    />
+                                </>
+                            }
                         />
                     ))
                 ) : (

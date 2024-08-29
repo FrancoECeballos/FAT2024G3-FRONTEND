@@ -13,6 +13,8 @@ import postData from '../../functions/postData';
 import putData from '../../functions/putData';
 import deleteData from '../../functions/deleteData';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import Loading from '../../components/loading/loading.jsx';
+
 
 import Modal from '../../components/modals/Modal.jsx';
 import defaultImage from '../../assets/no_image.png';
@@ -23,6 +25,7 @@ function AutosComponent() {
     const navigate = useNavigate();
     const { obraId } = useParams();
     const token = Cookies.get('token');
+    const [isLoading, setIsLoading] = useState(true);
 
     const [currentObra, setCurrentObra] = useState(false);
     const [autoModal, setAutoModal] = useState(null);
@@ -64,6 +67,7 @@ function AutosComponent() {
         fetchData(`/obra/${obraId}`, token).then((result) => {
             setCurrentObra(result[0].nombre);
         });
+        setIsLoading(false);
 
         const img = new Image();
         img.src = defaultImage;
@@ -209,6 +213,9 @@ function AutosComponent() {
     };
 
 
+    if (isLoading) {
+        return <div><FullNavbar/><Loading /></div> ;
+    }
     return (
         <div>
             <FullNavbar selectedPage='Autos' />
@@ -248,8 +255,11 @@ function AutosComponent() {
                                     imageStyle={imageStyle}
                                     children={
                                         <>
+                                    <div>    
+                                        <div>
                                             {!maintenance.isMaintained ? (
-                                                <Modal title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte)} content={
+                                                <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte)}                             
+                                                content={
                                                     <Form.Control
                                                         as="textarea"
                                                         rows={3}
@@ -267,6 +277,8 @@ function AutosComponent() {
                                                     onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
                                                 />
                                             )}
+                                            </div>
+                                            <div style={{marginTop:"1rem", marginRight: "1rem"}}>
                                             <Modal openButtonText='Actualizar Auto' title='Actualizar Auto' handleShowModal={() => handleEditAutoClick(auto)} handleSave={handleEditAutoSave} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto.id_transporte)} content={
                                                 <>
                                                     <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
@@ -275,6 +287,9 @@ function AutosComponent() {
                                                     <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
                                                 </>
                                             }/>
+                                    
+                                            </div>
+                                    </div>
                                         </>
                                     }
                                 />
