@@ -20,7 +20,9 @@ function Pedidos() {
     const token = Cookies.get('token');
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
+
     const pedidoCardRef = useRef(null);
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const [pedidos, setPedidos] = useState([]);
     const [selectedPedidoId, setSelectedPedidoId] = useState(null);
@@ -68,6 +70,16 @@ function Pedidos() {
             });
         });
     }, [token]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (pedidoCardRef.current) {
+                setIsFormValid(pedidoCardRef.current.isFormValid);
+            }
+        }, 100);
+    
+        return () => clearInterval(interval);
+    }, [pedidoCardRef]);
 
     const handleSearchChange = (value) => {
         setSearchQuery(value);
@@ -200,7 +212,7 @@ function Pedidos() {
                 title='Nuevo Pedido'
                 saveButtonText='Crear'
                 handleSave={handleCreatePedido}
-                saveButtonEnabled={pedidoCardRef.current?.isFormValid}
+                saveButtonEnabled={isFormValid}
                 content={
                     <div>
                         <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef}/>

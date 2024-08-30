@@ -39,7 +39,7 @@ export default function SendButton({
       }}
       variant="primary"
       type="submit"
-      
+      disabled={disabled}
     >
       {text}  
       {children}
