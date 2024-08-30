@@ -3,6 +3,7 @@ import { Col, Row, Form, Card } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
+import postData from '../../../functions/postData.jsx'; // Importar postData para la notificación
 import './PedidoCard.scss';
 
 const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles }, ref) => {
@@ -200,6 +201,43 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         getPedidoForm: () => pedidoForm,
         isFormValid
     }));
+
+    const handleCreatePedido = () => {
+        const { obras, ...pedidoFormWithoutObras } = pedidoForm;
+        
+        postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+            console.log('Pedido creado:', result);
+            const obrasPromises = obras.map((obra) => 
+                postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
+            );
+            return Promise.all(obrasPromises).then(() => result);
+        }).then((result) => {
+            console.log('Detalles de pedido creados:', result);
+            // Inspeccionar el objeto result
+            console.log('Estructura del objeto result:', result);
+
+            // Verificar que los datos del producto estén disponibles
+            const productoNombre = result.id_producto ? result.id_producto.name : 'Nombre no disponible';
+            const productoUnidad = result.id_producto ? result.id_producto.unidadmedida : 'Unidad no disponible';
+            const cantidad = result.cantidad || 'Cantidad no disponible';
+
+            // Crear notificación
+            const tituloNotificacion = `Notificación Creada - ${user.nombre} ${user.apellido}`;
+            const fechaCreacion = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            const dataNotificacion = {
+                titulo: tituloNotificacion,
+                descripcion: `Nuevo pedido creado: ${productoNombre} (${cantidad} ${productoUnidad})`,
+                id_usuario: user.id_usuario,
+                fecha_creacion: fechaCreacion // Agregar fecha de creación en formato YYYY-MM-DD
+            };
+            console.log('Datos de la notificación:', dataNotificacion);
+            return postData('PostNotificacion/', dataNotificacion, token); // Asegúrate de que la URL del endpoint sea correcta
+        }).then((notificacionResult) => {
+            console.log('Notificación creada:', notificacionResult);
+        }).catch((error) => {
+            console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
+        });
+    };
 
     return (
         <Card className='no-border-card' style={{ width: '100%' }}>

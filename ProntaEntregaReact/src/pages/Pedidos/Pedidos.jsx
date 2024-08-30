@@ -108,6 +108,7 @@ function Pedidos() {
             }).then((result) => {
                 console.log('Detalles de pedido creados:', result);
                 console.log('Estructura del objeto result:', result);
+                window.location.reload();
     
                 const productoNombre = result.id_producto.name || 'Nombre no disponible';
                 const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
