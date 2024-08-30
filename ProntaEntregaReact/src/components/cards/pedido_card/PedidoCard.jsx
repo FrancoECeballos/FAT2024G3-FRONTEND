@@ -183,11 +183,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             errors.id_producto = "Producto es requerido";
         }
     
-        if (selectedCategory === "") {
-            formIsValid = false;
-            errors.categoria = "Categoría es requerida";
-        }
-    
         if (form.obras.length === 0) {
             formIsValid = false;
             errors.obras = "Debe seleccionar al menos una obra";

@@ -32,6 +32,8 @@ function Products() {
     const cantidadRef = useRef(null);
     const pedidoCardRef = useRef(null);
     const ofertaCardRef = useRef(null);
+    const [isFormValid, setIsFormValid] = useState(false);
+
     const [isLoading, setIsLoading] = useState(true);
     
     const [products, setProducts] = useState([]);
@@ -114,6 +116,24 @@ function Products() {
         };
 
     }, [token, navigate, stockId, categoriaID]);
+
+    useEffect(() => {
+        if (pedidoOrOferta === 'pedido') {
+            const interval = setInterval(() => {
+                if (pedidoCardRef.current) {
+                    setIsFormValid(pedidoCardRef.current.isFormValid);
+                }
+            }, 100);
+            return () => clearInterval(interval);
+        } else if (pedidoOrOferta === 'oferta') {
+            const interval = setInterval(() => {
+                if (ofertaCardRef.current) {
+                    setIsFormValid(ofertaCardRef.current.isFormValid);
+                }
+            }, 100);
+            return () => clearInterval(interval);
+        }
+    }, [pedidoCardRef, ofertaCardRef, pedidoOrOferta]);
 
     const filteredProducts = products.filter(product => {
         return (
@@ -336,7 +356,6 @@ function Products() {
                 <div className='cardCategori'>
                 {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? sortedProducts.map(product => {
                     return (
-                   
                         <GenericCard
                             foto={product.imagen}
                             key={product.id_producto}
@@ -368,7 +387,7 @@ function Products() {
                                         } 
                                     />
                                     <div style={{marginLeft:"1rem"}}>
-                                        <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta}
+                                        <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
                                             content={
                                                 <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
                                                     <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>

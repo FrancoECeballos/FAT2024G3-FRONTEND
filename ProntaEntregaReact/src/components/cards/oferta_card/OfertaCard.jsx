@@ -139,11 +139,6 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             errors.id_producto = "Producto es requerido";
         }
     
-        if (selectedCategory === "") {
-            formIsValid = false;
-            errors.categoria = "Categoría es requerida";
-        }
-    
         console.log('Form validation result:', formIsValid, errors);
         return { formIsValid, errors };
     };
