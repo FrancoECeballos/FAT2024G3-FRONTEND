@@ -13,8 +13,6 @@ import Products from './pages/Stock/Products/Products.jsx';
 import Pedidos from './pages/Pedidos/Pedidos.jsx';
 import Ofertas from './pages/Ofertas/Ofertas.jsx';
 
-import CrearPedido from './pages/Pedidos/CrearPedido.jsx';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Main from './pages/Main/Main.jsx'
@@ -49,7 +47,6 @@ function App() {
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/autos" element={<ObrasAutos />} />
         <Route path="/autos/:obraId" element={<Autos />} />
-        <Route path="/crear_pedido" element={<CrearPedido />} />
         <Route path="/landing" element={<Landing />} />
       </Routes>
     </BrowserRouter>
