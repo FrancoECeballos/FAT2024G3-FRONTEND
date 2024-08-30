@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
 import Cookies from 'js-cookie';
-import { Icon } from '@iconify/react';
+import { Form } from 'react-bootstrap';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import fetchUser from '../../functions/fetchUser';
-import Modal from '../../components/modals/Modal.jsx';
+import GenericModal from '../../components/modals/Modal.jsx'; // Usando el nombre correcto del componente modal
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
-
 import Loading from '../../components/loading/loading.jsx';
 
 function Ofertas() {
@@ -20,18 +18,15 @@ function Ofertas() {
     const token = Cookies.get('token');
     const [ofertas, setOfertas] = useState([]);
     const ofertaCardRef = useRef(null);
-    const [selectedOfertaId, setSelectedOfertaId] = useState(null);
+    const [selectedOferta, setSelectedOferta] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-
-
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
-
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
-
     const [user, setUser] = useState({});
     const [stocks, setStocks] = useState([]);
+    const [showModal, setShowModal] = useState(false); // Nueva gestión de estado para el modal
 
     useEffect(() => {
         if (!token) {
@@ -59,11 +54,11 @@ function Ofertas() {
 
         const fetchDataAsync = async () => {
             try {
-            await fetchUserData();
-            const result = await fetchData('/oferta/', token);
-            setOfertas(result);
+                await fetchUserData();
+                const result = await fetchData('/oferta/', token);
+                setOfertas(result);
             } catch (error) {
-            console.error('Error fetching orders:', error);
+                console.error('Error fetching offers:', error);
             } finally {
                 setIsLoading(false);
             }
@@ -103,9 +98,9 @@ function Ofertas() {
     const handleChange = (event) => {
         setCantidad(event.target.value);
         if (event.target.value === '') {
-          setError('La cantidad no puede estar vacía');
+            setError('La cantidad no puede estar vacía');
         } else {
-          setError('');
+            setError('');
         }
     };
 
@@ -124,13 +119,13 @@ function Ofertas() {
         }
     };
 
-    const createAporteOferta = (ofertaId, usuarioId, fecha, cantidad) => {
+    const createAporteOferta = async (ofertaId, usuarioId, fecha, cantidad) => {
         const oferta = ofertas.find(oferta => oferta.id_oferta === ofertaId);
         const cantidadRestante = oferta.cantidad - oferta.progreso;
 
         if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
             setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${oferta.id_producto.unidadmedida}`);
-            return;
+            return false;
         }
 
         const data = {
@@ -140,17 +135,31 @@ function Ofertas() {
             cantidad: cantidad
         };
     
-        postData('crear_detalle_oferta/', data, token).then(() => {
+        try {
+            await postData('crear_detalle_oferta/', data, token);
             console.log('Aporte de la oferta creado');
             window.location.reload();
-        }).catch(error => {
-            console.error('Error creating aporte oferta:', error);
-        });
+            return true;
+        } catch (error) {
+            console.error('Error creando el aporte de la oferta:', error);
+            return false;
+        }
+    };
+
+    const openModal = (oferta) => {
+        setSelectedOferta(oferta);
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedOferta(null);
     };
 
     if (isLoading) {
-        return <div><FullNavbar/><Loading /></div> ;
+        return <div><FullNavbar/><Loading /></div>;
     }
+
     return (
         <div>
             <FullNavbar selectedPage='Ofertas' />
@@ -159,84 +168,34 @@ function Ofertas() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='oferta-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <Modal
-                            openButtonText='¿No encuentra su oferta? Añadala' 
-                            openButtonWidth='20' 
-                            title='Nueva Oferta' 
-                            saveButtonText='Crear' 
-                            handleSave={handleCreateOferta} 
+                        <GenericModal
+                            openButtonText='¿No encuentra su oferta? Añádala'
+                            openButtonWidth='20'
+                            title='Nueva Oferta'
+                            saveButtonText='Crear'
+                            handleSave={handleCreateOferta}
                             content={
-                                <OfertaCard user={user} stocksDisponibles={stocks} ref={ofertaCardRef}/>
+                                <OfertaCard user={user} stocksDisponibles={stocks} ref={ofertaCardRef} />
                             }
+                            showModal={showModal}
+                            handleCloseModal={closeModal}
                         />
                     </div>
                     <div className='cardCategori'>
                         {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
                             sortedOfertas.map(oferta => (
-                                <GenericCard
-                                    key={oferta.id_oferta}
-                                    titulo={`${oferta.id_producto.nombre}`}
-                                    foto={oferta.id_producto.imagen}
-                                    descrip1={`Cantidad: ${oferta.progreso} / ${oferta.cantidad} ${oferta.id_producto.unidadmedida}`}
-                                    descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
-                                    descrip3={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                    descrip4={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
-                                    descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
-                                    children={
-                                        <>
-                                          <Icon
-                                            icon="line-md:edit-twotone"
-                                            className="hoverable-icon"
-                                            style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
-                                            onClick={() => setSelectedOfertaId(oferta.id_oferta)}
-                                          />
-                                          <Modal
-                                            showButton={false}
-                                            showModal={selectedOfertaId === oferta.id_oferta}
-                                            saveButtonText={'Tomar'}
-                                            handleCloseModal={() => setSelectedOfertaId(null)}
-                                            title={'Tomar Oferta'}
-                                            handleSave={() => createAporteOferta(oferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
-                                            content={
-                                              <div>
-                                                <GenericCard
-                                                  key={oferta.id_oferta}
-                                                  foto={oferta.id_producto.imagen}
-                                                  titulo={oferta.id_producto.nombre}
-                                                  descrip1={`Cantidad: ${oferta.cantidad} ${oferta.id_producto.unidadmedida}`}
-                                                  descrip2={`Fecha Inicio: ${oferta.fechainicio}`}
-                                                  descrip3={`Fecha Vencimiento: ${oferta.fechavencimiento}`}
-                                                  descrip4={`Obra: ${oferta.id_obra.nombre}`}
-                                                  descrip5={`Usuario: ${oferta.id_usuario.nombre} ${oferta.id_usuario.apellido}`}
-                                                />
-                                                <Form.Group className="mb-2" controlId="formBasicCantidad">
-                                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                                    Ingrese la cantidad que quiere aportar
-                                                </Form.Label>
-                                                <Form.Control
-                                                    name="cantidad"
-                                                    type="number"
-                                                    placeholder="Ingrese la cantidad"
-                                                    value={cantidad}
-                                                    onChange={handleChange}
-                                                    onKeyDown={(event) => {
-                                                    if (
-                                                        !/[0-9.]/.test(event.key) &&
-                                                        !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)
-                                                    ) {
-                                                        event.preventDefault();
-                                                    }
-                                                    }}
-                                                />
-                                                
-                                                {error && <p style={{ color: 'red', fontSize: '1rem', marginTop: '3%' }}>{error}</p>}                                                </Form.Group>
-                                                
-                                              </div>
-                                            }
-                                          />
-                                        </>
-                                      }
-                                />
+                                <div key={oferta.id_oferta}>
+                                    <GenericCard
+                                        onClick={() => openModal(oferta)}
+                                        titulo={`${oferta.id_producto.nombre}`}
+                                        foto={oferta.id_producto.imagen}
+                                        descrip1={`Cantidad: ${oferta.progreso} / ${oferta.cantidad} ${oferta.id_producto.unidadmedida}`}
+                                        descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
+                                        descrip3={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                        descrip4={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                        descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                    />
+                                </div>
                             ))
                         ) : (
                             <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay ofertas disponibles.</p>
@@ -244,6 +203,39 @@ function Ofertas() {
                     </div>
                 </div>
             </div>
+
+            {selectedOferta && (
+                <GenericModal
+                    showButton={false}
+                    showModal={showModal}
+                    saveButtonText='Tomar'
+                    handleCloseModal={closeModal}
+                    title='Tomar Oferta'
+                    handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                    content={
+                        <div>
+                            <GenericCard
+                                key={selectedOferta.id_oferta}
+                                titulo={`${selectedOferta.id_producto.nombre}`}
+                                foto={selectedOferta.id_producto.imagen}
+                                descrip1={`Cantidad: ${selectedOferta.progreso} / ${selectedOferta.cantidad} ${selectedOferta.id_producto.unidadmedida}`}
+                                descrip2={<><strong>Obra:</strong> {selectedOferta.id_obra.nombre}</>}
+                                descrip3={<><strong>Usuario:</strong> {selectedOferta.id_usuario.nombre} {selectedOferta.id_usuario.apellido}</>}
+                                descrip4={<><strong>Estado:</strong> {selectedOferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {selectedOferta.cantidad} {selectedOferta.id_producto.unidadmedida}</>}
+                                descrip5={<><strong>Fecha Vencimiento:</strong> {selectedOferta.fechavencimiento ? selectedOferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                            />
+                            <Form.Control
+                                type='number'
+                                placeholder='Ingrese la cantidad a aportar'
+                                value={cantidad}
+                                onChange={handleChange}
+                                style={{ marginTop: '1rem' }}
+                            />
+                            {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
+                        </div>
+                    }
+                />
+            )}
         </div>
     );
 }

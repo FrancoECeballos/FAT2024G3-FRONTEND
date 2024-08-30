@@ -156,7 +156,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
                     <Form.Group className="mb-2" controlId="formBasicFechaFin">
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
                         <Form.Control style={{width:"70%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
-                        <p style={{fontSize:"0.7rem"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
+                        <p style={{fontSize:"0.7rem", margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
                         <Form.Label id='errorFechaFin' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                     </Form.Group>
 
@@ -167,7 +167,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
                     </Form.Group>
 
                     {!stock && (
-                        <Form.Group className="mb-2" controlId="formBasicUrgencia">
+                        <Form.Group className="mb-2" controlId="formRequestingObra">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que Ofrece (*)</Form.Label>
                             <Form.Control style={{width:"70%", border:"1px solid grey"}} name="id_obra" as="select" onChange={handleInputChange} defaultValue="">
                                 <option value="" hidden>Seleccione una Obra</option>
