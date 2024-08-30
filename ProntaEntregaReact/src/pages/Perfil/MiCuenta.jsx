@@ -23,7 +23,7 @@ function MiCuenta(){
         <div  style={{backgroundColor: '#ECECEC',overflowX:"hidden", width:"100%"}}>
             <FullNavbar/>
             <Row style={{ height: "100vh" }}>
-                <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} style={{width:"20%"}}>
+                <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
                     <Sidebar isAdmin={user.is_staff}/>
                 </Col>
                 <Col className='colcuenta' xs={12} sm={9} md={9} lg={6} xl={6} xxl={6} style={{overflowY: "scroll", overflowX:"hidden",height:"100vh",scrollbarWidth:"none",paddingBottom:"10rem",}} >
