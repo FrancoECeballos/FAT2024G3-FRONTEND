@@ -7,6 +7,8 @@ import './PedidoCard.scss';
 
 const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles }, ref) => {
     const token = Cookies.get('token');
+    const [isFormValid, setIsFormValid] = useState(false);
+
     const [obras, setObras] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -25,7 +27,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         "id_obra": stock ? stock : "",
         "id_usuario": user ? user.id_usuario : "",
         "cantidad": 0,
-        "urgente": 1,
+        "urgente": "",
         "id_producto": productDefault ? productDefault.id_producto: "",
         "id_estadoPedido": 3,
         "obras": []
@@ -41,7 +43,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         }).catch(error => {
             console.error('Error fetching categories:', error);
         });
-    }, []);
+    }, []);        
 
     const handleCategoryChange = (event) => {
         const selectedValue = event.target.value;
@@ -66,6 +68,14 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         let transformedValue = value;
+        let formIsValid = true;
+    
+        const errorFechaInicio = document.getElementById("errorFechaInicio");
+        const errorFechaFin = document.getElementById("errorFechaFin");
+        const errorCantidad = document.getElementById("errorCantidad");
+        const errorUrgencia = document.getElementById("errorUrgencia");
+        const errorRequestingObra = document.getElementById("errorRequestingObra");
+        const errorProducto = document.getElementById("errorProducto");
     
         switch (name) {
             case 'cantidad':
@@ -78,34 +88,97 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                 break;
         }
     
-        if (name === 'id_obra') {
-            resetCategoryAndProducts();
-        }
-    
         setPedidoForm((prevPedido) => {
             const updatedForm = { ...prevPedido, [name]: transformedValue };
     
             if (name === 'id_obra') {
-                updatedForm.obras = []; // Desselecciona todas las obras previamente seleccionadas
+                updatedForm.obras = [];
             }
     
             console.log('Formulario de Pedido Actualizado:', updatedForm);
             return updatedForm;
         });
-
+    
         if (name === "cantidad") {
             const regex = /^[0-9]+$/;
-            const errorCantidad = document.getElementById("errorCantidad");
             if (value === "") {
-                errorCantidad.innerHTML = "La cantidad no puede estar vacia";
+                errorCantidad.innerHTML = "La cantidad no puede estar vacía";
+                formIsValid = false;
             } else {
                 errorCantidad.innerHTML = !regex.test(value) ? "La cantidad es inválida" : "&nbsp;";
             }
         }
+    
+        if (name === "fechainicio") {
+            if (value === "") {
+                errorFechaInicio.innerHTML = "Fecha de inicio es requerida";
+                formIsValid = false;
+            } else if (value < formattedDate) {
+                errorFechaInicio.innerHTML = "La fecha de inicio no puede ser menor a la fecha de hoy";
+                formIsValid = false;
+            } else {
+                errorFechaInicio.innerHTML = "&nbsp;";
+            }
+        }
+    
+        if (name === "fechavencimiento") {
+            if (value === "") {
+                errorFechaFin.innerHTML = "Fecha de vencimiento es requerida";
+                formIsValid = false;
+            } else if (value < formattedDate) {
+                errorFechaFin.innerHTML = "La fecha de vencimiento no puede ser menor a la fecha de hoy";
+                formIsValid = false;
+            } else {
+                errorFechaFin.innerHTML = "&nbsp;";
+            }
+        }
+    
+        if (name === "id_obra") {
+            resetCategoryAndProducts();
+            if (value === "") {
+                errorRequestingObra.innerHTML = "Obra es requerida";
+                formIsValid = false;
+            } else {
+                errorRequestingObra.innerHTML = "&nbsp;";
+            }
+        }
+    
+        if (name === "cantidad") {
+            if (value <= 0 || value === "") {
+                errorCantidad.innerHTML = "Debe ingresar una cantidad mayor que 0";
+                formIsValid = false;
+            } else {
+                errorCantidad.innerHTML = "&nbsp;";
+            }
+        }
+    
+        if (name === "urgente") {
+            if (value === "") {
+                errorUrgencia.innerHTML = "Urgencia es requerida";
+                formIsValid = false;
+            } else {
+                errorUrgencia.innerHTML = "&nbsp;";
+            }
+        }
+    
+        if (name === "id_producto") {
+            if (value === "") {
+                errorProducto.innerHTML = "Producto es requerido";
+                formIsValid = false;
+            } else {
+                errorProducto.innerHTML = "&nbsp;";
+            }
+        }
+
+        setIsFormValid(formIsValid);
+        console.log(formIsValid);
     };
+    
     
 
     const handleCardSelection = (key) => {
+        const errorObrasRequested = document.getElementById("errorObrasRequested");
+
         setPedidoForm(prevForm => {
             const isAlreadySelected = prevForm.obras.includes(key);
             const updatedObras = isAlreadySelected
@@ -116,6 +189,13 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                 ...prevForm,
                 obras: updatedObras
             };
+
+            if (updatedObras.length === 0) {
+                errorObrasRequested.innerHTML = "Debe seleccionar al menos una obra";
+                setIsFormValid(false);
+            } else {
+                errorObrasRequested.innerHTML = "&nbsp;";
+            }
 
             console.log('Formulario de Pedido Actualizado:', updatedForm);
             return updatedForm;
@@ -163,7 +243,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
 
                             <Form.Group className="mb-2" controlId="formBasicUrgencia">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Urgencia (*)</Form.Label>
-                                <Form.Control name="urgente" as="select" onChange={handleInputChange}>
+                                <Form.Control name="urgente" as="select" onBlur={handleInputChange} onChange={handleInputChange}>
+                                    <option value='' hidden>Urgencia</option>
                                     <option value="1">No es urgente</option>
                                     <option value="2">Ligeramente Urgente</option>
                                     <option value="3">Muy Urgente</option>
@@ -175,8 +256,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                             {!stock && (
                                 <Form.Group className="mb-2" controlId="formBasicRequestingObra">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que Pide (*)</Form.Label>
-                                    <Form.Control name="id_obra" as="select" onChange={handleInputChange} defaultValue="">
-                                        <option value="" hidden>Seleccione una Obra</option>
+                                    <Form.Control name="id_obra" as="select" onBlur={handleInputChange} onChange={handleInputChange} defaultValue="">
+                                        <option value='' hidden>Seleccione una Obra</option>
                                         {stocksDisponibles.map(stock => (
                                             <option key={stock.stock[0].id_stock} value={stock.stock[0].id_stock}>{stock.stock[0].id_obra.nombre}</option>
                                         ))}
@@ -185,11 +266,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (
+                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (
                                 <Form.Group className="mb-2" controlId="formBasicCategoria">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
-                                    <Form.Control name="categoria" as="select" value={selectedCategory} onChange={handleCategoryChange}>
-                                        <option value="" hidden>Categoria</option>
+                                    <Form.Control name="categoria" as="select" value={selectedCategory} onBlur={handleInputChange} onChange={handleCategoryChange}>
+                                        <option value='' hidden>Categoria</option>
                                         {categories.map(categoria => (
                                             <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>
                                         ))}
@@ -198,11 +279,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (selectedCategory != "") && (products != null) && (
+                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (selectedCategory != "")  && (selectedCategory) && (products != null) && (
                                 <Form.Group className="mb-2" controlId="formBasicProducto">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                                    <Form.Control name="id_producto" as="select" defaultValue="" onChange={handleInputChange}>
-                                        <option value="" hidden>Producto</option>
+                                    <Form.Control name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
+                                        <option value='' hidden>Producto</option>
                                         {products.map(product => (
                                             <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
                                         ))}
@@ -215,9 +296,9 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                         <Col xs={12} md={6}>
                             <Form.Group style={{marginTop:"13%"}} className="mb-2" controlId="formBasicObras">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
-                                <div className='cardscasas'> {/* Ajusta el margen si es necesario */}
+                                <div className='cardscasas'>
                                     {obras
-                                        .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra) // Filtra la obra seleccionada
+                                        .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra)
                                         .map(obra => (
                                             <SelectableCard 
                                                 mar={"0.2rem"} 

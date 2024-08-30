@@ -3,7 +3,10 @@
     import Modal from 'react-bootstrap/Modal';
     import './Modal.scss';
 
-    function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteButtonText, deleteFunction, saveButtonDisabled = false}) {
+    function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, 
+        title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteButtonText, 
+        deleteFunction, saveButtonEnabled = true}) {
+            
         const [show, setShow] = useState(false);
 
         useEffect(() => {
@@ -52,7 +55,7 @@
             <Modal.Footer>
                 <SendButton text="Cerrar" onClick={handleClose}/>
                 {showDeleteButton && <SendButton backcolor='#FF0000' letercolor='white' text={deleteButtonText ? deleteButtonText : "Eliminar"} onClick={() => { deleteFunction(); handleClose();}}/>}
-                <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={handleSaveAndClose} disabled={saveButtonDisabled}/>
+                <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={handleSaveAndClose} disabled={!saveButtonEnabled}/>
             </Modal.Footer>
             </Modal>
         </>

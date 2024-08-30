@@ -100,10 +100,6 @@ function Pedidos() {
         }));
     };
 
-    const isFormValid = () => {
-        return Object.values(pedidoForm).every(field => field !== '');
-    };
-
     const handleCreatePedido = () => {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
@@ -205,7 +201,7 @@ function Pedidos() {
                 title='Nuevo Pedido'
                 saveButtonText='Crear'
                 handleSave={handleCreatePedido}
-                saveButtonDisabled={!isFormValid()} // Deshabilitar el botón si el formulario no es válido
+                saveButtonEnabled
                 content={
                     <div>
                         <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef} onChange={handleFormChange} />
