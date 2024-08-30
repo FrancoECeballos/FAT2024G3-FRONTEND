@@ -1,0 +1,7 @@
+.colcuenta {
+    width: 75%;
+
+    @media (max-width: 767px) {
+        width: 100%;
+    }
+}

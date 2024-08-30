@@ -110,11 +110,32 @@ function Pedidos() {
                 const obrasPromises = obras.map((obra) => 
                     postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
                 );
-                return Promise.all(obrasPromises);
-            }).then((detalleResults) => {
-                console.log('Detalles de pedido creados:', detalleResults);
+                return Promise.all(obrasPromises).then(() => result);
+            }).then((result) => {
+                console.log('Detalles de pedido creados:', result);
+                // Inspeccionar el objeto result
+                console.log('Estructura del objeto result:', result);
+    
+                // Verificar que los datos del producto estén disponibles
+                const productoNombre = result.id_producto.name || 'Nombre no disponible';
+                const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
+                const cantidad = result.cantidad || 'Cantidad no disponible';
+    
+                // Crear notificación
+                const tituloNotificacion =` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
+                const fechaCreacion = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+                const dataNotificacion = {
+                    titulo: tituloNotificacion,
+                    descripcion: 'Nuevo pedido creado',
+                    id_usuario: user.id_usuario,
+                    fecha_creacion: fechaCreacion // Agregar fecha de creación en formato YYYY-MM-DD
+                };
+                console.log('Datos de la notificación:', dataNotificacion);
+                return postData('PostNotificacion/', dataNotificacion, token); // Asegúrate de que la URL del endpoint sea correcta
+            }).then((notificacionResult) => {
+                console.log('Notificación creada:', notificacionResult);
             }).catch((error) => {
-                console.error('Error al crear el pedido o los detalles del pedido:', error);
+                console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
             });
         }
     };
@@ -138,7 +159,6 @@ function Pedidos() {
     
         postData('crear_aporte_pedido/', data, token).then(() => {
             console.log('Aporte del pedido creado');
-            window.location.reload();
         }).catch(error => {
             console.error('Error creating aporte pedido:', error);
         });
@@ -183,7 +203,7 @@ function Pedidos() {
     });
 
     if (isLoading) {
-        return <div><FullNavbar selectedPage='Pedidos' /><Loading /></div>;
+        return <div> <FullNavbar selectedPage='Pedidos' /><Loading /></div>;
     }
 
     return (

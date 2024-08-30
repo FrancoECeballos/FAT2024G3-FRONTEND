@@ -13,14 +13,13 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [products, setProducts] = useState([]);
-
+    
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
-    
     const nextMonth = new Date(today);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     const formattedNextMonthDate = nextMonth.toISOString().split('T')[0];
-
+    
     const [pedidoForm, setPedidoForm] = useState({
         "fechainicio": formattedDate,
         "fechavencimiento": formattedNextMonthDate,
@@ -48,7 +47,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const handleCategoryChange = (event) => {
         const selectedValue = event.target.value;
         setSelectedCategory(selectedValue);
-        setPedidoForm((prevPedido) => { return { ...prevPedido, id_producto: "" }; });
+        setPedidoForm(prevForm => ({ ...prevForm, id_producto: "" }));
         handleFetchProducts(pedidoForm.id_obra, selectedValue);
     };
 
@@ -88,6 +87,12 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                 break;
         }
     
+        setPedidoForm(prevPedido => ({
+            ...prevPedido,
+            [name]: transformedValue,
+            obras: name === 'id_obra' ? [] : prevPedido.obras // Deselecciona todas las obras si se cambia la obra
+        }));
+
         setPedidoForm((prevPedido) => {
             const updatedForm = { ...prevPedido, [name]: transformedValue };
     
@@ -184,8 +189,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             const updatedObras = isAlreadySelected
                 ? prevForm.obras.filter(k => k !== key)
                 : [key, ...prevForm.obras];
-
-            const updatedForm = {
+            
+            return {
                 ...prevForm,
                 obras: updatedObras
             };
@@ -207,6 +212,13 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             return [selectedObra, ...remainingObras];
         });
     };
+
+    // Reordenar las obras: las seleccionadas al principio
+    const orderedObras = [...obras].sort((a, b) => {
+        const aIsSelected = pedidoForm.obras.includes(a.id_obra.id_obra);
+        const bIsSelected = pedidoForm.obras.includes(b.id_obra.id_obra);
+        return aIsSelected && !bIsSelected ? -1 : !aIsSelected && bIsSelected ? 1 : 0;
+    });
 
     useImperativeHandle(ref, () => ({
         getPedidoForm: () => pedidoForm
@@ -291,14 +303,13 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                     <Form.Label id='errorProducto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                                 </Form.Group>
                             )}
-
                         </Col>
                         <Col xs={12} md={6}>
                             <Form.Group style={{marginTop:"13%"}} className="mb-2" controlId="formBasicObras">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
                                 <div className='cardscasas'>
-                                    {obras
-                                        .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra)
+                                    {orderedObras
+                                        .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra) // Filtra la obra seleccionada
                                         .map(obra => (
                                             <SelectableCard 
                                                 mar={"0.2rem"} 
