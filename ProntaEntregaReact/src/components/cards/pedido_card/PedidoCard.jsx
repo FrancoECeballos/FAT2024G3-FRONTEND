@@ -59,22 +59,9 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         });
     };
 
-    const resetCategoryAndProducts = () => {
-        setSelectedCategory("");
-        setProducts([]);
-    };
-
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         let transformedValue = value;
-        let formIsValid = true;
-    
-        const errorFechaInicio = document.getElementById("errorFechaInicio");
-        const errorFechaFin = document.getElementById("errorFechaFin");
-        const errorCantidad = document.getElementById("errorCantidad");
-        const errorUrgencia = document.getElementById("errorUrgencia");
-        const errorRequestingObra = document.getElementById("errorRequestingObra");
-        const errorProducto = document.getElementById("errorProducto");
     
         switch (name) {
             case 'cantidad':
@@ -87,133 +74,103 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                 break;
         }
     
-        setPedidoForm(prevPedido => ({
-            ...prevPedido,
-            [name]: transformedValue,
-            obras: name === 'id_obra' ? [] : prevPedido.obras // Deselecciona todas las obras si se cambia la obra
-        }));
-
-        setPedidoForm((prevPedido) => {
-            const updatedForm = { ...prevPedido, [name]: transformedValue };
+        setPedidoForm(prevPedido => {
+            const updatedForm = { 
+                ...prevPedido, 
+                [name]: transformedValue, 
+                obras: name === 'id_obra' ? [] : prevPedido.obras 
+            };
     
-            if (name === 'id_obra') {
-                updatedForm.obras = [];
-            }
+            const { formIsValid, errors } = validateForm(updatedForm);
+            setIsFormValid(formIsValid);
     
-            console.log('Formulario de Pedido Actualizado:', updatedForm);
+            const errorElement = document.getElementById(`error${name.charAt(0).toUpperCase() + name.slice(1)}`);
+            if (errorElement) errorElement.innerHTML = errors[name] || "&nbsp;";
+    
             return updatedForm;
         });
-    
-        if (name === "cantidad") {
-            const regex = /^[0-9]+$/;
-            if (value === "") {
-                errorCantidad.innerHTML = "La cantidad no puede estar vacía";
-                formIsValid = false;
-            } else {
-                errorCantidad.innerHTML = !regex.test(value) ? "La cantidad es inválida" : "&nbsp;";
-            }
-        }
-    
-        if (name === "fechainicio") {
-            if (value === "") {
-                errorFechaInicio.innerHTML = "Fecha de inicio es requerida";
-                formIsValid = false;
-            } else if (value < formattedDate) {
-                errorFechaInicio.innerHTML = "La fecha de inicio no puede ser menor a la fecha de hoy";
-                formIsValid = false;
-            } else {
-                errorFechaInicio.innerHTML = "&nbsp;";
-            }
-        }
-    
-        if (name === "fechavencimiento") {
-            if (value === "") {
-                errorFechaFin.innerHTML = "Fecha de vencimiento es requerida";
-                formIsValid = false;
-            } else if (value < formattedDate) {
-                errorFechaFin.innerHTML = "La fecha de vencimiento no puede ser menor a la fecha de hoy";
-                formIsValid = false;
-            } else {
-                errorFechaFin.innerHTML = "&nbsp;";
-            }
-        }
-    
-        if (name === "id_obra") {
-            resetCategoryAndProducts();
-            if (value === "") {
-                errorRequestingObra.innerHTML = "Obra es requerida";
-                formIsValid = false;
-            } else {
-                errorRequestingObra.innerHTML = "&nbsp;";
-            }
-        }
-    
-        if (name === "cantidad") {
-            if (value <= 0 || value === "") {
-                errorCantidad.innerHTML = "Debe ingresar una cantidad mayor que 0";
-                formIsValid = false;
-            } else {
-                errorCantidad.innerHTML = "&nbsp;";
-            }
-        }
-    
-        if (name === "urgente") {
-            if (value === "") {
-                errorUrgencia.innerHTML = "Urgencia es requerida";
-                formIsValid = false;
-            } else {
-                errorUrgencia.innerHTML = "&nbsp;";
-            }
-        }
-    
-        if (name === "id_producto") {
-            if (value === "") {
-                errorProducto.innerHTML = "Producto es requerido";
-                formIsValid = false;
-            } else {
-                errorProducto.innerHTML = "&nbsp;";
-            }
-        }
-
-        setIsFormValid(formIsValid);
-        console.log(formIsValid);
     };
     
-    
-
     const handleCardSelection = (key) => {
-        const errorObrasRequested = document.getElementById("errorObrasRequested");
-
         setPedidoForm(prevForm => {
             const isAlreadySelected = prevForm.obras.includes(key);
             const updatedObras = isAlreadySelected
                 ? prevForm.obras.filter(k => k !== key)
                 : [key, ...prevForm.obras];
-            
-            return {
+    
+            const updatedForm = {
                 ...prevForm,
                 obras: updatedObras
             };
-
-            if (updatedObras.length === 0) {
-                errorObrasRequested.innerHTML = "Debe seleccionar al menos una obra";
-                setIsFormValid(false);
-            } else {
-                errorObrasRequested.innerHTML = "&nbsp;";
-            }
-
-            console.log('Formulario de Pedido Actualizado:', updatedForm);
+    
+            const { formIsValid, errors } = validateForm(updatedForm);
+            setIsFormValid(formIsValid);
+    
+            const errorElement = document.getElementById('errorObrasRequested');
+            if (errorElement) errorElement.innerHTML = errors.obras || "&nbsp;";
+    
             return updatedForm;
         });
-
+    
         setObras(prevObras => {
             const selectedObra = prevObras.find(obra => obra.id_obra.id_obra === key);
             const remainingObras = prevObras.filter(obra => obra.id_obra.id_obra !== key);
-            return [selectedObra, ...remainingObras];
+            return selectedObra ? [selectedObra, ...remainingObras] : remainingObras;
         });
     };
 
-    // Reordenar las obras: las seleccionadas al principio
+    const validateForm = (form) => {
+        const errors = {
+            cantidad: "",
+            fechainicio: "",
+            fechavencimiento: "",
+            id_obra: "",
+            urgente: "",
+            id_producto: "",
+            obras: ""
+        };
+    
+        let formIsValid = true;
+    
+        if (form.cantidad === "" || form.cantidad <= 0 || isNaN(form.cantidad)) {
+            formIsValid = false;
+            errors.cantidad = "Debe ingresar una cantidad mayor que 0";
+        }
+    
+        if (form.fechainicio === "" || form.fechainicio < formattedDate || isNaN(new Date(form.fechainicio).getTime())) {
+            formIsValid = false;
+            errors.fechainicio = "Fecha de inicio es requerida";
+        }
+    
+        if (form.fechavencimiento === "" || form.fechavencimiento < formattedDate || isNaN(new Date(form.fechavencimiento).getTime())) {
+            formIsValid = false;
+            errors.fechavencimiento = "Fecha de vencimiento es requerida";
+        }
+    
+        if (form.id_obra === "" || isNaN(form.id_obra)) {
+            formIsValid = false;
+            errors.id_obra = "Obra es requerida";
+        }
+    
+        if (form.urgente === "" || isNaN(form.urgente)) {
+            formIsValid = false;
+            errors.urgente = "Urgencia es requerida";
+        }
+    
+        if (form.id_producto === "" || isNaN(form.id_producto)) {
+            formIsValid = false;
+            errors.id_producto = "Producto es requerido";
+        }
+    
+        if (form.obras.length === 0) {
+            formIsValid = false;
+            errors.obras = "Debe seleccionar al menos una obra";
+        }
+        
+        return { formIsValid, errors };
+    };
+
+
     const orderedObras = [...obras].sort((a, b) => {
         const aIsSelected = pedidoForm.obras.includes(a.id_obra.id_obra);
         const bIsSelected = pedidoForm.obras.includes(b.id_obra.id_obra);
@@ -221,7 +178,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     });
 
     useImperativeHandle(ref, () => ({
-        getPedidoForm: () => pedidoForm
+        getPedidoForm: () => pedidoForm,
+        isFormValid
     }));
 
     return (
@@ -281,7 +239,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                             {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (
                                 <Form.Group className="mb-2" controlId="formBasicCategoria">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
-                                    <Form.Control name="categoria" as="select" value={selectedCategory} onBlur={handleInputChange} onChange={handleCategoryChange}>
+                                    <Form.Control name="categoria" as="select" value={selectedCategory} onBlur={handleCategoryChange} onChange={handleCategoryChange}>
                                         <option value='' hidden>Categoria</option>
                                         {categories.map(categoria => (
                                             <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>

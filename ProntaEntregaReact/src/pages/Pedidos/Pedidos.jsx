@@ -29,16 +29,6 @@ function Pedidos() {
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
-    const [pedidoForm, setPedidoForm] = useState({
-        id_producto: '',
-        cantidad: '',
-        urgente: '',
-        fechainicio: '',
-        fechavencimiento: '',
-        id_obra: '',
-        id_usuario: ''
-    });
-
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -92,14 +82,6 @@ function Pedidos() {
         }
     };
 
-    const handleFormChange = (e) => {
-        const { name, value } = e.target;
-        setPedidoForm(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
     const handleCreatePedido = () => {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
@@ -113,25 +95,22 @@ function Pedidos() {
                 return Promise.all(obrasPromises).then(() => result);
             }).then((result) => {
                 console.log('Detalles de pedido creados:', result);
-                // Inspeccionar el objeto result
                 console.log('Estructura del objeto result:', result);
     
-                // Verificar que los datos del producto estén disponibles
                 const productoNombre = result.id_producto.name || 'Nombre no disponible';
                 const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
                 const cantidad = result.cantidad || 'Cantidad no disponible';
     
-                // Crear notificación
                 const tituloNotificacion =` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
-                const fechaCreacion = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+                const fechaCreacion = new Date().toISOString().split('T')[0];
                 const dataNotificacion = {
                     titulo: tituloNotificacion,
                     descripcion: 'Nuevo pedido creado',
                     id_usuario: user.id_usuario,
-                    fecha_creacion: fechaCreacion // Agregar fecha de creación en formato YYYY-MM-DD
+                    fecha_creacion: fechaCreacion
                 };
                 console.log('Datos de la notificación:', dataNotificacion);
-                return postData('PostNotificacion/', dataNotificacion, token); // Asegúrate de que la URL del endpoint sea correcta
+                return postData('PostNotificacion/', dataNotificacion, token);
             }).then((notificacionResult) => {
                 console.log('Notificación creada:', notificacionResult);
             }).catch((error) => {
@@ -221,10 +200,10 @@ function Pedidos() {
                 title='Nuevo Pedido'
                 saveButtonText='Crear'
                 handleSave={handleCreatePedido}
-                saveButtonEnabled
+                saveButtonEnabled={pedidoCardRef.current?.isFormValid}
                 content={
                     <div>
-                        <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef} onChange={handleFormChange} />
+                        <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef}/>
                     </div>
                 }
             />
