@@ -115,6 +115,7 @@ function Pedidos() {
                 console.log('Detalles de pedido creados:', result);
                 // Inspeccionar el objeto result
                 console.log('Estructura del objeto result:', result);
+                window.location.reload();
     
                 // Verificar que los datos del producto estén disponibles
                 const productoNombre = result.id_producto.name || 'Nombre no disponible';
