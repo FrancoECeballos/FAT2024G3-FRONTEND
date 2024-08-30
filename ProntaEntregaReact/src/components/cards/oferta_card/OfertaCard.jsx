@@ -5,7 +5,7 @@ import fetchData from '../../../functions/fetchData';
 
 import './OfertaCard.scss';
 
-const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles}, ref) => {
+const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles }, ref) => {
     const token = Cookies.get('token');
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -37,10 +37,17 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
     }, [token]);
 
     const handleCategoryChange = (event) => {
+        if (event.target.value === "") {
+            setProducts([]);
+            setSelectedCategory("");
+            document.getElementById('errorCategoria').innerHTML = "Debe seleccionar una categoría";
+            return;
+        }
         const selectedValue = event.target.value;
         setSelectedCategory(selectedValue);
         setOfertaForm((prevOferta) => { return { ...prevOferta, id_producto: "" }; });
         handleFetchProducts(ofertaForm.id_obra, selectedValue);
+        document.getElementById('errorCategoria').innerHTML = "&nbsp;";
     };
     
     const handleFetchProducts = (id_stock, id_categoria) => {
@@ -55,6 +62,8 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
         const { name, value } = event.target;
         let transformedValue = value;
     
+        console.log('Input change:', name, value);
+
         switch (name) {
             case 'cantidad':
             case 'id_obra':
@@ -92,8 +101,8 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
             cantidad: "",
             fechainicio: "",
             fechavencimiento: "",
-            obra: "",
-            producto: "",
+            id_obra: "",
+            id_producto: "",
             categoria: ""
         };
     
@@ -122,12 +131,12 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
     
         if (form.id_obra === "" || isNaN(form.id_obra)) {
             formIsValid = false;
-            errors.obra = "Obra es requerida";
+            errors.id_obra = "Obra es requerida";
         }
     
         if (form.id_producto === "" || isNaN(form.id_producto)) {
             formIsValid = false;
-            errors.producto = "Producto es requerido";
+            errors.id_producto = "Producto es requerido";
         }
     
         if (selectedCategory === "") {
@@ -174,20 +183,20 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
                     {!stock && (
                         <Form.Group className="mb-2" controlId="formRequestingObra">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que Ofrece (*)</Form.Label>
-                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="id_obra" as="select" onChange={handleInputChange} defaultValue="">
+                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="id_obra" as="select" onBlur={handleInputChange} onChange={handleInputChange} defaultValue="">
                                 <option value="" hidden>Seleccione una Obra</option>
                                 {stocksDisponibles.map(stock => (
                                     <option key={stock.id_stock} value={stock.id_stock}>{stock.id_obra.nombre}</option>
                                 ))}
                             </Form.Control>
-                            <Form.Label id='errorObra' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                            <Form.Label id='errorId_obra' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                         </Form.Group>
                     )}
 
-                    {!stock && (ofertaForm.id_obra != "") && (
+                    {!stock && (ofertaForm.id_obra != "") && (ofertaForm.id_obra) && (!isNaN(ofertaForm.id_obra)) && (
                         <Form.Group className="mb-2" controlId="formBasicCategoria">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
-                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="categoria" as="select" value={selectedCategory} onChange={handleCategoryChange}>
+                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="categoria" as="select" value={selectedCategory} onBlur={handleCategoryChange} onChange={handleCategoryChange}>
                                 <option value="" hidden>Categoría</option>
                                 {categories.map(categoria => (
                                     <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>
@@ -197,16 +206,16 @@ const OfertaCard = forwardRef(({ productDefault, user, stock,  stocksDisponibles
                         </Form.Group>
                     )}
 
-                    {!stock && (ofertaForm.id_obra != "") && (selectedCategory != "") && (products != null) && (
+                    {!stock && (ofertaForm.id_obra != "") && (ofertaForm.id_obra) && (!isNaN(ofertaForm.id_obra)) && (selectedCategory != "")  && (selectedCategory) && (!isNaN(selectedCategory)) && (products != null) && (
                         <Form.Group className="mb-2" controlId="formBasicProducto">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onChange={handleInputChange}>
+                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
                                 <option value="" hidden>Producto</option>
                                 {products.map(product => (
                                     <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
                                 ))}
                             </Form.Control>
-                            <Form.Label id='errorProducto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                            <Form.Label id='errorId_producto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                         </Form.Group>
                     )}
                 </Form>

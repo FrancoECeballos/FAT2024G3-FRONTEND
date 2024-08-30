@@ -46,10 +46,17 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     }, []);        
 
     const handleCategoryChange = (event) => {
+        if (event.target.value === "") {
+            setProducts([]);
+            setSelectedCategory("");
+            document.getElementById('errorCategoria').innerHTML = "Debe seleccionar una categoría";
+            return;
+        }
         const selectedValue = event.target.value;
         setSelectedCategory(selectedValue);
         setPedidoForm(prevForm => ({ ...prevForm, id_producto: "" }));
         handleFetchProducts(pedidoForm.id_obra, selectedValue);
+        document.getElementById('errorCategoria').innerHTML = "&nbsp;";
     };
 
     const handleFetchProducts = (id_stock, id_categoria) => {
@@ -202,43 +209,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         isFormValid
     }));
 
-    const handleCreatePedido = () => {
-        const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-        
-        postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-            console.log('Pedido creado:', result);
-            const obrasPromises = obras.map((obra) => 
-                postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
-            );
-            return Promise.all(obrasPromises).then(() => result);
-        }).then((result) => {
-            console.log('Detalles de pedido creados:', result);
-            // Inspeccionar el objeto result
-            console.log('Estructura del objeto result:', result);
-
-            // Verificar que los datos del producto estén disponibles
-            const productoNombre = result.id_producto ? result.id_producto.name : 'Nombre no disponible';
-            const productoUnidad = result.id_producto ? result.id_producto.unidadmedida : 'Unidad no disponible';
-            const cantidad = result.cantidad || 'Cantidad no disponible';
-
-            // Crear notificación
-            const tituloNotificacion = `Notificación Creada - ${user.nombre} ${user.apellido}`;
-            const fechaCreacion = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const dataNotificacion = {
-                titulo: tituloNotificacion,
-                descripcion: `Nuevo pedido creado: ${productoNombre} (${cantidad} ${productoUnidad})`,
-                id_usuario: user.id_usuario,
-                fecha_creacion: fechaCreacion // Agregar fecha de creación en formato YYYY-MM-DD
-            };
-            console.log('Datos de la notificación:', dataNotificacion);
-            return postData('PostNotificacion/', dataNotificacion, token); // Asegúrate de que la URL del endpoint sea correcta
-        }).then((notificacionResult) => {
-            console.log('Notificación creada:', notificacionResult);
-        }).catch((error) => {
-            console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
-        });
-    };
-
     return (
         <Card className='no-border-card' style={{ width: '100%' }}>
             <Card.Body>
@@ -293,7 +263,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (
+                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (!isNaN(pedidoForm.id_obra)) && (
                                 <Form.Group className="mb-2" controlId="formBasicCategoria">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
                                     <Form.Control name="categoria" as="select" value={selectedCategory} onBlur={handleCategoryChange} onChange={handleCategoryChange}>
@@ -306,7 +276,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (selectedCategory != "")  && (selectedCategory) && (products != null) && (
+                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (!isNaN(pedidoForm.id_obra)) && (selectedCategory != "")  && (selectedCategory) && (!isNaN(selectedCategory)) && (products != null) && (
                                 <Form.Group className="mb-2" controlId="formBasicProducto">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
                                     <Form.Control name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
