@@ -8,7 +8,7 @@ import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import fetchUser from '../../functions/fetchUser';
-import GenericModal from '../../components/modals/Modal.jsx'; // Usando el nombre correcto del componente modal
+import Modal from '../../components/modals/Modal.jsx';
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
 import Loading from '../../components/loading/loading.jsx';
@@ -26,7 +26,8 @@ function Ofertas() {
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState({});
     const [stocks, setStocks] = useState([]);
-    const [showModal, setShowModal] = useState(false); // Nueva gestión de estado para el modal
+    const [showModal, setShowModal] = useState(false);
+    const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -146,16 +147,6 @@ function Ofertas() {
         }
     };
 
-    const openModal = (oferta) => {
-        setSelectedOferta(oferta);
-        setShowModal(true);
-    };
-
-    const closeModal = () => {
-        setShowModal(false);
-        setSelectedOferta(null);
-    };
-
     if (isLoading) {
         return <div><FullNavbar/><Loading /></div>;
     }
@@ -168,7 +159,7 @@ function Ofertas() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='oferta-list'>
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                        <GenericModal
+                        <Modal
                             openButtonText='¿No encuentra su oferta? Añádala'
                             openButtonWidth='20'
                             title='Nueva Oferta'
@@ -178,7 +169,7 @@ function Ofertas() {
                                 <OfertaCard user={user} stocksDisponibles={stocks} ref={ofertaCardRef} />
                             }
                             showModal={showModal}
-                            handleCloseModal={closeModal}
+                            handleCloseModal={() => setShowModal(false)}
                         />
                     </div>
                     <div className='cardCategori'>
@@ -186,7 +177,7 @@ function Ofertas() {
                             sortedOfertas.map(oferta => (
                                 <div key={oferta.id_oferta}>
                                     <GenericCard
-                                        onClick={() => openModal(oferta)}
+                                        onClick={() => {setSelectedOferta(oferta), setShowTakeOfertaModal(true)}}
                                         titulo={`${oferta.id_producto.nombre}`}
                                         foto={oferta.id_producto.imagen}
                                         descrip1={`Cantidad: ${oferta.progreso} / ${oferta.cantidad} ${oferta.id_producto.unidadmedida}`}
@@ -205,11 +196,11 @@ function Ofertas() {
             </div>
 
             {selectedOferta && (
-                <GenericModal
+                <Modal
                     showButton={false}
-                    showModal={showModal}
+                    showModal={showTakeOfertaModal}
                     saveButtonText='Tomar'
-                    handleCloseModal={closeModal}
+                    handleCloseModal={() => {setShowTakeOfertaModal(false), setSelectedOferta(null)}}
                     title='Tomar Oferta'
                     handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
                     content={
