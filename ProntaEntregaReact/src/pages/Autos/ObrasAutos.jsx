@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Breadcrumb } from 'react-bootstrap';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Footer from '../../components/footer/Footer.jsx';
@@ -98,7 +99,9 @@ function ObrasAutos() {
         <div>
             <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
-            <h4 style={{marginLeft: '8%', color: 'grey'}}>Autos</h4>
+                <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                    <Breadcrumb.Item active>Autos</Breadcrumb.Item>
+                </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div className='cardstock'>
                 {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
