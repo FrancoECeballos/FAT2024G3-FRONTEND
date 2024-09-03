@@ -292,7 +292,7 @@ function Products() {
     };
 
     if (isLoading) {
-        return <div><FullNavbar/><Loading /></div> ; // Muestra el componente de loading mientras los datos se cargan
+        return <div><FullNavbar/><Loading /></div>;
     }
     return (
         <div>

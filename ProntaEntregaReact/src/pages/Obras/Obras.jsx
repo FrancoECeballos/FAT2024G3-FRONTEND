@@ -7,13 +7,30 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import Modal from '../../components/modals/Modal.jsx';
+import { Form, InputGroup } from 'react-bootstrap';
+import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
+import postData from '../../functions/postData.jsx';
+import putData from '../../functions/putData.jsx';
 
 function Stock() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [obras, setObras] = useState([]);
+    const [obraModal, setObraModal] = useState(null);
+
+    const [obraForm, setObraForm] = useState({
+        nombre: '',
+        descripcion: '',
+        imagen: '',
+        id_direccion: {
+            localidad: '',
+            calle: '',
+            numero: '',
+        },
+    });
+
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
@@ -72,11 +89,80 @@ function Stock() {
         setSearchQuery(value);
     };
 
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+    
+        if (name === 'localidad' || name === 'calle' || name === 'numero') {
+            if (name === 'numero') {
+                const parsedValue = parseInt(value, 10);
+                if (isNaN(parsedValue)) return;
+                setObraForm({ ...obraForm, id_direccion: { ...obraForm.id_direccion, [name]: parsedValue } });
+            } else {
+                setObraForm({ ...obraForm, id_direccion: { ...obraForm.id_direccion, [name]: value } });
+            }
+            console.log(obraForm);
+            return;
+        }
+        setObraForm({ ...obraForm, [name]: value });
+        console.log(obraForm);
+    };
+
+    const handleFileChange = (file) => {
+        setObraForm((prevObraForm) => ({
+            ...prevObraForm,
+            imagen: file,
+        }));
+        console.log(obraForm);
+    };
+
+
+    const obraUpdate = async (id) => {
+        let id_direc = null;
+
+        const direc = await fetchData('/direcciones/', token);
+    
+        const existingDireccion = direc.find(
+            (d) =>
+                d.calle === obraForm.id_direccion.calle &&
+                d.numero === obraForm.id_direccion.numero &&
+                d.localidad === obraForm.id_direccion.localidad
+        );
+    
+        if (!existingDireccion) {
+            const url = '/crear_direccion/';
+            const body = obraForm.id_direccion;
+            try {
+                const result = await postData(url, body);
+                id_direc = result.id_direccion;
+            } catch (error) {
+                console.error('Error creating direccion:', error);
+                return;
+            }
+        } else {
+            id_direc = existingDireccion.id_direccion;
+        }
+    
+        const updatedObraForm = { ...obraForm, id_direccion: id_direc };
+        setObraForm(updatedObraForm);
+  
+        const formDataToSend = new FormData();
+        Object.entries(updatedObraForm).forEach(([key, value]) => {
+            formDataToSend.append(key, value);
+        });
+
+        try {
+            const result = await putData(`/editar_obra/${id}/`, formDataToSend, token);
+            window.location.reload();
+        } catch (error) {
+        console.error('Error updating obra:', error);
+        }
+    };
+
     return (
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
                     sortedObras.map(obra => (
                         <GenericCard
@@ -92,20 +178,48 @@ function Stock() {
                                             icon="line-md:edit-twotone"
                                             className="hoverable-icon"
                                             style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
+                                            onClick={() => {
+                                                setObraForm(obra);
+                                                setObraModal(obra.id_obra);
+                                            }}
                                         />
                                     )}
                                     <Modal
                                         showButton={false}
-                                        saveButtonText={'Tomar'}
+                                        showModal={obraModal == obra.id_obra}
+                                        handleShowModal={() => setObraForm(obra)}
+                                        handleCloseModal={() => setObraModal(null)}
+                                        handleSave={(event) => obraUpdate(obra.id_obra)}
+                                        saveButtonText={'Guardar'}
                                         title={'Editar Obra'}
-                                        content={""}
-                                    />
+                                        content={
+                                            <>
+                                                <UploadImage defaultImage={obra.imagen} onFileChange={handleFileChange} />
+                                                <Form.Label style={{ marginTop: '1rem' }}>Informació Básica:</Form.Label>
+                                                <Form.Control name="nombre" type="text" value={obraForm.nombre} onChange={handleInputChange} className="input-obra" />
+                                                <Form.Control name="descripcion" type="text" value={obraForm.descripcion} onChange={handleInputChange} className="input-obra" />
+                                                <Form.Group controlId="direccion">
+                                                    <Form.Label style={{ marginTop: '1rem' }}>Dirección:</Form.Label>
+                                                    <InputGroup>
+                                                        <Form.Control
+                                                            type="text" name="localidad" value={obraForm.id_direccion.localidad} onChange={handleInputChange}
+                                                        />
+                                                        <Form.Control
+                                                            type="text" name="calle" value={obraForm.id_direccion.calle} onChange={handleInputChange}
+                                                        />
+                                                        <Form.Control
+                                                            type="number" name="numero" value={obraForm.id_direccion.numero} onChange={handleInputChange}
+                                                        />
+                                                    </InputGroup>
+                                                </Form.Group>
+                                            </>
+                                        } />
                                 </>
                             }
                         />
                     ))
                 ) : (
-                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay obras disponibles.</p>
+                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
                 )}
             </div>
         </div>
