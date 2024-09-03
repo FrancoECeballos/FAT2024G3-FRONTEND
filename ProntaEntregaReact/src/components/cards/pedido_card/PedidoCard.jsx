@@ -140,7 +140,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         if (form.fechainicio === "" || form.fechainicio < formattedDate || isNaN(new Date(form.fechainicio).getTime())) {
             formIsValid = false;
             errors.fechainicio = "Fecha de inicio es requerida";
-        }
+        }AF 
     
         if (form.fechavencimiento === "" || form.fechavencimiento < formattedDate || isNaN(new Date(form.fechavencimiento).getTime())) {
             formIsValid = false;
