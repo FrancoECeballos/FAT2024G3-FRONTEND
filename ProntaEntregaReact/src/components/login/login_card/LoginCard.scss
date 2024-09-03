@@ -1,9 +1,74 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
 
 body {
-    background-color: #ECECEC;
+  background-color: #02005E;
+  font-family: 'Rubik', sans-serif;
 }
 
-.font-rubik {
-    font-family: 'Rubik', sans-serif;
+.login-container {
+  background-color: #eeeeeeee;
+  padding: 2rem;
+  display:flex; 
+  justify-content: center; 
+  align-items: center;
+   min-height: 100vh;
+   width: 99rem;
+}
+
+.login-card {
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 1);
+  width: 5rem; /* Ancho aún más amplio */
+}
+
+.login-input {
+  height: 3rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e0e0e0;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.login-input:focus {
+  border-color: #02005E;
+  outline: none;
+}
+
+.login-button {
+  height: 3rem;
+  border-radius: 0.375rem;
+  font-size: 1.125rem;
+  background-color: #02005E;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: #02005E;
+}
+
+.link-primary {
+  color: #02005E;
+  text-decoration: none;
+}
+
+.link-primary:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-card {
+    padding: 1.5rem;
+    width: 100%;
+  }
+
+  .login-button {
+    width: 100%;
+  }
 }
