@@ -1,20 +1,55 @@
 .sidebar {
-  padding-top: 15%;
   background-color: white;
   width: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
   height: 100vh;
-  position: absolute;
   box-sizing: border-box;
-  margin: 0px;
+
+  .top {
+    margin-top: 2rem;
+    align-self: stretch;
+    
+    h1 {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      text-align: center;
+
+      .fotoperfil {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-left: auto;
+      }
+
+      span {
+        margin-right: auto;
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+  }
 
   @media (max-width: 768px) {
     width: 100%;
-    padding-top: 5rem;
+    margin-top: 5rem;
     height: auto;
     position: static;
+    justify-content: flex-start;
   }
 
   @media (max-width: 576px) {
-    padding-top: 2rem;
+    margin-top: 2rem;
   }
 }
