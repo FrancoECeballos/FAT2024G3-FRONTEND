@@ -129,6 +129,7 @@ function Ofertas() {
             }).catch((error) => {
                 console.error('Error al crear la oferta:', error);
             });
+            window.location.reload();
         }
     };
 

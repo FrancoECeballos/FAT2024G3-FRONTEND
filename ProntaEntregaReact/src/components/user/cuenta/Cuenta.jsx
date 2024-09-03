@@ -167,7 +167,6 @@ const Cuenta = () => {
 
     const handleAddOObraToUser = async() => {
       if (!selectedObject) {
-        // No hay ninguna obra seleccionada, no hagas nada
         return;
       }
     
@@ -427,7 +426,7 @@ const Cuenta = () => {
                   wide="5"
                   backcolor={isEditing ? "#D10000" : "#D9D9D9"}
                   letercolor={isEditing ? "white" : "black"}
-                  style={{ marginRight: '3rem' }} // Margen a la derecha
+                  style={{ marginRight: '3rem' }}
                 />
                 <SendButton
                   hidden={!isEditing}
@@ -437,7 +436,7 @@ const Cuenta = () => {
                   backcolor={isEditing ? "green" : "#D9D9D9"}
                   letercolor={isEditing ? "white" : "black"}
                   disabled={!GuardarButtonIsValid}
-                  style={{ marginLeft: '3rem' }} // Margen a la izquierda (opcional)
+                  style={{ marginLeft: '3rem' }}
                 />
               </Col>
             </Row>
@@ -473,7 +472,7 @@ const Cuenta = () => {
                           value={selectedObject}
                           onChange={e => {
                               setSelectedObject(e.target.value);
-                              setAñadirButtonIsValid(e.target.value !== "");  // Habilitar el botón si se selecciona una obra
+                              setAñadirButtonIsValid(e.target.value !== "");
                           }}
                       >
                           <option disabled hidden value="">
