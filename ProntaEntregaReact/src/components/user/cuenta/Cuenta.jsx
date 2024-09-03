@@ -182,7 +182,6 @@ const Cuenta = () => {
         token
       );
       
-      // Recargar la página para actualizar la lista de obras
       window.location.reload();
     };
     

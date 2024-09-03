@@ -1,10 +1,12 @@
 import React from "react";
 import "./selectable_button.scss";
 
-const SelectableButton = ({ texto, link }) => {
+const SelectableButton = ({ texto, link, selected }) => {
   return (
     <div className="SelectableButton">
-      <a href={link}>{texto}</a>
+      <a href={link}>
+        {selected ? <strong>{texto}</strong> : texto}
+      </a>
     </div>
   );
 };

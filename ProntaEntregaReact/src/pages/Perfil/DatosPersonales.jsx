@@ -23,7 +23,7 @@ function Datospersonales(){
             <FullNavbar/>
             <Row>
                 <Col xs={4} sm={4} md={4} lg={4} xl={4} xxl={4}>
-                    <Sidebar isAdmin={user.is_staff}/>
+                    <Sidebar selectedPage={"datospersonales"} isAdmin={user.is_staff}/>
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
                     <Datos/>
