@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Form } from 'react-bootstrap';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { Breadcrumb, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
@@ -220,11 +219,10 @@ function AutosComponent() {
         <div>
             <FullNavbar selectedPage='Autos' />
             <div className='margen-arriba'>
-                <div className="autos-navigation">
-                    <h4 className="autos-link" onClick={() => navigate('/autos')}>Autos</h4>
-                    <h4 className="autos-current"> // {currentObra}</h4>
-                </div>
-                <h2 className="autos-title">Lista de Autos</h2>
+                <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                    <Breadcrumb.Item href="/autos">Autos</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
+                </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>
                 <div className="auto-modal">

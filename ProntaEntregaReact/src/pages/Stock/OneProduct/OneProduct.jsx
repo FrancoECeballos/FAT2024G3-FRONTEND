@@ -46,7 +46,7 @@ function OneProduct() {
 
   return (
     <div>
-      <FullNavbar />
+      <FullNavbar selectedPage={'Stock'}/>
         <div className="product-page">
           <ProductCard product={product} />
           <Table striped bordered hover responsive className="custom-table mt-4">

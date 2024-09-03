@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {InputGroup, Form, Button, Tabs, Tab} from 'react-bootstrap';
+import {InputGroup, Form, Button, Tabs, Tab, Breadcrumb} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import './Products.scss';
 import { Icon } from '@iconify/react';
@@ -298,11 +298,11 @@ function Products() {
         <div>
             <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
-                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8%' }}>
-                    <h4 style={{ color: 'grey', cursor: 'pointer' }} onClick={() => navigate('/stock')} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>Stock</h4>
-                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/obra/${stockId}/categoria`, { state: { id_stock: `${stockId}` } })} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>{currentObra}</span></h4>
-                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentCategory}</h4>
-                </div>
+                <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                    <Breadcrumb.Item href="/stock">Stock</Breadcrumb.Item>
+                    <Breadcrumb.Item href={`/obra/${stockId}/categoria`}>{currentObra}</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{currentCategory}</Breadcrumb.Item>
+                </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
 
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
