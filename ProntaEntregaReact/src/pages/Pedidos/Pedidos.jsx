@@ -12,7 +12,6 @@ import Modal from '../../components/modals/Modal.jsx';
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 import GenericAccordion from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../functions/postData.jsx';
-import { Icon } from '@iconify/react';
 import Loading from '../../components/loading/loading.jsx';
 
 function Pedidos() {
@@ -21,9 +20,9 @@ function Pedidos() {
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
     const pedidoCardRef = useRef(null);
-
+    const [isFormValid, setIsFormValid] = useState(false);
     const [pedidos, setPedidos] = useState([]);
-    const [selectedPedidoId, setSelectedPedidoId] = useState(null);
+    const [selectedPedido, setSelectedPedido] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState({});
@@ -49,18 +48,18 @@ function Pedidos() {
                 if (result.is_superuser) {
                     fetchData(`get_pedido_for_admin/`, token).then((result) => {
                         setPedidos(result);
-                        setIsLoading(false); 
+                        setIsLoading(false);
                     }).catch(error => {
                         console.error('Error fetching pedidos:', error);
-                        setIsLoading(false); 
+                        setIsLoading(false);
                     });
                 } else {
                     fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
                         setPedidos(result);
-                        setIsLoading(false); 
+                        setIsLoading(false);
                     }).catch(error => {
                         console.error('Error fetching pedidos:', error);
-                        setIsLoading(false); 
+                        setIsLoading(false);
                     });
                 }
             }).catch(error => {
@@ -69,6 +68,16 @@ function Pedidos() {
         });
     }, [token]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (pedidoCardRef.current) {
+                setIsFormValid(pedidoCardRef.current.isFormValid);
+            }
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, [pedidoCardRef]);
+
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
@@ -76,9 +85,9 @@ function Pedidos() {
     const handleChange = (event) => {
         setCantidad(event.target.value);
         if (event.target.value === '') {
-          setError('La cantidad no puede estar vacía');
+            setError('La cantidad no puede estar vacía');
         } else {
-          setError('');
+            setError('');
         }
     };
 
@@ -86,22 +95,22 @@ function Pedidos() {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-            
+
             postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
                 console.log('Pedido creado:', result);
-                const obrasPromises = obras.map((obra) => 
+                const obrasPromises = obras.map((obra) =>
                     postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
                 );
                 return Promise.all(obrasPromises).then(() => result);
             }).then((result) => {
                 console.log('Detalles de pedido creados:', result);
-                console.log('Estructura del objeto result:', result);
-    
+                window.location.reload();
+
                 const productoNombre = result.id_producto.name || 'Nombre no disponible';
                 const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
                 const cantidad = result.cantidad || 'Cantidad no disponible';
-    
-                const tituloNotificacion =` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
+
+                const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const dataNotificacion = {
                     titulo: tituloNotificacion,
@@ -116,6 +125,7 @@ function Pedidos() {
             }).catch((error) => {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
             });
+            window.location.reload();
         }
     };
 
@@ -135,7 +145,7 @@ function Pedidos() {
             fecha: fecha,
             cantidad: cantidad
         };
-    
+
         postData('crear_aporte_pedido/', data, token).then(() => {
             console.log('Aporte del pedido creado');
         }).catch(error => {
@@ -150,7 +160,7 @@ function Pedidos() {
         { type: 'pedido.id_obra.nombre', label: 'Nombre de la Obra' },
         { type: 'pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
     ];
-    
+
     const filteredPedidos = pedidos.map(obra => {
         const filteredPedidosInObra = obra.pedidos.filter(pedido => {
             return (
@@ -163,21 +173,21 @@ function Pedidos() {
         });
         return { ...obra, pedidos: filteredPedidosInObra };
     }).filter(obra => obra.pedidos.length > 0);
-    
+
     const sortedPedidos = [...filteredPedidos].sort((a, b) => {
         if (!orderCriteria) return 0;
         const [entity, field] = orderCriteria.split('.');
         const aValue = entity === 'pedido' ? a.pedidos[0][field] : a[entity][field];
         const bValue = entity === 'pedido' ? b.pedidos[0][field] : b[entity][field];
-    
+
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
-    
+
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-    
+
         return 0;
     });
 
@@ -186,110 +196,104 @@ function Pedidos() {
     }
 
     return (
-    <div>
-      <FullNavbar selectedPage='Pedidos' />
-      <div className='margen-arriba'>
-        <h2 style={{ marginLeft: '7rem' }}>Pedidos</h2>
-        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-        <div className='pedido-list'>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
-            <Modal
-                tamaño={'lg'}
-                openButtonText='¿No encuentra su pedido? Añadalo'
-                openButtonWidth='20'
-                title='Nuevo Pedido'
-                saveButtonText='Crear'
-                handleSave={handleCreatePedido}
-                saveButtonEnabled={pedidoCardRef.current?.isFormValid}
-                content={
-                    <div>
-                        <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef}/>
-                    </div>
-                }
-            />
-          </div>
-          <div className='cardCategori'>
-            {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
-              sortedPedidos.map(obra => (
-                <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
-                  children={obra.pedidos.map(pedido => (
-                    <GenericCard hoverable={false}
-                      key={pedido.id_pedido}
-                      foto={pedido.id_producto.imagen}
-                      titulo={pedido.id_producto.nombre}
-                      descrip1={`Cantidad: ${pedido.progreso} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
-                      descrip2={`Urgencia: ${pedido.urgente}`}
-                      descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
-                      descrip4={`Obra: ${pedido.id_obra.nombre}`}
-                      children={
-                        <>
-                          <Icon
-                            icon="line-md:edit-twotone"
-                            className="hoverable-icon"
-                            style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
-                            onClick={() => setSelectedPedidoId(`${pedido.id_pedido} ${obra.obra.id_obra}`)}
-                          />
-                          <Modal
-                            showButton={false}
-                            showDeleteButton={true}
-                            showModal={selectedPedidoId === `${pedido.id_pedido} ${obra.obra.id_obra}`}
-                            saveButtonText={'Tomar'}
-                            handleCloseModal={() => setSelectedPedidoId(null)}
-                            deleteFunction={() => deletePedido(pedido.id_detalleobrapedido)}
-                            deleteButtonText={'Rechazar'}
-                            title={'Tomar Pedido'}
-                            handleSave={() => createAportePedido(pedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+        <div>
+            <FullNavbar selectedPage='Pedidos' />
+            <div className='margen-arriba'>
+                <h2 style={{ marginLeft: '7rem' }}>Pedidos</h2>
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                <div className='pedido-list'>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
+                        <Modal
+                            tamaño={'lg'}
+                            openButtonText='¿No encuentra su pedido? Añadalo'
+                            openButtonWidth='20'
+                            title='Nuevo Pedido'
+                            saveButtonText='Crear'
+                            handleCloseModal={() => setCantidad('')}
+                            handleSave={handleCreatePedido}
+                            showModal={false}
+                            showButton={true}
+                            saveButtonEnabled={isFormValid}
                             content={
-                              <div>
-                                <GenericCard
-                                  key={pedido.id_pedido}
-                                  foto={pedido.id_producto.imagen}
-                                  titulo={pedido.id_producto.nombre}
-                                  descrip1={`Cantidad: ${pedido.progreso} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
-                                  descrip2={`Urgencia: ${pedido.urgente}`}
-                                  descrip3={`Fecha Inicio: ${pedido.fechainicio}`}
-                                  descrip4={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
-                                  descrip5={`Obra: ${pedido.id_obra.nombre}`}
-                                  descrip6={`Usuario: ${pedido.id_usuario.nombre} ${pedido.id_usuario.apellido}`}
-                                />
-                                <Form.Group className="mb-2" controlId="formBasicCantidad">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                    Ingrese la cantidad que quiere aportar
-                                </Form.Label>
-                                <Form.Control
-                                    name="cantidad"
-                                    type="number"
-                                    placeholder="Ingrese la cantidad"
-                                    value={cantidad}
-                                    onChange={handleChange}
-                                    onKeyDown={(event) => {
-                                    if (
-                                        !/[0-9.]/.test(event.key) &&
-                                        !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)
-                                    ) {
-                                        event.preventDefault();
-                                    }
-                                    }}
-                                />
-                                {error && <p style={{ color: 'red' }}>{error}</p>}
-                                </Form.Group>
-                              </div>
+                                <PedidoCard user={user} stocksDisponibles={pedidos} ref={pedidoCardRef} />
                             }
-                          />
-                        </>
-                      }
+                        />
+                    </div>
+                    <div className='cardCategori'>
+                        {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
+                            sortedPedidos.map(obra => (
+                                <GenericAccordion titulo={obra.obra.nombre} wide='80%' key={obra.obra.id_obra}
+                                    children={obra.pedidos.map(pedido => (
+                                        <div key={pedido.id_pedido} onClick={() => setSelectedPedido(pedido)}>
+                                            <GenericCard hoverable={true}
+                                                foto={pedido.id_producto.imagen}
+                                                titulo={pedido.id_producto.nombre}
+                                                descrip1={`Cantidad: ${pedido.progreso} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
+                                                descrip2={`Urgencia: ${pedido.urgente}`}
+                                                descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
+                                                descrip4={`Obra: ${pedido.id_obra.nombre}`}
+                                            />
+                                        </div>
+                                    ))}
+                                />
+                            ))
+                        ) : (
+                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}> No hay pedidos disponibles.</p>
+                        )}
+                    </div>
+                    <Modal
+                        showButton={false}
+                        showDeleteButton={true}
+                        showModal={Object.keys(selectedPedido).length > 0}
+                        saveButtonText={'Tomar'}
+                        handleCloseModal={() => setSelectedPedido({})}
+                        deleteFunction={() => deletePedido(selectedPedido)}
+                        deleteButtonText={'Rechazar'}
+                        title={'Tomar Pedido'}
+                        handleSave={() => createAportePedido(selectedPedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                        content={
+                            <div>
+                                {selectedPedido && selectedPedido.id_producto && (
+                                    <GenericCard
+                                        key={selectedPedido.id_pedido}
+                                        foto={selectedPedido.id_producto.imagen}
+                                        titulo={selectedPedido.id_producto.nombre}
+                                        descrip1={`Cantidad: ${selectedPedido.progreso} / ${selectedPedido.cantidad} ${selectedPedido.id_producto.unidadmedida}`}
+                                        descrip2={`Urgencia: ${selectedPedido.urgente}`}
+                                        descrip3={`Fecha Inicio: ${selectedPedido.fechainicio}`}
+                                        descrip4={`Fecha Vencimiento: ${selectedPedido.fechavencimiento}`}
+                                        descrip5={`Obra: ${selectedPedido.id_obra.nombre}`}
+                                        descrip6={`Usuario: ${selectedPedido.id_usuario.nombre} ${selectedPedido.id_usuario.apellido}`}
+                                    />
+                                )}
+                                <Form.Group className="mb-2" controlId="formBasicCantidad">
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                        Ingrese la cantidad que quiere aportar
+                                    </Form.Label>
+                                    <Form.Control
+                                        name="cantidad"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad"
+                                        value={cantidad}
+                                        onChange={handleChange}
+                                        onKeyDown={(event) => {
+                                            if (
+                                                !/[0-9.]/.test(event.key) &&
+                                                !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)
+                                            ) {
+                                                event.preventDefault();
+                                            }
+                                        }}
+                                    />
+                                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                                </Form.Group>
+                            </div>
+                        }
                     />
-                  ))}
-                />
-              ))
-            ) : (
-              <p style={{ marginLeft: '7rem', marginTop: '1rem' }}> No hay pedidos disponibles.</p>
-            )}
-          </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default Pedidos;

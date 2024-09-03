@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Breadcrumb } from 'react-bootstrap';
 
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Footer from '../../components/footer/Footer.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
-import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import Loading from '../../components/loading/loading.jsx';
 
 import './Stock.scss';
 
 import fetchData from '../../functions/fetchData';
-
-import Loading from '../../components/loading/loading.jsx';
 
 function Stock() {
     const navigate = useNavigate();
@@ -100,7 +99,9 @@ function Stock() {
         <div>
             <FullNavbar selectedPage='Stock' />
             <div className='margen-arriba'>
-                <h4 style={{marginLeft: '8%', color: 'grey'}}>Stock</h4>
+            <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                    <Breadcrumb.Item active>Stock</Breadcrumb.Item>
+                </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='cardstock'>
                     {Array.isArray(sortedObras) && sortedObras.length > 0 ? (

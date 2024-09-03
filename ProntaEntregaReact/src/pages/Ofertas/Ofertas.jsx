@@ -18,6 +18,8 @@ function Ofertas() {
     const token = Cookies.get('token');
     const [ofertas, setOfertas] = useState([]);
     const ofertaCardRef = useRef(null);
+    const [isFormValid, setIsFormValid] = useState(false);
+
     const [selectedOferta, setSelectedOferta] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [cantidad, setCantidad] = useState('');
@@ -68,6 +70,16 @@ function Ofertas() {
         fetchDataAsync();
     }, [token, navigate]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (ofertaCardRef.current) {
+                setIsFormValid(ofertaCardRef.current.isFormValid);
+            }
+        }, 100);
+    
+        return () => clearInterval(interval);
+    }, [ofertaCardRef]);
+
     const filteredOfertas = ofertas.filter(oferta => {
         return (
             oferta.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -117,6 +129,7 @@ function Ofertas() {
             }).catch((error) => {
                 console.error('Error al crear la oferta:', error);
             });
+            window.location.reload();
         }
     };
 
@@ -165,6 +178,7 @@ function Ofertas() {
                             title='Nueva Oferta'
                             saveButtonText='Crear'
                             handleSave={handleCreateOferta}
+                            saveButtonEnabled={isFormValid}
                             content={
                                 <OfertaCard user={user} stocksDisponibles={stocks} ref={ofertaCardRef} />
                             }

@@ -12,7 +12,7 @@ import Footer from '../../../components/footer/Footer.jsx';
 import fetchData from '../../../functions/fetchData';
 
 import Modal from '../../../components/modals/Modal.jsx';
-import {InputGroup, Form, Button} from 'react-bootstrap';
+import {Breadcrumb, Form} from 'react-bootstrap';
 import postData from '../../../functions/postData.jsx';
 
 import comidaLogo from '../../../assets/comidaLogo.png';
@@ -105,10 +105,10 @@ function Categories() {
         <div>
             <FullNavbar selectedPage='Stock'/>
             <div className='margen-arriba'>
-                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8%' }}>
-                    <h4 style={{ color: 'grey', cursor: 'pointer' }} onClick={() => navigate('/stock')} onMouseEnter={(e) => e.target.style.color = 'blue'} onMouseLeave={(e) => e.target.style.color = 'grey'}>Stock</h4>
-                    <h4 style={{ color: 'grey', marginLeft: '0.5rem' }}> // {currentObra}</h4>
-                </div>
+                <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                    <Breadcrumb.Item href="/stock">Stock</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
+                </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Nueva Categoria' saveButtonText='Crear' handleSave={newcategory} showButton={false} content={

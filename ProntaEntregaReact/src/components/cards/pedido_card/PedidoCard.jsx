@@ -3,6 +3,7 @@ import { Col, Row, Form, Card } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
+import postData from '../../../functions/postData.jsx'; // Importar postData para la notificación
 import './PedidoCard.scss';
 
 const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles }, ref) => {
@@ -45,10 +46,17 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     }, []);        
 
     const handleCategoryChange = (event) => {
+        if (event.target.value === "") {
+            setProducts([]);
+            setSelectedCategory("");
+            document.getElementById('errorCategoria').innerHTML = "Debe seleccionar una categoría";
+            return;
+        }
         const selectedValue = event.target.value;
         setSelectedCategory(selectedValue);
         setPedidoForm(prevForm => ({ ...prevForm, id_producto: "" }));
         handleFetchProducts(pedidoForm.id_obra, selectedValue);
+        document.getElementById('errorCategoria').innerHTML = "&nbsp;";
     };
 
     const handleFetchProducts = (id_stock, id_categoria) => {
@@ -75,11 +83,17 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         }
     
         setPedidoForm(prevPedido => {
-            const updatedForm = { 
+            let updatedForm = { 
                 ...prevPedido, 
                 [name]: transformedValue, 
-                obras: name === 'id_obra' ? [] : prevPedido.obras 
+                obras: name === 'id_obra' ? [] : prevPedido.obras
             };
+    
+            if (name === 'id_obra') {
+                updatedForm.id_producto = "";
+                setSelectedCategory("");
+                setProducts([]);
+            }
     
             const { formIsValid, errors } = validateForm(updatedForm);
             setIsFormValid(formIsValid);
@@ -127,6 +141,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             id_obra: "",
             urgente: "",
             id_producto: "",
+            categoria: "",
             obras: ""
         };
     
@@ -137,14 +152,20 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             errors.cantidad = "Debe ingresar una cantidad mayor que 0";
         }
     
-        if (form.fechainicio === "" || form.fechainicio < formattedDate || isNaN(new Date(form.fechainicio).getTime())) {
+        if (form.fechainicio === "" || isNaN(new Date(form.fechainicio).getTime())) {
             formIsValid = false;
             errors.fechainicio = "Fecha de inicio es requerida";
-        }AF 
+        } else if (form.fechainicio < formattedDate) {
+            formIsValid = false;
+            errors.fechainicio = "Fecha de inicio no puede ser menor a la fecha de hoy";
+        }
     
-        if (form.fechavencimiento === "" || form.fechavencimiento < formattedDate || isNaN(new Date(form.fechavencimiento).getTime())) {
+        if (form.fechavencimiento === "" || isNaN(new Date(form.fechavencimiento).getTime())) {
             formIsValid = false;
             errors.fechavencimiento = "Fecha de vencimiento es requerida";
+        } else if (form.fechavencimiento < formattedDate) {
+            formIsValid = false;
+            errors.fechavencimiento = "Fecha de vencimiento no puede ser menor a la fecha de hoy";
         }
     
         if (form.id_obra === "" || isNaN(form.id_obra)) {
@@ -166,7 +187,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             formIsValid = false;
             errors.obras = "Debe seleccionar al menos una obra";
         }
-        
+    
+        console.log('Form validation result:', formIsValid, errors);
         return { formIsValid, errors };
     };
 
@@ -195,14 +217,14 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                             <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
                                 <Form.Control name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
-                                <Form.Label id='errorFechaInicio' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                                <Form.Label id='errorFechainicio' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicFechaFin">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
                                 <Form.Control name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
                                 <p style={{fontSize: '0.7rem', margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
-                                <Form.Label id='errorFechaFin' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                                <Form.Label id='errorFechavencimiento' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
 
                             <Form.Group className="mb-2" controlId="formBasicCantidad">
@@ -220,7 +242,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                     <option value="3">Muy Urgente</option>
                                     <option value="4">Inmediato</option>
                                 </Form.Control>
-                                <Form.Label id='errorUrgencia' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                                <Form.Label id='errorUrgente' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
 
                             {!stock && (
@@ -232,11 +254,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                             <option key={stock.stock[0].id_stock} value={stock.stock[0].id_stock}>{stock.stock[0].id_obra.nombre}</option>
                                         ))}
                                     </Form.Control>
-                                    <Form.Label id='errorRequestingObra' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                                    <Form.Label id='errorId_obra' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (
+                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (!isNaN(pedidoForm.id_obra)) && (
                                 <Form.Group className="mb-2" controlId="formBasicCategoria">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
                                     <Form.Control name="categoria" as="select" value={selectedCategory} onBlur={handleCategoryChange} onChange={handleCategoryChange}>
@@ -249,7 +271,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </Form.Group>
                             )}
 
-                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (selectedCategory != "")  && (selectedCategory) && (products != null) && (
+                            {!stock && (pedidoForm.id_obra != "") && (pedidoForm.id_obra) && (!isNaN(pedidoForm.id_obra)) && (selectedCategory != "")  && (selectedCategory) && (!isNaN(selectedCategory)) && (products != null) && (
                                 <Form.Group className="mb-2" controlId="formBasicProducto">
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
                                     <Form.Control name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
@@ -258,7 +280,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                             <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
                                         ))}
                                     </Form.Control>
-                                    <Form.Label id='errorProducto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                                    <Form.Label id='errorId_producto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                                 </Form.Group>
                             )}
                         </Col>
@@ -267,7 +289,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
                                 <div className='cardscasas'>
                                     {orderedObras
-                                        .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra) // Filtra la obra seleccionada
+                                        .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra)
                                         .map(obra => (
                                             <SelectableCard 
                                                 mar={"0.2rem"} 
