@@ -42,42 +42,44 @@ const LoginCard = () => {
       setShowAlert(true);
     }
   };
+ 
 
-  return (
-    <Container style={{display: 'flex'}} className="d-flex justify-content-center align-items-center vh-100 login-container">
-      <Card style={{position: 'relative', width: '30rem',borderRadius:'1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
-      <GenericAlert title="Error" description="Usuario o contraseña incorrectos" type="danger" show={showAlert} setShow={setShowAlert} />
-        <Card.Body>
-          <Form>
-            <h1 className="font-rubik" style={{textAlign:"center",margin:'2.8rem'}}>Iniciar Sesi&oacute;n</h1>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label className="font-rubik" style={{display: 'block', marginBottom: '0rem', marginLeft:'1.5rem'}}>Nombre de Usuario o Email</Form.Label>
-              <Form.Control style={{ width: '90%', height: '4.5vh', borderRadius:'10rem', marginLeft:'1.5rem', backgroundColor: '#F5F5F5',boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} name="user" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre de usuario o email" />
-              <Form.Text className="text-muted">
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label className="font-rubik" style={{display: 'block', marginBottom: '0rem', marginLeft:'1.5rem'}}>Contraseña</Form.Label>
-              <Form.Control style={{width: '90%', height: '4.5vh', borderRadius:'10rem', marginLeft:'1.5rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check style={{marginTop: '1.5rem', marginLeft:'1.5rem'}} onChange={(e) => setKeepSession(e.target.checked)} type="checkbox" label="Mantener sesi&oacute;n" />
-            </Form.Group>
-            <div style={{justifyContent: 'center', alignItems:'center',display: 'flex'}}>
-            <Button style={{borderRadius:'1rem', width:'20rem', textAlign:'center', backgroundColor: '#D9D9D9', borderColor:'#D9D9D9', color:'black', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}} variant="primary" type="submit" onClick={handleLogin}>
-              Ingresar
-            </Button>
+    return (
+      <Container className="d-flex justify-content-center align-items-center vh-100 login-container">
+        <Card className="shadow-lg p-4" style={{ width: '25rem', borderRadius: '1.5rem', backgroundColor: '#ffffff', borderColor: '#e0e0e0' }}>
+          <GenericAlert title="Error" description="Usuario o contraseña incorrectos" type="danger" show={showAlert} setShow={setShowAlert} />
+          <Card.Body>
+            <Form>
+              <h1 className="text-center font-rubik mb-4" style={{ color: '#333' }}>Iniciar Sesión</h1>
+              <Form.Group className="mb-4" controlId="formBasicEmail">
+                <Form.Label className="font-rubik" style={{ marginLeft: '1.5rem', color: '#666' }}>Nombre de Usuario o Email</Form.Label>
+                <Form.Control className="input-field" name="user" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre de usuario" />
+              </Form.Group>
+  
+              <Form.Group className="mb-4" controlId="formBasicPassword">
+                <Form.Label className="font-rubik" style={{ marginLeft: '1.5rem', color: '#666' }}>Contraseña</Form.Label>
+                <Form.Control className="input-field" name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" />
+              </Form.Group>
+  
+              <Form.Group className="mb-4" controlId="formBasicCheckbox">
+                <Form.Check className="font-rubik" style={{ marginLeft: '1.5rem' }} onChange={(e) => setKeepSession(e.target.checked)} type="checkbox" label="Mantener sesión" />
+              </Form.Group>
+  
+              <div className="d-flex justify-content-center">
+                <Button className="login-btn" variant="primary" type="submit" onClick={handleLogin}>
+                  Ingresar
+                </Button>
+              </div>
+            </Form>
+            <div className="text-center mt-4">
+              <a href="/register" className="text-decoration-none" style={{ color: '#007bff' }}>¿No tienes cuenta?</a><br />
+              <a href="/forgot_password" className="text-decoration-none" style={{ color: '#007bff' }}>¿Olvidaste tu contraseña?</a>
             </div>
-          </Form>
-          <div style={{ justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column', marginTop:'1rem' }}>
-          <a href="/register">¿No tienes cuenta?</a>
-          <a href="/forgot_password">¿Olvidaste tu contraseña?</a>
-          </div>
-        </Card.Body>
-      </Card>
-    </Container>
-  );
-}
-
-export default LoginCard;
+          </Card.Body>
+        </Card>
+      </Container>
+    );
+  }
+  
+  export default LoginCard;
+  
