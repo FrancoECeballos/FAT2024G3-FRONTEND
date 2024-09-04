@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Row, Col, InputGroup } from 'react-bootstrap';
 import Cookies from 'js-cookie';
-import fetchData from '../../../functions/fetchData';
 import './Datos.scss';
-import user from '../../../assets/user_default.png';
 
-const Datos = () => {
+const Datos = ({ user }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const token = Cookies.get('token');
-    const [isAdmin, setIsAdmin] = useState(location.state);
 
     const [userData, setUserData] = useState({
         "id": "",
@@ -31,34 +28,18 @@ const Datos = () => {
     });
 
     useEffect(() => {
-        const updateUserState = (result) => {
-            console.log("Fetched user data: ", result); // Debug: Check fetched data
-            setUserData(result);
-        };
-
-        if (!isAdmin) {
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-            fetchData(`/userToken/${token}`).then(updateUserState).catch(err => console.error("Error fetching user data: ", err)); // Debug: Handle fetch error
-        } else {
-            fetchData(`/user/${location.state.user_email}`).then(updateUserState).catch(err => console.error("Error fetching user data: ", err)); // Debug: Handle fetch error
+        if (!token) {
+          navigate('/login');
+          return;
         }
-    }, [token, navigate, location.state, isAdmin]);
 
-    const handleLogout = () => {
-        Cookies.remove('token');
-        navigate('/login');
-    };
+        setUserData(user.viewedUser);
+    }, [token, navigate, location.state, user.viewedUser]);
 
-    if (!userData.nombre) {
-        return <div>Loading...</div>; // Simple loading state
-    }
     return (
         <div className="micuenta">
           <h1>
-            <img src={user} className="fotoperfil" alt="User" />
+            <img src={userData.imagen} className="fotoperfil" alt="User" />
             {`Bienvenido ${userData.nombre + " " + userData.apellido}`}
           </h1>
           <Row className="filainputs">

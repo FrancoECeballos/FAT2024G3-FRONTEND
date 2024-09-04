@@ -35,8 +35,8 @@ function App() {
         <Route path="/change_password" element={<ChangePassword />} />
         <Route path="/perfil/micuenta" element={<MiCuenta />} />
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
-        <Route path="/userlisting" element={<UserListing />}/>
         <Route path="/perfil/datos_personales" element={<DatosPersonales />} />
+        <Route path="/userlisting" element={<UserListing />}/>
         <Route path="/stock" element={<Stock />} />
         <Route path="/obra/:stockId/categoria" element={<Categories />} />
         <Route path="/obra/:stockId/categoria/:categoriaID" element={<Products />} />
