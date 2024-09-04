@@ -42,65 +42,44 @@ const LoginCard = () => {
       setShowAlert(true);
     }
   };
+ 
 
     return (
-      <Container fluid className="login-container">
-        <Card className="login-card p-4">
+      <Container className="d-flex justify-content-center align-items-center vh-100 login-container">
+        <Card className="shadow-lg p-4" style={{ width: '25rem', borderRadius: '1.5rem', backgroundColor: '#ffffff', borderColor: '#e0e0e0' }}>
           <GenericAlert title="Error" description="Usuario o contraseña incorrectos" type="danger" show={showAlert} setShow={setShowAlert} />
           <Card.Body>
             <Form>
-              <h2 className="text-center mb-4">Iniciar Sesión</h2>
-              
-              <Form.Group controlId="formBasicEmail" className="mb-3">
-                <Form.Label>Usuario o Email</Form.Label>
-                <Form.Control 
-                  className="login-input" 
-                  type="text" 
-                  name="user" 
-                  placeholder="Ingrese su usuario o email" 
-                  onChange={handleInputChange} 
-                />
+              <h1 className="text-center font-rubik mb-4" style={{ color: '#333' }}>Iniciar Sesión</h1>
+              <Form.Group className="mb-4" controlId="formBasicEmail">
+                <Form.Label className="font-rubik" style={{ marginLeft: '1.5rem', color: '#666' }}>Nombre de Usuario o Email</Form.Label>
+                <Form.Control className="input-field" name="user" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre de usuario" />
               </Form.Group>
   
-              <Form.Group controlId="formBasicPassword" className="mb-3">
-                <Form.Label>Contraseña</Form.Label>
-                <Form.Control 
-                  className="login-input" 
-                  type="password" 
-                  name="password" 
-                  placeholder="Ingrese su contraseña" 
-                  onChange={handleInputChange} 
-                />
+              <Form.Group className="mb-4" controlId="formBasicPassword">
+                <Form.Label className="font-rubik" style={{ marginLeft: '1.5rem', color: '#666' }}>Contraseña</Form.Label>
+                <Form.Control className="input-field" name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" />
               </Form.Group>
   
-              <Form.Group controlId="formBasicCheckbox" className="mb-4">
-                <Form.Check 
-                  type="checkbox" 
-                  label="Mantener sesión" 
-                  onChange={(e) => setKeepSession(e.target.checked)} 
-                />
+              <Form.Group className="mb-4" controlId="formBasicCheckbox">
+                <Form.Check className="font-rubik" style={{ marginLeft: '1.5rem' }} onChange={(e) => setKeepSession(e.target.checked)} type="checkbox" label="Mantener sesión" />
               </Form.Group>
   
-              <Button 
-                className="login-button w-100" 
-                variant="primary" 
-                type="submit" 
-                onClick={handleLogin}
-              >
-                Ingresar
-              </Button>
-  
-              <div className="text-center mt-3">
-                <a href="/register" className="link-primary">¿No tienes cuenta?</a>
-                <br />
-                <a href="/forgot_password" className="link-primary">¿Olvidaste tu contraseña?</a>
+              <div className="d-flex justify-content-center">
+                <Button className="login-btn" variant="primary" type="submit" onClick={handleLogin}>
+                  Ingresar
+                </Button>
               </div>
             </Form>
+            <div className="text-center mt-4">
+              <a href="/register" className="text-decoration-none" style={{ color: '#007bff' }}>¿No tienes cuenta?</a><br />
+              <a href="/forgot_password" className="text-decoration-none" style={{ color: '#007bff' }}>¿Olvidaste tu contraseña?</a>
+            </div>
           </Card.Body>
         </Card>
       </Container>
     );
-  };
+  }
   
   export default LoginCard;
   

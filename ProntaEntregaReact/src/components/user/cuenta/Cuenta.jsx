@@ -12,12 +12,11 @@ import './Cuenta.scss';
 import SendButton from '../../buttons/send_button/send_button.jsx';
 
 
-const Cuenta = () => {
+const Cuenta = ({ user }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
-    const [isStaff, setIsStaff] = useState(location.state);
     const [direc, setDirec] = useState([]);
 
     const [userObras, setUserObras] = useState([]);
@@ -84,58 +83,57 @@ const Cuenta = () => {
     }, [userDataDefault]);
 
     useEffect(() => {
-        const updateUserState = (result) => {
-            const transformedData = NullToEmpty(result);
-            setUserData(transformedData);
-            setUserDataDefault(transformedData);
-        };
+      const updateUserState = (result) => {
+          const transformedData = NullToEmpty(result);
+          setUserData(transformedData);
+          setUserDataDefault(transformedData);
+      };
 
-        if (!isStaff) {
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-            fetchData(`/userToken/${token}`).then(updateUserState)
-            fetchData('/direcciones/').then((result) => {
-                setDirec(result);
-            });
-            fetchData(`/user/obrasToken/${token}`, token).then((obrasResult) => {
-                setUserObras(obrasResult);
-                setObraID([]);
-            
-                const fetchPromises = obrasResult.map(obra =>
-                    fetchData(`/obra/${obra.id_obra}`, token)
-                );
-            
-                Promise.all(fetchPromises).then((results) => {
-                    const flattenedResults = results.flat();
-                    const uniqueResults = Array.from(new Set(flattenedResults.map(JSON.stringify))).map(JSON.parse);
-                    setObraID(uniqueResults);
-                });
-            });
-        } else {
-            fetchData(`/user/${location.state.user_email}`).then(updateUserState)
-            fetchData('/direcciones/').then((result) => {
-                setDirec(result);
-            });
-            fetchData(`/user/obrasEmail/${location.state.user_email}`, token).then((obrasResult) => {
-                setUserObras(obrasResult);
-                setObraID([]);
-            
-                const fetchPromises = obrasResult.map(obra =>
-                    fetchData(`/obra/${obra.id_obra}`, token)
-                );
-            
-                Promise.all(fetchPromises).then((results) => {
-                    const flattenedResults = results.flat();
-                    const uniqueResults = Array.from(new Set(flattenedResults.map(JSON.stringify))).map(JSON.parse);
-                    setObraID(uniqueResults);
-                });
-            });
-            fetchData(`/obra/`, token).then((result) => {
-                setObras(result);
-            });
-        }
+      const fetchObras = (url) => {
+          fetchData(url, token).then((obrasResult) => {
+              setUserObras(obrasResult);
+              setObraID([]);
+      
+              const fetchPromises = obrasResult.map(obra =>
+                  fetchData(`/obra/${obra.id_obra}`, token).then(obraData => {
+                      return { ...obraData, id_tipousuario: obra.id_tipousuario };
+                  })
+              );
+      
+              Promise.all(fetchPromises).then((results) => {
+                  const flattenedResults = results.map(result => {
+                      if (result[0]) {
+                          return {
+                              ...result[0],
+                              id_tipousuario: result.id_tipousuario
+                          };
+                      }
+                      return result;
+                  });
+                  setObraID(flattenedResults);
+              });
+          });
+      };
+
+      if (!token) {
+          navigate('/login');
+          return;
+      }
+
+      updateUserState(user.viewedUser);
+      fetchData('/direcciones/').then((result) => {
+          setDirec(result);
+      });
+
+      if (user.viewingOtherUser) {
+          fetchObras(`/user/obrasEmail/${location.state.user_email}`);
+          const obrasUrl = user.viewingUser.is_superuser ? `/obra/` : `/obra/user/${token}/`;
+          fetchData(obrasUrl, token).then((result) => {
+              setObras(result);
+          });
+      } else {
+          fetchObras(`/user/obrasToken/${token}`);
+      }
 
     }, [token, navigate, location.state]);
 
@@ -148,21 +146,27 @@ const Cuenta = () => {
         event.preventDefault();
         const url = (`/user/delete/${userData.email}/`);
         const result = await deleteData(url, token);
-        if (!isStaff) {
+        if (user.viewingOtherUser == false) {
           navigate('/login');
         } else {
           navigate('/userlisting');
         }
     };
 
+    const handleUpdateUserObra = async (event, obra) => {
+      const { value } = event.target;
+      const result = await putData(`/user/obras/update/${obra.id_obra}/${userData.id_usuario}/`, { id_tipousuario: value }, token);
+      fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
+        setUserObras(result);
+      });
+    };
+
     const handleDeleteObraFromUser = async(id) => {
-        const aux = userObras.find(obra => obra.id_obra === id);
-        const url = (`/user/obras/delete/${aux.id_detalleobrausuario}/`);
-        const result = await deleteData(url, token);
-        fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
-          setUserObras(result);
-            window.location.reload();
-        });
+      const result = await deleteData(`/user/obras/delete/${id}/${user.viewedUser.id_usuario}/`, token);
+      fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
+        setUserObras(result);
+        window.location.reload();
+      });
     };
 
     const handleAddOObraToUser = async() => {
@@ -196,17 +200,11 @@ const Cuenta = () => {
         }
     };
 
-    const generateUsername = (nombre, apellido, documento) => {
-        if (nombre && apellido && documento) {
-          return `${nombre.toLowerCase()}.${apellido.toLowerCase()}${documento.slice(5, 8)}`;
-        }
-        return '';
-    };
-      const generatePhone = (cai, telnum) => {
-        if (cai && telnum) {
-          return `${cai} ${telnum}`;
-        }
-        return '';
+    const generatePhone = (cai, telnum) => {
+      if (cai && telnum) {
+        return `${cai} ${telnum}`;
+      }
+      return '';
     };
     
     const handleInputChange = (event) => {
@@ -293,7 +291,7 @@ const Cuenta = () => {
         setUserDataDefault(userData);
         setIsEditing(false);
     
-        if (isStaff) {
+        if (user.viewingOtherUser == true) {
             const url = (`/user/updateEmail/${userData.email}/`);
             const body = updatedUserData;
             const result = await putData(url, body, token);
@@ -445,25 +443,41 @@ const Cuenta = () => {
                 <div className="obras-container" style={{marginTop: '1rem'}}>
                   <h3>Obras del Usuario</h3>
                   <ul>
-                    {obraID.length === 0 ? (
+                  {userData.is_superuser ? (
+                    <p>Este usuario es un administrador, por lo que tiene acceso a todas las obras</p>
+                  ) : (
+                    obraID.length === 0 ? (
                       <p>Este usuario no pertenece a ninguna obra</p>
                     ) : (
                       obraID.map(userobra => (
                         <li key={userobra.id_obra}>
                           {userobra.nombre}
-                          {isStaff && (
-                            <SendButton
-                              text="Eliminar"
-                              backcolor="#D10000"
-                              letercolor="white"
-                              onClick={() => handleDeleteObraFromUser(userobra.id_obra)}
-                            />
+                          {user.viewingOtherUser == true && (
+                            <>
+                              <div>
+                                <label>
+                                  <input type="radio" name={`role_${userobra.id_obra}`} value="1" defaultChecked={userobra.id_tipousuario === 1} onChange={(event) => handleUpdateUserObra(event, userobra)}/>
+                                    Voluntario
+                                </label>
+                                <label>
+                                  <input type="radio" name={`role_${userobra.id_obra}`} value="2" defaultChecked={userobra.id_tipousuario === 2} onChange={(event) => handleUpdateUserObra(event, userobra)}/>
+                                    Moderador
+                                </label>
+                              </div>
+                              <SendButton
+                                text="Eliminar"
+                                backcolor="#D10000"
+                                letercolor="white"
+                                onClick={() => handleDeleteObraFromUser(userobra.id_obra)}
+                              />
+                            </>
                           )}
                         </li>
                       ))
-                    )}
+                    )
+                  )}
                   </ul>
-                  {isStaff && (
+                  {user.viewingOtherUser == true && (
                     <div className="add-obra">
                       <Form.Control
                           as="select"
@@ -475,15 +489,19 @@ const Cuenta = () => {
                           }}
                       >
                           <option disabled hidden value="">
-                              Selecciona una obra para añadir
+                            Selecciona una obra para añadir
                           </option>
-                          {obras.map(obra => (
-                              !obraID.some(obraID => obraID.id_obra === obra.id_obra) && (
-                                  <option key={obra.id_obra} value={obra.id_obra}>
-                                      {obra.nombre}
-                                  </option>
-                              )
-                          ))}
+                          {obras.filter(obra => !obraID.some(obraID => obraID.id_obra === obra.id_obra)).length === 0 ? (
+                            <option disabled value="">
+                              No puede añadir este usuario a ninguna obra
+                            </option>
+                          ) : (
+                            obras.filter(obra => !obraID.some(obraID => obraID.id_obra === obra.id_obra)).map(obra => (
+                              <option key={obra.id_obra} value={obra.id_obra}>
+                                {obra.nombre}
+                              </option>
+                            ))
+                          )}
                       </Form.Control>
                       <SendButton
                           onClick={handleAddOObraToUser}
@@ -509,7 +527,7 @@ const Cuenta = () => {
                 />
               </Col>
               <Col>
-              {!isStaff && (
+              {user.viewingOtherUser == false && (
                   <SendButton
                   text="Cerrar Sesion"
                   backcolor="#D10000"
