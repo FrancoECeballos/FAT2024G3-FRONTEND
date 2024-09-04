@@ -11,6 +11,10 @@ const fetchUser = async () => {
         return result;
     } catch (error) {
         console.error('Error fetching user data:', error);
+        if (error.response.data.error === "El usuario no existe.") {
+            Cookies.remove('token');
+            navigate('/login');
+        }
     }
 } 
 

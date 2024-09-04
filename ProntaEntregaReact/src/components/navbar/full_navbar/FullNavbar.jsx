@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Icon } from '@iconify/react';
 import { Container, Nav, Navbar, Offcanvas, Dropdown, Modal, Button } from 'react-bootstrap';
@@ -14,7 +14,6 @@ import GenericModal from '../../modals/Modal';
 import './FullNavbar.scss';
 
 function FullNavbar ({selectedPage}) {
-  const [show, setShow] = useState(false);
   const expand = false; 
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -60,10 +59,15 @@ function FullNavbar ({selectedPage}) {
 
   const handleSuperUserAuth = async (e) => {
     e.preventDefault();
-    if (data.is_superuser) {
-      navigate('/perfil/micuenta');
-    } else if (token) {
-      navigate('/perfil/micuenta');
+    const currentPath = window.location.pathname;
+  
+    if (data.is_superuser || token) {
+      if (currentPath === '/perfil/micuenta') {
+        navigate('/perfil/micuenta');
+        window.location.reload();
+      } else {
+        navigate('/perfil/micuenta');
+      }
     } else {
       navigate('/login');
     }

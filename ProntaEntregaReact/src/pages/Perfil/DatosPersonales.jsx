@@ -47,7 +47,7 @@ function Datospersonales(){
             <FullNavbar/>
             <Row>
                 <Col xs={4} sm={4} md={4} lg={4} xl={4} xxl={4}>
-                    <Sidebar selectedPage={"datos_personales"} isAdmin={user.viewingUser.is_staff} user={user}/>
+                    <Sidebar selectedPage={"datos_personales"} user={user}/>
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
                     <Datos user={user}/>

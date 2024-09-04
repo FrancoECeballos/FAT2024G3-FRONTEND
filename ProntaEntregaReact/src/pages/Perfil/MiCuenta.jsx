@@ -22,14 +22,17 @@ function MiCuenta(){
         const updateUser = async () => {
             try {
                 const result = await fetchData(`/userToken/${token}`);
-                if (location.state) {
+                if (location.state && location.state != null) {
                     const viewedUserResult = await fetchData(`/user/${location.state.user_email}`);
                     setUser({viewedUser: viewedUserResult, viewingUser: result, viewingOtherUser: true});
                 } else {
                     setUser({viewedUser: result, viewingUser: result, viewingOtherUser: false});
                 }
             } catch (error) {
-                console.log(error);
+                if (error.response.data.error === "El usuario no existe.") {
+                    Cookies.remove('token');
+                    navigate('/login');
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -47,7 +50,7 @@ function MiCuenta(){
             <FullNavbar/>
             <Row style={{ height: "100vh" }}>
                 <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
-                    <Sidebar selectedPage={"micuenta"} isAdmin={user.viewingUser.is_staff} user={user}/>
+                    <Sidebar selectedPage={"micuenta"} user={user}/>
                 </Col>
                 <Col className='colcuenta' xs={12} sm={9} md={9} lg={6} xl={6} xxl={6} style={{overflowY: "scroll", overflowX:"hidden",height:"100vh",scrollbarWidth:"none",paddingBottom:"10rem",}} >
                     <Cuenta user={user}/>

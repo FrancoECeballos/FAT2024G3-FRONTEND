@@ -8,32 +8,38 @@ import Loading from "../../loading/loading.jsx";
 import { Row, Col } from 'react-bootstrap';
 import fetchData from "../../../functions/fetchData.jsx";
 
-const Sidebar = ({ isAdmin = false, selectedPage, user }) => {
+const Sidebar = ({ selectedPage, user }) => {
   const [viewedUser, setViewedUser] = useState({});
   const [viewingUser, setViewingUser] = useState({});
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = Cookies.get('token');
 
   useEffect(() => {
-    if (user) {
-      setViewedUser(user.viewedUser);
-      setViewingUser(user.viewingUser);
-      setLoading(false);
-    } else if (token) {
-      fetchData(`/userToken/${token}`)
-        .then((result) => {
+    console.log(user);
+    const fetchUserData = async () => {
+      try {
+        if (user) {
+          setViewedUser(user.viewedUser);
+          setViewingUser(user.viewingUser);
+        } else if (token) {
+          const result = await fetchData(`/userToken/${token}`);
           setViewingUser(result);
-          setLoading(false);
-        })
-        .catch((err) => {
-          setError(err);
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
+        }
+
+        const obrasResult = await fetchData(`/user/obrasToken/${token}`, token);
+        const isAdmin = obrasResult.is_superuser || user.viewingUser.is_superuser || obrasResult.some(item => item.id_tipousuario === 2);
+        setIsAdmin(isAdmin);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [token, user]);
 
   if (loading) {
     return <Loading></Loading>
@@ -64,20 +70,20 @@ const Sidebar = ({ isAdmin = false, selectedPage, user }) => {
           <SelectableButton 
             selected={selectedPage === "micuenta"}
             texto="Cuenta" 
-            link="/perfil/micuenta" 
-            locationStore={{ user_email: viewedUser.email }}
+            link="/perfil/micuenta"
+            locationStore={user.viewingOtherUser ? { user_email: viewedUser.email } : undefined}
           />
           <SelectableButton
             selected={selectedPage === "seguridad"}
             texto="Seguridad y Privacidad"
             link="/perfil/seguridad"
-            locationStore={{ user_email: viewedUser.email }}
+            locationStore={user.viewingOtherUser ? { user_email: viewedUser.email } : undefined}
           />
           <SelectableButton
             selected={selectedPage === "datos_personales"}
             texto="Datos Personales"
             link="/perfil/datos_personales"
-            locationStore={{ user_email: viewedUser.email }}
+            locationStore={user.viewingOtherUser ? { user_email: viewedUser.email } : undefined}
           />
           <SelectableButton 
             selected={selectedPage === "obras"}

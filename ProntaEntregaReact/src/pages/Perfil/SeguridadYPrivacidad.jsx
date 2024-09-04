@@ -45,7 +45,7 @@ function SeguridadYPrivacidad(){
             <FullNavbar/>
             <Row>
                 <Col xs={4} sm={4} md={4} lg={4} xl={4} xxl={4}>
-                    <Sidebar selectedPage={"seguridad"} isAdmin={user.viewingUser.is_staff} user={user}/>
+                    <Sidebar selectedPage={"seguridad"} user={user}/>
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
                     <Seguridad user={user}/>
