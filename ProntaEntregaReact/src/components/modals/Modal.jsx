@@ -1,5 +1,5 @@
     import React, { useState, useEffect } from 'react';
-    import SendButton from '../buttons/send_button/send_button.jsx';
+    import SendButton from '../../components/buttons/send_button/send_button.jsx';
     import Modal from 'react-bootstrap/Modal';
     import './Modal.scss';
 

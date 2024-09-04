@@ -13,8 +13,8 @@ import GenericModal from '../../modals/Modal';
 
 import './FullNavbar.scss';
 
-function FullNavbar ({selectedPage}) {
-  const expand = false; 
+function FullNavbar({ selectedPage }) {
+  const expand = false;
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const token = Cookies.get('token');
@@ -79,28 +79,28 @@ function FullNavbar ({selectedPage}) {
         <div>
           <Navbar.Brand>
             <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
-          </Navbar.Brand>  
+          </Navbar.Brand>
         </div>
 
-          <Nav className="nav-link">
-            <Nav.Link className='naving' onClick={() => navigate('/novedades')}>{selectedPage === 'Novedades' ? <strong>Novedades</strong> : 'Novedades'}</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/stock')}> {selectedPage === 'Stock' ? <strong>Stock</strong> : 'Stock'}</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>{selectedPage === 'Pedidos' ? <strong>Pedidos</strong> : 'Pedidos'}</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/oferta')}>{selectedPage === 'Ofertas' ? <strong>Ofertas</strong> : 'Ofertas'}</Nav.Link>
-            <Nav.Link className='naving'>{selectedPage === 'Entregas' ? <strong>Entregas</strong> : 'Entregas'}</Nav.Link>
-            <Nav.Link className='naving' onClick={() => navigate('/autos')}>{selectedPage === 'Autos' ? <strong>Autos</strong> : 'Autos'}</Nav.Link>
-          </Nav>
+        <Nav className="nav-link">
+          <Nav.Link className='naving' onClick={() => navigate('/novedades')}>{selectedPage === 'Novedades' ? <strong>Novedades</strong> : 'Novedades'}</Nav.Link>
+          <Nav.Link className='naving' onClick={() => navigate('/stock')}> {selectedPage === 'Stock' ? <strong>Stock</strong> : 'Stock'}</Nav.Link>
+          <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>{selectedPage === 'Pedidos' ? <strong>Pedidos</strong> : 'Pedidos'}</Nav.Link>
+          <Nav.Link className='naving' onClick={() => navigate('/oferta')}>{selectedPage === 'Ofertas' ? <strong>Ofertas</strong> : 'Ofertas'}</Nav.Link>
+          <Nav.Link className='naving'>{selectedPage === 'Entregas' ? <strong>Entregas</strong> : 'Entregas'}</Nav.Link>
+          <Nav.Link className='naving' onClick={() => navigate('/autos')}>{selectedPage === 'Autos' ? <strong>Autos</strong> : 'Autos'}</Nav.Link>
+        </Nav>
         <div className='botons-derecha'>
           <Navbar.Brand>
             <Dropdown align="end">
               <Dropdown.Toggle as="div" id="dropdown-custom-components">
                 {notificationByUser.length >= 1 ? (
-                  <Icon icon="line-md:bell-alert-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
+                  <Icon icon="line-md:bell-alert-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }} />
                 ) : (
-                  <Icon icon="line-md:bell-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }}/>
+                  <Icon icon="line-md:bell-loop" style={{ width: '2rem', height: '2rem', color: '#02005E' }} />
                 )}
               </Dropdown.Toggle>
-              <Dropdown.Menu>
+              <Dropdown.Menu className="custom-dropdown-menu">
                 {notificationByUser.length >= 1 ? (
                   notificationByUser.map((notification, index) => (
                     <Dropdown.Item
@@ -128,15 +128,15 @@ function FullNavbar ({selectedPage}) {
               <div>
                 {selectedNotification?.descripcion}
               </div>
-              <div style={{marginTop:"2rem"}}>
+              <div style={{ marginTop: "2rem" }}>
                 {selectedNotification?.fecha_creacion}
               </div>
             </Modal.Body>
           </Modal>
 
           <Navbar.Brand>
-            <Icon icon="line-md:account" style={{ width: '2rem', height: '2rem', marginRight: '0.3rem', marginLeft: '0.3rem', color: '#02005E'}} onClick={handleSuperUserAuth}/>
-          </Navbar.Brand>  
+            <Icon icon="line-md:account" style={{ width: '2rem', height: '2rem', marginRight: '0.3rem', marginLeft: '0.3rem', color: '#02005E' }} onClick={handleSuperUserAuth} />
+          </Navbar.Brand>
           <Navbar.Brand>
             <Icon icon="line-md:menu" style={{ width: '2rem', height: '2rem', marginRight: '0.3rem', marginLeft: '0.2rem', color: '#02005E' }} onClick={handleShowOffcanvas} />
           </Navbar.Brand>
@@ -148,53 +148,53 @@ function FullNavbar ({selectedPage}) {
           >
             <Offcanvas.Header closeButton>
               <img src={blueLogo} alt="Logo" className="logo" onClick={() => navigate('/')} />
-              <Offcanvas.Title style={{color:"#02005E", marginLeft: 'auto', marginRight: 'auto'}}>Menú</Offcanvas.Title>
+              <Offcanvas.Title style={{ color: "#02005E", marginLeft: 'auto', marginRight: 'auto' }}>Menú</Offcanvas.Title>
             </Offcanvas.Header>
 
-            <Offcanvas.Body style={{display: "flex", height: "100%"}}>
-              
+            <Offcanvas.Body style={{ display: "flex", height: "100%" }}>
+
               <Nav className="justify-content-center flex-grow-1 pe-3">
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={handleSuperUserAuth}>
-                  <Icon icon="line-md:account" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={handleSuperUserAuth}>
+                  <Icon icon="line-md:account" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={handleSuperUserAuth}>Mi Cuenta</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/novedades')}>
-                  <Icon icon="line-md:lightbulb" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/novedades')}>
+                  <Icon icon="line-md:lightbulb" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/stock')}>
-                  <Icon icon="line-md:clipboard-list" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/stock')}>
+                  <Icon icon="line-md:clipboard-list" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/stock')}>Stock</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/pedidos')}>
-                  <Icon icon="line-md:text-box" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/pedidos')}>
+                  <Icon icon="line-md:text-box" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/pedidos')}>Pedidos</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/ofertas')}>
-                  <Icon icon="line-md:upload-outline" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/ofertas')}>
+                  <Icon icon="line-md:upload-outline" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/oferta')}>Ofertas</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'left', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/entregas')}>
-                  <Icon icon="line-md:telegram" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'left', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/entregas')}>
+                  <Icon icon="line-md:telegram" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/entregas')}>Entregas</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'left', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/autos')}>
-                  <Icon icon="line-md:speed" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'left', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/autos')}>
+                  <Icon icon="line-md:speed" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/autos')}>Autos</Nav.Link>
                 </div>
-                
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft:"30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/obras')}>
-                  <Icon icon="line-md:home-md" style={{width:"2rem", height: "2rem", marginRight: "0.2rem"}}/>
+
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/obras')}>
+                  <Icon icon="line-md:home-md" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/obras')}>Obras</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{position: 'absolute', bottom: '0.4rem', right: '0.6rem', color: '#D9D9D9'}}>
+                <div className='hoverable-off-canvas' style={{ position: 'absolute', bottom: '0.4rem', right: '0.6rem', color: '#D9D9D9' }}>
                   <Nav.Link onClick={handleLogout}>Cerrar Sesión</Nav.Link>
                 </div>
               </Nav>
