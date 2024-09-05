@@ -226,7 +226,7 @@ function AutosComponent() {
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='auto-list'>
                 <div className="auto-modal">
-                    <Modal title='Nuevo Auto' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su auto? Añadalo' content={
+                    <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su vehículo? Añadalo' content={
                         <>
                             <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
                             <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
@@ -277,7 +277,7 @@ function AutosComponent() {
                                             )}
                                             </div>
                                             <div style={{marginTop:"1rem", marginRight: "1rem"}}>
-                                            <Modal openButtonText='Actualizar Auto' title='Actualizar Auto' handleShowModal={() => handleEditAutoClick(auto)} handleSave={handleEditAutoSave} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto.id_transporte)} content={
+                                            <Modal openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={handleEditAutoSave} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto.id_transporte)} wide='100rem' content={
                                                 <>
                                                     <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
                                                     <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />
