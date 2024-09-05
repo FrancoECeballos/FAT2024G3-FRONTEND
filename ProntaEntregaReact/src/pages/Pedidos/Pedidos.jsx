@@ -29,14 +29,9 @@ function Pedidos() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
         const fetchUserData = async () => {
             try {
-                const userData = await fetchUser();
+                const userData = await fetchUser(navigate);
                 setUser(userData);
             } catch (error) {
                 console.error('Error fetching user data:', error);

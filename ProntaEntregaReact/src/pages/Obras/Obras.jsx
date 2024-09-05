@@ -14,6 +14,8 @@ import fetchData from '../../functions/fetchData.jsx';
 import postData from '../../functions/postData.jsx';
 import putData from '../../functions/putData.jsx';
 
+import fetchUser from '../../functions/fetchUser.jsx';
+
 function Stock() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -35,11 +37,7 @@ function Stock() {
     const [orderCriteria, setOrderCriteria] = useState(null);
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-        fetchData(`/userToken/${token}`, token).then((result) => {
+        fetchUser(navigate).then((result) => {
             if (result.is_superuser) {
                 fetchData('/obra/', token).then((result) => {
                     setObras(result);

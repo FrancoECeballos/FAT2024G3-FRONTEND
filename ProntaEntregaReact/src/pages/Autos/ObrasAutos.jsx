@@ -8,6 +8,7 @@ import Footer from '../../components/footer/Footer.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import Loading from '../../components/loading/loading.jsx';
+import fetchUser from '../../functions/fetchUser.jsx';
 
 import './ObrasAutos.scss';
 
@@ -27,7 +28,7 @@ function ObrasAutos() {
             navigate('/login');
             return;
         }
-        fetchData(`/userToken/${token}`, token).then((result) => {
+        fetchUser().then((result) => {
             setIsAdmin(result.is_superuser);
             const email = result.email;
             if (result.is_superuser) {

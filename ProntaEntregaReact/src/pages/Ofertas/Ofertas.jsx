@@ -32,14 +32,9 @@ function Ofertas() {
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
         const fetchUserData = async () => {
             try {
-                const userData = await fetchUser();
+                const userData = await fetchUser(navigate);
                 setUser(userData);
                 if (userData.is_superuser) {
                     fetchData(`stock/`, token).then((result) => {
