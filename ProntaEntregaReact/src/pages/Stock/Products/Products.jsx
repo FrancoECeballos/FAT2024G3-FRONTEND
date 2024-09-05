@@ -231,12 +231,14 @@ function Products() {
                 cantidad: cantidad,
             };
             if (selectedOperacion === 'sumar' || producto) {
-                await postData(`AddDetallestockproducto/`, updatedDetalle, token);
-                window.location.reload();
-                return true; 
+                await postData(`AddDetallestockproducto/`, updatedDetalle, token).then(() => {
+                    window.location.reload();
+                });
+                return true;
             } else if (selectedOperacion === 'restar') {
-                await postData(`SubtractDetallestockproducto/`, updatedDetalle, token);
-                window.location.reload();
+                await postData(`SubtractDetallestockproducto/`, updatedDetalle, token).then(() => {
+                    window.location.reload();
+                });
                 return true; 
             }
         } catch (error) {
