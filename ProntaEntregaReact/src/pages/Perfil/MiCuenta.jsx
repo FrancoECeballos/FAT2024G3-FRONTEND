@@ -8,6 +8,7 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 import Sidebar from '../../components/user/sidebar/Sidebar_perfil';
 
 import fetchData from '../../functions/fetchData.jsx';
+import fetchUser from '../../functions/fetchUser.jsx';
 import Loading from '../../components/loading/loading.jsx';
 
 import './MiCuenta.scss';
@@ -21,7 +22,7 @@ function MiCuenta(){
     useEffect(() => {
         const updateUser = async () => {
             try {
-                const result = await fetchData(`/userToken/${token}`);
+                const result = await fetchUser();
                 if (location.state && location.state != null) {
                     const viewedUserResult = await fetchData(`/user/${location.state.user_email}`);
                     setUser({viewedUser: viewedUserResult, viewingUser: result, viewingOtherUser: true});

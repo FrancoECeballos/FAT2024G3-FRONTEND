@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 const fetchUser = async () => {
     const token = Cookies.get('token');
     if (!token) {
-        return;
+        navigate('/login');
     }
     try {
         const result = await fetchData(`/userToken/${token}`, token);
