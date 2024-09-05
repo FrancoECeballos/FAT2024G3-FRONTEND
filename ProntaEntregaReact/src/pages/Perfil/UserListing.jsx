@@ -8,6 +8,7 @@ import GenericAccordion from '../../components/accordions/generic_accordion/Gene
 import Loading from '../../components/loading/loading.jsx';
 
 import fetchData from '../../functions/fetchData';
+import fetchUser from '../../functions/fetchUser.jsx';
 import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 
 function UserListing() {
@@ -20,14 +21,9 @@ function UserListing() {
     const token = Cookies.get('token');
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-    
         const fetchObras = async () => {
             try {
-                const userToken = await fetchData(`userToken/${token}/`, token);
+                const userToken = await fetchUser(navigate);
                 const userId = userToken.id_usuario;
         
                 const fetchObrasWithUsuarios = async (obras) => {
