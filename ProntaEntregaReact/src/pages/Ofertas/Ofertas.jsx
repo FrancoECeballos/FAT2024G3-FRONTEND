@@ -137,10 +137,10 @@ function Ofertas() {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
+                window.location.reload();
             }).catch((error) => {
                 console.error('Error al crear la oferta:', error);
             });
-            window.location.reload();
         }
     };
 
@@ -161,10 +161,11 @@ function Ofertas() {
         };
     
         try {
-            await postData('crear_detalle_oferta/', data, token);
-            console.log('Aporte de la oferta creado');
-            window.location.reload();
-            return true;
+            await postData('crear_detalle_oferta/', data, token).then(() => {
+                console.log('Aporte de la oferta creado');
+                window.location.reload();
+                return true;
+            });
         } catch (error) {
             console.error('Error creando el aporte de la oferta:', error);
             return false;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-import { Col, Row, Form, Card } from 'react-bootstrap';
+import { Col, Row, Form, Card, Button } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
@@ -60,7 +60,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     };
 
     const handleFetchProducts = (id_stock, id_categoria) => {
-        fetchData(`GetDetallestockproducto_Total/${id_stock}/${id_categoria}/`, token).then((result) => {
+        fetchData(`producto/categoria/${id_categoria}/`, token).then((result) => {
             setProducts(result);
         }).catch(error => {
             console.error('Error fetching products:', error);
@@ -130,6 +130,26 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             const selectedObra = prevObras.find(obra => obra.id_obra.id_obra === key);
             const remainingObras = prevObras.filter(obra => obra.id_obra.id_obra !== key);
             return selectedObra ? [selectedObra, ...remainingObras] : remainingObras;
+        });
+    };
+
+    const handleSelectAllObras = () => {
+        const allObrasIds = obras.map(obra => obra.id_obra.id_obra);
+        const allSelected = allObrasIds.every(id => pedidoForm.obras.includes(id));
+        
+        setPedidoForm(prevForm => {
+            const updatedForm = {
+                ...prevForm,
+                obras: allSelected ? [] : allObrasIds
+            };
+    
+            const { formIsValid, errors } = validateForm(updatedForm);
+            setIsFormValid(formIsValid);
+    
+            const errorElement = document.getElementById('errorObrasRequested');
+            if (errorElement) errorElement.innerHTML = errors.obras || "&nbsp;";
+    
+            return updatedForm;
         });
     };
 
@@ -305,7 +325,14 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                             />
                                         ))}
                                 </div>
-                                <Form.Label id='errorObrasRequested' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <Button variant="link" onClick={handleSelectAllObras} style={{ fontSize: '0.8rem', padding: 0 }}>
+                                        Seleccionar todas las obras
+                                    </Button>
+                                    <Form.Label id='errorObrasRequested' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                        &nbsp;
+                                    </Form.Label>
+                                </div>
                             </Form.Group>
                         </Col>
                     </Row>

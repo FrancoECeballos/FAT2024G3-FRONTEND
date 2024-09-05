@@ -29,6 +29,16 @@ function FullNavbar({ selectedPage }) {
 
   const handleCloseModal = () => setShowModal(false);
 
+  const handleMarkAsRead = () => {
+    fetchData(`/MarkNotificacionAsRead/${selectedNotification.notificacion_id}`, token).then(() => {
+      setShowModal(false);
+      const newNotificationByUser = notificationByUser.filter((notification) => notification.id !== selectedNotification.id);
+      setNotificationByUser(newNotificationByUser);
+    }).catch((error) => {
+      console.error(error);
+    });
+  };
+
   const handleLogout = () => {
     Cookies.remove('token');
     navigate('/login');
@@ -132,6 +142,14 @@ function FullNavbar({ selectedPage }) {
                 {selectedNotification?.fecha_creacion}
               </div>
             </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Cerrar
+              </Button>
+              <Button variant="primary" color='#3E4692' onClick={handleMarkAsRead}>
+                Marcar como leido
+              </Button>
+            </Modal.Footer>
           </Modal>
 
           <Navbar.Brand>

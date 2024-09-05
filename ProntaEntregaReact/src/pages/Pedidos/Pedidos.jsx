@@ -90,6 +90,7 @@ function Pedidos() {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
+            console.log('Pedido form:', pedidoForm);    
 
             postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
                 console.log('Pedido creado:', result);
@@ -99,7 +100,6 @@ function Pedidos() {
                 return Promise.all(obrasPromises).then(() => result);
             }).then((result) => {
                 console.log('Detalles de pedido creados:', result);
-                window.location.reload();
 
                 const productoNombre = result.id_producto.name || 'Nombre no disponible';
                 const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
@@ -114,13 +114,14 @@ function Pedidos() {
                     fecha_creacion: fechaCreacion
                 };
                 console.log('Datos de la notificación:', dataNotificacion);
-                return postData('PostNotificacion/', dataNotificacion, token);
+                return postData('PostNotificacion/', dataNotificacion, token).then(() => {
+                    window.location.reload();
+                });
             }).then((notificacionResult) => {
                 console.log('Notificación creada:', notificacionResult);
             }).catch((error) => {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
             });
-            window.location.reload();
         }
     };
 
@@ -199,8 +200,6 @@ function Pedidos() {
     
         return { ...obra, pedidos: sortedPedidosInObra };
     });
-
-    console.log('Sorted Pedidos:', sortedPedidos);
 
     if (isLoading) {
         return <div> <FullNavbar selectedPage='Pedidos' /><Loading /></div>;

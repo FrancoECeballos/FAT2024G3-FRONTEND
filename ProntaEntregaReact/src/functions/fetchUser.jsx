@@ -12,8 +12,10 @@ const fetchUser = async (navigate) => {
         return result;
     } catch (error) {
         console.error('Error fetching user data:', error);
-        Cookies.remove('token');
-        navigate('/login');
+        if (error.response && error.response.status === 401) {
+            Cookies.remove('token');
+            navigate('/login');
+        }
     }
 } 
 
