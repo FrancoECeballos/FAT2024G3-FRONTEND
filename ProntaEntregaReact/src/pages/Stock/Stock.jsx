@@ -9,9 +9,10 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import Loading from '../../components/loading/loading.jsx';
 
-import './Stock.scss';
-
 import fetchData from '../../functions/fetchData';
+import fetchUser from '../../functions/fetchUser';
+
+import './Stock.scss';
 
 function Stock() {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ function Stock() {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userData = await fetchData(`/userToken/${token}`, token);
+                const userData = await fetchUser(navigate);
                 setIsAdmin(userData.is_superuser);
                 const email = userData.email;
                 if (userData.is_superuser) {
@@ -47,11 +48,6 @@ function Stock() {
                 setIsLoading(false);
             }
         };
-
-        if (!token) {
-            navigate('/login');
-            return;
-        }
 
         fetchUserData();
     }, [token, navigate]);

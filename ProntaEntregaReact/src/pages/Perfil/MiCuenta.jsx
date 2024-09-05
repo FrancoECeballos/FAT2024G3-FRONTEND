@@ -11,9 +11,12 @@ import fetchData from '../../functions/fetchData.jsx';
 import fetchUser from '../../functions/fetchUser.jsx';
 import Loading from '../../components/loading/loading.jsx';
 
+import { useNavigate } from 'react-router-dom';
+
 import './MiCuenta.scss';
 
 function MiCuenta(){
+    const navigate = useNavigate();
     const location = useLocation();
     const token = Cookies.get('token');
     const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +25,7 @@ function MiCuenta(){
     useEffect(() => {
         const updateUser = async () => {
             try {
-                const result = await fetchUser();
+                const result = await fetchUser(navigate);
                 if (location.state && location.state != null) {
                     const viewedUserResult = await fetchData(`/user/${location.state.user_email}`);
                     setUser({viewedUser: viewedUserResult, viewingUser: result, viewingOtherUser: true});

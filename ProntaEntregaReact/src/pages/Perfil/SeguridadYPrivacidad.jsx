@@ -9,8 +9,11 @@ import fetchData from '../../functions/fetchData.jsx';
 
 import { useLocation } from 'react-router-dom';
 import Loading from '../../components/loading/loading.jsx';
+import fetchUser from "../../functions/fetchUser.jsx";
+import { useNavigate } from 'react-router-dom';
 
 function SeguridadYPrivacidad(){
+    const navigate = useNavigate();
     const location = useLocation();
     const token = Cookies.get('token');
     const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +22,7 @@ function SeguridadYPrivacidad(){
     useEffect(() => {
         const updateUser = async () => {
             try {
-                const result = await fetchData(`/userToken/${token}`);
+                const result = await fetchUser(navigate);
                 if (location.state) {
                     const viewedUserResult = await fetchData(`/user/${location.state.user_email}`);
                     setUser({viewedUser: viewedUserResult, viewingUser: result, viewingOtherUser: true});
