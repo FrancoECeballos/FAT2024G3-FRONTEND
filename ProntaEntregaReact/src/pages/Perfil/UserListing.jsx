@@ -66,12 +66,13 @@ function UserListing() {
     };
 
     const filters = [
-        { type: 'nombre', label: 'Nombre Alfabético' },
-        { type: 'apellido', label: 'Apellido Alfabético' },
-        { type: 'email', label: 'Email Alfabético' },
-        { type: 'id_tipousuario', label: 'Rango' },
-        { type: 'documento', label: 'DNI' },
-        { type: 'telefono', label: 'Teléfono' },
+        { type: 'nombre', label: 'Nombre de la Obra' },
+        { type: 'usuario.nombre', label: 'Nombre Alfabético' },
+        { type: 'usuario.apellido', label: 'Apellido Alfabético' },
+        { type: 'usuario.email', label: 'Email Alfabético' },
+        { type: 'usuario.id_tipousuario', label: 'Rango' },
+        { type: 'usuario.documento', label: 'DNI' },
+        { type: 'usuario.telefono', label: 'Teléfono' },
     ];
 
     const filteredObras = obras.filter(obra => {
@@ -81,7 +82,10 @@ function UserListing() {
                             obra.documento?.toLowerCase().includes(searchQuery.toLowerCase());
     
         const usuariosMatches = obra.usuarios?.some(usuario => 
-            usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+            usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            usuario.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            usuario.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            usuario.documento?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     
         return obraMatches || usuariosMatches;
@@ -102,7 +106,7 @@ function UserListing() {
     );
 
     if (isLoading) {
-        return <div><FullNavbar/><Loading /></div> ; // Muestra el componente de loading mientras los datos se cargan
+        return <div><FullNavbar/><Loading /></div> ;
     }
 
     return (

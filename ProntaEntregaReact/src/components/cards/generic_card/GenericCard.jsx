@@ -3,7 +3,7 @@ import { Card, Row, Col } from 'react-bootstrap';
 import noImg from '../../../assets/no_image.png';
 import './GenericCard.scss';
 
-function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, descrip5, children, onClick, cardStyle, imageStyle, wide, margin, borderRadius, hoverable = true }) {
+function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, descrip5, descrip6, children, onClick, cardStyle, imageStyle, wide, margin, borderRadius, hoverable = true }) {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', margin: `${margin || '1rem'}`, }}>
             <Card 
@@ -42,6 +42,7 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
                             <Card.Text>{descrip3}</Card.Text>
                             <Card.Text>{descrip4}</Card.Text>
                             <Card.Text>{descrip5}</Card.Text>
+                            <Card.Text>{descrip6}</Card.Text>
                             {children}
                         </Card.Body>
                     </Col>
