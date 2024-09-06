@@ -44,10 +44,10 @@ function SeguridadYPrivacidad(){
         <div style={{backgroundColor: '#ECECEC'}}>
             <FullNavbar/>
             <Row>
-                <Col xs={4} sm={4} md={4} lg={4} xl={4} xxl={4}>
+                <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3}>
                     <Sidebar selectedPage={"seguridad"} isAdmin={user.viewingUser.is_staff} user={user}/>
                 </Col>
-                <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
+                <Col xs={12} sm={9} md={9} lg={9} xl={9} xxl={9}>
                     <Seguridad user={user}/>
                 </Col>
             </Row>
