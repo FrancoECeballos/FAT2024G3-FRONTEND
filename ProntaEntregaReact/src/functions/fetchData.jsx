@@ -11,7 +11,7 @@ const fetchData = async (url, authToken) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching data:', error);
-        throw error; // Re-lanzar el error para que pueda ser manejado en el componente
+        throw error;
     }
 };
 

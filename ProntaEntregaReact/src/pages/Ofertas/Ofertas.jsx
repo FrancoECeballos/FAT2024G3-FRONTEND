@@ -32,14 +32,9 @@ function Ofertas() {
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
         const fetchUserData = async () => {
             try {
-                const userData = await fetchUser();
+                const userData = await fetchUser(navigate);
                 setUser(userData);
                 if (userData.is_superuser) {
                     fetchData(`stock/`, token).then((result) => {
@@ -92,20 +87,36 @@ function Ofertas() {
 
     const sortedOfertas = [...filteredOfertas].sort((a, b) => {
         if (!orderCriteria) return 0;
-        const aValue = a[orderCriteria];
-        const bValue = b[orderCriteria];
+        const getValue = (obj, path) => {
+            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+        };
+    
+        const aValue = getValue(a, orderCriteria);
+        const bValue = getValue(b, orderCriteria);
+    
+        if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+            const aDate = new Date(aValue);
+            const bDate = new Date(bValue);
+            return aDate - bDate;
+        }
+    
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
+    
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
+    
         return 0;
     });
 
     const filters = [
+        { type: 'id_producto.nombre', label: 'Nombre del Producto' },
         { type: 'fechainicio', label: 'Fecha Inicio' },
-        { type: 'fechavencimiento', label: 'Fecha Vencimiento' }
+        { type: 'fechavencimiento', label: 'Fecha Vencimiento' },
+        { type: 'id_obra.nombre', label: 'Obra que Ofrece' },
+        { type: 'id_usuario.nombre', label: 'Usuario que ofrece' },
     ];
 
     const handleChange = (event) => {
@@ -126,10 +137,10 @@ function Ofertas() {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
+                window.location.reload();
             }).catch((error) => {
                 console.error('Error al crear la oferta:', error);
             });
-            window.location.reload();
         }
     };
 
@@ -150,10 +161,11 @@ function Ofertas() {
         };
     
         try {
-            await postData('crear_detalle_oferta/', data, token);
-            console.log('Aporte de la oferta creado');
-            window.location.reload();
-            return true;
+            await postData('crear_detalle_oferta/', data, token).then(() => {
+                console.log('Aporte de la oferta creado');
+                window.location.reload();
+                return true;
+            });
         } catch (error) {
             console.error('Error creando el aporte de la oferta:', error);
             return false;
@@ -231,7 +243,7 @@ function Ofertas() {
                             />
                             <Form.Control
                                 type='number'
-                                placeholder='Ingrese la cantidad a aportar'
+                                placeholder='Ingrese la cantidad que quiere tomar'
                                 value={cantidad}
                                 onChange={handleChange}
                                 style={{ marginTop: '1rem' }}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Icon } from '@iconify/react';
 import { Container, Nav, Navbar, Offcanvas, Dropdown, Modal, Button } from 'react-bootstrap';
@@ -14,7 +14,6 @@ import GenericModal from '../../modals/Modal';
 import './FullNavbar.scss';
 
 function FullNavbar({ selectedPage }) {
-  const [show, setShow] = useState(false);
   const expand = false;
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -29,6 +28,16 @@ function FullNavbar({ selectedPage }) {
   };
 
   const handleCloseModal = () => setShowModal(false);
+
+  const handleMarkAsRead = () => {
+    fetchData(`/MarkNotificacionAsRead/${selectedNotification.notificacion_id}`, token).then(() => {
+      setShowModal(false);
+      const newNotificationByUser = notificationByUser.filter((notification) => notification.id !== selectedNotification.id);
+      setNotificationByUser(newNotificationByUser);
+    }).catch((error) => {
+      console.error(error);
+    });
+  };
 
   const handleLogout = () => {
     Cookies.remove('token');
@@ -60,10 +69,15 @@ function FullNavbar({ selectedPage }) {
 
   const handleSuperUserAuth = async (e) => {
     e.preventDefault();
-    if (data.is_superuser) {
-      navigate('/perfil/micuenta');
-    } else if (token) {
-      navigate('/perfil/micuenta');
+    const currentPath = window.location.pathname;
+  
+    if (data.is_superuser || token) {
+      if (currentPath === '/perfil/micuenta') {
+        navigate('/perfil/micuenta');
+        window.location.reload();
+      } else {
+        navigate('/perfil/micuenta');
+      }
     } else {
       navigate('/login');
     }
@@ -128,6 +142,14 @@ function FullNavbar({ selectedPage }) {
                 {selectedNotification?.fecha_creacion}
               </div>
             </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Cerrar
+              </Button>
+              <Button variant="primary" color='#3E4692' onClick={handleMarkAsRead}>
+                Marcar como leido
+              </Button>
+            </Modal.Footer>
           </Modal>
 
           <Navbar.Brand>

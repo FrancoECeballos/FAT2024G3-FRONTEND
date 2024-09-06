@@ -29,14 +29,9 @@ function Pedidos() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
         const fetchUserData = async () => {
             try {
-                const userData = await fetchUser();
+                const userData = await fetchUser(navigate);
                 setUser(userData);
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -95,6 +90,7 @@ function Pedidos() {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
+            console.log('Pedido form:', pedidoForm);    
 
             postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
                 console.log('Pedido creado:', result);
@@ -104,7 +100,6 @@ function Pedidos() {
                 return Promise.all(obrasPromises).then(() => result);
             }).then((result) => {
                 console.log('Detalles de pedido creados:', result);
-                window.location.reload();
 
                 const productoNombre = result.id_producto.name || 'Nombre no disponible';
                 const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
@@ -119,13 +114,14 @@ function Pedidos() {
                     fecha_creacion: fechaCreacion
                 };
                 console.log('Datos de la notificación:', dataNotificacion);
-                return postData('PostNotificacion/', dataNotificacion, token);
+                return postData('PostNotificacion/', dataNotificacion, token).then(() => {
+                    window.location.reload();
+                });
             }).then((notificacionResult) => {
                 console.log('Notificación creada:', notificacionResult);
             }).catch((error) => {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
             });
-            window.location.reload();
         }
     };
 
@@ -154,11 +150,12 @@ function Pedidos() {
     };
 
     const filters = [
-        { type: 'pedido.fechainicio', label: 'Fecha Inicio' },
-        { type: 'pedido.fechavencimiento', label: 'Fecha Vencimiento' },
-        { type: 'pedido.id_producto.nombre', label: 'Nombre del Producto' },
-        { type: 'pedido.id_obra.nombre', label: 'Nombre de la Obra' },
-        { type: 'pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
+        { type: 'obra.nombre', label: 'Nombre de la Obra' },
+        { type: 'obra.pedido.fechainicio', label: 'Fecha Inicio' },
+        { type: 'obra.pedido.fechavencimiento', label: 'Fecha Vencimiento' },
+        { type: 'obra.pedido.id_producto.nombre', label: 'Nombre del Producto' },
+        { type: 'obra.pedido.id_obra.nombre', label: 'Nombre de la Obra Pidiendo' },
+        { type: 'obra.pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
     ];
 
     const filteredPedidos = pedidos.map(obra => {
@@ -174,21 +171,34 @@ function Pedidos() {
         return { ...obra, pedidos: filteredPedidosInObra };
     }).filter(obra => obra.pedidos.length > 0);
 
-    const sortedPedidos = [...filteredPedidos].sort((a, b) => {
-        if (!orderCriteria) return 0;
-        const [entity, field] = orderCriteria.split('.');
-        const aValue = entity === 'pedido' ? a.pedidos[0][field] : a[entity][field];
-        const bValue = entity === 'pedido' ? b.pedidos[0][field] : b[entity][field];
-
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-            return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
-        }
-
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-            return bValue - aValue;
-        }
-
-        return 0;
+    const sortedPedidos = filteredPedidos.map(obra => {
+        const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
+            if (!orderCriteria) return 0;
+            const getValue = (obj, path) => {
+                return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            };
+    
+            const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
+            const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
+    
+            if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+                const aDate = new Date(aValue);
+                const bDate = new Date(bValue);
+                return aDate - bDate;
+            }
+    
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+            }
+    
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+                return bValue - aValue;
+            }
+    
+            return 0;
+        });
+    
+        return { ...obra, pedidos: sortedPedidosInObra };
     });
 
     if (isLoading) {
@@ -228,10 +238,10 @@ function Pedidos() {
                                             <GenericCard hoverable={true}
                                                 foto={pedido.id_producto.imagen}
                                                 titulo={pedido.id_producto.nombre}
-                                                descrip1={`Cantidad: ${pedido.progreso} / ${pedido.cantidad} ${pedido.id_producto.unidadmedida}`}
-                                                descrip2={`Urgencia: ${pedido.urgente}`}
-                                                descrip3={`Fecha Vencimiento: ${pedido.fechavencimiento}`}
-                                                descrip4={`Obra: ${pedido.id_obra.nombre}`}
+                                                descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
+                                                descrip2={<><strong>Urgencia:</strong> {pedido.urgente}</>}
+                                                descrip3={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
+                                                descrip4={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                             />
                                         </div>
                                     ))}
@@ -258,12 +268,12 @@ function Pedidos() {
                                         key={selectedPedido.id_pedido}
                                         foto={selectedPedido.id_producto.imagen}
                                         titulo={selectedPedido.id_producto.nombre}
-                                        descrip1={`Cantidad: ${selectedPedido.progreso} / ${selectedPedido.cantidad} ${selectedPedido.id_producto.unidadmedida}`}
-                                        descrip2={`Urgencia: ${selectedPedido.urgente}`}
-                                        descrip3={`Fecha Inicio: ${selectedPedido.fechainicio}`}
-                                        descrip4={`Fecha Vencimiento: ${selectedPedido.fechavencimiento}`}
-                                        descrip5={`Obra: ${selectedPedido.id_obra.nombre}`}
-                                        descrip6={`Usuario: ${selectedPedido.id_usuario.nombre} ${selectedPedido.id_usuario.apellido}`}
+                                        descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
+                                        descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente}</>}
+                                        descrip3={<><strong>Fecha Inicio:</strong> {selectedPedido.fechainicio}</>}
+                                        descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
+                                        descrip5={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
+                                        descrip6={<><strong>Usuario:</strong> {selectedPedido.id_usuario.nombre} {selectedPedido.id_usuario.apellido}</>}
                                     />
                                 )}
                                 <Form.Group className="mb-2" controlId="formBasicCantidad">

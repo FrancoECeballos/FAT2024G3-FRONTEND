@@ -11,7 +11,10 @@ import { useParams } from "react-router-dom";
 import fetchData from "../../../functions/fetchData";
 import Cookies from 'js-cookie';
 
+import { useNavigate } from 'react-router-dom';
+
 function OneProduct() {
+  const navigate = useNavigate();
   const [detallesProduct, setDetallesProduct] = useState([]);
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +22,11 @@ function OneProduct() {
   const token = Cookies.get('token');
 
   useEffect(() => {
+    if (!token) {
+        navigate('/login');
+        return;
+    }
+    
     const fetchProductData = async () => {
         try {
             const productResult = await fetchData(`/producto/${parseInt(productoId, 10)}`, token);

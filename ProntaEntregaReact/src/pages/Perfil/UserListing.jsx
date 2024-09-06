@@ -5,51 +5,51 @@ import Cookies from 'js-cookie';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericAccordion from '../../components/accordions/generic_accordion/GenericAccordion.jsx';
-import Loading from '../../components/loading/loading.jsx'; // Importa el componente Loading
+import Loading from '../../components/loading/loading.jsx';
 
 import fetchData from '../../functions/fetchData';
+import fetchUser from '../../functions/fetchUser.jsx';
 import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 
 function UserListing() {
     const navigate = useNavigate();
     const [obras, setObras] = useState([]);
     const [usuariosSinObra, setUsuariosSinObra] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Estado para el loading
+    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const token = Cookies.get('token');
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-    
         const fetchObras = async () => {
             try {
-                const userToken = await fetchData(`userToken/${token}/`, token);
-                if (userToken.is_superuser) {
-                    const obras = await fetchData(`obra/`, token);
-                    const obrasWithUsuarios = await Promise.all(obras.map(async obra => {
-                        const usuarios = await fetchData(`/user/obra/${obra.id_obra}/`, token);
+                const userToken = await fetchUser(navigate);
+                const userId = userToken.id_usuario;
+        
+                const fetchObrasWithUsuarios = async (obras) => {
+                    return await Promise.all(obras.map(async obra => {
+                        let usuarios = await fetchData(`/user/obra/${obra.id_obra}/`, token);
+                        usuarios = usuarios.filter(usuario => usuario.id_usuario !== userId);
                         return { ...obra, usuarios };
                     }));
+                };
+        
+                if (userToken.is_superuser) {
+                    const obras = await fetchData(`obra/`, token);
+                    const obrasWithUsuarios = await fetchObrasWithUsuarios(obras);
                     setObras(obrasWithUsuarios);
                 } else {
                     const obras = await fetchData(`/obra/user/${token}/`, token);
-                    const obrasWithUsuarios = await Promise.all(obras.map(async obra => {
-                        const usuarios = await fetchData(`/user/obra/${obra.id_obra}/`, token);
-                        return { ...obra, usuarios };
-                    }));
+                    const obrasWithUsuarios = await fetchObrasWithUsuarios(obras);
                     setObras(obrasWithUsuarios);
                 }
             } catch (error) {
                 console.error('Hubo un error al obtener las obras y los usuarios', error);
             } finally {
-                setIsLoading(false); // Desactiva el loading cuando los datos estén listos
+                setIsLoading(false);
             }
         };
-
+        
         fetchObras();
         
         fetchData(`user/obra/null/`, token).then(result => {
@@ -58,20 +58,21 @@ function UserListing() {
         }).catch(error => {
             console.error('Hubo un error al obtener los usuarios sin obra', error);
         });
-
-    }, [token, navigate]);
+        
+        }, [token, navigate]);
 
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
 
     const filters = [
-        { type: 'nombre', label: 'Nombre Alfabético' },
-        { type: 'apellido', label: 'Apellido Alfabético' },
-        { type: 'email', label: 'Email Alfabético' },
-        { type: 'id_tipousuario', label: 'Rango' },
-        { type: 'documento', label: 'DNI' },
-        { type: 'telefono', label: 'Teléfono' },
+        { type: 'nombre', label: 'Nombre de la Obra' },
+        { type: 'usuario.nombre', label: 'Nombre Alfabético' },
+        { type: 'usuario.apellido', label: 'Apellido Alfabético' },
+        { type: 'usuario.email', label: 'Email Alfabético' },
+        { type: 'usuario.id_tipousuario', label: 'Rango' },
+        { type: 'usuario.documento', label: 'DNI' },
+        { type: 'usuario.telefono', label: 'Teléfono' },
     ];
 
     const filteredObras = obras.filter(obra => {
@@ -81,7 +82,10 @@ function UserListing() {
                             obra.documento?.toLowerCase().includes(searchQuery.toLowerCase());
     
         const usuariosMatches = obra.usuarios?.some(usuario => 
-            usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+            usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            usuario.apellido?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            usuario.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            usuario.documento?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     
         return obraMatches || usuariosMatches;
@@ -102,7 +106,7 @@ function UserListing() {
     );
 
     if (isLoading) {
-        return <div><FullNavbar/><Loading /></div> ; // Muestra el componente de loading mientras los datos se cargan
+        return <div><FullNavbar/><Loading /></div> ;
     }
 
     return (

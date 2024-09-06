@@ -14,7 +14,6 @@ import SendButton from '../../buttons/send_button/send_button.jsx';
 
 const Cuenta = ({ user }) => {
     const navigate = useNavigate();
-    const location = useLocation();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
     const [direc, setDirec] = useState([]);
@@ -126,7 +125,7 @@ const Cuenta = ({ user }) => {
       });
 
       if (user.viewingOtherUser) {
-          fetchObras(`/user/obrasEmail/${location.state.user_email}`);
+          fetchObras(`/user/obrasEmail/${user.viewedUser.email}`);
           const obrasUrl = user.viewingUser.is_superuser ? `/obra/` : `/obra/user/${token}/`;
           fetchData(obrasUrl, token).then((result) => {
               setObras(result);
@@ -135,7 +134,7 @@ const Cuenta = ({ user }) => {
           fetchObras(`/user/obrasToken/${token}`);
       }
 
-    }, [token, navigate, location.state]);
+    }, [token, navigate, user]);
 
     const handleLogout = () => {
         Cookies.remove('token');
