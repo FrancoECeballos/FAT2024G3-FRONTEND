@@ -416,24 +416,25 @@ const Cuenta = ({ user }) => {
               </Col>
               
               <Col style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <SendButton
-                  onClick={handleEdit}
-                  text={isEditing ? "Cancelar" : "Editar"}
-                  wide="5"
-                  backcolor={isEditing ? "#D10000" : "#D9D9D9"}
-                  letercolor={isEditing ? "white" : "black"}
-                  style={{ marginRight: '3rem' }}
-                />
-                <SendButton
-                  hidden={!isEditing}
-                  onClick={handleSendData}
-                  text="Guardar"
-                  wide="6"
-                  backcolor={isEditing ? "green" : "#D9D9D9"}
-                  letercolor={isEditing ? "white" : "black"}
-                  disabled={!GuardarButtonIsValid}
-                  style={{ marginLeft: '3rem' }}
-                />
+                <div style={{ display: 'flex', gap: '2rem' }}>
+                  <SendButton
+                    onClick={handleEdit}
+                    text={isEditing ? "Cancelar" : "Editar"}
+                    wide="7"
+                    backcolor={isEditing ? "#D10000" : "#D9D9D9"}
+                    letercolor={isEditing ? "white" : "black"}
+                  />
+                  {isEditing && (
+                    <SendButton
+                      onClick={handleSendData}
+                      text="Guardar"
+                      wide="7"
+                      backcolor="green"
+                      letercolor="white"
+                      disabled={!GuardarButtonIsValid}
+                    />
+                  )}
+                </div>
               </Col>
             </Row>
             
@@ -525,13 +526,13 @@ const Cuenta = ({ user }) => {
                   onClick={handleDeleteUser}
                 />
               </Col>
-              <Col>
-              {user.viewingOtherUser == false && (
+              <Col className="text-right">
+                {user.viewingOtherUser == false && (
                   <SendButton
-                  text="Cerrar Sesion"
-                  backcolor="#D10000"
-                  letercolor="white"
-                  onClick={handleLogout}
+                    text="Cerrar Sesión"
+                    backcolor="#D10000"
+                    letercolor="white"
+                    onClick={handleLogout}
                   />
                 )}
               </Col>
