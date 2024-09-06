@@ -525,13 +525,13 @@ const Cuenta = ({ user }) => {
                   onClick={handleDeleteUser}
                 />
               </Col>
-              <Col>
-              {user.viewingOtherUser == false && (
+              <Col className="text-right">
+                {user.viewingOtherUser == false && (
                   <SendButton
-                  text="Cerrar Sesion"
-                  backcolor="#D10000"
-                  letercolor="white"
-                  onClick={handleLogout}
+                    text="Cerrar Sesión"
+                    backcolor="#D10000"
+                    letercolor="white"
+                    onClick={handleLogout}
                   />
                 )}
               </Col>
