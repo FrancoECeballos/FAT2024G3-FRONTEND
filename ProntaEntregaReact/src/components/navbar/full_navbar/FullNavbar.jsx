@@ -202,7 +202,7 @@ function FullNavbar({ selectedPage }) {
                   <Nav.Link onClick={() => navigate('/entregas')}>Entregas</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'left', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/autos')}>
+                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'left', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/vehiculos')}>
                   <Icon icon="line-md:speed" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={() => navigate('/autos')}>Vehículos</Nav.Link>
                 </div>
