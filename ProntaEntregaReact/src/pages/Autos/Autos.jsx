@@ -220,7 +220,7 @@ function AutosComponent() {
             <FullNavbar selectedPage='Autos' />
             <div className='margen-arriba'>
                 <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
-                    <Breadcrumb.Item href="/autos">Autos</Breadcrumb.Item>
+                    <Breadcrumb.Item href="/vehiculos">Vehículos</Breadcrumb.Item>
                     <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
                 </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />

@@ -101,18 +101,18 @@ function ObrasAutos() {
             <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
                 <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
-                    <Breadcrumb.Item active>Autos</Breadcrumb.Item>
+                    <Breadcrumb.Item active>Vehículos</Breadcrumb.Item>
                 </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div className='cardstock'>
                 {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
                     sortedObras.map(obra => (
                         <GenericCard
-                            onClick={() => navigate(`/autos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}})} 
+                            onClick={() => navigate(`/vehiculos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}})} 
                             key={obra.id_obra}
                             foto={obra.imagen}
                             titulo={obra.nombre}
-                            descrip1={`Autos Registrados: ${obra.autos_registrados}`}
+                            descrip1={`Vehículos Registrados: ${obra.autos_registrados}`}
                             descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
                         />
                     ))

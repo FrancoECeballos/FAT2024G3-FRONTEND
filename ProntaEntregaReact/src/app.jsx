@@ -45,8 +45,8 @@ function App() {
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/obras" element={<Obras />} />
         <Route path="/novedades" element={<Novedades />} />
-        <Route path="/autos" element={<ObrasAutos />} />
-        <Route path="/autos/:obraId" element={<Autos />} />
+        <Route path="/vehiculos" element={<ObrasAutos />} />
+        <Route path="/vehiculos/:obraId" element={<Autos />} />
         <Route path="/landing" element={<Landing />} />
       </Routes>
     </BrowserRouter>

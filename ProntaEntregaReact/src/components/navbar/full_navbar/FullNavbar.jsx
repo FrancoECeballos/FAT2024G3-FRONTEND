@@ -98,7 +98,7 @@ function FullNavbar({ selectedPage }) {
           <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>{selectedPage === 'Pedidos' ? <strong>Pedidos</strong> : 'Pedidos'}</Nav.Link>
           <Nav.Link className='naving' onClick={() => navigate('/oferta')}>{selectedPage === 'Ofertas' ? <strong>Ofertas</strong> : 'Ofertas'}</Nav.Link>
           <Nav.Link className='naving'>{selectedPage === 'Entregas' ? <strong>Entregas</strong> : 'Entregas'}</Nav.Link>
-          <Nav.Link className='naving' onClick={() => navigate('/autos')}>{selectedPage === 'Autos' ? <strong>Autos</strong> : 'Autos'}</Nav.Link>
+          <Nav.Link className='naving' onClick={() => navigate('/vehiculos')}>{selectedPage === 'Autos' ? <strong>Vehículos</strong> : 'Vehículos'}</Nav.Link>
         </Nav>
         <div className='botons-derecha'>
           <Navbar.Brand>
@@ -204,7 +204,7 @@ function FullNavbar({ selectedPage }) {
 
                 <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'left', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/autos')}>
                   <Icon icon="line-md:speed" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
-                  <Nav.Link onClick={() => navigate('/autos')}>Autos</Nav.Link>
+                  <Nav.Link onClick={() => navigate('/autos')}>Vehículos</Nav.Link>
                 </div>
 
                 <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/obras')}>
