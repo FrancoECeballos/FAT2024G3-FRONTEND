@@ -9,6 +9,7 @@ import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import { Form, InputGroup } from 'react-bootstrap';
 import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
+import defaultImage from '../../assets/WhiteLogo.png';
 
 import fetchData from '../../functions/fetchData.jsx';
 import postData from '../../functions/postData.jsx';
@@ -21,6 +22,8 @@ function Stock() {
     const token = Cookies.get('token');
     const [obras, setObras] = useState([]);
     const [obraModal, setObraModal] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const [obraForm, setObraForm] = useState({
         nombre: '',
@@ -33,12 +36,21 @@ function Stock() {
         },
     });
 
+    const [errors, setErrors] = useState({
+        nombre: '',
+        descripcion: '',
+        localidad: '',
+        calle: '',
+        numero: '',
+    });
+
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
     useEffect(() => {
         fetchUser(navigate).then((result) => {
             if (result.is_superuser) {
+                setIsAdmin(true);
                 fetchData('/obra/', token).then((result) => {
                     setObras(result);
                 }).catch(error => {
@@ -87,9 +99,66 @@ function Stock() {
         setSearchQuery(value);
     };
 
+    const validateForm = (name, value) => {
+        let formErrors = errors;
+        let isValid = true;
+
+        if (obraForm.nombre.trim() === '') {
+            isValid = false;
+        }
+        if (obraForm.descripcion.trim() === '') {
+            isValid = false;
+        }
+        if (obraForm.id_direccion.localidad.trim() === '') {
+            isValid = false;
+        }
+        if (obraForm.id_direccion.calle.trim() === '') {
+            isValid = false;
+        }
+        if (isNaN(parseInt(obraForm.id_direccion.numero, 10))) {
+            isValid = false;
+        }
+
+        if (name === 'nombre') {
+            if (value.trim() === '') {
+                formErrors.nombre = 'El nombre es obligatorio';
+            } else {
+                formErrors.nombre = '';
+            }
+        } else if (name === 'descripcion') {
+            if (value.trim() === '') {
+                formErrors.descripcion = 'La descripción es obligatoria';
+            } else {
+                formErrors.descripcion = '';
+            }
+        } else if (name === 'localidad') {
+            if (value.trim() === '') {
+                formErrors.localidad = 'La localidad es obligatoria';
+            } else {
+                formErrors.localidad = '';
+            }
+        } else if (name === 'calle') {
+            if (value.trim() === '') {
+                formErrors.calle = 'La calle es obligatoria';
+            } else {
+                formErrors.calle = '';
+            }
+        } else if (name === 'numero') {
+            const parsedValue = parseInt(value, 10);
+            if (isNaN(parsedValue)) {
+                formErrors.numero = 'El número debe ser un valor numérico';
+            } else {
+                formErrors.numero = '';
+            }
+        }
+
+        setErrors(formErrors);
+        setIsFormValid(isValid);
+    };
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-    
+
         if (name === 'localidad' || name === 'calle' || name === 'numero') {
             if (name === 'numero') {
                 const parsedValue = parseInt(value, 10);
@@ -98,11 +167,11 @@ function Stock() {
             } else {
                 setObraForm({ ...obraForm, id_direccion: { ...obraForm.id_direccion, [name]: value } });
             }
-            console.log(obraForm);
+            validateForm(name, value);
             return;
         }
         setObraForm({ ...obraForm, [name]: value });
-        console.log(obraForm);
+        validateForm(name, value);
     };
 
     const handleFileChange = (file) => {
@@ -113,8 +182,7 @@ function Stock() {
         console.log(obraForm);
     };
 
-
-    const obraUpdate = async (id) => {
+    const handleSaveObra = async (id = null) => {
         let id_direc = null;
 
         const direc = await fetchData('/direcciones/', token);
@@ -149,10 +217,14 @@ function Stock() {
         });
 
         try {
-            const result = await putData(`/editar_obra/${id}/`, formDataToSend, token);
+            if (id) {
+                await putData(`/editar_obra/${id}/`, formDataToSend, token);
+            } else {
+                await postData(`/crear_obra/`, formDataToSend, token);
+            }
             window.location.reload();
         } catch (error) {
-        console.error('Error updating obra:', error);
+            console.error('Error saving obra:', error);
         }
     };
 
@@ -161,6 +233,55 @@ function Stock() {
             <FullNavbar />
             <div className='margen-arriba'>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                {isAdmin && (
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                        <Modal openButtonText='Crear una nueva obra' openButtonWidth='12' title='Nueva Obra' saveButtonText='Crear' 
+                        saveButtonEnabled={isFormValid} handleSave={() => handleSaveObra()} handleShowModal={() => setObraForm({
+                            nombre: '',
+                            descripcion: '',
+                            imagen: '',
+                            id_direccion: {
+                                localidad: '',
+                                calle: '',
+                                numero: '',
+                            },
+                        })} content={
+                            <div>
+                                <UploadImage onFileChange={handleFileChange} defaultImage={defaultImage}/>
+                                <Form.Label style={{ marginTop: '1rem' }}>Informació Básica:</Form.Label>
+                                <Form.Control name="nombre" type="text" placeholder='Nombre de la obra' onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
+                                <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                                <Form.Control name="descripcion" type="text" placeholder='Descripcion de la obra' onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
+                                <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
+                                <Form.Group controlId="direccion">
+                                    <Form.Label style={{ marginTop: '1rem' }}>Dirección:</Form.Label>
+                                    <InputGroup>
+                                        <Form.Control
+                                            type="text" name="localidad" placeholder='Localidad' onChange={handleInputChange} onBlur={handleInputChange}
+                                        />
+                                        <Form.Control
+                                            type="text" name="calle" placeholder='Calle' onChange={handleInputChange} onBlur={handleInputChange}
+                                        />
+                                        <Form.Control
+                                            type="number" name="numero" placeholder='Número' onChange={handleInputChange} onBlur={handleInputChange}
+                                        />
+                                    </InputGroup>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                            {errors.localidad}
+                                        </Form.Label>
+                                        <Form.Label id='errorCalle' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                            {errors.calle}
+                                        </Form.Label>
+                                        <Form.Label id='errorNumero' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                            {errors.numero}
+                                        </Form.Label>
+                                    </div>
+                                </Form.Group>
+                            </div>
+                        }></Modal>
+                    </div>
+                )}
                 {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
                     sortedObras.map(obra => (
                         <GenericCard
@@ -178,6 +299,14 @@ function Stock() {
                                             style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
                                             onClick={() => {
                                                 setObraForm(obra);
+                                                setIsFormValid(true);
+                                                setErrors({
+                                                    nombre: '',
+                                                    descripcion: '',
+                                                    localidad: '',
+                                                    calle: '',
+                                                    numero: '',
+                                                });
                                                 setObraModal(obra.id_obra);
                                             }}
                                         />
@@ -187,28 +316,42 @@ function Stock() {
                                         showModal={obraModal == obra.id_obra}
                                         handleShowModal={() => setObraForm(obra)}
                                         handleCloseModal={() => setObraModal(null)}
-                                        handleSave={(event) => obraUpdate(obra.id_obra)}
+                                        handleSave={() => handleSaveObra(obra.id_obra)}
                                         saveButtonText={'Guardar'}
                                         title={'Editar Obra'}
+                                        saveButtonEnabled={isFormValid}
                                         content={
                                             <>
                                                 <UploadImage defaultImage={obra.imagen} onFileChange={handleFileChange} />
                                                 <Form.Label style={{ marginTop: '1rem' }}>Informació Básica:</Form.Label>
-                                                <Form.Control name="nombre" type="text" value={obraForm.nombre} onChange={handleInputChange} className="input-obra" />
-                                                <Form.Control name="descripcion" type="text" value={obraForm.descripcion} onChange={handleInputChange} className="input-obra" />
+                                                <Form.Control name="nombre" type="text" placeholder='Nombre de la obra' value={obraForm.nombre} onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
+                                                <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                                                <Form.Control name="descripcion" type="text" placeholder='Descripcion de la obra' value={obraForm.descripcion} onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
+                                                <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
                                                 <Form.Group controlId="direccion">
                                                     <Form.Label style={{ marginTop: '1rem' }}>Dirección:</Form.Label>
                                                     <InputGroup>
                                                         <Form.Control
-                                                            type="text" name="localidad" value={obraForm.id_direccion.localidad} onChange={handleInputChange}
+                                                            type="text" name="localidad" placeholder='Localidad' value={obraForm.id_direccion.localidad} onChange={handleInputChange} onBlur={handleInputChange}
                                                         />
                                                         <Form.Control
-                                                            type="text" name="calle" value={obraForm.id_direccion.calle} onChange={handleInputChange}
+                                                            type="text" name="calle" placeholder='Calle' value={obraForm.id_direccion.calle} onChange={handleInputChange} onBlur={handleInputChange}
                                                         />
                                                         <Form.Control
-                                                            type="number" name="numero" value={obraForm.id_direccion.numero} onChange={handleInputChange}
+                                                            type="number" name="numero" placeholder='Número' value={obraForm.id_direccion.numero} onChange={handleInputChange} onBlur={handleInputChange}
                                                         />
                                                     </InputGroup>
+                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                        <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                            {errors.localidad}
+                                                        </Form.Label>
+                                                        <Form.Label id='errorCalle' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                            {errors.calle}
+                                                        </Form.Label>
+                                                        <Form.Label id='errorNumero' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                            {errors.numero}
+                                                        </Form.Label>
+                                                    </div>
                                                 </Form.Group>
                                             </>
                                         } />
