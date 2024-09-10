@@ -226,11 +226,6 @@ const Cuenta = ({ user }) => {
             }
         
             const updatedData = { ...prevData, [field]: updatedValue };
-        
-            if (field === "nombre" || field === "apellido" || field === "documento") {
-                const { nombre, apellido, documento } = updatedData;
-                updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
-            }
 
             if (field === "cai" || field === "telnum") {
                 const { cai, telnum } = updatedData;
@@ -286,7 +281,7 @@ const Cuenta = ({ user }) => {
             id_direc = existingDireccion.id_direccion;
         };
     
-        const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento};
+        const updatedUserData = { ...userData, imagen: self.imagen, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento};
         setUserDataDefault(userData);
         setIsEditing(false);
     
@@ -342,7 +337,7 @@ const Cuenta = ({ user }) => {
                       name="email"
                       value={userData.email || ''}
                       onChange={handleInputChange}
-                      disabled={!isEditing}
+                      disabled={true}
                     />
                   </Form.Group>
                 </div>
@@ -508,7 +503,7 @@ const Cuenta = ({ user }) => {
                           text="Añadir"
                           wide="5"
                           letercolor="white"
-                          backcolor="blue"
+                          backcolor="#02005E"
                           disabled={!AñadirButtonIsValid}
                       />
                     </div>

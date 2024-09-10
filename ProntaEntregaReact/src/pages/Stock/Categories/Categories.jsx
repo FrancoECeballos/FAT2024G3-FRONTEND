@@ -6,6 +6,8 @@ import './Categories.scss';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
+import SendButton from '../../../components/buttons/send_button/send_button.jsx';
+import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 import Footer from '../../../components/footer/Footer.jsx';
 
 import fetchData from '../../../functions/fetchData';
@@ -13,10 +15,9 @@ import fetchData from '../../../functions/fetchData';
 import Modal from '../../../components/modals/Modal.jsx';
 import {Breadcrumb, Form} from 'react-bootstrap';
 import postData from '../../../functions/postData.jsx';
+import defaultImage from '../../../assets/no_image.png';
 
-import comidaLogo from '../../../assets/comidaLogo.png';
-import ropaLogo from '../../../assets/ropaLogo.png';
-import mueblesLogo from '../../../assets/mueblesLogo.png';
+
 
 function Categories() {
     const navigate = useNavigate();
@@ -29,9 +30,8 @@ function Categories() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
-    const images = [comidaLogo, ropaLogo, mueblesLogo];
-
-    const [formCategoryData, setFormCategoryData] = useState({
+    const [formData, setFormData] = useState({
+        "imagen": null,
         "nombre": "",
         "descripcion": "",
       });
@@ -51,6 +51,18 @@ function Categories() {
         fetchData(`/stock/${stockId}`, token).then((result) => {
             setCurrentObra(result[0].id_obra.nombre);
         });
+        const img = new Image();
+        img.src = defaultImage;
+        img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob) => {
+            const file = new File([blob], 'no_image.png', { type: 'image/png' });
+            setFormData((prevData) => ({ ...prevData, imagen: file }));
+        })};
     }, [token, navigate, stockId]);
 
     const filteredCategories = categories.filter(category => {
@@ -87,17 +99,37 @@ function Categories() {
 
     const handleInputChange = async (event) => {
         const { name, value } = event.target;
-        setFormCategoryData((prevData) => {
+        setFormData((prevData) => {
             const updatedData = { ...prevData, [name]: value };
             console.log(updatedData);
             return updatedData;
         });
     };
 
-    const newcategory = () => {
-        postData('crear_categoria/', formCategoryData, token).then(() => {
+    const newcategory = async () => {
+        if (!formData.imagen) {
+            console.error('No image file selected');
+            return;
+        }
+    
+        const data = new FormData();
+        data.append('imagen', formData.imagen);
+        data.append('nombre', formData.nombre);
+        data.append('descripcion', formData.descripcion);
+    
+        try {
+            await postData('crear_categoria/', data, token);
             window.location.reload();
-        });
+        } catch (error) {
+            console.error('Error creating category:', error);
+        }
+    };
+
+    const handleFileChange = (file) => {
+        setFormData((prevsetFormData) => ({
+            ...prevsetFormData,
+            imagen: file,
+        }));
     };
 
     return (
@@ -110,9 +142,10 @@ function Categories() {
                 </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Nueva Categoria' saveButtonText='Crear' handleSave={newcategory} showButton={false} content={
+                    <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Nueva Categoria' saveButtonText='Crear' handleSave={newcategory} showButton={true} content={
                         <div>
                             <h2 className='centered'> Nueva Categoria </h2>
+                            <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
                             <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                             <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
                         </div>
@@ -122,7 +155,7 @@ function Categories() {
                 {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
                         onClick={() => navigate(`/obra/${stockId}/categoria/${category.id_categoria}/`, { state: { id_stock: stockId } })}
-                        foto={images[category.id_categoria-1]}
+                        foto={category.imagen}
                         key={category.id_categoria}
                         titulo={category.nombre}
                         descrip1={category.descripcion}
