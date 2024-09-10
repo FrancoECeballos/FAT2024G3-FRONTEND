@@ -26,6 +26,7 @@ function Categories() {
 
     const [categories, setCategories] = useState([]);
     const [currentObra, setCurrentObra] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -35,6 +36,11 @@ function Categories() {
         "nombre": "",
         "descripcion": "",
       });
+
+    const [errors, setErrors] = useState({
+        nombre: '',
+        descripcion: '',
+    });
     
     useEffect(() => {
         if (!token) {
@@ -99,11 +105,34 @@ function Categories() {
 
     const handleInputChange = async (event) => {
         const { name, value } = event.target;
+        let valid = true;
+
         setFormData((prevData) => {
             const updatedData = { ...prevData, [name]: value };
             console.log(updatedData);
             return updatedData;
         });
+
+        if (formData.imagen === null || formData.nombre === '' || formData.descripcion === '') {
+            valid = false;
+        }
+
+        setIsFormValid(valid);
+
+        if (name === 'nombre') {
+            if (value.trim() === '') {
+                setErrors((prevErrors) => ({ ...prevErrors, nombre: 'El nombre no puede estar vacio.' }));
+            } else {
+                setErrors((prevErrors) => ({ ...prevErrors, nombre: '' }));
+            }
+        } else if (name === 'descripcion') {
+            if (value.trim() === '') {
+                setErrors((prevErrors) => ({ ...prevErrors, descripcion: 'La descripción no puede estar vacia.' }));
+            } else {
+                setErrors((prevErrors) => ({ ...prevErrors, descripcion: '' }));
+            }
+        }
+
     };
 
     const newcategory = async () => {
@@ -142,12 +171,14 @@ function Categories() {
                 </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Nueva Categoria' saveButtonText='Crear' handleSave={newcategory} showButton={true} content={
+                    <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
                         <div>
                             <h2 className='centered'> Nueva Categoria </h2>
                             <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
-                            <Form.Control name="nombre" type="text" placeholder="Nombre" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Control name="descripcion" type="text" placeholder="Descripción" onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                            <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                            <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
                         </div>
                     }></Modal>
                 </div>

@@ -41,15 +41,16 @@ function Pedidos() {
         fetchUserData().then(() => {
             fetchData(`/userToken/${token}`, token).then((result) => {
                 if (result.is_superuser) {
-                    fetchData(`get_pedido_for_admin/`, token).then((result) => {
+                    fetchData(`get_pedidos_recibidos_for_admin/`, token).then((result) => {
                         setPedidos(result);
+                        console.log('Pedidos:', result);
                         setIsLoading(false);
                     }).catch(error => {
                         console.error('Error fetching pedidos:', error);
                         setIsLoading(false);
                     });
                 } else {
-                    fetchData(`get_pedido_by_user/${token}/`, token).then((result) => {
+                    fetchData(`get_pedidos_recibidos_for_user/${token}/`, token).then((result) => {
                         setPedidos(result);
                         setIsLoading(false);
                     }).catch(error => {

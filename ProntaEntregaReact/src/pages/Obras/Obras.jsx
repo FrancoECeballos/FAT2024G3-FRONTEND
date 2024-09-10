@@ -236,7 +236,7 @@ function Stock() {
                 {isAdmin && (
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                         <Modal openButtonText='Crear una nueva obra' openButtonWidth='12' title='Nueva Obra' saveButtonText='Crear' 
-                        saveButtonEnabled={isFormValid} handleSave={() => handleSaveObra()} handleShowModal={() => setObraForm({
+                        saveButtonEnabled={isFormValid} handleSave={() => handleSaveObra()} handleShowModal={() => {setObraForm({
                             nombre: '',
                             descripcion: '',
                             imagen: '',
@@ -245,7 +245,7 @@ function Stock() {
                                 calle: '',
                                 numero: '',
                             },
-                        })} content={
+                        }); setIsFormValid(false);}} content={
                             <div>
                                 <UploadImage onFileChange={handleFileChange} defaultImage={defaultImage}/>
                                 <Form.Label style={{ marginTop: '1rem' }}>Informació Básica:</Form.Label>
