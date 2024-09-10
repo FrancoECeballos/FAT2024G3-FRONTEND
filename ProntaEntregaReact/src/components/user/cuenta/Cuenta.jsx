@@ -226,11 +226,6 @@ const Cuenta = ({ user }) => {
             }
         
             const updatedData = { ...prevData, [field]: updatedValue };
-        
-            if (field === "nombre" || field === "apellido" || field === "documento") {
-                const { nombre, apellido, documento } = updatedData;
-                updatedData.nombreusuario = generateUsername(nombre, apellido, documento);
-            }
 
             if (field === "cai" || field === "telnum") {
                 const { cai, telnum } = updatedData;
