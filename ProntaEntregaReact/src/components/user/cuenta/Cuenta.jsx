@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, Form, InputGroup , Row, Col} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { Form, InputGroup , Row, Col} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 
 import fetchData from '../../../functions/fetchData';
@@ -10,6 +10,7 @@ import deleteData from '../../../functions/deleteData.jsx';
 import './Cuenta.scss';
 
 import SendButton from '../../buttons/send_button/send_button.jsx';
+import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
 
 
 const Cuenta = ({ user }) => {
@@ -26,6 +27,8 @@ const Cuenta = ({ user }) => {
 
     const [GuardarButtonIsValid, setGuardarButtonIsValid] = useState(false);
     const [AñadirButtonIsValid, setAñadirButtonIsValid] = useState(false);
+
+    const [deleteUserConfirmation, setDeleteUserConfirmation] = useState(false);
 
     const NullToEmpty = (data) => {
         if (data === null || data === undefined) return "";
@@ -500,8 +503,9 @@ const Cuenta = ({ user }) => {
                   text="Borrar Usuario"
                   backcolor="#D10000"
                   letercolor="white"
-                  onClick={handleDeleteUser}
+                  onClick={() => setDeleteUserConfirmation(true)}
                 />
+                <ConfirmationModal Open={deleteUserConfirmation} BodyText="¿Está seguro que desea eliminar este usuario?" onClickConfirm={handleDeleteUser} onClose={() => setDeleteUserConfirmation(false)} />
               </Col>
               <Col className="text-right">
                 {user.viewingOtherUser == false && (
