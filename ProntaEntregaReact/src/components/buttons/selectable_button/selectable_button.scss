@@ -1,21 +1,35 @@
 .SelectableButton a {
   text-align: center;
-    font-size: larger;
-    font-family: 'Rubik', sans-serif;
-    display: block;
-    padding: 1rem;
-    text-decoration: none;
-    color: #02005E;
-    transition: transform s !important;
-  }
+  font-size: larger;
+  font-family: 'Rubik', sans-serif;
+  display: block;
+  padding: 1rem;
+  text-decoration: none;
+  color: #02005E;
+  transition: transform s !important;
+  white-space: nowrap; /* Ensure text stays on a single line */
+
+  
+}
 
 
 .SelectableButton a:hover {
-    border-radius: 10rem;
-    background-color: #D9D9D9;
-    width: 15rem;
-    transform: scale(1.02) !important;
+  border-radius: 10rem;
+  background-color: #D9D9D9;
+  width: 20rem; /* Default width */
+  max-width: 20rem; /* Maximum width constraint */
+  transform: scale(1.02) !important;
+
+}
+
+@media (max-width: 1100px) { /* Adjust the max-width as needed */
+  .SelectableButton a:hover {
+    width: 15rem; /* Width for smaller screens */
+    max-width: 15rem; /* Maximum width constraint for smaller screens */
   }
+}
+
+
 
 .SelectableButton li a:active {
   border-radius: 10rem;

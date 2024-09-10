@@ -56,7 +56,7 @@ function MiCuenta(){
                 <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
                     <Sidebar selectedPage={"micuenta"} user={user}/>
                 </Col>
-                <Col className='colcuenta' xs={12} sm={9} md={9} lg={6} xl={6} xxl={6} style={{overflowY: "scroll", overflowX:"hidden",height:"100vh",scrollbarWidth:"none",paddingBottom:"10rem",}} >
+                <Col className='colcuenta' xs={12} sm={9} md={9} lg={6} xl={6} xxl={6} >
                     <Cuenta user={user}/>
                 </Col>
             </Row>

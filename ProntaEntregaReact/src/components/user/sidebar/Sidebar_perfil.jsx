@@ -52,7 +52,7 @@ const Sidebar = ({ selectedPage, user }) => {
   return (
     <Row>
       <Col className="sidebar">
-        <div className="top">
+        <div className="top" style={{marginTop:"2rem"}}>
         {!user.viewingOtherUser && (
           <h1 className="user-info">
             <img src={viewingUser.imagen} className="fotoperfil" alt="Perfil" />

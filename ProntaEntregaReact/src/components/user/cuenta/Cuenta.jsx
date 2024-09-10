@@ -450,7 +450,7 @@ const Cuenta = ({ user }) => {
                           {user.viewingOtherUser == true && (
                             <>
                               <div>
-                                <label>
+                                <label style={{paddingRight:"1rem"}}>
                                   <input type="radio" name={`role_${userobra.id_obra}`} value="1" defaultChecked={userobra.id_tipousuario === 1} onChange={(event) => handleUpdateUserObra(event, userobra)}/>
                                     Voluntario
                                 </label>

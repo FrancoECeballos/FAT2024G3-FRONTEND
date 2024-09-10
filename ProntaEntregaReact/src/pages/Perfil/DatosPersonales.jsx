@@ -48,7 +48,7 @@ function Datospersonales(){
     return (
         <div style={{backgroundColor: '#ECECEC'}}>
             <FullNavbar/>
-            <Row>
+            <Row style={{ height: "100vh" }}>
                 <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
                     <Sidebar selectedPage={"datos_personales"} user={user}/>
                 </Col>
