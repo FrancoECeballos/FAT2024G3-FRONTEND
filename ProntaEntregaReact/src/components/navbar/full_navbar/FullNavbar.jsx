@@ -32,8 +32,6 @@ function FullNavbar({ selectedPage }) {
   const handleMarkAsRead = () => {
     fetchData(`/MarkNotificacionAsRead/${selectedNotification.notificacion_id}`, token).then(() => {
       setShowModal(false);
-      const newNotificationByUser = notificationByUser.filter((notification) => notification.id !== selectedNotification.id);
-      setNotificationByUser(newNotificationByUser);
     }).catch((error) => {
       console.error(error);
     });
@@ -44,19 +42,20 @@ function FullNavbar({ selectedPage }) {
     navigate('/login');
   }
 
+  const fetchUserData = async () => {
+    if (token) {
+      fetchData(`/userToken/${token}`).then((result) => {
+        setData(result);
+        return fetchData(`/getNotificacion/${result.id_usuario}`, token);
+      }).then((notificationResult) => {
+        setNotificationByUser(notificationResult);
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (token) {
-        fetchData(`/userToken/${token}`).then((result) => {
-          setData(result);
-          return fetchData(`/getNotificacion/${result.id_usuario}`, token);
-        }).then((notificationResult) => {
-          setNotificationByUser(notificationResult);
-        }).catch((error) => {
-          console.error(error);
-        });
-      }
-    };
     fetchUserData();
   }, [token]);
 
@@ -115,7 +114,7 @@ function FullNavbar({ selectedPage }) {
                   notificationByUser.map((notification, index) => (
                     <Dropdown.Item
                       key={notification.id || index}
-                      onClick={() => handleNotificationClick(notification)}
+                      onClick={() => { handleNotificationClick(notification); }}
                       className="custom-dropdown-item"
                     >
                       <NotificationCard titulo={notification.titulo} info={notification.descripcion} />
@@ -146,7 +145,7 @@ function FullNavbar({ selectedPage }) {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cerrar
               </Button>
-              <Button variant="primary" color='#3E4692' onClick={handleMarkAsRead}>
+              <Button variant="primary" color='#3E4692' onClick={() => { handleMarkAsRead(); fetchUserData(); }}>
                 Marcar como leido
               </Button>
             </Modal.Footer>
