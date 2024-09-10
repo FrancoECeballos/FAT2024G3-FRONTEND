@@ -286,7 +286,7 @@ const Cuenta = ({ user }) => {
             id_direc = existingDireccion.id_direccion;
         };
     
-        const updatedUserData = { ...userData, imagen: null, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento};
+        const updatedUserData = { ...userData, imagen: self.imagen, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento};
         setUserDataDefault(userData);
         setIsEditing(false);
     
@@ -342,7 +342,7 @@ const Cuenta = ({ user }) => {
                       name="email"
                       value={userData.email || ''}
                       onChange={handleInputChange}
-                      disabled={!isEditing}
+                      disabled={true}
                     />
                   </Form.Group>
                 </div>
