@@ -139,11 +139,11 @@ function Pedidos() {
             id_pedido: pedidoId,
             id_usuario: usuarioId,
             fecha: fecha,
-            cantidad: cantidad
+            cantidad: parseInt(cantidad, 10)
         };
 
         postData('crear_aporte_pedido/', data, token).then(() => {
-            console.log('Aporte del pedido creado');
+            window.location.reload();
         }).catch(error => {
             console.error('Error creating aporte pedido:', error);
         });
@@ -260,7 +260,7 @@ function Pedidos() {
                         deleteFunction={() => deletePedido(selectedPedido)}
                         deleteButtonText={'Rechazar'}
                         title={'Tomar Pedido'}
-                        handleSave={() => createAportePedido(selectedPedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                        handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
                         content={
                             <div>
                                 {selectedPedido && selectedPedido.id_producto && (
