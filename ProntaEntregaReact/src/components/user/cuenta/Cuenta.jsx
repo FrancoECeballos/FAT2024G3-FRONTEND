@@ -209,6 +209,7 @@ const Cuenta = ({ user }) => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         const [field, subfield] = name.split('.');
+        let valid = true;
       
         setUserData((prevData) => {
           let updatedValue = value;
@@ -236,29 +237,10 @@ const Cuenta = ({ user }) => {
           }
         });
         
-        if (name === "nombre" || name === "apellido") {
-            const regex = /^[a-zA-Z\s]+$/;
-            const errorNombre = document.getElementById("errorNombre");
-            const errorApellido = document.getElementById("errorApellido");
-            if (!regex.test(value) && value !== "") {
-            if (name === "nombre") {
-                errorNombre.innerHTML = "El nombre no puede contener números ni caracteres especiales";
-            } else {
-                errorApellido.innerHTML = "El apellido no puede contener números ni caracteres especiales";
-            }
-            } else {
-            if (name === "nombre") {
-                errorNombre.innerHTML = "";
-            } else {
-                errorApellido.innerHTML = "";
-            }
-            }
-        } else if (name === "telnum") {
-            const regex = /^[0-9]{10}$/;
-            const errorTelefono = document.getElementById("errorTelefono");
-            errorTelefono.innerHTML = !regex.test(value) && value !== "" ? "El teléfono necesita 10 numeros" : "";
+        if (field === "nombre" || field === "apellido" || field === "telefono" || field === "id_direccion" || field === "genero") {
+            valid = value !== "";
         }
-      setGuardarButtonIsValid(true);
+        setGuardarButtonIsValid(valid);
     };
 
     const handleSendData = async(event) => {
