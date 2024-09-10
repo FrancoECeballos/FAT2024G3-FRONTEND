@@ -508,7 +508,7 @@ const Cuenta = ({ user }) => {
                           text="Añadir"
                           wide="5"
                           letercolor="white"
-                          backcolor="blue"
+                          backcolor="#02005E"
                           disabled={!AñadirButtonIsValid}
                       />
                     </div>
