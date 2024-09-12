@@ -206,11 +206,10 @@ function Ofertas() {
                                         onClick={() => {setSelectedOferta(oferta), setShowTakeOfertaModal(true)}}
                                         titulo={`${oferta.id_producto.nombre}`}
                                         foto={oferta.id_producto.imagen}
-                                        descrip1={`Cantidad: ${oferta.progreso} / ${oferta.cantidad} ${oferta.id_producto.unidadmedida}`}
-                                        descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre}</>}
-                                        descrip3={<><strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                        descrip4={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
-                                        descrip5={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                        descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                        descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                        descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
+                                        descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
                                     />
                                 </div>
                             ))

@@ -271,7 +271,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                     <Form.Control name="id_obra" as="select" onBlur={handleInputChange} onChange={handleInputChange} defaultValue="">
                                         <option value='' hidden>Seleccione una Obra</option>
                                         {stocksDisponibles.map(stock => (
-                                            <option key={stock.stock[0].id_stock} value={stock.stock[0].id_stock}>{stock.stock[0].id_obra.nombre}</option>
+                                            stock.stock && stock.stock.length > 0 && (
+                                                <option key={stock.stock[0].id_stock} value={stock.stock[0].id_stock}>
+                                                    {stock.stock[0].id_obra.nombre}
+                                                </option>
+                                            )
                                         ))}
                                     </Form.Control>
                                     <Form.Label id='errorId_obra' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
