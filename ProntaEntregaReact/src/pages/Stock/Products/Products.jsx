@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {InputGroup, Form, Button, Tabs, Tab, Breadcrumb} from 'react-bootstrap';
+import {InputGroup, Form, Button, Tabs, Tab, Breadcrumb, Row, Col} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import './Products.scss';
 import { Icon } from '@iconify/react';
@@ -365,50 +365,52 @@ function Products() {
                             descrip1={product.descripcion}
                             descrip2={`Cantidad: ${product.total} ${product.unidadmedida}`}
                             children={
-                                <div style={{ position: 'relative', display:"flex" }}>
-                                    <Icon 
-                                        icon="line-md:alert-circle-twotone" 
-                                        className="hoverable-icon"
-                                        style={{ width: "2rem", height: "2rem", position: "absolute", top: "0.5rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
-                                        onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
-                                    />
-                                    <Modal buttonTextColor="black" buttonColor="#D9D9D9" openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
-                                        content={
-                                            <div>
-                                                <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
-                                                <h2 className='centered'> Producto: {product.nombre} </h2>
-                                                <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
-                                                <InputGroup className="mb-2">
-                                                    <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
-                                                </InputGroup>
-                                                <InputGroup className="mb-2">
-                                                    <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
-                                                    <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
-                                                </InputGroup>
-                                            </div>
-                                        } 
-                                    />
-                                    <div style={{marginLeft:"1rem"}}>
-                                        <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
-                                            content={
-                                                <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
-                                                    <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>
-                                                        <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
-                                                    </Tab>
-                                                    <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta' onClick={() => setPedidoOrOferta('oferta')}>
-                                                        <OfertaCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={ofertaCardRef}/>
-                                                    </Tab>
-                                                </Tabs>
-                                            } 
-                                        />
-                                    </div>
-                                    
-                                    
-                                </div>
-                                
+                                <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap' }}>
+                                    <Row>
+                                        <Col xs={12} md={6} style={{ marginTop: '1rem' }}>
+                                            <Modal buttonTextColor="black" buttonColor="#D9D9D9" openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
+                                                content={
+                                                    <div>
+                                                        <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
+                                                        <h2 className='centered'> Producto: {product.nombre} </h2>
+                                                        <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
+                                                        <InputGroup className="mb-2">
+                                                            <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                                        </InputGroup>
+                                                        <InputGroup className="mb-2">
+                                                            <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
+                                                            <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
+                                                        </InputGroup>
+                                                    </div>
+                                                } 
+                                            />
+                                        </Col>
+                                        <Col xs={12} md={6} style={{ marginTop: '1rem' }}>
+                                            <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
+                                                content={
+                                                    <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
+                                                        <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>
+                                                            <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
+                                                        </Tab>
+                                                        <Tab style={{ backgroundColor: 'transparent' }} key='oferta' eventKey='oferta' title='Oferta' onClick={() => setPedidoOrOferta('oferta')}>
+                                                            <OfertaCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={ofertaCardRef}/>
+                                                        </Tab>
+                                                    </Tabs>
+                                                } 
+                                            />
+                                        </Col>
+                                        <Col xs={12} style={{ marginTop: '1rem' }}>
+                                            <Icon 
+                                                icon="line-md:alert-circle-twotone" 
+                                                className="hoverable-icon"
+                                                style={{ width: "2rem", height: "2rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
+                                                onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </div>     
                             }
                         />
-                    
                     );
                 }) : (
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay Productos disponibles.</p>

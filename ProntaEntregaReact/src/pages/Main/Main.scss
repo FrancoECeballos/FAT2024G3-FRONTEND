@@ -1,24 +1,25 @@
 .body {
     background-color: #ECECEC;
-}
-
-.margen-arriba {
-    margin-top: 8%;
-    @media (min-width: 1200px) {
-    }
-    @media (max-width: 1200px) {
-        margin-top: 10%;
-    }
+  }
   
-    @media (max-width: 992px) {
-        margin-top: 12%;
-    }
+  .full-height-container {
+    height: 100vh;
+  }
   
-    @media (max-width: 768px) {
-        margin-top: 15%;
-    }
+  .margen-arriba {
+    margin-top: 0; // Ya no necesitamos margen porque estamos usando 100vh
+    height: 100%;
+  }
   
-    @media (max-width: 576px) {
-        margin-top: 26%;
-    }
-}
+  .custom-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    height: 42.5rem;  // Las cards ahora ocupan todo el espacio vertical del contenedor
+  }
+  

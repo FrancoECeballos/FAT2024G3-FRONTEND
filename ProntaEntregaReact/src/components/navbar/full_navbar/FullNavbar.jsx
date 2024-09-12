@@ -211,7 +211,7 @@ function FullNavbar({ selectedPage }) {
                   <Nav.Link onClick={() => navigate('/obras')}>Obras</Nav.Link>
                 </div>
 
-                <div className='hoverable-off-canvas' style={{ position: 'absolute', bottom: '0.4rem', right: '0.6rem', color: '#D9D9D9' }}>
+                <div className='hoverable-off-canvas-cerrarsesion' style={{ position: 'absolute', bottom: '0.4rem', right: '0.6rem', color: '#D9D9D9', fontWeight:"bold"}}>
                   <Nav.Link onClick={handleLogout}>Cerrar Sesión</Nav.Link>
                 </div>
               </Nav>

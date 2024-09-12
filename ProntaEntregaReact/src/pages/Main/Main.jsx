@@ -1,45 +1,49 @@
-import React from 'react';
-import { useState, useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from 'js-cookie';
-
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import './Main.scss';
+import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 
-import FullNavbar from '../../components/navbar/full_navbar/FullNavbar'
-
-function Main (){
+function Main() {
   const navigate = useNavigate();
   const token = Cookies.get('token');
 
   useEffect(() => {
-      if (!token) {
-        navigate('/landing');
-        return;
+    if (!token) {
+      navigate('/landing');
+      return;
     }
-  });
- 
+  }, [token, navigate]);
+
   return (
-    <div>
+    <div className="full-height-container">
       <FullNavbar />
-      <Container className='margen-arriba'>
-        <Row>
-          <Col md={4}>
-            Column 1
+      <Container className="margen-arriba h-100">
+        <Row className="h-100">
+          <Col md={4} className="d-flex">
+            <Card className="custom-card w-100">
+              <Card.Body>Card in Progress</Card.Body>
+            </Card>
+          </Col>
+          <Col md={4} className="d-flex">
+            <Card className="custom-card w-100">
+              <Card.Body>Card in Progress</Card.Body>
+            </Card>
           </Col>
           <Col md={4}>
-            Column 2
-          </Col>
-          <Col md={4}>
-            <Row>
+            <Row className="h-50 d-flex">
               <Col>
-                Row 1 of Column 3
+                <Card className="custom-card w-100 h-50">
+                  <Card.Body>Card in Progress</Card.Body>
+                </Card>
               </Col>
             </Row>
-            <Row>
+            <Row className="h-50 d-flex">
               <Col>
-                Row 2 of Column 3
+                <Card className="custom-card w-100 h-50">
+                  <Card.Body>Card in Progress</Card.Body>
+                </Card>
               </Col>
             </Row>
           </Col>
@@ -47,5 +51,6 @@ function Main (){
       </Container>
     </div>
   );
-};
+}
+
 export default Main;
