@@ -6,6 +6,7 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import fetchUser from '../../functions/fetchUser';
+import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import PedidoListing from '../../components/cards/pedido_card/pedido_listing/PedidoListing.jsx';
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
@@ -19,8 +20,8 @@ function Pedidos() {
     const [isFormValid, setIsFormValid] = useState(false);
 
     const [obras, setObras] = useState([]);
+
     const [pedidos, setPedidos] = useState([]);
-    const [sortedPedidos, setSortedPedidos] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -79,53 +80,6 @@ function Pedidos() {
         return () => clearInterval(interval);
     }, [pedidoCardRef]);
 
-    useEffect(() => {
-        const filteredPedidos = pedidos.map(obra => {
-            const filteredPedidosInObra = obra.pedidos.filter(pedido => {
-                return (
-                    pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-            });
-            return { ...obra, pedidos: filteredPedidosInObra };
-        }).filter(obra => obra.pedidos.length > 0);
-
-        const sortedPedidos = filteredPedidos.map(obra => {
-            const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
-                if (!orderCriteria) return 0;
-                const getValue = (obj, path) => {
-                    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-                };
-
-                const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
-                const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
-
-                if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
-                    const aDate = new Date(aValue);
-                    const bDate = new Date(bValue);
-                    return aDate - bDate;
-                }
-
-                if (typeof aValue === 'string' && typeof bValue === 'string') {
-                    return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
-                }
-
-                if (typeof aValue === 'number' && typeof bValue === 'number') {
-                    return bValue - aValue;
-                }
-
-                return 0;
-            });
-
-            return { ...obra, pedidos: sortedPedidosInObra };
-        });
-
-        setSortedPedidos(sortedPedidos);
-    }, [pedidos, searchQuery, orderCriteria]);
-
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
@@ -178,6 +132,49 @@ function Pedidos() {
         { type: 'obra.pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
     ];
 
+    const filteredPedidos = pedidos.map(obra => {
+        const filteredPedidosInObra = obra.pedidos.filter(pedido => {
+            return (
+                pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        });
+        return { ...obra, pedidos: filteredPedidosInObra };
+    }).filter(obra => obra.pedidos.length > 0);
+
+    const sortedPedidos = filteredPedidos.map(obra => {
+        const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
+            if (!orderCriteria) return 0;
+            const getValue = (obj, path) => {
+                return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            };
+
+            const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
+            const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
+
+            if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+                const aDate = new Date(aValue);
+                const bDate = new Date(bValue);
+                return aDate - bDate;
+            }
+
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+            }
+
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+                return bValue - aValue;
+            }
+
+            return 0;
+        });
+
+        return { ...obra, pedidos: sortedPedidosInObra };
+    });
+
     return (
         <>
             <FullNavbar selectedPage='Pedidos' />
@@ -207,25 +204,11 @@ function Pedidos() {
                         </div>
 
                         <Tabs defaultActiveKey="obras" id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                            <Tab eventKey="obras" title="Todas" style={{ backgroundColor: "transparent" }} 
-                            onClick={() => {
-                                if (user.is_superuser) {
-                                    fetchData(`get_pedidos_recibidos_for_admin/`, token).then((result) => {
-                                        setPedidos(result); 
-                                    });
-                                } else {
-                                    fetchData(`get_pedidos_dados_for_user/${token}/`, token).then((result) => {
-                                        setPedidos(result);
-                                    });
-                                }
-                            }}>
-                                <PedidoListing sortedPedidos={sortedPedidos} />
+                            <Tab eventKey="obras" title="Todas" style={{backgroundColor: "transparent"}}>
+                                <PedidoListing sortedPedidos={sortedPedidos}/>
                             </Tab>
                             {obras.map((obra) => (
-                                <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{ backgroundColor: "transparent" }}
-                                onClick={() => {fetchData(`getPedidosPorObrasPorObra/${obra.id_obra}`, token).then((result) => {
-                                        setPedidos(result); });
-                                    }}>
+                                <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
                                     <PedidoListing sortedPedidos={sortedPedidos.filter((pedido) => pedido.obra.id_obra === obra.id_obra)} />
                                 </Tab>
                             ))}
