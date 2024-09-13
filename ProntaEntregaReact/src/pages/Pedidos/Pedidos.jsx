@@ -6,7 +6,6 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import fetchUser from '../../functions/fetchUser';
-import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import PedidoListing from '../../components/cards/pedido_card/pedido_listing/PedidoListing.jsx';
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
@@ -22,6 +21,7 @@ function Pedidos() {
     const [obras, setObras] = useState([]);
 
     const [pedidos, setPedidos] = useState([]);
+    const [pedidosDados, setPedidosDados] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -43,6 +43,9 @@ function Pedidos() {
                 if (result.is_superuser) {
                     fetchData(`get_pedidos_recibidos_for_admin/`, token).then((result) => {
                         setPedidos(result);
+                        fetchData(`get_pedidos_dados/`, token).then((result) => {
+                            setPedidosDados(result);
+                        });
                         fetchData(`obra/`, token).then((result) => {
                             setObras(result);
                             setIsLoading(false);
@@ -53,8 +56,11 @@ function Pedidos() {
                         setIsLoading(false);
                     });
                 } else {
-                    fetchData(`get_pedidos_dados_for_user/${token}/`, token).then((result) => {
+                    fetchData(`get_pedidos_recibidos_for_user/${token}/`, token).then((result) => {
                         setPedidos(result);
+                        fetchData(`get_pedidos_dados/`, token).then((result) => {
+                            setPedidosDados(result);
+                        });
                         fetchData(`obra/user/${token}/`, token).then((result) => {
                             setObras(result);
                             setIsLoading(false);
@@ -144,34 +150,34 @@ function Pedidos() {
         });
         return { ...obra, pedidos: filteredPedidosInObra };
     }).filter(obra => obra.pedidos.length > 0);
-
+    
     const sortedPedidos = filteredPedidos.map(obra => {
         const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
             if (!orderCriteria) return 0;
             const getValue = (obj, path) => {
                 return path.split('.').reduce((acc, part) => acc && acc[part], obj);
             };
-
+    
             const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
             const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
-
+    
             if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
                 const aDate = new Date(aValue);
                 const bDate = new Date(bValue);
                 return aDate - bDate;
             }
-
+    
             if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
             }
-
+    
             if (typeof aValue === 'number' && typeof bValue === 'number') {
                 return bValue - aValue;
             }
-
+    
             return 0;
         });
-
+    
         return { ...obra, pedidos: sortedPedidosInObra };
     });
 
@@ -205,11 +211,11 @@ function Pedidos() {
 
                         <Tabs defaultActiveKey="obras" id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                             <Tab eventKey="obras" title="Todas" style={{backgroundColor: "transparent"}}>
-                                <PedidoListing sortedPedidos={sortedPedidos}/>
+                                <PedidoListing sortedPedidos={pedidosDados} obrasDisponibles={obras}/>
                             </Tab>
                             {obras.map((obra) => (
                                 <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
-                                    <PedidoListing sortedPedidos={sortedPedidos.filter((pedido) => pedido.obra.id_obra === obra.id_obra)} />
+                                    <PedidoListing sortedPedidos={pedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra).pedidos} selectedObra={obra}/>
                                 </Tab>
                             ))}
                         </Tabs>
