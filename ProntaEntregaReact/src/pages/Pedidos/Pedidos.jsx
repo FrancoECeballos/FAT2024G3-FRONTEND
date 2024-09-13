@@ -12,6 +12,7 @@ import PedidoListing from '../../components/cards/pedido_card/pedido_listing/Ped
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 import postData from '../../functions/postData.jsx';
 import Loading from '../../components/loading/loading.jsx';
+import crearNotificacion from '../../functions/createNofiticacion.jsx';
 
 function Pedidos() {
     const navigate = useNavigate();
@@ -99,10 +100,6 @@ function Pedidos() {
             }).then((result) => {
                 console.log('Detalles de pedido creados:', result);
 
-                const productoNombre = result.id_producto.name || 'Nombre no disponible';
-                const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
-                const cantidad = result.cantidad || 'Cantidad no disponible';
-
                 const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const dataNotificacion = {
@@ -112,7 +109,7 @@ function Pedidos() {
                     fecha_creacion: fechaCreacion
                 };
                 console.log('Datos de la notificación:', dataNotificacion);
-                return postData('PostNotificacion/', dataNotificacion, token).then(() => {
+                return crearNotificacion(dataNotificacion, token).then(() => {
                     window.location.reload();
                 });
             }).then((notificacionResult) => {
