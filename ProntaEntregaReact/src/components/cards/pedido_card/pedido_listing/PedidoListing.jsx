@@ -73,6 +73,8 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles }) {
         return <div><Loading /></div>;
     }
 
+    const shouldShowButtons = !(obrasDisponibles && obrasDisponibles.length === 1 && selectedPedido.id_obra && selectedPedido.id_obra.id_obra === obrasDisponibles[0].id_obra);
+
     return (
         <div className='pedido-list'>
             <h1>Viendo {selectedObra ? `los pedidos hechos a la obra '${selectedObra.nombre}'` : 'todos los pedidos'}</h1>
@@ -100,7 +102,8 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles }) {
             </div>
             <Modal
                 showButton={false}
-                showDeleteButton={true}
+                showDeleteButton={shouldShowButtons}
+                saveButtonShown={shouldShowButtons}
                 showModal={Object.keys(selectedPedido).length > 0}
                 saveButtonText={'Tomar'}
                 handleCloseModal={() => setSelectedPedido({})}
@@ -124,7 +127,7 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles }) {
                                     descrip6={<><strong>Usuario:</strong> {selectedPedido.id_usuario.nombre} {selectedPedido.id_usuario.apellido}</>}
                                 />
                             
-                                {!(obrasDisponibles.length === 1 && selectedPedido.id_obra.id_obra === obrasDisponibles[0].id_obra.id_obra) && (
+                                {shouldShowButtons && (
                                     <Form.Group className="mb-2" controlId="formBasicCantidad">
                                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
                                             Ingrese la cantidad que quiere aportar
@@ -157,7 +160,7 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles }) {
                                                     }}
                                                 >
                                                     {obrasDisponibles.map(obra => (
-                                                        selectedPedido.id_obra.id_obra !== obra.id_obra && (
+                                                        selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obra.id_obra && (
                                                             <option key={obra.id_obra} value={obra.id_obra}>
                                                                 {obra.nombre}
                                                             </option>

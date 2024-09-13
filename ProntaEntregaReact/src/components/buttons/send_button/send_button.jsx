@@ -18,7 +18,7 @@ export default function SendButton({
   hid,
   shadow = '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)',
   hoverable = true,
-  disabled = false
+  disabled = false,
 }) {
   return (
     <Button

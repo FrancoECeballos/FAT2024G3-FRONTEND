@@ -5,7 +5,7 @@
 
     function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, 
         title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteButtonText, 
-        deleteFunction, saveButtonEnabled = true}) {
+        deleteFunction, saveButtonEnabled = true, saveButtonShown = true }) {
             
         const [show, setShow] = useState(false);
 
@@ -55,7 +55,7 @@
             <Modal.Footer>
                 <SendButton text="Cerrar" onClick={handleClose}/>
                 {showDeleteButton && <SendButton backcolor='#FF0000' letercolor='white' text={deleteButtonText ? deleteButtonText : "Eliminar"} onClick={() => { deleteFunction(); handleClose();}}/>}
-                <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={handleSaveAndClose} disabled={!saveButtonEnabled}/>
+                <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={handleSaveAndClose} disabled={!saveButtonEnabled} hid={!saveButtonShown}/>
             </Modal.Footer>
             </Modal>
         </>
