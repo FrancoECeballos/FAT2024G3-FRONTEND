@@ -399,7 +399,7 @@ function Products() {
                                                 } 
                                             />
                                         </Col>
-                                        <Col xs={12} style={{ marginTop: '1rem' }}>
+                                        <Col xs={120} style={{ marginTop: '1rem' }}>
                                             <Icon 
                                                 icon="line-md:alert-circle-twotone" 
                                                 className="hoverable-icon"
