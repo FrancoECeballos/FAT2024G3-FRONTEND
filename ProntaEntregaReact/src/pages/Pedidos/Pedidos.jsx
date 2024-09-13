@@ -30,51 +30,39 @@ function Pedidos() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchDataAsync = async () => {
             try {
                 const userData = await fetchUser(navigate);
                 setUser(userData);
+
+                const userTokenData = await fetchData(`/userToken/${token}`, token);
+                if (userTokenData.is_superuser) {
+                    const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
+                    setPedidos(pedidosRecibidos);
+
+                    const pedidosDadosData = await fetchData(`get_pedidos_dados/`, token);
+                    setPedidosDados(pedidosDadosData);
+
+                    const obrasData = await fetchData(`obra/`, token);
+                    setObras(obrasData);
+                } else {
+                    const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
+                    setPedidos(pedidosRecibidos);
+
+                    const pedidosDadosData = await fetchData(`get_pedidos_dados/`, token);
+                    setPedidosDados(pedidosDadosData);
+
+                    const obrasData = await fetchData(`obra/user/${token}/`, token);
+                    setObras(obrasData);
+                }
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        fetchUserData().then(() => {
-            fetchData(`/userToken/${token}`, token).then((result) => {
-                if (result.is_superuser) {
-                    fetchData(`get_pedidos_recibidos_for_admin/`, token).then((result) => {
-                        setPedidos(result);
-                        fetchData(`get_pedidos_dados/`, token).then((result) => {
-                            setPedidosDados(result);
-                        });
-                        fetchData(`obra/`, token).then((result) => {
-                            setObras(result);
-                            setIsLoading(false);
-                        });
-                        console.log('Pedidos:', result);
-                    }).catch(error => {
-                        console.error('Error fetching pedidos:', error);
-                        setIsLoading(false);
-                    });
-                } else {
-                    fetchData(`get_pedidos_recibidos_for_user/${token}/`, token).then((result) => {
-                        setPedidos(result);
-                        fetchData(`get_pedidos_dados/`, token).then((result) => {
-                            setPedidosDados(result);
-                        });
-                        fetchData(`obra/user/${token}/`, token).then((result) => {
-                            setObras(result);
-                            setIsLoading(false);
-                        });
-                    }).catch(error => {
-                        console.error('Error fetching pedidos:', error);
-                        setIsLoading(false);
-                    });
-                }
-            }).catch(error => {
-                console.error('Error fetching user data:', error);
-            });
-        });
+        fetchDataAsync();
     }, [token]);
 
     useEffect(() => {
@@ -86,10 +74,6 @@ function Pedidos() {
 
         return () => clearInterval(interval);
     }, [pedidoCardRef]);
-
-    const handleSearchChange = (value) => {
-        setSearchQuery(value);
-    };
 
     const handleCreatePedido = () => {
         if (pedidoCardRef.current) {
@@ -178,6 +162,10 @@ function Pedidos() {
         return { ...obra, pedidos: sortedPedidosInObra };
     });
 
+    const handleSearchChange = (value) => {
+        setSearchQuery(value);
+    };
+
     return (
         <>
             <FullNavbar selectedPage='Pedidos' />
@@ -208,13 +196,16 @@ function Pedidos() {
 
                         <Tabs defaultActiveKey="obras" id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                             <Tab eventKey="obras" title="Todas" style={{backgroundColor: "transparent"}}>
-                                <PedidoListing sortedPedidos={pedidosDados} obrasDisponibles={obras}/>
+                                <PedidoListing sortedPedidos={pedidosDados} obrasDisponibles={obras} user={user}/>
                             </Tab>
-                            {obras.map((obra) => (
-                                <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
-                                    <PedidoListing sortedPedidos={pedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra).pedidos} selectedObra={obra}/>
-                                </Tab>
-                            ))}
+                            {obras.map((obra) => {
+                                const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
+                                return (
+                                    <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
+                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} selectedObra={obra} user={user}/>
+                                    </Tab>
+                                );
+                            })}
                         </Tabs>
 
                     </>

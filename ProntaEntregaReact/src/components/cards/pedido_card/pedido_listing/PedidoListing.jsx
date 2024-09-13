@@ -8,14 +8,13 @@ import Modal from '../../../modals/Modal.jsx';
 import GenericAccordion from '../../../accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../../../functions/postData.jsx';
 
-function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles }) {
+function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) {
     const token = Cookies.get('token');
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
     const pedidoCardRef = useRef(null);
 
     const [selectedPedido, setSelectedPedido] = useState({});
-    const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -31,8 +30,6 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles }) {
     useEffect(() => {
         if (sortedPedidos !== undefined) {
             setIsLoading(false);
-            console.log('sortedPedidos:', sortedPedidos);
-            console.log('selectedObra:', selectedObra);
         }
     }, [sortedPedidos, selectedObra]);
 
