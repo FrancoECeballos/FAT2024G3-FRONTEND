@@ -12,6 +12,7 @@ import Modal from '../../components/modals/Modal.jsx';
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
 import Loading from '../../components/loading/loading.jsx';
+import crearNotificacion from '../../functions/createNofiticacion.jsx';
 
 function Ofertas() {
     const navigate = useNavigate();
@@ -27,6 +28,8 @@ function Ofertas() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState({});
+    const [productos, setProductos] = useState([]);
+    const [obras, setObras] = useState([]);
     const [stocks, setStocks] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
@@ -135,9 +138,23 @@ function Ofertas() {
     const handleCreateOferta = () => {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
+            const { producto, obra } = ofertaForm; // Asegurarse de que estos valores estén presentes
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
-                window.location.reload();
+
+                const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
+                const fechaCreacion = new Date().toISOString().split('T')[0];
+                const descripcionNotificacion = `Nueva oferta creada de "${productos.nombre}" por "${obras.nombre}"`;
+                const dataNotificacion = {
+                    titulo: tituloNotificacion,
+                    descripcion: descripcionNotificacion,
+                    id_usuario: user.id_usuario,
+                    fecha_creacion: fechaCreacion
+                };
+                console.log('Datos de la notificación:', dataNotificacion);
+                return crearNotificacion(dataNotificacion, token).then(() => {
+                    window.location.reload();
+                });
             }).catch((error) => {
                 console.error('Error al crear la oferta:', error);
             });
