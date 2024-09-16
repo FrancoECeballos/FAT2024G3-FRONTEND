@@ -7,6 +7,7 @@ import deleteData from '../../../../functions/deleteData.jsx';
 import Modal from '../../../modals/Modal.jsx';
 import GenericAccordion from '../../../accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../../../functions/postData.jsx';
+import Semaforo from '../../../semaforo/Semaforo.jsx';
 
 function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) {
     const token = Cookies.get('token');
@@ -85,7 +86,7 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
                                         foto={pedido.id_producto.imagen}
                                         titulo={pedido.id_producto.nombre}
                                         descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
-                                        descrip2={<><strong>Urgencia:</strong> {pedido.urgente}</>}
+                                        descrip2={<><strong>Urgencia:</strong> <Semaforo urgencia={pedido.urgente}/></>}
                                         descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre} <strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
                                         descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
                                     />
@@ -117,7 +118,7 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
                                     foto={selectedPedido.id_producto.imagen}
                                     titulo={selectedPedido.id_producto.nombre}
                                     descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
-                                    descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente}</>}
+                                    descrip2={<><strong>Urgencia:</strong> <Semaforo urgencia={selectedPedido.urgente}/></>}
                                     descrip3={<><strong>Fecha Inicio:</strong> {selectedPedido.fechainicio}</>}
                                     descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
                                     descrip5={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}

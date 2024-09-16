@@ -5,10 +5,13 @@ import semaforoVerde from '../../assets/Semaforos/SemaforoVerde.png';
 import semaforoAmarillo from '../../assets/Semaforos/SemaforoAmarillo.png';
 
 
-function Semaforo(urgencia) {
+function Semaforo({ urgencia }) {
     return (
         <div>
-            <img src={semaforoFull} alt="" style={{width:"20rem"}}/>
+            {urgencia === 3 ? <img src={semaforoRojo} alt="" style={{width:"12rem"}}/> : 
+            urgencia === 2 ? <img src={semaforoAmarillo} alt="" style={{width:"12rem"}}/> : 
+            urgencia === 1 ? <img src={semaforoVerde} alt="" style={{width:"12rem"}}/> : 
+            <img src={semaforoFull} alt="" style={{width:"12rem"}}/>}
         </div>
     );
 } export default Semaforo;

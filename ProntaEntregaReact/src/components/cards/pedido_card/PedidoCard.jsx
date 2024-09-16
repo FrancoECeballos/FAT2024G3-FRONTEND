@@ -5,7 +5,7 @@ import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
 import './PedidoCard.scss';
 
-import SemaforoFull from '../../../assets/SemaforoFull.png';
+import Semaforo from '../../semaforo/Semaforo.jsx';
 
 const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles }, ref) => {
     const token = Cookies.get('token');
@@ -15,6 +15,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [products, setProducts] = useState([]);
+    const [urgencia, setUrgencia] = useState(0);
     
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -257,13 +258,13 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                             <Form.Group className="mb-2" controlId="formBasicUrgencia">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Urgencia (*)</Form.Label>
                                 <Form.Control name="urgente" as="select" onBlur={handleInputChange} onChange={handleInputChange}>
-                                    <option value='' hidden>Urgencia</option>
-                                    <option value="1">No es urgente</option>
-                                    <option value="2">Urgente</option>
-                                    <option value="3">Inmediato</option>
+                                    <option value='' onClick={() => setUrgencia(0)} hidden>Urgencia</option>
+                                    <option value="1" onClick={() => setUrgencia(1)}>No es urgente</option>
+                                    <option value="2" onClick={() => setUrgencia(2)}>Urgente</option>
+                                    <option value="3" onClick={() => setUrgencia(3)}>Inmediato</option>
                                 </Form.Control>
                                 <Form.Label id='errorUrgente' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
-                                <img src={SemaforoFull} alt="" style={{width:"8rem", margin:"1rem"}}/>
+                                <Semaforo urgencia={urgencia} />
                             </Form.Group>
 
                             {!stock && (
