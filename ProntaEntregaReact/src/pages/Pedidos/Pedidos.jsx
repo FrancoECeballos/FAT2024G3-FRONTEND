@@ -199,7 +199,7 @@ function Pedidos() {
                                 <PedidoListing sortedPedidos={pedidosDados} obrasDisponibles={obras} user={user}/>
                             </Tab>
                             {obras.map((obra) => {
-                                const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
+                                const obraPedidos = pedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
                                     <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
                                         <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} selectedObra={obra} user={user}/>

@@ -257,9 +257,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 <Form.Control name="urgente" as="select" onBlur={handleInputChange} onChange={handleInputChange}>
                                     <option value='' hidden>Urgencia</option>
                                     <option value="1">No es urgente</option>
-                                    <option value="2">Ligeramente Urgente</option>
-                                    <option value="3">Muy Urgente</option>
-                                    <option value="4">Inmediato</option>
+                                    <option value="2">Urgente</option>
+                                    <option value="3">Inmediato</option>
                                 </Form.Control>
                                 <Form.Label id='errorUrgente' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
