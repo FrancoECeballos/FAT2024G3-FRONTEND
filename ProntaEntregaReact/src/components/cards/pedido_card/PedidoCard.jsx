@@ -6,6 +6,8 @@ import fetchData from '../../../functions/fetchData.jsx';
 import postData from '../../../functions/postData.jsx'; // Importar postData para la notificación
 import './PedidoCard.scss';
 
+import SemaforoFull from '../../../assets/SemaforoFull.png';
+
 const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles }, ref) => {
     const token = Cookies.get('token');
     const [isFormValid, setIsFormValid] = useState(false);
@@ -263,6 +265,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                     <option value="4">Inmediato</option>
                                 </Form.Control>
                                 <Form.Label id='errorUrgente' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                                <img src={SemaforoFull} alt="" style={{width:"8rem", margin:"1rem"}}/>
                             </Form.Group>
 
                             {!stock && (
