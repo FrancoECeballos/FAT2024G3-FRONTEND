@@ -3,7 +3,6 @@ import { Col, Row, Form, Card, Button } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import SelectableCard from '../../cards/selectable_card/SelectableCard.jsx';
 import fetchData from '../../../functions/fetchData.jsx';
-import postData from '../../../functions/postData.jsx'; // Importar postData para la notificación
 import './PedidoCard.scss';
 
 import SemaforoFull from '../../../assets/SemaforoFull.png';

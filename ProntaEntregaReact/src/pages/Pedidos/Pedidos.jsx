@@ -11,6 +11,7 @@ import PedidoListing from '../../components/cards/pedido_card/pedido_listing/Ped
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 import postData from '../../functions/postData.jsx';
 import Loading from '../../components/loading/loading.jsx';
+import crearNotificacion from '../../functions/createNofiticacion.jsx';
 
 function Pedidos() {
     const navigate = useNavigate();
@@ -19,8 +20,9 @@ function Pedidos() {
     const [isFormValid, setIsFormValid] = useState(false);
 
     const [obras, setObras] = useState([]);
+
     const [pedidos, setPedidos] = useState([]);
-    const [sortedPedidos, setSortedPedidos] = useState([]);
+    const [pedidosDados, setPedidosDados] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -28,45 +30,39 @@ function Pedidos() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchDataAsync = async () => {
             try {
                 const userData = await fetchUser(navigate);
                 setUser(userData);
+
+                const userTokenData = await fetchData(`/userToken/${token}`, token);
+                if (userTokenData.is_superuser) {
+                    const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
+                    setPedidos(pedidosRecibidos);
+
+                    const pedidosDadosData = await fetchData(`get_pedidos_dados/`, token);
+                    setPedidosDados(pedidosDadosData);
+
+                    const obrasData = await fetchData(`obra/`, token);
+                    setObras(obrasData);
+                } else {
+                    const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
+                    setPedidos(pedidosRecibidos);
+
+                    const pedidosDadosData = await fetchData(`get_pedidos_dados/`, token);
+                    setPedidosDados(pedidosDadosData);
+
+                    const obrasData = await fetchData(`obra/user/${token}/`, token);
+                    setObras(obrasData);
+                }
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        fetchUserData().then(() => {
-            fetchData(`/userToken/${token}`, token).then((result) => {
-                if (result.is_superuser) {
-                    fetchData(`get_pedidos_recibidos_for_admin/`, token).then((result) => {
-                        setPedidos(result);
-                        fetchData(`obra/`, token).then((result) => {
-                            setObras(result);
-                            setIsLoading(false);
-                        });
-                        console.log('Pedidos:', result);
-                    }).catch(error => {
-                        console.error('Error fetching pedidos:', error);
-                        setIsLoading(false);
-                    });
-                } else {
-                    fetchData(`get_pedidos_dados_for_user/${token}/`, token).then((result) => {
-                        setPedidos(result);
-                        fetchData(`obra/user/${token}/`, token).then((result) => {
-                            setObras(result);
-                            setIsLoading(false);
-                        });
-                    }).catch(error => {
-                        console.error('Error fetching pedidos:', error);
-                        setIsLoading(false);
-                    });
-                }
-            }).catch(error => {
-                console.error('Error fetching user data:', error);
-            });
-        });
+        fetchDataAsync();
     }, [token]);
 
     useEffect(() => {
@@ -78,57 +74,6 @@ function Pedidos() {
 
         return () => clearInterval(interval);
     }, [pedidoCardRef]);
-
-    useEffect(() => {
-        const filteredPedidos = pedidos.map(obra => {
-            const filteredPedidosInObra = obra.pedidos.filter(pedido => {
-                return (
-                    pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-            });
-            return { ...obra, pedidos: filteredPedidosInObra };
-        }).filter(obra => obra.pedidos.length > 0);
-
-        const sortedPedidos = filteredPedidos.map(obra => {
-            const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
-                if (!orderCriteria) return 0;
-                const getValue = (obj, path) => {
-                    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-                };
-
-                const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
-                const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
-
-                if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
-                    const aDate = new Date(aValue);
-                    const bDate = new Date(bValue);
-                    return aDate - bDate;
-                }
-
-                if (typeof aValue === 'string' && typeof bValue === 'string') {
-                    return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
-                }
-
-                if (typeof aValue === 'number' && typeof bValue === 'number') {
-                    return bValue - aValue;
-                }
-
-                return 0;
-            });
-
-            return { ...obra, pedidos: sortedPedidosInObra };
-        });
-
-        setSortedPedidos(sortedPedidos);
-    }, [pedidos, searchQuery, orderCriteria]);
-
-    const handleSearchChange = (value) => {
-        setSearchQuery(value);
-    };
 
     const handleCreatePedido = () => {
         if (pedidoCardRef.current) {
@@ -145,10 +90,6 @@ function Pedidos() {
             }).then((result) => {
                 console.log('Detalles de pedido creados:', result);
 
-                const productoNombre = result.id_producto.name || 'Nombre no disponible';
-                const productoUnidad = result.id_producto.unidadmedida || 'Unidad no disponible';
-                const cantidad = result.cantidad || 'Cantidad no disponible';
-
                 const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const dataNotificacion = {
@@ -158,7 +99,7 @@ function Pedidos() {
                     fecha_creacion: fechaCreacion
                 };
                 console.log('Datos de la notificación:', dataNotificacion);
-                return postData('PostNotificacion/', dataNotificacion, token).then(() => {
+                return crearNotificacion(dataNotificacion, token).then(() => {
                     window.location.reload();
                 });
             }).then((notificacionResult) => {
@@ -177,6 +118,53 @@ function Pedidos() {
         { type: 'obra.pedido.id_obra.nombre', label: 'Nombre de la Obra Pidiendo' },
         { type: 'obra.pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
     ];
+
+    const filteredPedidos = pedidos.map(obra => {
+        const filteredPedidosInObra = obra.pedidos.filter(pedido => {
+            return (
+                pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        });
+        return { ...obra, pedidos: filteredPedidosInObra };
+    }).filter(obra => obra.pedidos.length > 0);
+    
+    const sortedPedidos = filteredPedidos.map(obra => {
+        const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
+            if (!orderCriteria) return 0;
+            const getValue = (obj, path) => {
+                return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            };
+    
+            const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
+            const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
+    
+            if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+                const aDate = new Date(aValue);
+                const bDate = new Date(bValue);
+                return aDate - bDate;
+            }
+    
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+            }
+    
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+                return bValue - aValue;
+            }
+    
+            return 0;
+        });
+    
+        return { ...obra, pedidos: sortedPedidosInObra };
+    });
+
+    const handleSearchChange = (value) => {
+        setSearchQuery(value);
+    };
 
     return (
         <>
@@ -207,28 +195,17 @@ function Pedidos() {
                         </div>
 
                         <Tabs defaultActiveKey="obras" id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                            <Tab eventKey="obras" title="Todas" style={{ backgroundColor: "transparent" }} 
-                            onClick={() => {
-                                if (user.is_superuser) {
-                                    fetchData(`get_pedidos_recibidos_for_admin/`, token).then((result) => {
-                                        setPedidos(result); 
-                                    });
-                                } else {
-                                    fetchData(`get_pedidos_dados_for_user/${token}/`, token).then((result) => {
-                                        setPedidos(result);
-                                    });
-                                }
-                            }}>
-                                <PedidoListing sortedPedidos={sortedPedidos} />
+                            <Tab eventKey="obras" title="Todas" style={{backgroundColor: "transparent"}}>
+                                <PedidoListing sortedPedidos={pedidosDados} obrasDisponibles={obras} user={user}/>
                             </Tab>
-                            {obras.map((obra) => (
-                                <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{ backgroundColor: "transparent" }}
-                                onClick={() => {fetchData(`getPedidosPorObrasPorObra/${obra.id_obra}`, token).then((result) => {
-                                        setPedidos(result); });
-                                    }}>
-                                    <PedidoListing sortedPedidos={sortedPedidos.filter((pedido) => pedido.obra.id_obra === obra.id_obra)} />
-                                </Tab>
-                            ))}
+                            {obras.map((obra) => {
+                                const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
+                                return (
+                                    <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
+                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} selectedObra={obra} user={user}/>
+                                    </Tab>
+                                );
+                            })}
                         </Tabs>
 
                     </>
