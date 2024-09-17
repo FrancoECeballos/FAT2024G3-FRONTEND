@@ -52,7 +52,6 @@ function Products() {
         nombre: "",
         descripcion: "",
         unidadmedida: 0,
-        descripcion: "",
         imagen: null,
         id_categoria: parseInt(categoriaID, 10),
       });

@@ -86,16 +86,16 @@ function Stock() {
         const obra = obras[0];
         navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } });
     }
-    
+
     if (isLoading) {
-        return <div><FullNavbar/><Loading /></div> ;
+        return <div><FullNavbar /><Loading /></div>;
     }
-    
+
     return (
         <div>
             <FullNavbar selectedPage='Stock' />
             <div className='margen-arriba'>
-            <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
                     <Breadcrumb.Item active>Stock</Breadcrumb.Item>
                 </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />

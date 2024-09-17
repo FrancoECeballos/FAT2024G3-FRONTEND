@@ -277,7 +277,7 @@ function AutosComponent() {
                                             )}
                                             </div>
                                             <div style={{marginTop:"1rem", marginRight: "1rem"}}>
-                                            <Modal openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={handleEditAutoSave} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto.id_transporte)} wide='100rem' content={
+                                            <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={handleEditAutoSave} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto.id_transporte)} wide='100rem' content={
                                                 <>
                                                     <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
                                                     <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />

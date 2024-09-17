@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab, Breadcrumb } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
@@ -134,7 +134,7 @@ function Pedidos() {
         }).filter(pedido => pedido.pedidos.length > 0); 
         return { ...obra, pedidos: filteredPedidosInObra }; 
     }).filter(obra => obra.pedidos.length > 0);
-    
+
     const sortedPedidos = filteredPedidos.map(obra => {
         if (orderCriteria === 'obra.nombre') {
             const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
@@ -268,7 +268,9 @@ function Pedidos() {
                     <Loading />
                 ) : (
                     <>
-                        <h2 style={{ marginLeft: '7rem' }}>Pedidos</h2>
+                        <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
+                            <Breadcrumb.Item active>Pedidos</Breadcrumb.Item>
+                        </Breadcrumb>
                         <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
 
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
@@ -289,14 +291,14 @@ function Pedidos() {
                         </div>
 
                         <Tabs defaultActiveKey="obras" id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                            <Tab eventKey="obras" title="Todas" style={{backgroundColor: "transparent"}}>
-                                <PedidoListing sortedPedidos={sortedPedidosDados} obrasDisponibles={obras} user={user}/>
+                            <Tab eventKey="obras" title="Todas" style={{ backgroundColor: "transparent" }}>
+                                <PedidoListing sortedPedidos={sortedPedidosDados} obrasDisponibles={obras} user={user} />
                             </Tab>
                             {obras.map((obra) => {
                                 const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
-                                    <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
-                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} selectedObra={obra} user={user}/>
+                                    <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{ backgroundColor: "transparent" }}>
+                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} selectedObra={obra} user={user} />
                                     </Tab>
                                 );
                             })}
