@@ -86,8 +86,8 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
                                         foto={pedido.id_producto.imagen}
                                         titulo={pedido.id_producto.nombre}
                                         descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
-                                        descrip2={<><strong>Urgencia:</strong> <Semaforo urgencia={pedido.urgente}/></>}
-                                        descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre} <strong>Usuario:</strong> {pedido.id_usuario.nombre} {pedido.id_usuario.apellido}</>}
+                                        descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente}/></>}
+                                        descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                         descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
                                     />
                                 </div>
@@ -118,7 +118,7 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
                                     foto={selectedPedido.id_producto.imagen}
                                     titulo={selectedPedido.id_producto.nombre}
                                     descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
-                                    descrip2={<><strong>Urgencia:</strong> <Semaforo urgencia={selectedPedido.urgente}/></>}
+                                    descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
                                     descrip3={<><strong>Fecha Inicio:</strong> {selectedPedido.fechainicio}</>}
                                     descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
                                     descrip5={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}

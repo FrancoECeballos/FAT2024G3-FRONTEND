@@ -39,7 +39,6 @@ function Pedidos() {
                 if (userTokenData.is_superuser) {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
                     setPedidos(pedidosRecibidos);
-
                     const pedidosDadosData = await fetchData(`get_pedidos_dados/`, token);
                     setPedidosDados(pedidosDadosData);
 
@@ -112,35 +111,130 @@ function Pedidos() {
 
     const filters = [
         { type: 'obra.nombre', label: 'Nombre de la Obra' },
-        { type: 'obra.pedido.fechainicio', label: 'Fecha Inicio' },
-        { type: 'obra.pedido.fechavencimiento', label: 'Fecha Vencimiento' },
-        { type: 'obra.pedido.id_producto.nombre', label: 'Nombre del Producto' },
-        { type: 'obra.pedido.id_obra.nombre', label: 'Nombre de la Obra Pidiendo' },
-        { type: 'obra.pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
+        { type: 'pedido.fechainicio', label: 'Fecha Inicio' },
+        { type: 'pedido.fechavencimiento', label: 'Fecha Vencimiento' },
+        { type: 'pedido.id_producto.nombre', label: 'Nombre del Producto' },
+        { type: 'pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
     ];
-
-    const filteredPedidos = pedidos.map(obra => {
-        const filteredPedidosInObra = obra.pedidos.filter(pedido => {
-            return (
-                pedido?.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                pedido?.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                pedido?.id_producto?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                pedido?.id_obra?.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                pedido?.id_usuario?.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-        });
-        return { ...obra, pedidos: filteredPedidosInObra };
+    
+    const getNestedValue = (obj, path) => {
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    };
+    
+    const filteredPedidos = pedidos.map(obra => { 
+        const filteredPedidosInObra = obra.pedidos.map(pedido => { 
+            const filteredInnerPedidos = pedido.pedidos.filter(innerPedido => { 
+                return filters.some(filter => { 
+                    const filterPath = filter.type.split('.').slice(1).join('.'); 
+                    const value = getNestedValue(innerPedido, filterPath); 
+                    return value?.toString().toLowerCase().includes(searchQuery.toLowerCase()); 
+                }); 
+            }); 
+            return { ...pedido, pedidos: filteredInnerPedidos }; 
+        }).filter(pedido => pedido.pedidos.length > 0); 
+        return { ...obra, pedidos: filteredPedidosInObra }; 
     }).filter(obra => obra.pedidos.length > 0);
     
     const sortedPedidos = filteredPedidos.map(obra => {
-        const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
+        if (orderCriteria === 'obra.nombre') {
+            const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
+                if (!orderCriteria) return 0;
+                const getValue = (obj, path) => {
+                    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+                };
+        
+                const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
+                const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
+        
+                if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+                    const aDate = new Date(aValue);
+                    const bDate = new Date(bValue);
+                    return aDate - bDate;
+                }
+        
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+                }
+        
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    return bValue - aValue;
+                }
+        
+                return 0;
+            });
+        
+            return { ...obra, pedidos: sortedPedidosInObra };
+        } else {
+            const sortedPedidosInObra = [...obra.pedidos].map(pedido => {
+                const sortedInnerPedidos = [...pedido.pedidos].sort((a, b) => {
+                    if (!orderCriteria) return 0;
+                    const getValue = (obj, path) => {
+                        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+                    };
+
+                    const aValue = getValue(a, orderCriteria.replace('pedido.', ''));
+                    const bValue = getValue(b, orderCriteria.replace('pedido.', ''));
+
+                    if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+                        const aDate = new Date(aValue);
+                        const bDate = new Date(bValue);
+                        return aDate - bDate;
+                    }
+
+                    if (typeof aValue === 'string' && typeof bValue === 'string') {
+                        return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+                    }
+
+                    if (typeof aValue === 'number' && typeof bValue === 'number') {
+                        return bValue - aValue;
+                    }
+
+                    return 0;
+                });
+
+                return { ...pedido, pedidos: sortedInnerPedidos };
+            });
+
+            return { ...obra, pedidos: sortedPedidosInObra };
+        }
+    });
+
+    const filteredPedidosDados = pedidosDados.filter(pedidoDado => {
+        return pedidoDado.pedidos.some(pedido => {
+            return filters.some(filter => {
+                const filterPath = filter.type.split('.').slice(1).join('.');
+                const value = getNestedValue(pedido, filterPath);
+                return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
+            });
+        });
+    });
+    
+    const sortedPedidosDados = filteredPedidosDados.sort((a, b) => {
+        if (orderCriteria === 'obra.nombre') {
+            const getValue = (obj, path) => {
+                return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            };
+    
+            const aValue = getValue(a.obra, 'nombre');
+            const bValue = getValue(b.obra, 'nombre');
+    
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+            }
+    
+            return 0;
+        } else {
+            return 0;
+        }
+    }).map(pedidoDado => {
+        const sortedPedidos = [...pedidoDado.pedidos].sort((a, b) => {
             if (!orderCriteria) return 0;
             const getValue = (obj, path) => {
                 return path.split('.').reduce((acc, part) => acc && acc[part], obj);
             };
     
-            const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
-            const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
+            const aValue = getValue(a, orderCriteria.replace('pedido.', ''));
+            const bValue = getValue(b, orderCriteria.replace('pedido.', ''));
     
             if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
                 const aDate = new Date(aValue);
@@ -159,7 +253,7 @@ function Pedidos() {
             return 0;
         });
     
-        return { ...obra, pedidos: sortedPedidosInObra };
+        return { ...pedidoDado, pedidos: sortedPedidos };
     });
 
     const handleSearchChange = (value) => {
@@ -196,10 +290,10 @@ function Pedidos() {
 
                         <Tabs defaultActiveKey="obras" id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                             <Tab eventKey="obras" title="Todas" style={{backgroundColor: "transparent"}}>
-                                <PedidoListing sortedPedidos={pedidosDados} obrasDisponibles={obras} user={user}/>
+                                <PedidoListing sortedPedidos={sortedPedidosDados} obrasDisponibles={obras} user={user}/>
                             </Tab>
                             {obras.map((obra) => {
-                                const obraPedidos = pedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
+                                const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
                                     <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{backgroundColor: "transparent"}}>
                                         <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} selectedObra={obra} user={user}/>
