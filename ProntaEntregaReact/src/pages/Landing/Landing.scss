@@ -5,21 +5,21 @@
 
   .nav-item {
     .nav-link {
-      background-color: #ECECEC;
-      border-radius: 0.5rem; 
+      background-color: #f0f8ff;  // Color de fondo suave
+      border-radius: 0.5rem;
       color: #495057;
       padding: 0.75rem 1rem;
       font-size: 1.1rem;
       transition: background-color 0.3s ease, color 0.3s ease;
 
       &:hover {
-        background-color: #b9b9b9;
-        color: #212529;
+        background-color: #02005E;  // Color al hacer hover
+        color: #fff;
       }
 
       &.active {
-        background-color: #fff;
-        color: #000;
+        background-color: #02005E;  // Color de la pestaña activa
+        color: #fff;
         border-color: transparent;
       }
     }
@@ -29,24 +29,63 @@
 .tab-content {
   .tab-pane {
     padding: 2rem;
-    background-color: #fff;
+    background-color: #f0f8ff;
     border-radius: 0.5rem;
     margin-top: -1rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #02005E;  // Borde más marcado
   }
 }
 
 h1 {
   font-size: 2.5rem;
   font-weight: bold;
+  color: #02005E;  // Color principal de los títulos
 }
 
 p {
   font-size: 1.2rem;
   line-height: 1.6;
+  color: #333;  // Texto más oscuro para contraste
+}
+
+.section {
+  margin: 0 10%;
+}
+
+.tabs-container {
+  padding: 0 5%;
+}
+
+.tab-icon {
+  width: 10rem;
+  height: 10rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #02005E;  // Iconos con color principal
+}
+
+footer .logos {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+
+  img {
+    width: 4rem;  // Tamaño de los logos más grandes
+    margin: 0 1rem;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);  // Efecto hover en los logos
+    }
+  }
 }
 
 @media (max-width: 768px) {
+  .section, .tabs-container {
+    margin: 0 5%;
+  }
+
   .tab-pane {
     padding: 1.5rem;
   }
@@ -59,8 +98,8 @@ p {
     font-size: 1rem;
   }
 
-  .nav-tabs {
-    flex-direction: column;
+  footer .logos img {
+    width: 3rem;
   }
 }
 

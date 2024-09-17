@@ -50,31 +50,31 @@ function Landing() {
       <div className="tabs-container">
         <Tabs defaultActiveKey="profile" id="fill-tab-example" className="mb-3" fill>
           <Tab eventKey="home" title="Stock">
-            <Icon className="tab-icon" icon="material-symbols:inventory-2-outline" />
             <h1>Stock</h1>
             <p>
               Se proporcionará un sistema de registro del stock rápido y sencillo para que los 
               voluntarios puedan visualizar los recursos de sus obras y recibir notificaciones 
               en caso de exceso o escasez de productos.
             </p>
+            <Icon className="tab-icon" icon="material-symbols:inventory-2-outline" />
           </Tab>
 
           <Tab eventKey="profile" title="Pedidos">
-            <Icon className="tab-icon" icon="bi:cart" />
             <h1>Pedidos</h1>
             <p>
               Basado en el sistema anterior, los voluntarios pueden crear pedidos u ofertas que 
               serán vistas por los integrantes de las obras. Este sistema agilizará la gestión de recursos.
             </p>
+            <Icon className="tab-icon" icon="bi:cart" />
           </Tab>
 
           <Tab eventKey="longer-tab" title="Envíos">
-            <Icon className="tab-icon" icon="grommet-icons:deliver" />
             <h1>Envíos</h1>
             <p>
               Los voluntarios podrán acordar la fecha de entrega y la forma del traslado, proporcionando 
               una forma de almacenar los vehículos a disposición de la organización.
             </p>
+            <Icon className="tab-icon" icon="grommet-icons:deliver" />
           </Tab>
         </Tabs>
       </div>
