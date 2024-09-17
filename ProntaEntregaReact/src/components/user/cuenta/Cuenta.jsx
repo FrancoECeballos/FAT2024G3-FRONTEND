@@ -11,7 +11,7 @@ import './Cuenta.scss';
 
 import NullToEmpty from '../../../functions/nulltoempty.jsx'
 import SendButton from '../../buttons/send_button/send_button.jsx';
-import UploadImage from '../../buttons/upload_image/uploadImageButton.jsx';
+import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
 import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
 
 const Cuenta = ({ user }) => {
@@ -248,18 +248,21 @@ const Cuenta = ({ user }) => {
             id_direc = existingDireccion.id_direccion;
         };
     
-        const updatedUserData = { ...userData, imagen: self.imagen, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento};
+        const updatedUserData = { ...userData, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento};
         setUserDataDefault(userData);
         setIsEditing(false);
+
+        const formDataToSend = new FormData();
+        Object.entries(updatedUserData).forEach(([key, value]) => {
+          formDataToSend.append(key, value);
+        });
     
         if (user.viewingOtherUser == true) {
-            const url = (`/user/updateEmail/${userData.email}/`);
-            const body = updatedUserData;
-            const result = await putData(url, body, token);
+            const result = await putData(`/user/updateEmail/${userData.email}/`, formDataToSend, token);
+            console.log(result);
         } else {
-            const url = (`/user/update/${token}/`);
-            const body = updatedUserData;
-            const result = await putData(url, body, token);
+            const result = await putData(`/user/update/${token}/`, formDataToSend, token);
+            console.log(result);
         }
         fetchData('/direcciones/').then((result) => {
             setDirec(result);
@@ -267,23 +270,37 @@ const Cuenta = ({ user }) => {
     };
 
     const handleFileChange = (file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setUserData((prevData) => ({
-                ...prevData,
-                imagen: reader.result
-            }));
-        };
-        reader.readAsDataURL(file);
+      let valid = true;
+  
+      for (const key in userData) {
+          if (userData[key] === '' || userData[key] === null || userData[key] === undefined) {
+              valid = false;
+              break;
+          }
+      }
+      setUserData((prevData) => {
+          return { ...prevData, imagen: file };
+      });
+      console.log(userData);
+      setGuardarButtonIsValid(valid);
+    };
+
+    const getImageUrl = (image) => {
+      if (image instanceof File) {
+          return URL.createObjectURL(image);
+      }
+      return image;
     };
 
     return (
         <div className="micuenta">
             <h1>
-                <img src={userData.imagen} className="fotoperfil" alt="Perfil" />
                 {isEditing && (
-                    <UploadImage onFileChange={handleFileChange} titulo="Cambiar Imagen" />
+                  <div style={{marginLeft: '10rem'}}>
+                    <UploadImage onFileChange={handleFileChange} usingIcon={true} />
+                  </div>
                 )}
+                <img src={getImageUrl(userData.imagen)} className="fotoperfil" alt="Perfil" />
                 {`Bienvenido ${userDataDefault.nombreusuario}`}
             </h1>
             
