@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { Form } from 'react-bootstrap';
+import { Form, Breadcrumb } from 'react-bootstrap';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
@@ -50,7 +50,7 @@ function Ofertas() {
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
-            } 
+            }
         };
 
         const fetchDataAsync = async () => {
@@ -74,7 +74,7 @@ function Ofertas() {
                 setIsFormValid(ofertaCardRef.current.isFormValid);
             }
         }, 100);
-    
+
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
 
@@ -82,7 +82,7 @@ function Ofertas() {
         return (
             oferta.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             oferta.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            oferta.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            oferta.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             oferta.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             oferta.id_usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -93,24 +93,24 @@ function Ofertas() {
         const getValue = (obj, path) => {
             return path.split('.').reduce((acc, part) => acc && acc[part], obj);
         };
-    
+
         const aValue = getValue(a, orderCriteria);
         const bValue = getValue(b, orderCriteria);
-    
+
         if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
             const aDate = new Date(aValue);
             const bDate = new Date(bValue);
             return aDate - bDate;
         }
-    
+
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
-    
+
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-    
+
         return 0;
     });
 
@@ -176,7 +176,7 @@ function Ofertas() {
             fecha: fecha,
             cantidad: cantidad
         };
-    
+
         try {
             await postData('crear_detalle_oferta/', data, token).then(() => {
                 console.log('Aporte de la oferta creado');
@@ -190,17 +190,19 @@ function Ofertas() {
     };
 
     if (isLoading) {
-        return <div><FullNavbar/><Loading /></div>;
+        return <div><FullNavbar /><Loading /></div>;
     }
 
     return (
         <div>
             <FullNavbar selectedPage='Ofertas' />
             <div className='margen-arriba'>
-                <h2 style={{marginLeft: '7rem'}}>Ofertas</h2>
+                <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
+                    <Breadcrumb.Item active>Ofertas</Breadcrumb.Item>
+                </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='oferta-list'>
-                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                         <Modal
                             openButtonText='¿No encuentra su oferta? Añádala'
                             openButtonWidth='20'
@@ -220,7 +222,7 @@ function Ofertas() {
                             sortedOfertas.map(oferta => (
                                 <div key={oferta.id_oferta}>
                                     <GenericCard
-                                        onClick={() => {setSelectedOferta(oferta), setShowTakeOfertaModal(true)}}
+                                        onClick={() => { setSelectedOferta(oferta), setShowTakeOfertaModal(true) }}
                                         titulo={`${oferta.id_producto.nombre}`}
                                         foto={oferta.id_producto.imagen}
                                         descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
@@ -231,7 +233,7 @@ function Ofertas() {
                                 </div>
                             ))
                         ) : (
-                            <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay ofertas disponibles.</p>
+                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
                         )}
                     </div>
                 </div>
@@ -242,7 +244,7 @@ function Ofertas() {
                     showButton={false}
                     showModal={showTakeOfertaModal}
                     saveButtonText='Tomar'
-                    handleCloseModal={() => {setShowTakeOfertaModal(false), setSelectedOferta(null)}}
+                    handleCloseModal={() => { setShowTakeOfertaModal(false), setSelectedOferta(null) }}
                     title='Tomar Oferta'
                     handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
                     content={
