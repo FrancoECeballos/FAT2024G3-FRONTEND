@@ -9,39 +9,24 @@ import putData from '../../../functions/putData.jsx';
 import deleteData from '../../../functions/deleteData.jsx';
 import './Cuenta.scss';
 
+import NullToEmpty from '../../../functions/nulltoempty.jsx'
 import SendButton from '../../buttons/send_button/send_button.jsx';
+import UploadImage from '../../buttons/upload_image/uploadImageButton.jsx';
 import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
-
 
 const Cuenta = ({ user }) => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [isEditing, setIsEditing] = useState(false);
     const [direc, setDirec] = useState([]);
-
     const [userObras, setUserObras] = useState([]);
     const [obras, setObras] = useState([]);
     const [obraID, setObraID] = useState([]);
     const [selectedObject, setSelectedObject] = useState('');
     const today = new Date().toISOString().split('T')[0];
-
     const [GuardarButtonIsValid, setGuardarButtonIsValid] = useState(false);
     const [AñadirButtonIsValid, setAñadirButtonIsValid] = useState(false);
-
     const [deleteUserConfirmation, setDeleteUserConfirmation] = useState(false);
-
-    const NullToEmpty = (data) => {
-        if (data === null || data === undefined) return "";
-        if (typeof data === 'object') {
-            const transformedData = {};
-            for (const key in data) {
-                transformedData[key] = NullToEmpty(data[key]);
-            }
-            return transformedData;
-        }
-        return data;
-    };
-
     const [userData, setUserData] = useState({
         "id_usuario": "",
         "nombre": "",
@@ -58,11 +43,9 @@ const Cuenta = ({ user }) => {
             "calle": "",
             "numero": "",
         },
-        "id_tipodocumento": ""
-    }); useEffect(() => {
-        const { cai, telnum, ...finalData } = userData;
-    }, [userData]);
-
+        "id_tipodocumento": "",
+        "imagen": ""
+    });
     const [userDataDefault, setUserDataDefault] = useState({
         "id_usuario": "",
         "nombre": "",
@@ -79,63 +62,62 @@ const Cuenta = ({ user }) => {
             "calle": "",
             "numero": "",
         },
-        "id_tipodocumento": ""
-    }); useEffect(() => {
-        const { cai, telnum, ...finalData } = userDataDefault;
-    }, [userDataDefault]);
+        "id_tipodocumento": "",
+        "imagen": ""
+    });
 
     useEffect(() => {
-      const updateUserState = (result) => {
-          const transformedData = NullToEmpty(result);
-          setUserData(transformedData);
-          setUserDataDefault(transformedData);
-      };
+        const updateUserState = (result) => {
+            const transformedData = NullToEmpty(result);
+            setUserData(transformedData);
+            setUserDataDefault(transformedData);
+        };
 
-      const fetchObras = (url) => {
-          fetchData(url, token).then((obrasResult) => {
-              setUserObras(obrasResult);
-              setObraID([]);
-      
-              const fetchPromises = obrasResult.map(obra =>
-                  fetchData(`/obra/${obra.id_obra}`, token).then(obraData => {
-                      return { ...obraData, id_tipousuario: obra.id_tipousuario };
-                  })
-              );
-      
-              Promise.all(fetchPromises).then((results) => {
-                  const flattenedResults = results.map(result => {
-                      if (result[0]) {
-                          return {
-                              ...result[0],
-                              id_tipousuario: result.id_tipousuario
-                          };
-                      }
-                      return result;
-                  });
-                  setObraID(flattenedResults);
-              });
-          });
-      };
+        const fetchObras = (url) => {
+            fetchData(url, token).then((obrasResult) => {
+                setUserObras(obrasResult);
+                setObraID([]);
+        
+                const fetchPromises = obrasResult.map(obra =>
+                    fetchData(`/obra/${obra.id_obra}`, token).then(obraData => {
+                        return { ...obraData, id_tipousuario: obra.id_tipousuario };
+                    })
+                );
+        
+                Promise.all(fetchPromises).then((results) => {
+                    const flattenedResults = results.map(result => {
+                        if (result[0]) {
+                            return {
+                                ...result[0],
+                                id_tipousuario: result.id_tipousuario
+                            };
+                        }
+                        return result;
+                    });
+                    setObraID(flattenedResults);
+                });
+            });
+        };
 
-      if (!token) {
-          navigate('/login');
-          return;
-      }
+        if (!token) {
+            navigate('/login');
+            return;
+        }
 
-      updateUserState(user.viewedUser);
-      fetchData('/direcciones/').then((result) => {
-          setDirec(result);
-      });
+        updateUserState(user.viewedUser);
+        fetchData('/direcciones/').then((result) => {
+            setDirec(result);
+        });
 
-      if (user.viewingOtherUser) {
-          fetchObras(`/user/obrasEmail/${user.viewedUser.email}`);
-          const obrasUrl = user.viewingUser.is_superuser ? `/obra/` : `/obra/user/${token}/`;
-          fetchData(obrasUrl, token).then((result) => {
-              setObras(result);
-          });
-      } else {
-          fetchObras(`/user/obrasToken/${token}`);
-      }
+        if (user.viewingOtherUser) {
+            fetchObras(`/user/obrasEmail/${user.viewedUser.email}`);
+            const obrasUrl = user.viewingUser.is_superuser ? `/obra/` : `/obra/user/${token}/`;
+            fetchData(obrasUrl, token).then((result) => {
+                setObras(result);
+            });
+        } else {
+            fetchObras(`/user/obrasToken/${token}`);
+        }
 
     }, [token, navigate, user]);
 
@@ -283,11 +265,26 @@ const Cuenta = ({ user }) => {
             setDirec(result);
         });
     };
-        return (
-          <div className="micuenta">
+
+    const handleFileChange = (file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setUserData((prevData) => ({
+                ...prevData,
+                imagen: reader.result
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div className="micuenta">
             <h1>
-              <img src={userData.imagen} className="fotoperfil" alt="Perfil" />
-              {`Bienvenido ${userDataDefault.nombreusuario}`}
+                <img src={userData.imagen} className="fotoperfil" alt="Perfil" />
+                {isEditing && (
+                    <UploadImage onFileChange={handleFileChange} titulo="Cambiar Imagen" />
+                )}
+                {`Bienvenido ${userDataDefault.nombreusuario}`}
             </h1>
             
             <Row className="filainputs">
@@ -518,8 +515,8 @@ const Cuenta = ({ user }) => {
                 )}
               </Col>
             </Row>
-          </div>
-        );
-      };
-      
-      export default Cuenta;
+        </div>
+    );
+};
+
+export default Cuenta;
