@@ -257,9 +257,8 @@ const RegisterCard = () => {
       formDataToSend.append(key, value);
     });
   
-    const url = '/register/';
     try {
-      const result = await postData(url, formDataToSend);
+      const result = await postData('/register/', formDataToSend);
       if (result && result.token) {
         Cookies.set('token', result.token, { expires: 7, secure: true });
         navigate('/');
