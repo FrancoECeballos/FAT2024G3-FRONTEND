@@ -9,6 +9,7 @@ import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx'
 import SendButton from '../../../components/buttons/send_button/send_button.jsx';
 import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 import Footer from '../../../components/footer/Footer.jsx';
+import Loading from '../../../components/loading/loading.jsx';
 
 import fetchData from '../../../functions/fetchData';
 
@@ -30,6 +31,9 @@ function Categories() {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const [formData, setFormData] = useState({
         "imagen": null,
@@ -69,6 +73,8 @@ function Categories() {
             const file = new File([blob], 'no_image.png', { type: 'image/png' });
             setFormData((prevData) => ({ ...prevData, imagen: file }));
         })};
+
+        setIsLoading(false);
     }, [token, navigate, stockId]);
 
     const filteredCategories = categories.filter(category => {
@@ -163,8 +169,12 @@ function Categories() {
 
     return (
         <div>
-            <FullNavbar selectedPage='Stock'/>
+            <FullNavbar selectedPage='Stock' />
             <div className='margen-arriba'>
+                {isLoading ? (
+                    <Loading />
+                ) : (
+                <div>
                 <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
                     <Breadcrumb.Item href="/stock">Stock</Breadcrumb.Item>
                     <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
@@ -195,9 +205,11 @@ function Categories() {
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
                 )}
                 </div>
+                <Footer/>
             </div>
-        <Footer/>
+            )}
         </div>
+    </div>
     );
 }
 

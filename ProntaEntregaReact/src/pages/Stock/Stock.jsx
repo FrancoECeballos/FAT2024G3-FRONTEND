@@ -87,37 +87,39 @@ function Stock() {
         navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } });
     }
 
-    if (isLoading) {
-        return <div><FullNavbar /><Loading /></div>;
-    }
-
     return (
         <div>
             <FullNavbar selectedPage='Stock' />
             <div className='margen-arriba'>
-                <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
-                    <Breadcrumb.Item active>Stock</Breadcrumb.Item>
-                </Breadcrumb>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                <div className='cardstock'>
-                    {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
-                        sortedObras.map(obra => (
-                            <GenericCard
-                                onClick={() => navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } })}
-                                key={obra.id_stock}
-                                foto={obra.id_obra.imagen}
-                                titulo={obra.id_obra.nombre}
-                                descrip1={`Usuarios Registrados: ${obra.id_obra.usuarios_registrados}`}
-                                descrip2={`${obra.id_obra.id_direccion.localidad}, ${obra.id_obra.id_direccion.calle}, ${obra.id_obra.id_direccion.numero}`}
-                            />
-                        ))
-                    ) : (
-                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
-                    )}
-                </div>
-            </div>
-            <Footer />
+                {isLoading ? (
+                    <Loading />
+                ) : (
+                <>
+                    <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                            <Breadcrumb.Item active>Stock</Breadcrumb.Item>
+                        </Breadcrumb>
+                        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                        <div className='cardstock'>
+                            {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
+                                sortedObras.map(obra => (
+                                    <GenericCard
+                                        onClick={() => navigate(`/obra/${obra.id_stock}/categoria`, { state: { id_stock: `${obra.id_stock}` } })}
+                                        key={obra.id_stock}
+                                        foto={obra.id_obra.imagen}
+                                        titulo={obra.id_obra.nombre}
+                                        descrip1={`Usuarios Registrados: ${obra.id_obra.usuarios_registrados}`}
+                                        descrip2={`${obra.id_obra.id_direccion.localidad}, ${obra.id_obra.id_direccion.calle}, ${obra.id_obra.id_direccion.numero}`}
+                                    />
+                                ))
+                            ) : (
+                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
+                            )}
+                        <Breadcrumb/>
+                    </div>
+                <Footer />
+            </>)}
         </div>
+    </div>
     );
 }
 

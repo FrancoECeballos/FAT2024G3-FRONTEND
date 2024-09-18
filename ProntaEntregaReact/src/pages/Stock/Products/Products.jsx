@@ -297,8 +297,11 @@ function Products() {
     }
     return (
         <div>
-            <FullNavbar selectedPage='Stock'/>
+            <FullNavbar selectedPage='Stock' />
             <div className='margen-arriba'>
+                {isLoading ? (
+                    <Loading />
+                ) : (<div>
                 <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
                     <Breadcrumb.Item href="/stock">Stock</Breadcrumb.Item>
                     <Breadcrumb.Item href={`/obra/${stockId}/categoria`}>{currentObra}</Breadcrumb.Item>
@@ -331,7 +334,7 @@ function Products() {
                                     <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                 </InputGroup>
                             }
-                            {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
+                        https://app.getgrass.io/register/?referralCode=JpEiN51L_OG3LXR    {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
                                 <>
                                     <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
                                     <InputGroup className="mb-2">
@@ -415,8 +418,9 @@ function Products() {
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay Productos disponibles.</p>
                 )}
                 </div>
-            </div>
-        </div>
+            </div>)}
+        </div>  
+    </div>
     );
 }
 

@@ -45,21 +45,20 @@ function MiCuenta(){
         updateUser();
     }, [token]);
 
-    if (isLoading) {
-        return <div><FullNavbar/><Loading /></div>;
-    }
-
     return (
         <div  style={{backgroundColor: '#ECECEC',overflowX:"hidden", width:"100%"}}>
-            <FullNavbar/>
+            <FullNavbar selectedPage='Pedidos' />
+                {isLoading ? (
+                    <Loading />
+                ) : (
             <Row style={{ height: "100vh" }}>
-                <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
+                <Col  xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
                     <Sidebar selectedPage={"micuenta"} user={user}/>
                 </Col>
                 <Col className='colcuenta' xs={12} sm={9} md={9} lg={6} xl={6} xxl={6} >
                     <Cuenta user={user}/>
                 </Col>
-            </Row>
+            </Row>)}
         </div>
     );
 };

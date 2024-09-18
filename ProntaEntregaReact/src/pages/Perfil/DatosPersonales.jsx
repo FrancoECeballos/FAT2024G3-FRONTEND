@@ -46,13 +46,13 @@ function Datospersonales(){
     }
 
     return (
-        <div style={{backgroundColor: '#ECECEC'}}>
+        <div style={{backgroundColor: '#ECECEC', overflowX:"hidden",width:"100%"}}>
             <FullNavbar/>
-            <Row style={{ height: "100vh" }}>
-                <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
+            <Row style={{height:"100hv"}}>
+                <Col  xs={12} sm={3} md={3} lg={3} xl={3} xxl={3} >
                     <Sidebar selectedPage={"datos_personales"} user={user}/>
                 </Col>
-                <Col xs={12} sm={9} md={9} lg={6} xl={6} xxl={6} >
+                <Col className='colcuenta' style={{width:"75%"}} xs={12} sm={9} md={9} lg={6} xl={6} xxl={6} >
                     <Datos user={user}/>
                 </Col>
             </Row>
