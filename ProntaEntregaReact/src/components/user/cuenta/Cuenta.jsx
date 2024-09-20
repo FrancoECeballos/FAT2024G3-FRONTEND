@@ -254,7 +254,11 @@ const Cuenta = ({ user }) => {
 
     const formDataToSend = new FormData();
     Object.entries(updatedUserData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
+      if (key === 'imagen' && typeof value === 'string') {
+        null
+      } else {
+        formDataToSend.append(key, value);
+      }
     });
 
     if (user.viewingOtherUser == true) {
