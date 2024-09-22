@@ -21,6 +21,7 @@ import Obras from './pages/Obras/Obras.jsx';
 import Novedades from './pages/Novedades/Novedades.jsx';
 import ObrasAutos from './pages/Autos/ObrasAutos.jsx';
 import Autos from './pages/Autos/Autos.jsx';
+import Entregas from './pages/Entregas/Entregas.jsx';
 import Landing from './pages/Landing/Landing.jsx';
 import OneProduct from './pages/Stock/OneProduct/OneProduct.jsx';
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/oferta" element={<Ofertas />} />
         <Route path="/obras" element={<Obras />} />
         <Route path="/novedades" element={<Novedades />} />
+        <Route path="/entregas" element={<Entregas />} />
         <Route path="/vehiculos" element={<ObrasAutos />} />
         <Route path="/vehiculos/:obraId" element={<Autos />} />
         <Route path="/landing" element={<Landing />} />

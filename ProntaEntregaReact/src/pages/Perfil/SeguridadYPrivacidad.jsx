@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import { Col, Row, Form, Button, Alert } from 'react-bootstrap';
+import { Col, Row, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 import Sidebar from '../../components/user/sidebar/Sidebar_perfil';
 import fetchData from '../../functions/fetchData.jsx';
+import ChangePasswordCard from "../../components/change_password/change_password_card/ChangePasswordCard.jsx";
 
 import { useLocation } from 'react-router-dom';
 import Loading from '../../components/loading/loading.jsx';
@@ -18,9 +19,6 @@ function SeguridadYPrivacidad(){
     const token = Cookies.get('token');
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState({viewedUser: {}, viewingUser: {}, viewingOtherUser: false});
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [newPasswordRepeat, setNewPasswordRepeat] = useState('');
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
 
@@ -49,8 +47,7 @@ function SeguridadYPrivacidad(){
         updateUser();
     }, [token, navigate, location.state]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (oldPassword, newPassword, newPasswordRepeat) => {
         setMessage(null);
         setError(null);
 
@@ -60,17 +57,20 @@ function SeguridadYPrivacidad(){
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/cambiar_contrasenia/', {
-                old_password: oldPassword,
-                new_password: newPassword,
-                new_password_repeat: newPasswordRepeat
-            }, {
+            const response = await fetchData('/cambiar_contrasenia/', token, {
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token${token}`
+                },
+                body: JSON.stringify({
+                    old_password: oldPassword,
+                    new_password: newPassword,
+                    new_password_repeat: newPasswordRepeat
+                })
             });
 
-            setMessage(response.data.success);
+            setMessage(response.success);
         } catch (err) {
             setError(err.response.data.error);
         }
@@ -92,38 +92,7 @@ function SeguridadYPrivacidad(){
                         <h2>Cambiar Contraseña</h2>
                         {message && <Alert variant="success">{message}</Alert>}
                         {error && <Alert variant="danger">{error}</Alert>}
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="formOldPassword">
-                                <Form.Label>Contraseña Antigua</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="formNewPassword">
-                                <Form.Label>Nueva Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="formNewPasswordRepeat">
-                                <Form.Label>Repetir Nueva Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={newPasswordRepeat}
-                                    onChange={(e) => setNewPasswordRepeat(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <Button variant="primary" type="submit">
-                                Cambiar Contraseña
-                            </Button>
-                        </Form>
+                        <ChangePasswordCard user={user.viewingUser} onSubmit={handleSubmit} />
                     </div>
                 </Col>
             </Row>
