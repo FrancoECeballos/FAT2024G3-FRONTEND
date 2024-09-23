@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
 import Cookies from 'js-cookie';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
 
 import './ChangePasswordCard.scss';
 import UserDefault from '../../../assets/user_default.png';
@@ -14,36 +18,45 @@ const ChangePasswordCard = ({ user }) => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [newPasswordRepeat, setNewPasswordRepeat] = useState('');
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showNewPasswordRepeat, setShowNewPasswordRepeat] = useState(false);
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
-    const token = Cookies.get('token')?.trim(); // Elimina espacios adicionales del token
+    const navigate = useNavigate();
+    const token = Cookies.get('token');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage(null);
         setError(null);
 
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
         if (newPassword !== newPasswordRepeat) {
             setError('Las nuevas contraseñas no coinciden.');
             return;
         }
 
-        try {
-            const response = await postData('/cambiar_contrasenia/', token, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    old_password: oldPassword,
-                    new_password: newPassword,
-                    new_password_repeat: newPasswordRepeat
-                })
-            });
+        if (!token || typeof token !== 'string' || token.includes(' ')) {
+            setError('Token inválido.');
+            return;
+        }
 
+        const data = {
+            old_password: oldPassword,
+            new_password: newPassword,
+            new_password_repeat: newPasswordRepeat
+        };
+
+        try {
+            const response = await postData('/cambiar_contrasenia/', data, token);
             if (response.success) {
                 setMessage(response.success);
+                window.location.reload();
             } else {
                 setError(response.error);
             }
@@ -54,10 +67,10 @@ const ChangePasswordCard = ({ user }) => {
 
     const getImageUrl = (image) => {
         if (image instanceof File) {
-          return URL.createObjectURL(image);
+            return URL.createObjectURL(image);
         }
         return image;
-      };
+    };
 
     return (
         <Container style={{display: 'flex'}} className="d-flex justify-content-center align-items-center vh-100 change-password-container">
@@ -73,37 +86,61 @@ const ChangePasswordCard = ({ user }) => {
                         </div>
                         {message && <Alert variant="success">{message}</Alert>}
                         {error && <Alert variant="danger">{error}</Alert>}
-                        <Form.Group>
+                        <Form.Group className="position-relative">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem'}}>Contraseña Antigua</Form.Label>
-                            <Form.Control
-                                type="password"
-                                value={oldPassword}
-                                onChange={(e) => setOldPassword(e.target.value)}
-                                style={{ width:'100%', borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
-                                required
-                            />
+                            <InputGroup>
+                                <Form.Control
+                                    type={showOldPassword ? "text" : "password"}
+                                    value={oldPassword}
+                                    onChange={(e) => setOldPassword(e.target.value)}
+                                    style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
+                                    required
+                                />
+                                <InputGroup.Text
+                                    onClick={() => setShowOldPassword(!showOldPassword)}
+                                    style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
+                                >
+                                    {showOldPassword ? <BsEyeSlash /> : <BsEye />}
+                                </InputGroup.Text>
+                            </InputGroup>
                         </Form.Group>
                         
-                        <Form.Group>
+                        <Form.Group className="position-relative">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem'}}>Nueva Contraseña</Form.Label>
-                            <Form.Control
-                                type="password"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                style={{ width:'100%', borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
-                                required
-                            />
+                            <InputGroup>
+                                <Form.Control
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
+                                    required
+                                />
+                                <InputGroup.Text
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                    style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
+                                >
+                                    {showNewPassword ? <BsEyeSlash /> : <BsEye />}
+                                </InputGroup.Text>
+                            </InputGroup>
                         </Form.Group>
                         
-                        <Form.Group>
+                        <Form.Group className="position-relative">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem'}}>Repetir Nueva Contraseña</Form.Label>
-                            <Form.Control
-                                type="password"
-                                value={newPasswordRepeat}
-                                onChange={(e) => setNewPasswordRepeat(e.target.value)}
-                                style={{ width:'100%', borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
-                                required
-                            />
+                            <InputGroup>
+                                <Form.Control
+                                    type={showNewPasswordRepeat ? "text" : "password"}
+                                    value={newPasswordRepeat}
+                                    onChange={(e) => setNewPasswordRepeat(e.target.value)}
+                                    style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
+                                    required
+                                />
+                                <InputGroup.Text
+                                    onClick={() => setShowNewPasswordRepeat(!showNewPasswordRepeat)}
+                                    style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
+                                >
+                                    {showNewPasswordRepeat ? <BsEyeSlash /> : <BsEye />}
+                                </InputGroup.Text>
+                            </InputGroup>
                         </Form.Group>
                         
                         <div className="d-flex justify-content-end" style={{marginTop: '2rem'}}>
