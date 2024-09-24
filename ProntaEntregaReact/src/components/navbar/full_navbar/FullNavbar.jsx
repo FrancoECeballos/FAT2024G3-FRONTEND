@@ -96,7 +96,7 @@ function FullNavbar({ selectedPage }) {
           <Nav.Link className='naving' onClick={() => navigate('/stock')}> {selectedPage === 'Stock' ? <strong>Stock</strong> : 'Stock'}</Nav.Link>
           <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>{selectedPage === 'Pedidos' ? <strong>Pedidos</strong> : 'Pedidos'}</Nav.Link>
           <Nav.Link className='naving' onClick={() => navigate('/oferta')}>{selectedPage === 'Ofertas' ? <strong>Ofertas</strong> : 'Ofertas'}</Nav.Link>
-          <Nav.Link className='naving'>{selectedPage === 'Entregas' ? <strong>Entregas</strong> : 'Entregas'}</Nav.Link>
+          <Nav.Link className='naving' onClick={() => navigate('/entregas')}>{selectedPage === 'Entregas' ? <strong>Entregas</strong> : 'Entregas'}</Nav.Link>
           <Nav.Link className='naving' onClick={() => navigate('/vehiculos')}>{selectedPage === 'Autos' ? <strong>Vehículos</strong> : 'Vehículos'}</Nav.Link>
         </Nav>
         <div className='botons-derecha'>
