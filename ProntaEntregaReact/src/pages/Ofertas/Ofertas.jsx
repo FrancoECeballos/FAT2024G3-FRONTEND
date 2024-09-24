@@ -204,7 +204,7 @@ function Ofertas() {
                 <div className='oferta-list'>
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                         <Modal
-                            openButtonText='Crear una nueva Oferta'
+                            openButtonText='¿No encuentra su Oferta? Añadala'
                             openButtonWidth='20'
                             title='Nueva Oferta'
                             saveButtonText='Crear'

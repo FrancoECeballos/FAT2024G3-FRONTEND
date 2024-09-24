@@ -294,7 +294,7 @@ function AutosComponent() {
                             );
                         })
                     ) : (
-                        <p>No se encontraron autos.</p>
+                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay vehiculos disponibles.</p>
                     )}
                 </div>
             </div>

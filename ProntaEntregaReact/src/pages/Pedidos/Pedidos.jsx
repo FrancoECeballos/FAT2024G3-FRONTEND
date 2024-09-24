@@ -110,7 +110,7 @@ function Pedidos() {
     };
 
     const filters = [
-        { type: 'obra.nombre', label: 'Nombre de la Obra' },
+        { type: 'pedido.id_obra.nombre', label: 'Nombre de la Obra' },
         { type: 'pedido.fechainicio', label: 'Fecha Inicio' },
         { type: 'pedido.fechavencimiento', label: 'Fecha Vencimiento' },
         { type: 'pedido.id_producto.nombre', label: 'Nombre del Producto' },
@@ -136,7 +136,7 @@ function Pedidos() {
     }).filter(obra => obra.pedidos.length > 0);
 
     const sortedPedidos = filteredPedidos.map(obra => {
-        if (orderCriteria === 'obra.nombre') {
+        if (orderCriteria === 'pedido.id_obra.nombre') {
             const sortedPedidosInObra = [...obra.pedidos].sort((a, b) => {
                 if (!orderCriteria) return 0;
                 const getValue = (obj, path) => {
@@ -199,18 +199,19 @@ function Pedidos() {
         }
     });
 
-    const filteredPedidosDados = pedidosDados.filter(pedidoDado => {
-        return pedidoDado.pedidos.some(pedido => {
+    const filteredPedidosDados = pedidosDados.map(pedidoDado => {
+        const filteredInnerPedidos = pedidoDado.pedidos.filter(pedido => {
             return filters.some(filter => {
                 const filterPath = filter.type.split('.').slice(1).join('.');
                 const value = getNestedValue(pedido, filterPath);
                 return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
             });
         });
-    });
+        return { ...pedidoDado, pedidos: filteredInnerPedidos };
+    }).filter(pedidoDado => pedidoDado.pedidos.length > 0);
     
     const sortedPedidosDados = filteredPedidosDados.sort((a, b) => {
-        if (orderCriteria === 'obra.nombre') {
+        if (orderCriteria === 'pedido.id_obra.nombre') {
             const getValue = (obj, path) => {
                 return path.split('.').reduce((acc, part) => acc && acc[part], obj);
             };
@@ -276,7 +277,7 @@ function Pedidos() {
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                             <Modal
                                 tamaño={'lg'}
-                                openButtonText='Crear un nuevo Pedido'
+                                openButtonText='¿No encuentra su Pedido? Añadalo'
                                 openButtonWidth='20'
                                 title='Nuevo Pedido'
                                 saveButtonText='Crear'
