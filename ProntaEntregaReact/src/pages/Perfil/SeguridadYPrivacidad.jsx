@@ -19,8 +19,6 @@ function SeguridadYPrivacidad(){
     const token = Cookies.get('token');
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState({viewedUser: {}, viewingUser: {}, viewingOtherUser: false});
-    const [message, setMessage] = useState(null);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!token) {
@@ -47,35 +45,6 @@ function SeguridadYPrivacidad(){
         updateUser();
     }, [token, navigate, location.state]);
 
-    const handleSubmit = async (oldPassword, newPassword, newPasswordRepeat) => {
-        setMessage(null);
-        setError(null);
-
-        if (newPassword !== newPasswordRepeat) {
-            setError('Las nuevas contraseñas no coinciden.');
-            return;
-        }
-
-        try {
-            const response = await fetchData('/cambiar_contrasenia/', token, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token${token}`
-                },
-                body: JSON.stringify({
-                    old_password: oldPassword,
-                    new_password: newPassword,
-                    new_password_repeat: newPasswordRepeat
-                })
-            });
-
-            setMessage(response.success);
-        } catch (err) {
-            setError(err.response.data.error);
-        }
-    };
-
     if (isLoading) {
         return <div><FullNavbar/><Loading /></div>;
     }
@@ -89,10 +58,7 @@ function SeguridadYPrivacidad(){
                 </Col>
                 <Col xs={12} sm={9} md={9} lg={9} xl={9} xxl={9}>
                     <div>
-                        <h2>Cambiar Contraseña</h2>
-                        {message && <Alert variant="success">{message}</Alert>}
-                        {error && <Alert variant="danger">{error}</Alert>}
-                        <ChangePasswordCard user={user.viewingUser} onSubmit={handleSubmit} />
+                        <ChangePasswordCard user={user.viewingUser}/>
                     </div>
                 </Col>
             </Row>
