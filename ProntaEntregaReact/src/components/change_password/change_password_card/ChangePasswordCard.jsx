@@ -56,7 +56,6 @@ const ChangePasswordCard = ({ user }) => {
             const response = await postData('/cambiar_contrasenia/', data, token);
             if (response.success) {
                 setMessage(response.success);
-                window.location.reload();
             } else {
                 setError(response.error);
             }
@@ -84,8 +83,6 @@ const ChangePasswordCard = ({ user }) => {
                             </div>
                             <h2 className="font-rubik" style={{margin:'2.8rem', fontSize: '1.5rem'}}>{user.nombreusuario}</h2>
                         </div>
-                        {message && <Alert variant="success">{message}</Alert>}
-                        {error && <Alert variant="danger">{error}</Alert>}
                         <Form.Group className="position-relative">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem'}}>Contraseña Antigua</Form.Label>
                             <InputGroup>
