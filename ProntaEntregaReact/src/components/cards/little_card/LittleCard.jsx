@@ -4,7 +4,7 @@ import './LittleCard.scss';
 
 import notPic from "../../../assets/no_image.png";
 
-function LittleCard({ foto, titulo, descrip1, selected, onSelect, hoverable = true }) {
+function LittleCard({ foto, titulo, descrip1, descrip2, selected, onSelect, hoverable = true }) {
   
   const handleCardClick = () => {
     if (onSelect) {
@@ -22,7 +22,8 @@ function LittleCard({ foto, titulo, descrip1, selected, onSelect, hoverable = tr
       <Card.Body>
         <Card.Title>{titulo}</Card.Title>
         <Card.Text style={{maxWidth:"15rem",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
-          {descrip1}
+          {descrip1} <br />
+          {descrip2}
         </Card.Text>
       </Card.Body>
     </Card>
