@@ -63,7 +63,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         let transformedValue = value;
     
         console.log('Input change:', name, value);
-
+    
         switch (name) {
             case 'cantidad':
             case 'id_obra':
@@ -77,8 +77,15 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         setOfertaForm(prevOferta => {
             let updatedForm = { 
                 ...prevOferta, 
-                [name]: transformedValue 
+                [name]: transformedValue
             };
+            
+            if (updatedForm.fechainicio > updatedForm.fechavencimiento) {
+                updatedForm = { 
+                    ...updatedForm, 
+                    "fechavencimiento": updatedForm.fechainicio
+                };
+            }
     
             if (name === 'id_obra') {
                 updatedForm.id_producto = "";
@@ -164,7 +171,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
 
                     <Form.Group className="mb-2" controlId="formBasicFechaFin">
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
-                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} value={ofertaForm.fechavencimiento} min={ofertaForm.fechainicio} />
                         <p style={{fontSize:"0.7rem", margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
                         <Form.Label id='errorFechavencimiento' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                     </Form.Group>

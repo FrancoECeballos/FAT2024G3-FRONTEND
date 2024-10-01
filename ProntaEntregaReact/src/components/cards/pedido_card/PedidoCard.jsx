@@ -75,7 +75,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     
         switch (name) {
             case 'cantidad':
-            case 'urgente':
             case 'id_obra':
             case 'id_producto':
                 transformedValue = parseInt(value, 10);
@@ -87,9 +86,16 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         setPedidoForm(prevPedido => {
             let updatedForm = { 
                 ...prevPedido, 
-                [name]: transformedValue, 
+                [name]: transformedValue,
                 obras: name === 'id_obra' ? [] : prevPedido.obras
             };
+            
+            if (updatedForm.fechainicio > updatedForm.fechavencimiento) {
+                updatedForm = { 
+                    ...updatedForm, 
+                    "fechavencimiento": updatedForm.fechainicio
+                };
+            }
     
             if (name === 'id_obra') {
                 updatedForm.id_producto = "";
@@ -244,7 +250,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
 
                             <Form.Group className="mb-2" controlId="formBasicFechaFin">
                                 <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
-                                <Form.Control name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                                <Form.Control name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} value={pedidoForm.fechavencimiento} min={pedidoForm.fechainicio} />
                                 <p style={{fontSize: '0.7rem', margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
                                 <Form.Label id='errorFechavencimiento' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                             </Form.Group>
