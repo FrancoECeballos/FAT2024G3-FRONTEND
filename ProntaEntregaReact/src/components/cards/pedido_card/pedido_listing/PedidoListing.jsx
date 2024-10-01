@@ -68,7 +68,14 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         });
     };
 
-    const createAportePedido = (pedidoId, usuarioId, fecha, cantidad) => {
+    const createAportePedido = async (pedidoId, usuarioId, fecha, cantidad) => {
+        const pedido = sortedPedidos.flatMap(obra => obra.pedidos).find(pedido => pedido.id_pedido === pedidoId);
+        const cantidadRestante = pedido.cantidad - pedido.progreso;
+        if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
+            setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${pedido.id_producto.unidadmedida}`);
+            return false;
+        }
+
         const data = {
             id_pedido: pedidoId,
             id_usuario: usuarioId,
@@ -77,11 +84,15 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
             cantidad: parseInt(cantidad, 10)
         };
 
-        postData('crear_aporte_pedido/', data, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
-            console.error('Error creating aporte pedido:', error);
-        });
+        try {
+            await postData('crear_aporte_pedido/', data, token).then(() => {
+                window.location.reload();
+                return true;
+            });
+        } catch (error) {
+            console.error('Error creando el aporte del pedido:', error);
+            return false;
+        }
     };
 
     if (isLoading) {
@@ -130,11 +141,11 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 showDeleteButton={shouldShowButtons}
                 saveButtonShown={shouldShowButtons}
                 showModal={Object.keys(selectedPedido).length > 0}
-                saveButtonText={'Tomar'}
+                saveButtonText='Tomar'
                 handleCloseModal={() => setSelectedPedido({})}
                 deleteFunction={() => deletePedido(selectedPedido.id_pedido)}
-                deleteButtonText={'Rechazar'}
-                title={'Tomar Pedido'}
+                deleteButtonText='Rechazar'
+                title='Tomar Pedido'
                 handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
                 content={
                     <div>
@@ -229,7 +240,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                                 )
                                             )}
                                         </Form.Control>
-                                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                                        {error && <p style={{ color: 'red', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
                                     </Form.Group>
                                 )}
                             </>

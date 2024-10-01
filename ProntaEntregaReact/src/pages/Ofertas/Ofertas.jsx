@@ -349,7 +349,7 @@ function Ofertas() {
                                         </Form.Control>
                                 </>
                             )}
-                            {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
+                            {error && <p style={{ color: 'red', marginTop: '0.5rem', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
                         </div>
                     }
                 />
