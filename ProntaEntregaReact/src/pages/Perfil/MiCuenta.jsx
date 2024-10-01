@@ -47,7 +47,7 @@ function MiCuenta(){
 
     return (
         <div  style={{backgroundColor: '#ECECEC',overflowX:"hidden", width:"100%"}}>
-            <FullNavbar selectedPage='Pedidos' />
+            <FullNavbar/>
                 {isLoading ? (
                     <Loading />
                 ) : (
