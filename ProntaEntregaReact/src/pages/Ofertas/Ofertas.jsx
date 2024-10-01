@@ -181,7 +181,7 @@ function Ofertas() {
         }
     };
 
-    const createAporteOferta = async (ofertaId, usuarioId, fecha, cantidad, obra) => {
+    const createAporteOferta = async (ofertaId, usuarioId, obra, cantidad, fechaAportado, fechaEntrega, vehiculo) => {
         const oferta = ofertas.find(oferta => oferta.id_oferta === ofertaId);
         const cantidadRestante = oferta.cantidad - oferta.progreso;
 
@@ -191,11 +191,13 @@ function Ofertas() {
         }
 
         const data = {
+            cantidad: parseInt(cantidad, 10),
+            fechaAportado: fechaAportado,
+            fechaEntrega: fechaEntrega,
             id_oferta: ofertaId,
             id_usuario: usuarioId,
             id_obra: obra.id_obra,
-            fecha: fecha,
-            cantidad: cantidad
+            id_vehiculo: vehiculo
         };
 
         try {
@@ -276,7 +278,7 @@ function Ofertas() {
                     saveButtonText='Tomar'
                     handleCloseModal={() => { setShowTakeOfertaModal(false), setSelectedOferta(null) }}
                     title='Tomar Oferta'
-                    handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad, selectedObra)}
+                    handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, selectedObra, cantidad, new Date().toISOString().split('T')[0], fechaEntrega, selectedVehiculo)}
                     content={
                         <div>
                             <GenericCard

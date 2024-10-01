@@ -68,7 +68,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         });
     };
 
-    const createAportePedido = async (pedidoId, usuarioId, fecha, cantidad) => {
+    const createAportePedido = async (pedidoId, usuarioId, cantidad, fechaAportado, fechaEntrega, vehiculo) => {
         const pedido = sortedPedidos.flatMap(obra => obra.pedidos).find(pedido => pedido.id_pedido === pedidoId);
         const cantidadRestante = pedido.cantidad - pedido.progreso;
         if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
@@ -77,11 +77,13 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         }
 
         const data = {
+            cantidad: parseInt(cantidad, 10),
+            fechaAportado: fechaAportado,
+            fechaEntrega: fechaEntrega,
             id_pedido: pedidoId,
             id_usuario: usuarioId,
             id_obra: selectedObra.id_obra,
-            fecha: fecha,
-            cantidad: parseInt(cantidad, 10)
+            id_vehiculo: vehiculo
         };
 
         try {
@@ -146,7 +148,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 deleteFunction={() => deletePedido(selectedPedido.id_pedido)}
                 deleteButtonText='Rechazar'
                 title='Tomar Pedido'
-                handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, cantidad, new Date().toISOString().split('T')[0], fechaEntrega, selectedVehiculo)}
                 content={
                     <div>
                         {selectedPedido && selectedPedido.id_producto && (
