@@ -25,12 +25,15 @@ function Ofertas() {
     const [isLoading, setIsLoading] = useState(true);
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
+
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
+
     const [user, setUser] = useState({});
-    const [productos, setProductos] = useState([]);
     const [obras, setObras] = useState([]);
+    const [selectedObra, setSelectedObra] = useState({});
     const [stocks, setStocks] = useState([]);
+
     const [showModal, setShowModal] = useState(false);
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
@@ -43,10 +46,14 @@ function Ofertas() {
                     fetchData(`stock/`, token).then((result) => {
                         setStocks(result);
                     });
+                    const obrasData = await fetchData(`obra/`, token);
+                    setObras(obrasData);
                 } else {
                     fetchData(`/user/stockToken/${token}`, token).then((result) => {
                         setStocks(result);
                     });
+                    const obrasData = await fetchData(`obra/user/${token}/`, token);
+                    setObras(obrasData);
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -138,7 +145,7 @@ function Ofertas() {
     const handleCreateOferta = () => {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
-            const { producto, obra } = ofertaForm; // Asegurarse de que estos valores estén presentes
+            const { producto, obra } = ofertaForm;
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
 
@@ -161,7 +168,7 @@ function Ofertas() {
         }
     };
 
-    const createAporteOferta = async (ofertaId, usuarioId, fecha, cantidad) => {
+    const createAporteOferta = async (ofertaId, usuarioId, fecha, cantidad, obra) => {
         const oferta = ofertas.find(oferta => oferta.id_oferta === ofertaId);
         const cantidadRestante = oferta.cantidad - oferta.progreso;
 
@@ -173,13 +180,13 @@ function Ofertas() {
         const data = {
             id_oferta: ofertaId,
             id_usuario: usuarioId,
+            id_obra: obra.id_obra,
             fecha: fecha,
             cantidad: cantidad
         };
 
         try {
             await postData('crear_detalle_oferta/', data, token).then(() => {
-                console.log('Aporte de la oferta creado');
                 window.location.reload();
                 return true;
             });
@@ -222,7 +229,16 @@ function Ofertas() {
                             sortedOfertas.map(oferta => (
                                 <div key={oferta.id_oferta}>
                                     <GenericCard
-                                        onClick={() => { setSelectedOferta(oferta), setShowTakeOfertaModal(true) }}
+                                        onClick={() => {
+                                            setSelectedOferta(oferta);
+                                            setShowTakeOfertaModal(true);
+                                            if (obras.length > 1) {
+                                                const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
+                                                if (filteredObras.length > 0) {
+                                                    setSelectedObra(filteredObras[0]);
+                                                }
+                                            }
+                                        }}
                                         titulo={`${oferta.id_producto.nombre}`}
                                         foto={oferta.id_producto.imagen}
                                         descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
@@ -246,7 +262,7 @@ function Ofertas() {
                     saveButtonText='Tomar'
                     handleCloseModal={() => { setShowTakeOfertaModal(false), setSelectedOferta(null) }}
                     title='Tomar Oferta'
-                    handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                    handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, new Date().toISOString().split('T')[0], cantidad, selectedObra)}
                     content={
                         <div>
                             <GenericCard
@@ -266,6 +282,32 @@ function Ofertas() {
                                 onChange={handleChange}
                                 style={{ marginTop: '1rem' }}
                             />
+                            {obras.length === 1 ? (
+                                useEffect(() => {
+                                    if (selectedOferta.id_obra.id_obra !== obras[0].id_obra) {
+                                        setSelectedObra(obras[0]);
+                                    }
+                                }, [obras])
+                            ) : (
+                                <>
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                        Ingrese la obra que realiza el aporte
+                                    </Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        name="obra"
+                                        onChange={(event) => {
+                                            setSelectedObra(obras.find(obra => obra.id_obra === Number(event.target.value)));
+                                        }}
+                                    >
+                                        {obras.filter(obra => selectedOferta.id_obra && selectedOferta.id_obra.id_obra !== obra.id_obra).map(obra => (
+                                            <option key={obra.id_obra} value={obra.id_obra}>
+                                                {obra.nombre}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
+                                </>
+                            )}
                             {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
                         </div>
                     }

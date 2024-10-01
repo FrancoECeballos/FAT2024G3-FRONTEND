@@ -299,7 +299,7 @@ function Pedidos() {
                                 const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
                                     <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{ backgroundColor: "transparent" }}>
-                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} selectedObra={obra} user={user} />
+                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} obraSelected={obra} user={user} />
                                     </Tab>
                                 );
                             })}
