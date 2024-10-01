@@ -14,12 +14,27 @@
       border-color: #ECECEC;
       border-width: 1px;
     }
-  
-    &.hoverable-generic-card {
-      cursor: pointer;
-  
-      &:hover {
-        transform: scale(1.01) !important;
-      }
-    }
+}
+
+.hoverable-generic-card {
+  width: 18rem;
+  flex: 0 0 auto;
+  border-style: solid;
+  box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s !important;
+  cursor: pointer;
+
+  &.selected {
+    border-color: blue;
+    border-width: 2px;
+  }
+
+  &.not-selected {
+    border-color: #ECECEC;
+    border-width: 1px;
+  }
+
+  &:hover {
+    transform: scale(1.01) !important;
+  }
 }
