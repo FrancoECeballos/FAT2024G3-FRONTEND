@@ -34,6 +34,10 @@ function Ofertas() {
     const [selectedObra, setSelectedObra] = useState({});
     const [stocks, setStocks] = useState([]);
 
+    const [fechaEntrega, setFechaEntrega] = useState(null);
+    const [vehiculos, setVehiculos] = useState([]);
+    const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
+
     const [showModal, setShowModal] = useState(false);
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
@@ -84,6 +88,15 @@ function Ofertas() {
 
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
+
+    const handleFetchVehiculos = (obra) => {
+        setSelectedVehiculo("medios_propios");
+        fetchData(`transporte/${obra}/`, token).then((result) => {
+            setVehiculos(result);
+        }).catch(error => {
+            console.error('Error fetching vehiculos:', error);
+        });
+    };
 
     const filteredOfertas = ofertas.filter(oferta => {
         return (
@@ -236,6 +249,7 @@ function Ofertas() {
                                                 const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
                                                 if (filteredObras.length > 0) {
                                                     setSelectedObra(filteredObras[0]);
+                                                    handleFetchVehiculos(filteredObras[0].id_obra);
                                                 }
                                             }
                                         }}
@@ -298,6 +312,7 @@ function Ofertas() {
                                         name="obra"
                                         onChange={(event) => {
                                             setSelectedObra(obras.find(obra => obra.id_obra === Number(event.target.value)));
+                                            handleFetchVehiculos(Number(event.target.value));
                                         }}
                                     >
                                         {obras.filter(obra => selectedOferta.id_obra && selectedOferta.id_obra.id_obra !== obra.id_obra).map(obra => (
@@ -306,6 +321,32 @@ function Ofertas() {
                                             </option>
                                         ))}
                                     </Form.Control>
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                        Ingrese la fecha estimada de la entrega (Opcional)
+                                    </Form.Label>
+                                    <Form.Control
+                                            name="fechaEntrega"
+                                            type="date"
+                                            min={new Date().toISOString().split('T')[0]}
+                                            value={fechaEntrega}
+                                            onChange={(e) => setFechaEntrega(e.target.value)}
+                                        />
+                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                            Ingrese el vehiculo con el que se realizará la entrega (Opcional)
+                                        </Form.Label>
+                                        <Form.Control
+                                            name="selectedVehiculo"
+                                            as="select"
+                                            value={selectedVehiculo}
+                                            onChange={(event) => setSelectedVehiculo(event.target.value)}
+                                        >
+                                            <option value="medios_propios">Medios Propios</option>
+                                            {vehiculos && (
+                                                vehiculos.map(vehiculo => 
+                                                    <option value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
+                                                )
+                                            )}
+                                        </Form.Control>
                                 </>
                             )}
                             {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}

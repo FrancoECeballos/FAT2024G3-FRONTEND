@@ -8,10 +8,16 @@ import Modal from '../../../modals/Modal.jsx';
 import GenericAccordion from '../../../accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../../../functions/postData.jsx';
 import Semaforo from '../../../semaforo/Semaforo.jsx';
+import fetchData from '../../../../functions/fetchData.jsx';
 
 function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) {
     const token = Cookies.get('token');
+
     const [cantidad, setCantidad] = useState('');
+    const [fechaEntrega, setFechaEntrega] = useState(null);
+    const [vehiculos, setVehiculos] = useState([]);
+    const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
+
     const [error, setError] = useState('');
     const pedidoCardRef = useRef(null);
 
@@ -34,6 +40,15 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
             setIsLoading(false);
         }
     }, [sortedPedidos]);
+
+    const handleFetchVehiculos = (obra) => {
+        setSelectedVehiculo("medios_propios");
+        fetchData(`transporte/${obra}/`, token).then((result) => {
+            setVehiculos(result);
+        }).catch(error => {
+            console.error('Error fetching vehiculos:', error);
+        });
+    };
 
     const handleChange = (event) => {
         setCantidad(event.target.value);
@@ -77,7 +92,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
 
     return (
         <div className='pedido-list'>
-            <h1>Viendo {selectedObra ? `los pedidos hechos a la obra '${selectedObra.nombre}'` : 'todos los pedidos'}</h1>
+            <h1>Viendo {obraSelected ? `los pedidos hechos a la obra '${obraSelected.nombre}'` : 'todos los pedidos'}</h1>
             <div className='cardCategori'>
                 {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
                     sortedPedidos.map(obra => (
@@ -88,6 +103,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                         const filteredObras = obrasDisponibles.filter(obra => pedido.id_obra && pedido.id_obra.id_obra !== obra.id_obra);
                                         if (filteredObras.length > 0) {
                                             setSelectedObra(filteredObras[0]);
+                                            handleFetchVehiculos(filteredObras[0].id_obra);
                                         }
                                     };
                                 }
@@ -139,7 +155,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                 {shouldShowButtons && (
                                     <Form.Group className="mb-2" controlId="formBasicCantidad">
                                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                            Ingrese la cantidad que quiere aportar
+                                            Ingrese la cantidad que quiere aportar (*)
                                         </Form.Label>
                                         <Form.Control
                                             name="cantidad"
@@ -166,13 +182,14 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                             ) : (
                                                 <>
                                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                                        Ingrese la obra que realiza el aporte
+                                                        Ingrese la obra que realiza el aporte (*)
                                                     </Form.Label>
                                                     <Form.Control
                                                         as="select"
                                                         name="obra"
                                                         onChange={(event) => {
                                                             setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === Number(event.target.value)));
+                                                            handleFetchVehiculos(Number(event.target.value));
                                                         }}
                                                     >
                                                         {obrasDisponibles.map(obra => (
@@ -186,6 +203,32 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                                 </>
                                             )
                                         )}
+                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                            Ingrese la fecha estimada de la entrega (Opcional)
+                                        </Form.Label>
+                                        <Form.Control
+                                            name="fechaEntrega"
+                                            type="date"
+                                            min={new Date().toISOString().split('T')[0]}
+                                            value={fechaEntrega}
+                                            onChange={(e) => setFechaEntrega(e.target.value)}
+                                        />
+                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                            Ingrese el vehiculo con el que se realizará la entrega (Opcional)
+                                        </Form.Label>
+                                        <Form.Control
+                                            name="id_vehiculo"
+                                            as="select"
+                                            value={selectedVehiculo}
+                                            onChange={(event) => setSelectedVehiculo(event.target.value)}
+                                        >
+                                            <option value="medios_propios">Medios Propios</option>
+                                            {vehiculos && (
+                                                vehiculos.map(vehiculo => 
+                                                    <option value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
+                                                )
+                                            )}
+                                        </Form.Control>
                                         {error && <p style={{ color: 'red' }}>{error}</p>}
                                     </Form.Group>
                                 )}
