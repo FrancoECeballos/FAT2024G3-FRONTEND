@@ -44,7 +44,7 @@ function Landing (){
             </div>
             <br/>
             <br/>
-            <div style={{ paddingRight: '30rem', paddingLeft: '30rem' }}>
+            <div style={{ paddingRight: '30rem', paddingLeft: '30rem', marginBottom: "2rem" }}>
                 <Carousel interval={10000} controls={true} indicators={false}>
                     <Carousel.Item>
                         <div style={{ textAlign: 'center' }}>
