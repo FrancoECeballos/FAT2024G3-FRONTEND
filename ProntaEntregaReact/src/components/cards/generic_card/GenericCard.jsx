@@ -8,7 +8,7 @@ function GenericCard({ foto, titulo, descrip1, descrip2, descrip3, descrip4, des
         <div style={{ display: 'flex', justifyContent: 'center', margin: `${margin || '1rem'}`, }}>
             <Card 
                 onClick={onClick} 
-                className={hoverable ? "hoverable-generic-card" : ""}
+                className={hoverable ? "hoverable-generic-card" : "gencard"}
                 style={{ 
                     ...cardStyle, 
                     width: `${wide || '80%'}`,

@@ -72,17 +72,16 @@ const ChangePasswordCard = ({ user }) => {
     };
 
     return (
-        <Container style={{display: 'flex'}} className="d-flex justify-content-center align-items-center vh-100 change-password-container">
-            <Card style={{position: 'relative', width: '50rem',borderRadius:'1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
-                <Card.Body>
+            <Card className="cardpass" >
+                <Card.Body  >
                     <Form onSubmit={handleSubmit}>
                         <h1 className="font-rubik" style={{textAlign:"center",margin:'1.5rem', fontSize: '1.5rem'}}>Cambiar Contraseña</h1>
                         <div style={{display: "flex", alignItems: "center", marginLeft: "2rem"}}>
                             <div style={{width: '7rem', height: '7rem', borderRadius: '50%', overflow: 'hidden', marginRight: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                 <img src={getImageUrl(user.imagen)} style={{width: '100%', height: 'auto', objectFit: 'cover'}} alt="User" />
                             </div>
-                            <h2 className="font-rubik" style={{margin:'2.8rem', fontSize: '1.5rem'}}>{user.nombreusuario}</h2>
-                        </div>
+                            <h2 className="font-rubik" style={{margin: 'auto', fontSize: '1.5rem'}}>{user.nombreusuario}</h2>
+                            </div>
                         <Form.Group className="position-relative">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem'}}>Contraseña Antigua</Form.Label>
                             <InputGroup>
@@ -146,7 +145,6 @@ const ChangePasswordCard = ({ user }) => {
                     </Form>
                 </Card.Body>
             </Card>
-        </Container>
     );
 }
 
