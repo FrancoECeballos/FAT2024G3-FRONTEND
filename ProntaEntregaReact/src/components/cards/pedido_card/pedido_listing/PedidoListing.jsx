@@ -15,9 +15,10 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
     const [error, setError] = useState('');
     const pedidoCardRef = useRef(null);
 
-    const [selectedPedido, setSelectedPedido] = useState({});
+    const [selectedPedido, setSelectedPedido] = useState(null);
     const [selectedObra, setSelectedObra] = useState(obraSelected);
     const [isLoading, setIsLoading] = useState(true);
+    const [showTakePedidoModal, setShowTakePedidoModal] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -53,7 +54,15 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         });
     };
 
-    const createAportePedido = (pedidoId, usuarioId, fecha, cantidad) => {
+    const createAportePedido = async (pedidoId, usuarioId, fecha, cantidad) => {
+        const pedido = sortedPedidos.flatMap(obra => obra.pedidos).find(pedido => pedido.id_pedido === pedidoId);
+        const cantidadRestante = pedido.cantidad - pedido.progreso;
+
+        if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
+            setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${pedido.id_producto.unidadmedida}`);
+            return false;
+        }
+
         const data = {
             id_pedido: pedidoId,
             id_usuario: usuarioId,
@@ -62,18 +71,20 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
             cantidad: parseInt(cantidad, 10)
         };
 
-        postData('crear_aporte_pedido/', data, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
-            console.error('Error creating aporte pedido:', error);
-        });
+        try {
+            await postData('crear_aporte_pedido/', data, token).then(() => {
+                window.location.reload();
+                return true;
+            });
+        } catch (error) {
+            console.error('Error creando el aporte del pedido:', error);
+            return false;
+        }
     };
 
     if (isLoading) {
         return <div><Loading /></div>;
     }
-
-    const shouldShowButtons = !(obrasDisponibles && obrasDisponibles.length === 1 && selectedPedido.id_obra && selectedPedido.id_obra.id_obra === obrasDisponibles[0].id_obra);
 
     return (
         <div className='pedido-list'>
@@ -83,16 +94,16 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                     sortedPedidos.map(obra => (
                         <GenericAccordion titulo={`Pedidos de '${obra.obra.nombre}'`} wide='80%' key={obra.obra.id_obra}
                             children={obra.pedidos.map(pedido => (
-                                <div key={pedido.id_pedido} onClick={() => {setSelectedPedido(pedido);
+                                <div key={pedido.id_pedido} onClick={() => {
+                                    setSelectedPedido(pedido);
+                                    setShowTakePedidoModal(true);
                                     if (obrasDisponibles && obrasDisponibles.length > 1) {
                                         const filteredObras = obrasDisponibles.filter(obra => pedido.id_obra && pedido.id_obra.id_obra !== obra.id_obra);
                                         if (filteredObras.length > 0) {
                                             setSelectedObra(filteredObras[0]);
                                         }
-                                    };
-                                }
-                                    
-                                }>
+                                    }
+                                }}>
                                     <GenericCard hoverable={true}
                                         foto={pedido.id_producto.imagen}
                                         titulo={pedido.id_producto.nombre}
@@ -109,94 +120,67 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                     <p style={{ marginLeft: '7rem', marginTop: '1rem' }}> No hay pedidos disponibles.</p>
                 )}
             </div>
-            <Modal
-                showButton={false}
-                showDeleteButton={shouldShowButtons}
-                saveButtonShown={shouldShowButtons}
-                showModal={Object.keys(selectedPedido).length > 0}
-                saveButtonText={'Tomar'}
-                handleCloseModal={() => setSelectedPedido({})}
-                deleteFunction={() => deletePedido(selectedPedido.id_pedido)}
-                deleteButtonText={'Rechazar'}
-                title={'Tomar Pedido'}
-                handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
-                content={
-                    <div>
-                        {selectedPedido && selectedPedido.id_producto && (
-                            <>
-                                <GenericCard
-                                    key={selectedPedido.id_pedido}
-                                    foto={selectedPedido.id_producto.imagen}
-                                    titulo={selectedPedido.id_producto.nombre}
-                                    descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
-                                    descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
-                                    descrip3={<><strong>Fecha Inicio:</strong> {selectedPedido.fechainicio}</>}
-                                    descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
-                                    descrip5={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
-                                    descrip6={<><strong>Usuario:</strong> {selectedPedido.id_usuario.nombre} {selectedPedido.id_usuario.apellido}</>}
-                                />
-                            
-                                {shouldShowButtons && (
-                                    <Form.Group className="mb-2" controlId="formBasicCantidad">
-                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                            Ingrese la cantidad que quiere aportar
-                                        </Form.Label>
-                                        <Form.Control
-                                            name="cantidad"
-                                            type="number"
-                                            placeholder="Ingrese la cantidad"
-                                            value={cantidad}
-                                            onChange={handleChange}
-                                            onKeyDown={(event) => {
-                                                if (
-                                                    !/[0-9.]/.test(event.key) &&
-                                                    !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)
-                                                ) {
-                                                    event.preventDefault();
-                                                }
-                                            }}
-                                        />
-                                        {obrasDisponibles && (
-                                            obrasDisponibles.length === 1 ? (
-                                                useEffect(() => {
-                                                    if (selectedPedido.id_obra.id_obra !== obrasDisponibles[0].id_obra) {
-                                                        setSelectedObra(obrasDisponibles[0]);
-                                                    }
-                                                }, [obrasDisponibles])
-                                            ) : (
-                                                <>
-                                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                                        Ingrese la obra que realiza el aporte
-                                                    </Form.Label>
-                                                    <Form.Control
-                                                        as="select"
-                                                        name="obra"
-                                                        onChange={(event) => {
-                                                            setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === Number(event.target.value)));
-                                                        }}
-                                                    >
-                                                        {obrasDisponibles.map(obra => (
-                                                            selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obra.id_obra && (
-                                                                <option key={obra.id_obra} value={obra.id_obra}>
-                                                                    {obra.nombre}
-                                                                </option>
-                                                            )
-                                                        ))}
-                                                    </Form.Control>
-                                                </>
-                                            )
-                                        )}
-                                        {error && <p style={{ color: 'red' }}>{error}</p>}
-                                    </Form.Group>
-                                )}
-                            </>
-                        )}
-                    </div>
-                }
-            />
+            {selectedPedido && (
+                <Modal
+                    showButton={false}
+                    showModal={showTakePedidoModal}
+                    saveButtonText='Tomar'
+                    handleCloseModal={() => { setShowTakePedidoModal(false); setSelectedPedido(null); }}
+                    title='Tomar Pedido'
+                    handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad, selectedObra)}
+                    content={
+                        <div>
+                            <GenericCard
+                                key={selectedPedido.id_pedido}
+                                foto={selectedPedido.id_producto.imagen}
+                                titulo={selectedPedido.id_producto.nombre}
+                                descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
+                                descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
+                                descrip3={<><strong>Fecha Inicio:</strong> {selectedPedido.fechainicio}</>}
+                                descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
+                                descrip5={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
+                                descrip6={<><strong>Usuario:</strong> {selectedPedido.id_usuario.nombre} {selectedPedido.id_usuario.apellido}</>}
+                            />
+                            <Form.Control
+                                type='number'
+                                placeholder='Ingrese la cantidad que quiere tomar'
+                                value={cantidad}
+                                onChange={handleChange}
+                                style={{ marginTop: '1rem' }}
+                            />
+                            {obrasDisponibles.length === 1 ? (
+                                useEffect(() => {
+                                    if (selectedPedido.id_obra.id_obra !== obrasDisponibles[0].id_obra) {
+                                        setSelectedObra(obrasDisponibles[0]);
+                                    }
+                                }, [obrasDisponibles])
+                            ) : (
+                                <>
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                        Ingrese la obra que realiza el aporte
+                                    </Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        name="obra"
+                                        onChange={(event) => {
+                                            setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === Number(event.target.value)));
+                                        }}
+                                    >
+                                        {obrasDisponibles.filter(obra => selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obra.id_obra).map(obra => (
+                                            <option key={obra.id_obra} value={obra.id_obra}>
+                                                {obra.nombre}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
+                                </>
+                            )}
+                            {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
+                        </div>
+                    }
+                />
+            )}
         </div>
     );
-
 }
 
 export default PedidoListing;
