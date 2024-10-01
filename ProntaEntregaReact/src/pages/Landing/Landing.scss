@@ -22,12 +22,34 @@
   }
 }
 
-// Estilos para el contenido de las pestañas
 .tab-content {
   .tab-pane {
-    padding: 1rem; // Relleno interno del contenido de las pestañas
-    border-radius: 0.25rem; // Bordes redondeados
-    background-color: white; // Color de fondo del contenido de las pestañas
-    margin-top: -1.1rem; // Ajuste para que el borde superior no se superponga con las pestañas
+    padding: 1rem;
+    border-radius: 0.25rem;
+    background-color: white;
+    margin-top: -1.1rem;
   }
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: none;
+}
+
+.carousel-control-prev-icon::before,
+.carousel-control-next-icon::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+}
+
+.carousel-control-prev-icon::before {
+    transform: rotate(135deg);
+}
+
+.carousel-control-next-icon::before {
+    transform: rotate(-45deg);
 }
