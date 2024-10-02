@@ -9,11 +9,11 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 import { useNavigate } from 'react-router-dom';
-
 import { useLocation } from 'react-router-dom';
 import Loading from '../../components/loading/loading.jsx';
-
 import fetchUser from '../../functions/fetchUser.jsx';
+
+import './Entregas.scss';
 
 const Entregas = () => {
     const [entregas, setEntregas] = useState([]);
@@ -123,15 +123,17 @@ const Entregas = () => {
                                         descrip3={<><strong>Creado en:</strong> {entrega.id_pedido === null ? entrega.id_oferta.fechainicio : entrega.id_pedido.fechainicio}</>}
                                         foto={entrega.id_pedido === null ? entrega.id_oferta.id_producto.imagen : entrega.id_pedido.id_producto.imagen}
                                         children={
-                                            entrega.entrega_aportes.map((aporte) => (
-                                                <LittleCard
-                                                    key={aporte.id_entregaAporte}
-                                                    titulo={aporte.id_aportePedido === null ? aporte.id_aporteOferta.cantidad + ' ' + aporte.id_aporteOferta.id_oferta.id_producto.unidadmedida + ' tomados' : aporte.id_aportePedido.cantidad + ' ' + aporte.id_aportePedido.id_pedido.id_producto.unidadmedida + ' dados'}
-                                                    descrip1={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_usuario.nombre + ' ' + aporte.id_aporteOferta.id_usuario.apellido : aporte.id_aportePedido.id_usuario.nombre + ' ' + aporte.id_aportePedido.id_usuario.apellido}
-                                                    descrip2={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
-                                                    foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
-                                                />
-                                            ))
+                                            <div className='scroll-horizontal-entregas'>
+                                                {entrega.entrega_aportes.map((aporte) => (
+                                                    <LittleCard
+                                                        key={aporte.id_entregaAporte}
+                                                        titulo={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.cantidad} ${aporte.id_aporteOferta.id_oferta.id_producto.unidadmedida} tomados` : `${aporte.id_aportePedido.cantidad} ${aporte.id_aportePedido.id_pedido.id_producto.unidadmedida} dados`}
+                                                        descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.id_usuario.nombre} ${aporte.id_aporteOferta.id_usuario.apellido}` : `${aporte.id_aportePedido.id_usuario.nombre} ${aporte.id_aportePedido.id_usuario.apellido}`}
+                                                        descrip2={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
+                                                        foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
+                                                    />
+                                                ))}
+                                            </div>
                                         }
                                     />
                                 );
