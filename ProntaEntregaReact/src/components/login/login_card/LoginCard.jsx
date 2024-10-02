@@ -45,7 +45,7 @@ const LoginCard = () => {
  
 
     return (
-      <Container className="d-flex justify-content-center align-items-center vh-100 login-container">
+      <Container className="d-flex justify-content-center align-items-center login-container">
         <Card className="shadow-lg p-4" style={{ width: '25rem', borderRadius: '1.5rem', backgroundColor: '#ffffff', borderColor: '#e0e0e0'}}>
           <GenericAlert title="Error" description="Usuario o contraseña incorrectos" type="danger" show={showAlert} setShow={setShowAlert} />
           <Card.Body>
