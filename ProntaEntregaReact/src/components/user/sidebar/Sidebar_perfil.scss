@@ -44,8 +44,8 @@
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-
-    @media (max-width: 600px) {
+    
+    @media (max-width: 700px) {
       width: 100%;
       display: none; // Se oculta para usar el acordeón
     }
@@ -54,7 +54,7 @@
   .accordion-mobile {
     display: none;
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       display: block;
       width: 100%;
     }
