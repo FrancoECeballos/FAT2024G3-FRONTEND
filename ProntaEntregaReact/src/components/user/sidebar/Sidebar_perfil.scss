@@ -8,25 +8,26 @@
   height: 100vh;
   box-sizing: border-box;
 
-  @media (max-width: 600px) {
+  @media (max-width: 600px){
     width: 100%;
-    height: auto;
+    height: 70vh;
+    
   }
 
   .top {
-    margin-top: 2rem;
+    margin-top: 20rem;
     align-self: stretch;
-
+    
     h1 {
       display: flex;
       align-items: center;
       margin-bottom: 2rem;
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       text-align: center;
 
       .fotoperfil {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 4rem;
+        height: 4rem;
         border-radius: 50%;
         object-fit: cover;
         margin-left: auto;
@@ -44,12 +45,17 @@
     align-items: center;
     justify-content: center;
     flex-grow: 1;
+<<<<<<< HEAD
     
     @media (max-width: 700px) {
+=======
+    @media (max-width: 600px){
+>>>>>>> 650b9a6601346cdb936154d3d163a8805179a7c3
       width: 100%;
-      display: none; // Se oculta para usar el acordeón
+      height: 50vh;
     }
   }
+<<<<<<< HEAD
 
   .accordion-mobile {
     display: none;
@@ -60,3 +66,6 @@
     }
   }
 }
+=======
+}
+>>>>>>> 650b9a6601346cdb936154d3d163a8805179a7c3

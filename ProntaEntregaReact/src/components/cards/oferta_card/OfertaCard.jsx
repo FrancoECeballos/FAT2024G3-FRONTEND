@@ -63,7 +63,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         let transformedValue = value;
     
         console.log('Input change:', name, value);
-
+    
         switch (name) {
             case 'cantidad':
             case 'id_obra':
@@ -77,8 +77,15 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         setOfertaForm(prevOferta => {
             let updatedForm = { 
                 ...prevOferta, 
-                [name]: transformedValue 
+                [name]: transformedValue
             };
+            
+            if (updatedForm.fechainicio > updatedForm.fechavencimiento) {
+                updatedForm = { 
+                    ...updatedForm, 
+                    "fechavencimiento": updatedForm.fechainicio
+                };
+            }
     
             if (name === 'id_obra') {
                 updatedForm.id_producto = "";
@@ -151,34 +158,34 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     return (
         <Card className="no-border-card">
             <Card.Body>
-                <Form style={{marginLeft:"1rem"}}>
+                <Form style={{ alignItems:"center"}}>
                     <h2 className='centered'>
                         {productDefault ? `Crear Oferta de ${productDefault.nombre}` : 'Crear Oferta'}
                     </h2>
 
                     <Form.Group className="mb-2" controlId="formBasicFechaInicio">
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
-                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
+                        <Form.Control style={{width:"100%", border:"1px solid grey"}} name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
                         <Form.Label id='errorFechainicio' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formBasicFechaFin">
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
-                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                        <Form.Control style={{width:"100%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
                         <p style={{fontSize:"0.7rem", margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
                         <Form.Label id='errorFechavencimiento' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formBasicCantidad">
                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Ofrecida (*)</Form.Label>
-                        <Form.Control style={{width:"70%", border:"1px solid grey"}} name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                        <Form.Control style={{width:"100%", border:"1px solid grey"}} name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                         <Form.Label id='errorCantidad' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                     </Form.Group>
 
                     {!stock && (
                         <Form.Group className="mb-2" controlId="formRequestingObra">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que Ofrece (*)</Form.Label>
-                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="id_obra" as="select" onBlur={handleInputChange} onChange={handleInputChange} defaultValue="">
+                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="id_obra" as="select" onBlur={handleInputChange} onChange={handleInputChange} defaultValue="">
                                 <option value="" hidden>Seleccione una Obra</option>
                                 {stocksDisponibles.map(stock => (
                                     <option key={stock.id_stock} value={stock.id_stock}>{stock.id_obra.nombre}</option>
@@ -191,7 +198,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                     {!stock && (ofertaForm.id_obra != "") && (ofertaForm.id_obra) && (!isNaN(ofertaForm.id_obra)) && (
                         <Form.Group className="mb-2" controlId="formBasicCategoria">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Categoría (*)</Form.Label>
-                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="categoria" as="select" value={selectedCategory} onBlur={handleCategoryChange} onChange={handleCategoryChange}>
+                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="categoria" as="select" value={selectedCategory} onBlur={handleCategoryChange} onChange={handleCategoryChange}>
                                 <option value="" hidden>Categoría</option>
                                 {categories.map(categoria => (
                                     <option key={categoria.id_categoria} value={categoria.id_categoria}>{categoria.nombre}</option>
@@ -204,7 +211,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                     {!stock && (ofertaForm.id_obra != "") && (ofertaForm.id_obra) && (!isNaN(ofertaForm.id_obra)) && (selectedCategory != "")  && (selectedCategory) && (!isNaN(selectedCategory)) && (products != null) && (
                         <Form.Group className="mb-2" controlId="formBasicProducto">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                            <Form.Control style={{width:"70%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
+                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
                                 <option value="" hidden>Producto</option>
                                 {products.map(product => (
                                     <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>

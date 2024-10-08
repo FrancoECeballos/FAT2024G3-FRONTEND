@@ -50,16 +50,14 @@ function SeguridadYPrivacidad(){
     }
     
     return (
-        <div style={{backgroundColor: '#ECECEC'}}>
+        <div style={{backgroundColor: '#ECECEC',overflowX:"hidden"}}>
             <FullNavbar/>
             <Row style={{ height: "100vh" }}>
                 <Col xs={12} sm={3} md={3} lg={3} xl={3} xxl={3}>
                     <Sidebar selectedPage={"seguridad"} user={user}/>
                 </Col>
-                <Col xs={12} sm={9} md={9} lg={9} xl={9} xxl={9}>
-                    <div>
+                <Col className="colcuenta" style={{display:"flex",justifyContent:"center"}} xs={12} sm={9} md={9} lg={9} xl={9} xxl={9}>
                         <ChangePasswordCard user={user.viewingUser}/>
-                    </div>
                 </Col>
             </Row>
         </div>

@@ -45,24 +45,24 @@ const LoginCard = () => {
  
 
     return (
-      <Container className="d-flex justify-content-center align-items-center vh-100 login-container">
-        <Card className="shadow-lg p-4" style={{ width: '25rem', borderRadius: '1.5rem', backgroundColor: '#ffffff', borderColor: '#e0e0e0' }}>
+      <Container className="d-flex justify-content-center align-items-center login-container">
+        <Card className="shadow-lg p-4" style={{ width: '25rem', borderRadius: '1.5rem', backgroundColor: '#ffffff', borderColor: '#e0e0e0'}}>
           <GenericAlert title="Error" description="Usuario o contraseña incorrectos" type="danger" show={showAlert} setShow={setShowAlert} />
           <Card.Body>
             <Form>
               <h1 className="text-center font-rubik mb-4" style={{ color: '#333' }}>Iniciar Sesión</h1>
               <Form.Group className="mb-4" controlId="formBasicEmail">
-                <Form.Label className="font-rubik" style={{ marginLeft: '1.5rem', color: '#666' }}>Nombre de Usuario o Email</Form.Label>
-                <Form.Control className="input-field" name="user" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre de usuario" />
+                <Form.Label className="font-rubik" style={{color: '#666' }}>Nombre de Usuario o Email</Form.Label>
+                <Form.Control style={{ width:"100%", marginLeft:"0"}} className="input-field" name="user" type="text" onChange={handleInputChange} placeholder="Ingrese su nombre de usuario" />
               </Form.Group>
   
               <Form.Group className="mb-4" controlId="formBasicPassword">
-                <Form.Label className="font-rubik" style={{ marginLeft: '1.5rem', color: '#666' }}>Contraseña</Form.Label>
-                <Form.Control className="input-field" name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" />
+                <Form.Label className="font-rubik" style={{color: '#666' }}>Contraseña</Form.Label>
+                <Form.Control style={{ width:"100%", marginLeft:"0"}} className="input-field" name="password" type="password" onChange={handleInputChange} placeholder="Ingrese su contraseña" />
               </Form.Group>
   
               <Form.Group className="mb-4" controlId="formBasicCheckbox">
-                <Form.Check className="font-rubik" style={{ marginLeft: '1.5rem' }} onChange={(e) => setKeepSession(e.target.checked)} type="checkbox" label="Mantener sesión" />
+                <Form.Check className="font-rubik" style={{ marginLeft: '0.5rem' }} onChange={(e) => setKeepSession(e.target.checked)} type="checkbox" label="Mantener sesión" />
               </Form.Group>
   
               <div className="d-flex justify-content-center">

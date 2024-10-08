@@ -9,9 +9,8 @@ const Novedades = () => {
     return (
         <div>
             <FullNavbar selectedPage='Novedades'/>
-            <h1>Novedades</h1>
-            <Semaforo></Semaforo>
-            <UploadImage usingIcon={true} buttonHidden={false}></UploadImage>
+            <br/>
+            <h1>Esta es la pagina de Novedades</h1>
         </div>
     );
 };

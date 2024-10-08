@@ -8,14 +8,21 @@ import Modal from '../../../modals/Modal.jsx';
 import GenericAccordion from '../../../accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../../../functions/postData.jsx';
 import Semaforo from '../../../semaforo/Semaforo.jsx';
+import fetchData from '../../../../functions/fetchData.jsx';
 
-function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) {
+function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) {
     const token = Cookies.get('token');
+
     const [cantidad, setCantidad] = useState('');
+    const [fechaEntrega, setFechaEntrega] = useState(null);
+    const [vehiculos, setVehiculos] = useState([]);
+    const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
+
     const [error, setError] = useState('');
     const pedidoCardRef = useRef(null);
 
     const [selectedPedido, setSelectedPedido] = useState({});
+    const [selectedObra, setSelectedObra] = useState(obraSelected);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -32,7 +39,16 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
         if (sortedPedidos !== undefined) {
             setIsLoading(false);
         }
-    }, [sortedPedidos, selectedObra]);
+    }, [sortedPedidos]);
+
+    const handleFetchVehiculos = (obra) => {
+        setSelectedVehiculo("medios_propios");
+        fetchData(`transporte/${obra}/`, token).then((result) => {
+            setVehiculos(result);
+        }).catch(error => {
+            console.error('Error fetching vehiculos:', error);
+        });
+    };
 
     const handleChange = (event) => {
         setCantidad(event.target.value);
@@ -52,19 +68,33 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
         });
     };
 
-    const createAportePedido = (pedidoId, usuarioId, fecha, cantidad) => {
+    const createAportePedido = async (pedidoId, usuarioId, cantidad, fechaAportado, fechaEntrega, vehiculo) => {
+        const pedido = sortedPedidos.flatMap(obra => obra.pedidos).find(pedido => pedido.id_pedido === pedidoId);
+        const cantidadRestante = pedido.cantidad - pedido.progreso;
+        if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
+            setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${pedido.id_producto.unidadmedida}`);
+            return false;
+        }
+
         const data = {
+            cantidad: parseInt(cantidad, 10),
+            fechaAportado: fechaAportado,
+            fechaEntrega: fechaEntrega,
             id_pedido: pedidoId,
             id_usuario: usuarioId,
-            fecha: fecha,
-            cantidad: parseInt(cantidad, 10)
+            id_obra: selectedObra.id_obra,
+            id_vehiculo: vehiculo
         };
 
-        postData('crear_aporte_pedido/', data, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
-            console.error('Error creating aporte pedido:', error);
-        });
+        try {
+            await postData('crear_aporte_pedido/', data, token).then(() => {
+                window.location.reload();
+                return true;
+            });
+        } catch (error) {
+            console.error('Error creando el aporte del pedido:', error);
+            return false;
+        }
     };
 
     if (isLoading) {
@@ -75,13 +105,23 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
 
     return (
         <div className='pedido-list'>
-            <h1>Viendo {selectedObra ? `los pedidos hechos a la obra '${selectedObra.nombre}'` : 'todos los pedidos'}</h1>
+            <h1>Viendo {obraSelected ? `los pedidos hechos a la obra '${obraSelected.nombre}'` : 'todos los pedidos'}</h1>
             <div className='cardCategori'>
                 {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
                     sortedPedidos.map(obra => (
                         <GenericAccordion titulo={`Pedidos de '${obra.obra.nombre}'`} wide='80%' key={obra.obra.id_obra}
                             children={obra.pedidos.map(pedido => (
-                                <div key={pedido.id_pedido} onClick={() => setSelectedPedido(pedido)}>
+                                <div key={pedido.id_pedido} onClick={() => {setSelectedPedido(pedido);
+                                    if (obrasDisponibles && obrasDisponibles.length > 1) {
+                                        const filteredObras = obrasDisponibles.filter(obra => pedido.id_obra && pedido.id_obra.id_obra !== obra.id_obra);
+                                        if (filteredObras.length > 0) {
+                                            setSelectedObra(filteredObras[0]);
+                                            handleFetchVehiculos(filteredObras[0].id_obra);
+                                        }
+                                    };
+                                }
+                                    
+                                }>
                                     <GenericCard hoverable={true}
                                         foto={pedido.id_producto.imagen}
                                         titulo={pedido.id_producto.nombre}
@@ -103,12 +143,12 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
                 showDeleteButton={shouldShowButtons}
                 saveButtonShown={shouldShowButtons}
                 showModal={Object.keys(selectedPedido).length > 0}
-                saveButtonText={'Tomar'}
+                saveButtonText='Tomar'
                 handleCloseModal={() => setSelectedPedido({})}
                 deleteFunction={() => deletePedido(selectedPedido.id_pedido)}
-                deleteButtonText={'Rechazar'}
-                title={'Tomar Pedido'}
-                handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, new Date().toISOString().split('T')[0], cantidad)}
+                deleteButtonText='Rechazar'
+                title='Tomar Pedido'
+                handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, cantidad, new Date().toISOString().split('T')[0], fechaEntrega, selectedVehiculo)}
                 content={
                     <div>
                         {selectedPedido && selectedPedido.id_producto && (
@@ -128,7 +168,7 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
                                 {shouldShowButtons && (
                                     <Form.Group className="mb-2" controlId="formBasicCantidad">
                                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                            Ingrese la cantidad que quiere aportar
+                                            Ingrese la cantidad que quiere aportar (*)
                                         </Form.Label>
                                         <Form.Control
                                             name="cantidad"
@@ -145,29 +185,64 @@ function PedidoListing({ sortedPedidos, selectedObra, obrasDisponibles, user }) 
                                                 }
                                             }}
                                         />
-                                        {!selectedObra && obrasDisponibles && (
-                                            <>
-                                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                                    Ingrese la obra que realiza el aporte
-                                                </Form.Label>
-                                                <Form.Control
-                                                    as="select"
-                                                    name="obra"
-                                                    onChange={(event) => {
-                                                        setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === event.target.value));
-                                                    }}
-                                                >
-                                                    {obrasDisponibles.map(obra => (
-                                                        selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obra.id_obra && (
-                                                            <option key={obra.id_obra} value={obra.id_obra}>
-                                                                {obra.nombre}
-                                                            </option>
-                                                        )
-                                                    ))}
-                                                </Form.Control>
-                                            </>
+                                        {obrasDisponibles && (
+                                            obrasDisponibles.length === 1 ? (
+                                                useEffect(() => {
+                                                    if (selectedPedido.id_obra.id_obra !== obrasDisponibles[0].id_obra) {
+                                                        setSelectedObra(obrasDisponibles[0]);
+                                                    }
+                                                }, [obrasDisponibles])
+                                            ) : (
+                                                <>
+                                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                                        Ingrese la obra que realiza el aporte (*)
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                        as="select"
+                                                        name="obra"
+                                                        onChange={(event) => {
+                                                            setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === Number(event.target.value)));
+                                                            handleFetchVehiculos(Number(event.target.value));
+                                                        }}
+                                                    >
+                                                        {obrasDisponibles.map(obra => (
+                                                            selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obra.id_obra && (
+                                                                <option key={obra.id_obra} value={obra.id_obra}>
+                                                                    {obra.nombre}
+                                                                </option>
+                                                            )
+                                                        ))}
+                                                    </Form.Control>
+                                                </>
+                                            )
                                         )}
-                                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                            Ingrese la fecha estimada de la entrega (Opcional)
+                                        </Form.Label>
+                                        <Form.Control
+                                            name="fechaEntrega"
+                                            type="date"
+                                            min={new Date().toISOString().split('T')[0]}
+                                            value={fechaEntrega}
+                                            onChange={(e) => setFechaEntrega(e.target.value)}
+                                        />
+                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                            Ingrese el vehiculo con el que se realizará la entrega (Opcional)
+                                        </Form.Label>
+                                        <Form.Control
+                                            name="id_vehiculo"
+                                            as="select"
+                                            value={selectedVehiculo}
+                                            onChange={(event) => setSelectedVehiculo(event.target.value)}
+                                        >
+                                            <option value="medios_propios">Medios Propios</option>
+                                            {vehiculos && (
+                                                vehiculos.map(vehiculo => 
+                                                    <option value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
+                                                )
+                                            )}
+                                        </Form.Control>
+                                        {error && <p style={{ color: 'red', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
                                     </Form.Group>
                                 )}
                             </>
