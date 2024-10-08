@@ -6,6 +6,7 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 import GenericCard from '../../components/cards/generic_card/GenericCard';
 import LittleCard from '../../components/cards/little_card/LittleCard';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
+import Modal from '../../components/modals/Modal.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +19,11 @@ import './Entregas.scss';
 const Entregas = () => {
     const [entregas, setEntregas] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [takeAporteModal, setTakeAporteModal] = useState(false);
+    const [fechaEntrega, setFechaEntrega] = useState(null);
+    const [vehiculos, setVehiculos] = useState([]);
+    const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
 
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -94,6 +100,15 @@ const Entregas = () => {
         { type: 'id_pedido.id_usuario.nombre', label: 'Apellido del Usuario que ofrece' },
     ];
 
+    const handleFetchVehiculos = (obra) => {
+        setSelectedVehiculo("medios_propios");
+        fetchData(`transporte/${obra}/`, token).then((result) => {
+            setVehiculos(result);
+        }).catch(error => {
+            console.error('Error fetching vehiculos:', error);
+        });
+    };
+
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
@@ -131,6 +146,7 @@ const Entregas = () => {
                                                         descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.id_usuario.nombre} ${aporte.id_aporteOferta.id_usuario.apellido}` : `${aporte.id_aportePedido.id_usuario.nombre} ${aporte.id_aportePedido.id_usuario.apellido}`}
                                                         descrip2={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
                                                         foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
+                                                        onSelect={() => setTakeAporteModal(true)}
                                                     />
                                                 ))}
                                             </div>
@@ -139,6 +155,41 @@ const Entregas = () => {
                                 );
                             })
                         )}
+                        <Modal
+                            showButton = {false}
+                            showModal = {takeAporteModal}
+                            handleCloseModal={() => setTakeAporteModal(false)}
+                            content={
+                                <>
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                        Ingrese la fecha estimada de la entrega (Opcional)
+                                    </Form.Label>
+                                    <Form.Control
+                                        name="fechaEntrega"
+                                        type="date"
+                                        min={new Date().toISOString().split('T')[0]}
+                                        value={fechaEntrega}
+                                        onChange={(e) => setFechaEntrega(e.target.value)}
+                                    />
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                        Ingrese el vehiculo con el que se realizará la entrega (Opcional)
+                                    </Form.Label>
+                                    <Form.Control
+                                        name="id_vehiculo"
+                                        as="select"
+                                        value={selectedVehiculo}
+                                        onChange={(event) => setSelectedVehiculo(event.target.value)}
+                                    >
+                                        <option value="medios_propios">Medios Propios</option>
+                                        {vehiculos && (
+                                            vehiculos.map(vehiculo => 
+                                                <option value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
+                                            )
+                                        )}
+                                    </Form.Control>
+                                </>
+                            }
+                        />
                     </div>
                 )}
             </div>

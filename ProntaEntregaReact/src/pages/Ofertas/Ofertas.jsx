@@ -34,10 +34,6 @@ function Ofertas() {
     const [selectedObra, setSelectedObra] = useState({});
     const [stocks, setStocks] = useState([]);
 
-    const [fechaEntrega, setFechaEntrega] = useState(null);
-    const [vehiculos, setVehiculos] = useState([]);
-    const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
-
     const [showModal, setShowModal] = useState(false);
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
@@ -88,15 +84,6 @@ function Ofertas() {
 
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
-
-    const handleFetchVehiculos = (obra) => {
-        setSelectedVehiculo("medios_propios");
-        fetchData(`transporte/${obra}/`, token).then((result) => {
-            setVehiculos(result);
-        }).catch(error => {
-            console.error('Error fetching vehiculos:', error);
-        });
-    };
 
     const filteredOfertas = ofertas.filter(oferta => {
         return (
@@ -181,7 +168,7 @@ function Ofertas() {
         }
     };
 
-    const createAporteOferta = async (ofertaId, usuarioId, obra, cantidad, fechaAportado, fechaEntrega, vehiculo) => {
+    const createAporteOferta = async (ofertaId, usuarioId, obra, cantidad, fechaAportado) => {
         const oferta = ofertas.find(oferta => oferta.id_oferta === ofertaId);
         const cantidadRestante = oferta.cantidad - oferta.progreso;
 
@@ -193,16 +180,13 @@ function Ofertas() {
         const data = {
             cantidad: parseInt(cantidad, 10),
             fechaAportado: fechaAportado,
-            fechaEntrega: fechaEntrega,
             id_oferta: ofertaId,
             id_usuario: usuarioId,
             id_obra: obra.id_obra,
-            id_vehiculo: vehiculo
         };
 
         try {
             await postData('crear_detalle_oferta/', data, token).then(() => {
-                window.location.reload();
                 return true;
             });
         } catch (error) {
@@ -251,7 +235,6 @@ function Ofertas() {
                                                 const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
                                                 if (filteredObras.length > 0) {
                                                     setSelectedObra(filteredObras[0]);
-                                                    handleFetchVehiculos(filteredObras[0].id_obra);
                                                 }
                                             }
                                         }}
@@ -278,7 +261,7 @@ function Ofertas() {
                     saveButtonText='Tomar'
                     handleCloseModal={() => { setShowTakeOfertaModal(false), setSelectedOferta(null) }}
                     title='Tomar Oferta'
-                    handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, selectedObra, cantidad, new Date().toISOString().split('T')[0], fechaEntrega, selectedVehiculo)}
+                    handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, selectedObra, cantidad, new Date().toISOString().split('T')[0])}
                     content={
                         <div>
                             <GenericCard
@@ -314,7 +297,6 @@ function Ofertas() {
                                         name="obra"
                                         onChange={(event) => {
                                             setSelectedObra(obras.find(obra => obra.id_obra === Number(event.target.value)));
-                                            handleFetchVehiculos(Number(event.target.value));
                                         }}
                                     >
                                         {obras.filter(obra => selectedOferta.id_obra && selectedOferta.id_obra.id_obra !== obra.id_obra).map(obra => (
@@ -323,32 +305,6 @@ function Ofertas() {
                                             </option>
                                         ))}
                                     </Form.Control>
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                        Ingrese la fecha estimada de la entrega (Opcional)
-                                    </Form.Label>
-                                    <Form.Control
-                                            name="fechaEntrega"
-                                            type="date"
-                                            min={new Date().toISOString().split('T')[0]}
-                                            value={fechaEntrega}
-                                            onChange={(e) => setFechaEntrega(e.target.value)}
-                                        />
-                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                            Ingrese el vehiculo con el que se realizará la entrega (Opcional)
-                                        </Form.Label>
-                                        <Form.Control
-                                            name="selectedVehiculo"
-                                            as="select"
-                                            value={selectedVehiculo}
-                                            onChange={(event) => setSelectedVehiculo(event.target.value)}
-                                        >
-                                            <option value="medios_propios">Medios Propios</option>
-                                            {vehiculos && (
-                                                vehiculos.map(vehiculo => 
-                                                    <option value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
-                                                )
-                                            )}
-                                        </Form.Control>
                                 </>
                             )}
                             {error && <p style={{ color: 'red', marginTop: '0.5rem', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
