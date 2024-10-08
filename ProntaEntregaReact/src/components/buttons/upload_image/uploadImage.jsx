@@ -9,7 +9,9 @@ import './uploadImage.scss';
 function UploadImage({ wide = '15', onFileChange, titulo = "Imagen de perfil", defaultImage = profileImage, usingIcon = false, buttonHidden = false }) {
 
     const handleFileButtonClick = () => {
-        if (buttonHidden) {
+        if (usingIcon & buttonHidden) {
+            fileInputRef.current.click();
+        } else if (!usingIcon & !buttonHidden) {
             fileInputRef.current.click();
         }
     };

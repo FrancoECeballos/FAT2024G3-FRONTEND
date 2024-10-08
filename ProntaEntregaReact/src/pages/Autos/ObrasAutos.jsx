@@ -68,8 +68,8 @@ function ObrasAutos() {
 
     const sortedObras = [...filteredObras].sort((a, b) => {
         if (!orderCriteria) return 0;
-        const aValue = a.id_obra[orderCriteria];
-        const bValue = b.id_obra[orderCriteria];
+        const aValue = a[orderCriteria];
+        const bValue = b[orderCriteria];
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
@@ -88,11 +88,6 @@ function ObrasAutos() {
         setSearchQuery(value);
     };
 
-    if (Array.isArray(sortedObras) && sortedObras.length === 1) {
-        const obra = sortedObras[0];
-        navigate(`/autos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}});
-    }
-
     if (isLoading) {
         return <div><FullNavbar/><Loading /></div> ;
     }
@@ -103,7 +98,7 @@ function ObrasAutos() {
                 <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
                     <Breadcrumb.Item active>Vehículos</Breadcrumb.Item>
                 </Breadcrumb>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
+                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                 <div className='cardstock'>
                 {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
                     sortedObras.map(obra => (

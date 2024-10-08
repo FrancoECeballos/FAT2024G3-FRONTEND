@@ -12,7 +12,7 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center',marginLeft:"0.5rem", marginRight:"0.5rem" }}>
             <input 
                 type="text" 
                 name="search" 
@@ -27,7 +27,7 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [] }) => {
                 <Dropdown.Toggle 
                     id="dropdown-basic"
                     style={{ height:"2.5rem", border: '0px', color: 'black', borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', width: '100%', textAlign: 'center' }}>
-                    {selectedItem || "Ordenar Por"}
+                    {selectedItem || "Ordenar"}
                     <Icon icon="material-symbols:arrow-drop-down" style={{width:"1.5rem", height:"1.5rem"}}/>
                 </Dropdown.Toggle>
 
