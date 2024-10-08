@@ -14,9 +14,6 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
     const token = Cookies.get('token');
 
     const [cantidad, setCantidad] = useState('');
-    const [fechaEntrega, setFechaEntrega] = useState(null);
-    const [vehiculos, setVehiculos] = useState([]);
-    const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
 
     const [error, setError] = useState('');
     const pedidoCardRef = useRef(null);
@@ -41,15 +38,6 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         }
     }, [sortedPedidos]);
 
-    const handleFetchVehiculos = (obra) => {
-        setSelectedVehiculo("medios_propios");
-        fetchData(`transporte/${obra}/`, token).then((result) => {
-            setVehiculos(result);
-        }).catch(error => {
-            console.error('Error fetching vehiculos:', error);
-        });
-    };
-
     const handleChange = (event) => {
         setCantidad(event.target.value);
         if (event.target.value === '') {
@@ -68,7 +56,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         });
     };
 
-    const createAportePedido = async (pedidoId, usuarioId, cantidad, fechaAportado, fechaEntrega, vehiculo) => {
+    const createAportePedido = async (pedidoId, usuarioId, cantidad, fechaAportado) => {
         const pedido = sortedPedidos.flatMap(obra => obra.pedidos).find(pedido => pedido.id_pedido === pedidoId);
         const cantidadRestante = pedido.cantidad - pedido.progreso;
         if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
@@ -79,16 +67,13 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         const data = {
             cantidad: parseInt(cantidad, 10),
             fechaAportado: fechaAportado,
-            fechaEntrega: fechaEntrega,
             id_pedido: pedidoId,
             id_usuario: usuarioId,
             id_obra: selectedObra.id_obra,
-            id_vehiculo: vehiculo
         };
 
         try {
             await postData('crear_aporte_pedido/', data, token).then(() => {
-                window.location.reload();
                 return true;
             });
         } catch (error) {
@@ -116,7 +101,6 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                         const filteredObras = obrasDisponibles.filter(obra => pedido.id_obra && pedido.id_obra.id_obra !== obra.id_obra);
                                         if (filteredObras.length > 0) {
                                             setSelectedObra(filteredObras[0]);
-                                            handleFetchVehiculos(filteredObras[0].id_obra);
                                         }
                                     };
                                 }
@@ -148,7 +132,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 deleteFunction={() => deletePedido(selectedPedido.id_pedido)}
                 deleteButtonText='Rechazar'
                 title='Tomar Pedido'
-                handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, cantidad, new Date().toISOString().split('T')[0], fechaEntrega, selectedVehiculo)}
+                handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, cantidad, new Date().toISOString().split('T')[0])}
                 content={
                     <div>
                         {selectedPedido && selectedPedido.id_producto && (
@@ -202,7 +186,6 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                                         name="obra"
                                                         onChange={(event) => {
                                                             setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === Number(event.target.value)));
-                                                            handleFetchVehiculos(Number(event.target.value));
                                                         }}
                                                     >
                                                         {obrasDisponibles.map(obra => (
@@ -216,32 +199,6 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                                 </>
                                             )
                                         )}
-                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                            Ingrese la fecha estimada de la entrega (Opcional)
-                                        </Form.Label>
-                                        <Form.Control
-                                            name="fechaEntrega"
-                                            type="date"
-                                            min={new Date().toISOString().split('T')[0]}
-                                            value={fechaEntrega}
-                                            onChange={(e) => setFechaEntrega(e.target.value)}
-                                        />
-                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                            Ingrese el vehiculo con el que se realizará la entrega (Opcional)
-                                        </Form.Label>
-                                        <Form.Control
-                                            name="id_vehiculo"
-                                            as="select"
-                                            value={selectedVehiculo}
-                                            onChange={(event) => setSelectedVehiculo(event.target.value)}
-                                        >
-                                            <option value="medios_propios">Medios Propios</option>
-                                            {vehiculos && (
-                                                vehiculos.map(vehiculo => 
-                                                    <option value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
-                                                )
-                                            )}
-                                        </Form.Control>
                                         {error && <p style={{ color: 'red', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
                                     </Form.Group>
                                 )}
