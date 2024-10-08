@@ -334,7 +334,7 @@ function Products() {
                                     <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                 </InputGroup>
                             }
-                        https://app.getgrass.io/register/?referralCode=JpEiN51L_OG3LXR    {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
+                            {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
                                 <>
                                     <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
                                     <InputGroup className="mb-2">
