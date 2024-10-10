@@ -380,15 +380,15 @@ function Products() {
                                                             <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere restar/sumar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                                         </InputGroup>
                                                         <InputGroup className="mb-2">
-                                                            <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
-                                                            <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
+                                                            <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1}} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
+                                                            <Button className={`unified-input2 unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''}`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
                                                         </InputGroup>
                                                     </div>
                                                 } 
                                             />
                                         </Col>
                                         <Col xs={12} md={6} style={{ marginTop: '1rem' }}>
-                                            <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
+                                            <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Pedido / Oferta" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
                                                 content={
                                                     <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
                                                         <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>

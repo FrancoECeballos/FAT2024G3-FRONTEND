@@ -16,6 +16,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const [selectedCategory, setSelectedCategory] = useState("");
     const [products, setProducts] = useState([]);
     const [urgencia, setUrgencia] = useState(0);
+    const [allSelected, setAllSelected] = useState(false);
     
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -142,7 +143,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     };
 
     const handleSelectAllObras = () => {
-        const allObrasIds = obras.map(obra => obra.id_obra.id_obra);
+        const allObrasIds = orderedObras.map(obra => obra.id_obra.id_obra);
         const allSelected = allObrasIds.every(id => pedidoForm.obras.includes(id));
         
         setPedidoForm(prevForm => {
@@ -159,6 +160,8 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     
             return updatedForm;
         });
+
+        setAllSelected(!allSelected);
     };
 
     const validateForm = (form) => {
@@ -339,7 +342,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                     <Button variant="link" onClick={handleSelectAllObras} style={{ fontSize: '0.8rem', padding: 0 }}>
-                                        Seleccionar todas las obras
+                                    {allSelected ? 'Deseleccionar todas las obras' : 'Seleccionar todas las obras'}
                                     </Button>
                                     <Form.Label id='errorObrasRequested' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
                                         &nbsp;
