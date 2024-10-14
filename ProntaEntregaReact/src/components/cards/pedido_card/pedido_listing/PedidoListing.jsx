@@ -74,6 +74,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
 
         try {
             await postData('crear_aporte_pedido/', data, token).then(() => {
+                window.location.reload();
                 return true;
             });
         } catch (error) {

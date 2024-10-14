@@ -22,7 +22,6 @@ function Pedidos() {
     const [obras, setObras] = useState([]);
 
     const [pedidos, setPedidos] = useState([]);
-    const [pedidosDados, setPedidosDados] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -39,17 +38,12 @@ function Pedidos() {
                 if (userTokenData.is_superuser) {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
                     setPedidos(pedidosRecibidos);
-                    const pedidosDadosData = await fetchData(`get_pedidos_dados/`, token);
-                    setPedidosDados(pedidosDadosData);
 
                     const obrasData = await fetchData(`obra/`, token);
                     setObras(obrasData);
                 } else {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
                     setPedidos(pedidosRecibidos);
-
-                    const pedidosDadosData = await fetchData(`get_pedidos_dados/`, token);
-                    setPedidosDados(pedidosDadosData);
 
                     const obrasData = await fetchData(`obra/user/${token}/`, token);
                     setObras(obrasData);
@@ -199,64 +193,6 @@ function Pedidos() {
         }
     });
 
-    const filteredPedidosDados = pedidosDados.map(pedidoDado => {
-        const filteredInnerPedidos = pedidoDado.pedidos.filter(pedido => {
-            return filters.some(filter => {
-                const filterPath = filter.type.split('.').slice(1).join('.');
-                const value = getNestedValue(pedido, filterPath);
-                return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
-            });
-        });
-        return { ...pedidoDado, pedidos: filteredInnerPedidos };
-    }).filter(pedidoDado => pedidoDado.pedidos.length > 0);
-    
-    const sortedPedidosDados = filteredPedidosDados.sort((a, b) => {
-        if (orderCriteria === 'pedido.id_obra.nombre') {
-            const getValue = (obj, path) => {
-                return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-            };
-    
-            const aValue = getValue(a.obra, 'nombre');
-            const bValue = getValue(b.obra, 'nombre');
-    
-            if (typeof aValue === 'string' && typeof bValue === 'string') {
-                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
-            }
-    
-            return 0;
-        } else {
-            return 0;
-        }
-    }).map(pedidoDado => {
-        const sortedPedidos = [...pedidoDado.pedidos].sort((a, b) => {
-            if (!orderCriteria) return 0;
-            const getValue = (obj, path) => {
-                return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-            };
-    
-            const aValue = getValue(a, orderCriteria.replace('pedido.', ''));
-            const bValue = getValue(b, orderCriteria.replace('pedido.', ''));
-    
-            if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
-                const aDate = new Date(aValue);
-                const bDate = new Date(bValue);
-                return aDate - bDate;
-            }
-    
-            if (typeof aValue === 'string' && typeof bValue === 'string') {
-                return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
-            }
-    
-            if (typeof aValue === 'number' && typeof bValue === 'number') {
-                return bValue - aValue;
-            }
-    
-            return 0;
-        });
-    
-        return { ...pedidoDado, pedidos: sortedPedidos };
-    });
-
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
@@ -291,10 +227,7 @@ function Pedidos() {
                             />
                         </div>
 
-                        <Tabs defaultActiveKey="obras" id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                            <Tab eventKey="obras" title="Todas" style={{ backgroundColor: "transparent" }}>
-                                <PedidoListing sortedPedidos={sortedPedidosDados} obrasDisponibles={obras} user={user} />
-                            </Tab>
+                        <Tabs defaultActiveKey={obras.length > 0 ? obras[0].id_obra : 'obras'} id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
                             {obras.map((obra) => {
                                 const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
