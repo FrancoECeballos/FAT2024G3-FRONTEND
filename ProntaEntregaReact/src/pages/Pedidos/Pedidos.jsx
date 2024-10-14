@@ -213,7 +213,7 @@ function Pedidos() {
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                             <Modal
                                 tamaño={'lg'}
-                                openButtonText='¿No encuentra su Pedido? Añadalo'
+                                openButtonText='Crear un Pedido'
                                 openButtonWidth='20'
                                 title='Nuevo Pedido'
                                 saveButtonText='Crear'

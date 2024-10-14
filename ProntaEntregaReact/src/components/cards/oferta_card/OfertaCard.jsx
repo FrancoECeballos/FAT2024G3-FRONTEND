@@ -217,9 +217,13 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
                             <Form.Control style={{width:"100%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
                                 <option value="" hidden>Producto</option>
-                                {products.map(product => (
-                                    <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
-                                ))}
+                                {products.length > 0 ? (
+                                    products.map(product => (
+                                        <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
+                                    ))
+                                ) : (
+                                    <option value="" disabled>No hay productos disponibles</option>
+                                )}
                             </Form.Control>
                             <Form.Label id='errorId_producto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                         </Form.Group>
