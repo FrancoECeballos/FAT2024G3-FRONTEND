@@ -8,10 +8,10 @@
 
 .little-cards-container {
     display: flex;
-    flex-wrap: nowrap; /* No permitir que las tarjetas se envuelvan */
-    gap: 1rem; /* Espacio entre las tarjetas */
-    overflow-x: auto; /* Scroll horizontal */
-    white-space: nowrap; /* No permitir que las tarjetas se envuelvan a la siguiente línea */
+    flex-wrap: nowrap;
+    gap: 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .unified-input {

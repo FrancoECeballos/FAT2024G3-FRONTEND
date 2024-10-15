@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Loading from '../../../loading/loading.jsx';
-import { Form } from 'react-bootstrap';
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Cookies from 'js-cookie';
+import { Icon } from '@iconify/react';
+
 import GenericCard from '../../../cards/generic_card/GenericCard.jsx';
 import deleteData from '../../../../functions/deleteData.jsx';
 import Modal from '../../../modals/Modal.jsx';
@@ -114,7 +116,15 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                         descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente}/></>}
                                         descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                         descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
-                                    />
+                                        children={
+                                            <OverlayTrigger
+                                                placement="top"
+                                                overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar el pedido</Tooltip>}
+                                            >
+                                                <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                            </OverlayTrigger>
+                                        }
+                                        />
                                 </div>
                             ))}
                         />

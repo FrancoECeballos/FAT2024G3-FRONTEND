@@ -181,7 +181,7 @@ function Categories() {
                 </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal openButtonText='¿No encuentra la categoria? Añadala' openButtonWidth='20' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
+                    <Modal openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
                         <div>
                             <h2 className='centered'> Nueva Categoria </h2>
                             <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>

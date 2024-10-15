@@ -385,13 +385,14 @@ function Products() {
                                                     <div>
                                                         <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
                                                         <h2 className='centered'> Producto: {product.nombre} </h2>
+                                                        <p className='centered'>{product.descripcion}</p>
                                                         <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
                                                         <InputGroup className="mb-2">
                                                             <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad a modificar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                                         </InputGroup>
                                                         <InputGroup className="mb-2">
-                                                            <Button className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''} añadir-button`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
-                                                            <Button className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''} quitar-button`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
+                                                            <Button variant='outline-success' className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''} añadir-button`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>
+                                                            <Button variant='outline-danger' className={`unified-input unified-input-right ${selectedOperacion === 'restar' ? 'selected' : ''} quitar-button`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('restar')}> Quitar </Button>
                                                         </InputGroup>
                                                     </div>
                                                 } 

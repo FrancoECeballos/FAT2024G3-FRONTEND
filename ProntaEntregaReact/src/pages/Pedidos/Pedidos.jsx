@@ -214,7 +214,7 @@ function Pedidos() {
                             <Modal
                                 tamaño={'lg'}
                                 openButtonText='Crear un Pedido'
-                                openButtonWidth='20'
+                                openButtonWidth='10'
                                 title='Nuevo Pedido'
                                 saveButtonText='Crear'
                                 handleSave={handleCreatePedido}
