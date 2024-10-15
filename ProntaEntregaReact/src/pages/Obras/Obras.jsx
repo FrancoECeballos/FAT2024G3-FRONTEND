@@ -228,6 +228,9 @@ function Stock() {
         }
     };
 
+    const handleDeleteObra = async () => {
+    };
+
     return (
         <div>
             <FullNavbar />
@@ -320,6 +323,8 @@ function Stock() {
                                         saveButtonText={'Guardar'}
                                         title={'Editar Obra'}
                                         saveButtonEnabled={isFormValid}
+                                        showDeleteButton={true}
+                                        deleteFunction={() => handleDeleteObra()}
                                         content={
                                             <>
                                                 <UploadImage defaultImage={obra.imagen} onFileChange={handleFileChange} />
