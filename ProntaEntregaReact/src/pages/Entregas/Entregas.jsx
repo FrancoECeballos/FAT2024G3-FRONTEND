@@ -126,14 +126,21 @@ const Entregas = () => {
     };
 
     const handleUpdateEntregaAporte = () => {
-        const data = {...aporteModal, fechaEntrega: fechaEntrega || undefined, id_transporte: selectedVehiculo};
+        const data = {
+            ...aporteModal,
+            fechaEntrega: fechaEntrega || undefined,
+            id_transporte: selectedVehiculo.id_vehiculo,
+            id_estadoEntrega: 2,
+            id_aportePedido: aporteModal.id_aportePedido ? aporteModal.id_aportePedido.id_aportePedido : null,
+            id_aporteOferta: aporteModal.id_aporteOferta ? aporteModal.id_aporteOferta.id_aporteOferta : null,
+            id_usuario: user.id_usuario
+
+        };
         putData(`editar_entrega_aporte/${data.id_entregaAporte}/`, data, token).then(() => {
             setAporteModal(null);
-            fetchData('entrega/', token).then((result) => {
-                setEntregas(result);
-                console.log(result);
-                setIsLoading(false);
-            }).catch(error => {
+            fetchData('entrega/', token).then(
+                window.location.reload()
+            ).catch(error => {
                 console.error('Error fetching entregas:', error);
             });
         }).catch(error => {
@@ -227,7 +234,7 @@ const Entregas = () => {
                                     <Form.Control
                                         name="id_vehiculo"
                                         as="select"
-                                        value={selectedVehiculo || ""}
+                                        value={selectedVehiculo || null}
                                         onChange={(event) => setSelectedVehiculo(event.target.value)}
                                     >
                                         <option value="medios_propios">Medios Propios</option>
@@ -251,7 +258,13 @@ const Entregas = () => {
                                 <>
                                     {recorridoModal && (
                                         <>
-                                            <EntregaProgressBar estado={recorridoModal.id_estadoEntrega} wid='29rem'/>
+                                            <EntregaProgressBar estado={recorridoModal.id_estadoEntrega - 1} wid='29rem'/>
+                                            <div>
+                                                <a><strong>Estado Actual:</strong> {recorridoModal.id_estadoEntrega.nombre} <br/><br/></a>
+                                                <a><strong>Usuario a Cargo:</strong> {recorridoModal.id_usuario.nombre} {recorridoModal.id_usuario.apellido} <br/></a>
+                                                <a><strong>Fecha de Entrega Estimada:</strong> {recorridoModal.fechaEntrega ? recorridoModal.fechaEntrega : 'No especificada'} <br/></a>
+                                                <a><strong>Fecha de Entrega Estimada:</strong> {recorridoModal.id_vehiculo ? `${recorridoModal.id_vehiculo.marca}, ${recorridoModal.id_vehiculo.modelo} ${recorridoModal.id_vehiculo.patente}` : 'Medios Propios'}</a>
+                                            </div>
                                             
                                         </>
                                     )}
