@@ -7,24 +7,28 @@ import GenericCard from '../../components/cards/generic_card/GenericCard';
 import LittleCard from '../../components/cards/little_card/LittleCard';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Modal from '../../components/modals/Modal.jsx';
+import EntregaProgressBar from '../../components/EntrgaProgressBar/EntregaProgressBar.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 import putData from '../../functions/putData.jsx';
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import Loading from '../../components/loading/loading.jsx';
 import fetchUser from '../../functions/fetchUser.jsx';
+
+import { useNavigate } from 'react-router-dom';
+import Loading from '../../components/loading/loading.jsx';
 
 import './Entregas.scss';
 
 const Entregas = () => {
     const [entregas, setEntregas] = useState([]);
+    const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
     const [aporteModal, setAporteModal] = useState(null);
     const [fechaEntrega, setFechaEntrega] = useState("");
     const [vehiculos, setVehiculos] = useState([]);
     const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
+
+    const [recorridoModal, setRecorridoModal] = useState(null);
 
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -37,13 +41,24 @@ const Entregas = () => {
             navigate('/login');
             return;
         }
+
+        const fetchUserData = async () => {
+            try {
+                const userData = await fetchUser();
+                setUser(userData);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
     
-        fetchData('entrega/', token).then((result) => {
-            setEntregas(result);
-            console.log(result);
-            setIsLoading(false);
-        }).catch(error => {
-            console.error('Error fetching entregas:', error);
+        fetchUserData().then(() => {
+            fetchData('entrega/', token).then((result) => {
+                setEntregas(result);
+                console.log(result);
+                setIsLoading(false);
+            }).catch(error => {
+                console.error('Error fetching entregas:', error);
+            });
         });
     }, [token, navigate]);
 
@@ -155,18 +170,33 @@ const Entregas = () => {
                                         descrip3={<><strong>Creado en:</strong> {entrega.id_pedido === null ? entrega.id_oferta.fechainicio : entrega.id_pedido.fechainicio}</>}
                                         foto={entrega.id_pedido === null ? entrega.id_oferta.id_producto.imagen : entrega.id_pedido.id_producto.imagen}
                                         children={
-                                            <div className='scroll-horizontal-entregas'>
-                                                {entrega.entrega_aportes.map((aporte) => (
-                                                    <LittleCard
-                                                        key={aporte.id_entregaAporte}
-                                                        titulo={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.cantidad} ${aporte.id_aporteOferta.id_oferta.id_producto.unidadmedida} tomados` : `${aporte.id_aportePedido.cantidad} ${aporte.id_aportePedido.id_pedido.id_producto.unidadmedida} dados`}
-                                                        descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.id_usuario.nombre} ${aporte.id_aporteOferta.id_usuario.apellido}` : `${aporte.id_aportePedido.id_usuario.nombre} ${aporte.id_aportePedido.id_usuario.apellido}`}
-                                                        descrip2={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
-                                                        foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
-                                                        onSelect={() => {setAporteModal(aporte); handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.id_obra : aporte.id_aportePedido.id_obra.id_obra)}}
-                                                    />
-                                                ))}
-                                            </div>
+                                            <>
+                                                <div className='scroll-horizontal-entregas'>
+                                                    {entrega.entrega_aportes.map((aporte) => (
+                                                        <LittleCard
+                                                            key={aporte.id_entregaAporte}
+                                                            titulo={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.cantidad} ${aporte.id_aporteOferta.id_oferta.id_producto.unidadmedida} tomados` : `${aporte.id_aportePedido.cantidad} ${aporte.id_aportePedido.id_pedido.id_producto.unidadmedida} dados`}
+                                                            descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.id_usuario.nombre} ${aporte.id_aporteOferta.id_usuario.apellido}` : `${aporte.id_aportePedido.id_usuario.nombre} ${aporte.id_aportePedido.id_usuario.apellido}`}
+                                                            descrip2={<>
+                                                                {aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
+                                                                <br />
+                                                                <strong>{aporte.id_estadoEntrega.id_estadoEntrega === 1 ? "Click para tomar Entrega" : "Click para ver el recorrido"}</strong>
+                                                            </>}
+                                                            foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
+                                                            onSelect={() => {
+                                                                if (aporte.id_estadoEntrega.id_estadoEntrega === 1) {
+                                                                    setAporteModal(aporte);
+                                                                    handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.id_obra : aporte.id_aportePedido.id_obra.id_obra);
+                                                                } else {
+                                                                    setRecorridoModal(aporte);
+                                                                }
+                                                                
+                                                            }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                
+                                            </>
                                         }
                                     />
                                 );
@@ -178,6 +208,7 @@ const Entregas = () => {
                             handleCloseModal={() => setAporteModal(null)}
                             handleSave={() => handleUpdateEntregaAporte()}
                             title = 'Tomar Aporte'
+                            saveButtonText={'Tomar'}
                             content={
                                 <>
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
@@ -206,6 +237,24 @@ const Entregas = () => {
                                             )
                                         )}
                                     </Form.Control>
+                                </>
+                            }
+                        />
+                        <Modal
+                            showButton = {false}
+                            showModal = {recorridoModal != null}
+                            handleCloseModal={() => setRecorridoModal(null)}
+                            handleSave={() => handleUpdateEntregaAporte()}
+                            title = 'Información de la Entrega'
+                            saveButtonText={'Tomar'}
+                            content={
+                                <>
+                                    {recorridoModal && (
+                                        <>
+                                            <EntregaProgressBar estado={recorridoModal.id_estadoEntrega} wid='29rem'/>
+                                            
+                                        </>
+                                    )}
                                 </>
                             }
                         />
