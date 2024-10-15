@@ -17,6 +17,8 @@ import putData from '../../functions/putData.jsx';
 
 import fetchUser from '../../functions/fetchUser.jsx';
 
+import deleteData from '../../functions/deleteData.jsx';
+
 function Stock() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -228,7 +230,13 @@ function Stock() {
         }
     };
 
-    const handleDeleteObra = async () => {
+    const handleDeleteObra = async (id) => {
+        try {
+            await deleteData(`/DeleteObra/${id}/`, token);
+            window.location.reload();
+        } catch (error) {
+            console.error('Error deleting obra:', error);
+        }
     };
 
     return (
@@ -324,7 +332,7 @@ function Stock() {
                                         title={'Editar Obra'}
                                         saveButtonEnabled={isFormValid}
                                         showDeleteButton={true}
-                                        deleteFunction={() => handleDeleteObra()}
+                                        deleteFunction={() => handleDeleteObra(obra.id_obra)}
                                         content={
                                             <>
                                                 <UploadImage defaultImage={obra.imagen} onFileChange={handleFileChange} />
