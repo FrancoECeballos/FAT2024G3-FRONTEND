@@ -17,6 +17,7 @@ import postData from '../../../functions/postData.jsx';
 import SendButton from '../../buttons/send_button/send_button.jsx';
 import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
 import GenericAlert from '../../alerts/generic_alert/GenericAlert.jsx'; 
+import SelectLocalidad from '../SelectLocalidad.jsx';
 
 const RegisterCard = () => {
 
@@ -120,9 +121,9 @@ const RegisterCard = () => {
         const regex = /^[0-9]+$/;
         const errorDocumento = document.getElementById("errorDocumento");
         if (value === "") {
-          errorDocumento.innerHTML = "El documento no puede estar vacío";
+          errorDocumento.innerHTML = "El numero de documento no puede estar vacío";
         } else {
-          errorDocumento.innerHTML = !regex.test(value) ? "El documento es inválido" : "&nbsp;";
+          errorDocumento.innerHTML = !regex.test(value) ? "El numero de documento es inválido" : "&nbsp;";
         }
       } else if (name === "email") {
         const regex = /@/;
@@ -213,7 +214,7 @@ const RegisterCard = () => {
       } if (!formData.password) {
         setAlertMessage(prevMessage => prevMessage + "\n- Contraseña vacia");
       } if (!formData.documento) {
-        setAlertMessage(prevMessage => prevMessage + "\n- Documento vacio");
+        setAlertMessage(prevMessage => prevMessage + "\n- Numero de documento vacio");
       } if (!formData.telefono) {
         setAlertMessage(prevMessage => prevMessage + "\n- Telefono vacio");
       } if (!formData.email) {
@@ -319,7 +320,7 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
-                    <Form.Control style={{ height: '2.4rem' }} name="localidad" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Localidad"/>
+                    <SelectLocalidad/>
                     <Form.Label id='errorLocalidad' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
@@ -349,7 +350,7 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Documento de identidad (*)</Form.Label>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de documento (*)</Form.Label>
                     <Form.Control style={{ height: '2.4rem' }} name="documento" type="documento" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su documento"/>
                     <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
@@ -394,6 +395,5 @@ const RegisterCard = () => {
       </Container>
     </>
   );
-}
-
+} 
 export default RegisterCard;
