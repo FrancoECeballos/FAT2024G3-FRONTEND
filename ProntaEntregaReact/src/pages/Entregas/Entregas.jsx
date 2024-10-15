@@ -24,9 +24,9 @@ const Entregas = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const [aporteModal, setAporteModal] = useState(null);
-    const [fechaEntrega, setFechaEntrega] = useState("");
+    const [fechaEntrega, setFechaEntrega] = useState(null);
     const [vehiculos, setVehiculos] = useState([]);
-    const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
+    const [selectedVehiculo, setSelectedVehiculo] = useState(null);
 
     const [recorridoModal, setRecorridoModal] = useState(null);
 
@@ -128,8 +128,8 @@ const Entregas = () => {
     const handleUpdateEntregaAporte = () => {
         const data = {
             ...aporteModal,
-            fechaEntrega: fechaEntrega || undefined,
-            id_transporte: selectedVehiculo.id_vehiculo,
+            fechaEntrega: fechaEntrega,
+            id_transporte: parseInt(selectedVehiculo),
             id_estadoEntrega: 2,
             id_aportePedido: aporteModal.id_aportePedido ? aporteModal.id_aportePedido.id_aportePedido : null,
             id_aporteOferta: aporteModal.id_aporteOferta ? aporteModal.id_aporteOferta.id_aporteOferta : null,
@@ -194,8 +194,10 @@ const Entregas = () => {
                                                                 if (aporte.id_estadoEntrega.id_estadoEntrega === 1) {
                                                                     setAporteModal(aporte);
                                                                     handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.id_obra : aporte.id_aportePedido.id_obra.id_obra);
+                                                                    console.log(aporte);
                                                                 } else {
                                                                     setRecorridoModal(aporte);
+                                                                    console.log(aporte);
                                                                 }
                                                                 
                                                             }}
@@ -225,14 +227,14 @@ const Entregas = () => {
                                         name="fechaEntrega"
                                         type="date"
                                         min={new Date().toISOString().split('T')[0]}
-                                        value={fechaEntrega || ""}
+                                        value={fechaEntrega || null}
                                         onChange={(e) => setFechaEntrega(e.target.value)}
                                     />
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
                                         Ingrese el vehiculo con el que se realizará la entrega (Opcional)
                                     </Form.Label>
                                     <Form.Control
-                                        name="id_vehiculo"
+                                        name="id_transporte"
                                         as="select"
                                         value={selectedVehiculo || null}
                                         onChange={(event) => setSelectedVehiculo(event.target.value)}
@@ -263,9 +265,8 @@ const Entregas = () => {
                                                 <a><strong>Estado Actual:</strong> {recorridoModal.id_estadoEntrega.nombre} <br/><br/></a>
                                                 <a><strong>Usuario a Cargo:</strong> {recorridoModal.id_usuario.nombre} {recorridoModal.id_usuario.apellido} <br/></a>
                                                 <a><strong>Fecha de Entrega Estimada:</strong> {recorridoModal.fechaEntrega ? recorridoModal.fechaEntrega : 'No especificada'} <br/></a>
-                                                <a><strong>Fecha de Entrega Estimada:</strong> {recorridoModal.id_vehiculo ? `${recorridoModal.id_vehiculo.marca}, ${recorridoModal.id_vehiculo.modelo} ${recorridoModal.id_vehiculo.patente}` : 'Medios Propios'}</a>
+                                                <a><strong>Vehiculo Usado:</strong> {recorridoModal.id_transporte ? `${recorridoModal.id_transporte.marca}, ${recorridoModal.id_transporte.modelo} ${recorridoModal.id_transporte.patente}` : 'Medios Propios'}</a>
                                             </div>
-                                            
                                         </>
                                     )}
                                 </>
