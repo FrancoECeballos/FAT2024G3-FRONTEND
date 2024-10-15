@@ -4,6 +4,7 @@ import AutoCompleteSelect from "../selects/auto_complete_select/auto_complete_se
 
 const SelectLocalidad = (style, name, type, onBlur, onChange, placeholder) => {
     const Localidades = [
+        
         { key: "1", label: "Achiras, Río Cuarto" },
         { key: "2", label: "Adelia María, Río Cuarto" },
         { key: "3", label: "Agua de Oro, Colón" },
