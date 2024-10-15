@@ -20,42 +20,38 @@
     color: black;
 }
 
-.unified-input:hover {
-    background-color: #05a500;
-    color: white;
-}
-
 .unified-input:active {
-    color: white;
-}
-
-.unified-input.selected {
-    background-color: #05a500;
-    color: white;
-}
-
-.unified-input2 {
-    transition: color 0.3s, background-color 0.3s;
-    background-color: white;
-    color: black;
-}
-
-.unified-input2:hover {
-    background-color: #ff0000;
-    color: white;
-}
-
-.unified-input2:active {
-    color: white;
-}
-
-.unified-input2.selected {
-    background-color: #ff0000;
     color: white;
 }
 
 .hoverable-icon:hover {
     transform: scale(1.15);
+}
+
+.añadir-button{
+    border: 1px solid #3e4692;
+}
+.añadir-button.selected {
+    background-color: #047700;
+    color: white;
+    border: none;
+}
+.añadir-button:hover {
+    background-color: #047700;
+    color: white;
+}
+
+.quitar-button{
+    border: 1px solid #3e4692;
+}
+.quitar-button.selected {
+    background-color: #910000;
+    color: white;
+    border: none;
+}
+.quitar-button:hover {
+    background-color: #910000;
+    color: white;
 }
 
 .nombre-input {

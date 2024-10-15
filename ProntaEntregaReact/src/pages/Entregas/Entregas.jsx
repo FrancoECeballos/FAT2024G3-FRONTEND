@@ -10,10 +10,11 @@ import Modal from '../../components/modals/Modal.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 import putData from '../../functions/putData.jsx';
+import fetchUser from '../../functions/fetchUser.jsx';
+
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Loading from '../../components/loading/loading.jsx';
-import fetchUser from '../../functions/fetchUser.jsx';
 
 import './Entregas.scss';
 
@@ -37,13 +38,24 @@ const Entregas = () => {
             navigate('/login');
             return;
         }
+
+        const fetchUserData = async () => {
+            try {
+                const userData = await fetchUser();
+                setUser(userData);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
     
-        fetchData('entrega/', token).then((result) => {
-            setEntregas(result);
-            console.log(result);
-            setIsLoading(false);
-        }).catch(error => {
-            console.error('Error fetching entregas:', error);
+        fetchUserData().then(() => {
+            fetchData('entrega/', token).then((result) => {
+                setEntregas(result);
+                console.log(result);
+                setIsLoading(false);
+            }).catch(error => {
+                console.error('Error fetching entregas:', error);
+            });
         });
     }, [token, navigate]);
 
@@ -178,6 +190,7 @@ const Entregas = () => {
                             handleCloseModal={() => setAporteModal(null)}
                             handleSave={() => handleUpdateEntregaAporte()}
                             title = 'Tomar Aporte'
+                            saveButtonText={'Tomar'}
                             content={
                                 <>
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
