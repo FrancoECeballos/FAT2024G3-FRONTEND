@@ -20,22 +20,38 @@
     color: black;
 }
 
-.unified-input:hover {
-    background-color: #3E4692;
-    color: white;
-}
-
 .unified-input:active {
-    color: white;
-}
-
-.unified-input.selected {
-    background-color: #3E4692;
     color: white;
 }
 
 .hoverable-icon:hover {
     transform: scale(1.15);
+}
+
+.añadir-button{
+    border: 1px solid #3e4692;
+}
+.añadir-button.selected {
+    background-color: #047700;
+    color: white;
+    border: none;
+}
+.añadir-button:hover {
+    background-color: #047700;
+    color: white;
+}
+
+.quitar-button{
+    border: 1px solid #3e4692;
+}
+.quitar-button.selected {
+    background-color: #910000;
+    color: white;
+    border: none;
+}
+.quitar-button:hover {
+    background-color: #910000;
+    color: white;
 }
 
 .nombre-input {
