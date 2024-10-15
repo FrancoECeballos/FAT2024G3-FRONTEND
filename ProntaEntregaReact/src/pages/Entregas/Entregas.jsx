@@ -9,6 +9,7 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
+import putData from '../../functions/putData.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Loading from '../../components/loading/loading.jsx';
@@ -20,8 +21,8 @@ const Entregas = () => {
     const [entregas, setEntregas] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [takeAporteModal, setTakeAporteModal] = useState(false);
-    const [fechaEntrega, setFechaEntrega] = useState(null);
+    const [aporteModal, setAporteModal] = useState(null);
+    const [fechaEntrega, setFechaEntrega] = useState("");
     const [vehiculos, setVehiculos] = useState([]);
     const [selectedVehiculo, setSelectedVehiculo] = useState("medios_propios");
 
@@ -109,6 +110,22 @@ const Entregas = () => {
         });
     };
 
+    const handleUpdateEntregaAporte = () => {
+        const data = {...aporteModal, fechaEntrega: fechaEntrega || undefined, id_transporte: selectedVehiculo};
+        putData(`editar_entrega_aporte/${data.id_entregaAporte}/`, data, token).then(() => {
+            setAporteModal(null);
+            fetchData('entrega/', token).then((result) => {
+                setEntregas(result);
+                console.log(result);
+                setIsLoading(false);
+            }).catch(error => {
+                console.error('Error fetching entregas:', error);
+            });
+        }).catch(error => {
+            console.error('Error updating entrega aporte:', error);
+        });
+    };
+
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
@@ -146,7 +163,7 @@ const Entregas = () => {
                                                         descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.id_usuario.nombre} ${aporte.id_aporteOferta.id_usuario.apellido}` : `${aporte.id_aportePedido.id_usuario.nombre} ${aporte.id_aportePedido.id_usuario.apellido}`}
                                                         descrip2={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
                                                         foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
-                                                        onSelect={() => setTakeAporteModal(true)}
+                                                        onSelect={() => {setAporteModal(aporte); handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.id_obra : aporte.id_aportePedido.id_obra.id_obra)}}
                                                     />
                                                 ))}
                                             </div>
@@ -157,8 +174,10 @@ const Entregas = () => {
                         )}
                         <Modal
                             showButton = {false}
-                            showModal = {takeAporteModal}
-                            handleCloseModal={() => setTakeAporteModal(false)}
+                            showModal = {aporteModal != null}
+                            handleCloseModal={() => setAporteModal(null)}
+                            handleSave={() => handleUpdateEntregaAporte()}
+                            title = 'Tomar Aporte'
                             content={
                                 <>
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
@@ -168,7 +187,7 @@ const Entregas = () => {
                                         name="fechaEntrega"
                                         type="date"
                                         min={new Date().toISOString().split('T')[0]}
-                                        value={fechaEntrega}
+                                        value={fechaEntrega || ""}
                                         onChange={(e) => setFechaEntrega(e.target.value)}
                                     />
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
@@ -177,13 +196,13 @@ const Entregas = () => {
                                     <Form.Control
                                         name="id_vehiculo"
                                         as="select"
-                                        value={selectedVehiculo}
+                                        value={selectedVehiculo || ""}
                                         onChange={(event) => setSelectedVehiculo(event.target.value)}
                                     >
                                         <option value="medios_propios">Medios Propios</option>
                                         {vehiculos && (
                                             vehiculos.map(vehiculo => 
-                                                <option value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
+                                                <option key={vehiculo.id_transporte} value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
                                             )
                                         )}
                                     </Form.Control>

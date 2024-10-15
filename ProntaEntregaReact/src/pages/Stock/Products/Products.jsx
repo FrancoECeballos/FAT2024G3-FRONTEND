@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {InputGroup, Form, Button, Tabs, Tab, Breadcrumb, Row, Col} from 'react-bootstrap';
+import {InputGroup, Form, Button, Tabs, Tab, Breadcrumb, Row, Col, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import './Products.scss';
 import { Icon } from '@iconify/react';
@@ -18,9 +18,11 @@ import OfertaCard from '../../../components/cards/oferta_card/OfertaCard.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
+import deleteData from '../../../functions/deleteData.jsx';
 import fetchUser from '../../../functions/fetchUser.jsx';
 
 import Modal from '../../../components/modals/Modal.jsx';
+import ConfirmationModal from '../../../components/modals/confirmation_modal/ConfirmationModal.jsx';
 import GenericAlert from '../../../components/alerts/generic_alert/GenericAlert.jsx';
 import AutoCompleteSelect from '../../../components/selects/auto_complete_select/auto_complete_select.jsx';
 
@@ -58,6 +60,7 @@ function Products() {
 
     const [alertMessage, setAlertMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(null);
 
     const [productSearchQuery, setProductSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -249,6 +252,12 @@ function Products() {
         }
     };
 
+    const handleDeleteProduct = async (id) => {
+        deleteData(`EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(() => {
+            window.location.reload();
+        });
+    };
+
     const setSelectedNewProduct = (product) => {
         setSelectedCardId(product);
     };
@@ -332,7 +341,7 @@ function Products() {
                             </div>
                             {selectedCardId && selectedCardId !== 'New' && selectedCardId !== -1 &&
                                 <InputGroup className="mb-2">
-                                    <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                    <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                 </InputGroup>
                             }
                             {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
@@ -351,7 +360,7 @@ function Products() {
                                         <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleProductInputChange} onChange={handleProductInputChange} className="descripcion-input" />
                                     </InputGroup>
                                     <InputGroup className="mb-2">
-                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese cuanto quiere ingresar como cantidad inicial' ref={cantidadRef} className="cantidad-input" onKeyDown={(event) => { if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) { event.preventDefault(); } }} />
+                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad inicial' ref={cantidadRef} className="cantidad-input" onKeyDown={(event) => { if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) { event.preventDefault(); } }} />
                                     </InputGroup>
                                 </>
                             }
@@ -366,7 +375,7 @@ function Products() {
                             key={product.id_producto}
                             titulo={product.nombre}
                             descrip1={product.descripcion}
-                            descrip2={`Cantidad: ${product.total} ${product.unidadmedida}`}
+                            descrip2={<><strong>Cantidad:</strong> {product.total} {product.unidadmedida}</>}
                             children={
                                 <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap' }}>
                                     <Row>
@@ -389,7 +398,7 @@ function Products() {
                                             />
                                         </Col>
                                         <Col xs={12} md={6} style={{ marginTop: '1rem' }}>
-                                            <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Oferta / Pedido" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
+                                            <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Pedido / Oferta" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
                                                 content={
                                                     <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
                                                         <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>
@@ -403,13 +412,38 @@ function Products() {
                                             />
                                         </Col>
                                         <Col xs={120} style={{ marginTop: '1rem' }}>
-                                            <Icon 
-                                                icon="line-md:alert-circle-twotone" 
-                                                className="hoverable-icon"
-                                                style={{ width: "2rem", height: "2rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
-                                                onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
-                                            />
+                                            <OverlayTrigger
+                                                placement="top"
+                                                overlay={<Tooltip style={{ fontSize: '100%' }} id={`tooltip-${product.id_producto}`}>Ver detalles del producto</Tooltip>}
+                                            >
+                                                <Icon 
+                                                    icon="line-md:alert-circle-twotone" 
+                                                    className="hoverable-icon"
+                                                    style={{ width: "2rem", height: "2rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
+                                                    onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
+                                                />
+                                            </OverlayTrigger>
                                         </Col>
+                                        {product.total == 0 && (
+                                            <>
+                                                <Col xs={10} style={{ marginTop: '1rem' }}>
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }} id={`tooltip-${product.id_producto}`}>Borrar Producto</Tooltip>}
+                                                    >
+                                                        <Icon 
+                                                            icon="line-md:close-circle-twotone" 
+                                                            className="hoverable-icon"
+                                                            style={{ width: "2rem", height: "2rem", position: "absolute", top: "1.1rem", right: "2.5rem", color: "#858585", transition: "transform 0.3s" }} 
+                                                            onClick={() => setConfirmDelete(product.id_producto)}
+                                                        />
+                                                    </OverlayTrigger>
+                                                </Col>
+                                                <ConfirmationModal Open={confirmDelete == product.id_producto} onClose={() => setConfirmDelete(null)} 
+                                                    BodyText={`¿Esta seguro que desea borrar el producto ${product.nombre}? Se borrarán todos sus registros`}
+                                                    onClickConfirm={() => handleDeleteProduct(product.id_producto)}/>
+                                            </>
+                                        )}
                                     </Row>
                                 </div>     
                             }

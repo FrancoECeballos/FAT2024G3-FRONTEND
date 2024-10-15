@@ -81,6 +81,7 @@ function OneProduct() {
             </tbody>
           </Table>
           <SendButton
+            text="Descargar informe"
             onClick={() => window.location.href = `http://127.0.0.1:8000/informe-stock-pdf/${productoId}/${stockId}/${token}`}
           />
         </div>

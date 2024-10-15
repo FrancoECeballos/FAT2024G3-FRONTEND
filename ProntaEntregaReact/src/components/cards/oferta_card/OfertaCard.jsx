@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { InputGroup, Col, Row, Form, Container, Card } from 'react-bootstrap';
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { Form, Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import fetchData from '../../../functions/fetchData';
 
@@ -163,24 +163,28 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                         {productDefault ? `Crear Oferta de ${productDefault.nombre}` : 'Crear Oferta'}
                     </h2>
 
-                    <Form.Group className="mb-2" controlId="formBasicFechaInicio">
-                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
-                        <Form.Control style={{width:"100%", border:"1px solid grey"}} name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
-                        <Form.Label id='errorFechainicio' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
-                    </Form.Group>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-fecha-inicio">La oferta se hará visible este día</Tooltip>}
+                    >
+                        <Form.Group className="mb-2" controlId="formBasicFechaInicio">
+                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Inicio (*)</Form.Label>
+                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="fechainicio" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedDate} min={formattedDate} />
+                            <Form.Label id='errorFechainicio' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                        </Form.Group>
+                    </OverlayTrigger>
 
-                    <Form.Group className="mb-2" controlId="formBasicFechaFin">
-                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
-                        <Form.Control style={{width:"100%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
-                        <p style={{fontSize:"0.7rem", margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
-                        <Form.Label id='errorFechavencimiento' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
-                    </Form.Group>
-
-                    <Form.Group className="mb-2" controlId="formBasicCantidad">
-                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Ofrecida (*)</Form.Label>
-                        <Form.Control style={{width:"100%", border:"1px solid grey"}} name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
-                        <Form.Label id='errorCantidad' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
-                    </Form.Group>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-fecha-fin">La oferta dejara de ser visible este día</Tooltip>}
+                    >
+                        <Form.Group className="mb-2" controlId="formBasicFechaFin">
+                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Fecha Vencimiento (*)</Form.Label>
+                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="fechavencimiento" type="date" onBlur={handleInputChange} onChange={handleInputChange} defaultValue={formattedNextMonthDate} min={formattedDate} />
+                            <p style={{fontSize:"0.7rem", margin:"0px"}}><strong>Esta fecha está como el mes siguiente por defecto</strong></p>
+                            <Form.Label id='errorFechavencimiento' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                        </Form.Group>
+                    </OverlayTrigger>
 
                     {!stock && (
                         <Form.Group className="mb-2" controlId="formRequestingObra">
@@ -213,11 +217,23 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
                             <Form.Control style={{width:"100%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
                                 <option value="" hidden>Producto</option>
-                                {products.map(product => (
-                                    <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
-                                ))}
+                                {products.length > 0 ? (
+                                    products.map(product => (
+                                        <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
+                                    ))
+                                ) : (
+                                    <option value="" disabled>No hay productos disponibles</option>
+                                )}
                             </Form.Control>
                             <Form.Label id='errorId_producto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                        </Form.Group>
+                    )}
+
+                    {(productDefault || ofertaForm.id_producto) && (
+                        <Form.Group className="mb-2" controlId="formBasicCantidad">
+                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Cantidad Ofrecida (*)</Form.Label>
+                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="cantidad" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese la cantidad ofrecida" onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                            <Form.Label id='errorCantidad' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                         </Form.Group>
                     )}
                 </Form>
