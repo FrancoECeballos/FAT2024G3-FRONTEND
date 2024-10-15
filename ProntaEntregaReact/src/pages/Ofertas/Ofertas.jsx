@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { Form, Breadcrumb } from 'react-bootstrap';
+import { Form, Breadcrumb, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
@@ -211,7 +212,7 @@ function Ofertas() {
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                         <Modal
                             openButtonText='Crear una Oferta'
-                            openButtonWidth='20'
+                            openButtonWidth='10'
                             title='Nueva Oferta'
                             saveButtonText='Crear'
                             handleSave={handleCreateOferta}
@@ -244,6 +245,14 @@ function Ofertas() {
                                         descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
                                         descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
                                         descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                        children={
+                                            <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                    >
+                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                            </OverlayTrigger>
+                                        }
                                     />
                                 </div>
                             ))

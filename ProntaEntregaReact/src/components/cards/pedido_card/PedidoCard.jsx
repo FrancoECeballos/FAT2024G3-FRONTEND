@@ -282,7 +282,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
 
                             {!stock && (
                                 <Form.Group className="mb-2" controlId="formBasicRequestingObra">
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que Pide (*)</Form.Label>
+                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obra que pide (*)</Form.Label>
                                     <Form.Control name="id_obra" as="select" onBlur={handleInputChange} onChange={handleInputChange} defaultValue="">
                                         <option value='' hidden>Seleccione una Obra</option>
                                         {stocksDisponibles.map(stock => (
@@ -333,7 +333,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                         </Col>
                         <Col xs={12} md={6}>
                             <Form.Group style={{marginTop:"13%"}} className="mb-2" controlId="formBasicObras">
-                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras Pedidas (*)</Form.Label>
+                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Obras que pueden aportar al pedido (*)</Form.Label>
                                 <div className='cardscasas'>
                                     {orderedObras
                                         .filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra)
