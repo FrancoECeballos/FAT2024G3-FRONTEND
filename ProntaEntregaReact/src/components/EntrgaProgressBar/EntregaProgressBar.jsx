@@ -6,13 +6,13 @@ import EPB4 from '../../assets/EntrgaProgressBar/EPB4.png';
 
 
 
-function EntregaProgressBar({ estado }) {
+function EntregaProgressBar({ estado, wid = "12rem" }) {
     return (
         <div>
-            {estado === 3 ? <img src={EPB4} alt="" style={{width:"12rem"}}/> : 
-            estado === 2 ? <img src={EPB3} alt="" style={{width:"12rem"}}/> : 
-            estado === 1 ? <img src={EPB2} alt="" style={{width:"12rem"}}/> : 
-            <img src={EPB1} alt="" style={{width:"12rem"}}/>}
+            {estado === 3 ? <img src={EPB4} alt="" style={{width:wid}}/> : 
+            estado === 2 ? <img src={EPB3} alt="" style={{width:wid}}/> : 
+            estado === 1 ? <img src={EPB2} alt="" style={{width:wid}}/> : 
+            <img src={EPB1} alt="" style={{width:wid}}/>}
         </div>
     );
 } export default EntregaProgressBar;
