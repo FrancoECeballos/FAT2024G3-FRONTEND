@@ -38,6 +38,7 @@ function Pedidos() {
                 if (userTokenData.is_superuser) {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
                     setPedidos(pedidosRecibidos);
+                    console.log('Pedidos recibidos:', pedidosRecibidos);
 
                     const obrasData = await fetchData(`obra/`, token);
                     setObras(obrasData);

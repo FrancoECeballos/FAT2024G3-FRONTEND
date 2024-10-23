@@ -49,9 +49,8 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         }
     };
 
-    const deletePedido = (pedidoId) => {
-        deleteData(`delete_detalle_pedido/${pedidoId}/`, token).then(() => {
-            setPedidos((prevPedidos) => prevPedidos.filter(pedido => pedido.id_pedido !== pedidoId));
+    const deletePedido = (stock, pedido) => {
+        deleteData(`delete_detalle_pedido/${stock}/${pedido}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error deleting pedido:', error);
@@ -140,7 +139,8 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 showModal={Object.keys(selectedPedido).length > 0}
                 saveButtonText='Tomar'
                 handleCloseModal={() => setSelectedPedido({})}
-                deleteFunction={() => deletePedido(selectedPedido.id_pedido)}
+                handleShowModal={() => console.log(selectedPedido)}
+                deleteFunction={() => deletePedido(selectedObra.id_obra, selectedPedido.id_pedido)}
                 deleteButtonText='Rechazar'
                 title='Tomar Pedido'
                 handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, cantidad, new Date().toISOString().split('T')[0])}
