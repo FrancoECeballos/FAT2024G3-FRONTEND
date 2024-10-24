@@ -301,6 +301,7 @@ function Stock() {
                             titulo={obra.nombre}
                             descrip1={`Usuarios Registrados: ${obra.usuarios_registrados}`}
                             descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
+                            hoverable={!obra.id_tipousuario || obra.id_tipousuario === 2}
                             children={
                                 <>
                                     {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (

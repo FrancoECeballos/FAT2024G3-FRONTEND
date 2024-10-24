@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { Form, Breadcrumb, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Form, Breadcrumb, OverlayTrigger, Tooltip, Tab, Tabs } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
@@ -19,6 +19,7 @@ function Ofertas() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const [ofertas, setOfertas] = useState([]);
+    const [userOfertas, setUserOfertas] = useState([]);
     const ofertaCardRef = useRef(null);
     const [isFormValid, setIsFormValid] = useState(false);
 
@@ -39,35 +40,36 @@ function Ofertas() {
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchDataAsync = async () => {
+            setIsLoading(true);
             try {
                 const userData = await fetchUser(navigate);
                 setUser(userData);
+
                 if (userData.is_superuser) {
-                    fetchData(`stock/`, token).then((result) => {
-                        setStocks(result);
-                    });
-                    const obrasData = await fetchData(`obra/`, token);
+                    const [stocksData, obrasData] = await Promise.all([
+                        fetchData(`stock/`, token),
+                        fetchData(`obra/`, token)
+                    ]);
+                    setStocks(stocksData);
                     setObras(obrasData);
                 } else {
-                    fetchData(`/user/stockToken/${token}`, token).then((result) => {
-                        setStocks(result);
-                    });
-                    const obrasData = await fetchData(`obra/user/${token}/`, token);
+                    const [stocksData, obrasData] = await Promise.all([
+                        fetchData(`/user/stockToken/${token}`, token),
+                        fetchData(`obra/user/${token}/`, token)
+                    ]);
+                    setStocks(stocksData);
                     setObras(obrasData);
                 }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
 
-        const fetchDataAsync = async () => {
-            try {
-                await fetchUserData();
-                const result = await fetchData('/oferta/', token);
-                setOfertas(result);
+                const [ofertasData, userOfertasData] = await Promise.all([
+                    fetchData('/oferta/', token),
+                    fetchData(`GetOfertaCreadaPorUsuario/${token}/`, token)
+                ]);
+                setOfertas(ofertasData);
+                setUserOfertas(userOfertasData);
             } catch (error) {
-                console.error('Error fetching offers:', error);
+                console.error('Error fetching data:', error);
             } finally {
                 setIsLoading(false);
             }
@@ -85,6 +87,14 @@ function Ofertas() {
 
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
+
+    const filters = [
+        { type: 'id_producto.nombre', label: 'Nombre del Producto' },
+        { type: 'fechainicio', label: 'Fecha Inicio' },
+        { type: 'fechavencimiento', label: 'Fecha Vencimiento' },
+        { type: 'id_obra.nombre', label: 'Obra que Ofrece' },
+        { type: 'id_usuario.nombre', label: 'Usuario que ofrece' },
+    ];
 
     const filteredOfertas = ofertas.filter(oferta => {
         return (
@@ -122,13 +132,43 @@ function Ofertas() {
         return 0;
     });
 
-    const filters = [
-        { type: 'id_producto.nombre', label: 'Nombre del Producto' },
-        { type: 'fechainicio', label: 'Fecha Inicio' },
-        { type: 'fechavencimiento', label: 'Fecha Vencimiento' },
-        { type: 'id_obra.nombre', label: 'Obra que Ofrece' },
-        { type: 'id_usuario.nombre', label: 'Usuario que ofrece' },
-    ];
+    const getNestedValue = (obj, path) => {
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    };
+
+    const filteredUserOfertas = userOfertas.filter(oferta => {
+        return filters.some(filter => {
+            const filterPath = filter.type.split('.').slice(1).join('.');
+            const value = getNestedValue(oferta, filterPath);
+            return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
+        });
+    });
+    
+    const sortedUserOfertas = [...filteredUserOfertas].sort((a, b) => {
+        if (!orderCriteria) return 0;
+        const getValue = (obj, path) => {
+            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+        };
+    
+        const aValue = getValue(a, orderCriteria.replace('oferta.', ''));
+        const bValue = getValue(b, orderCriteria.replace('oferta.', ''));
+    
+        if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+            const aDate = new Date(aValue);
+            const bDate = new Date(bValue);
+            return aDate - bDate;
+        }
+    
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+        }
+    
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return bValue - aValue;
+        }
+    
+        return 0;
+    });
 
     const handleChange = (event) => {
         setCantidad(event.target.value);
@@ -224,42 +264,77 @@ function Ofertas() {
                             handleCloseModal={() => setShowModal(false)}
                         />
                     </div>
-                    <div className='cardCategori'>
-                        {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
-                            sortedOfertas.map(oferta => (
-                                <div key={oferta.id_oferta}>
-                                    <GenericCard
-                                        onClick={() => {
-                                            setSelectedOferta(oferta);
-                                            setShowTakeOfertaModal(true);
-                                            if (obras.length > 1) {
-                                                const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
-                                                if (filteredObras.length > 0) {
-                                                    setSelectedObra(filteredObras[0]);
-                                                }
+                    <Tabs defaultActiveKey='ofertas' id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
+                    <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong>Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
+                        <div className='cardCategori'>
+                            <h1>Viendo ofertas creadas por usted</h1>
+                            <h1>{sortedUserOfertas[0]}</h1>
+                            {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
+                                sortedUserOfertas.map(oferta => (
+                                    <div>
+                                        <GenericCard
+                                            titulo={`${oferta.id_producto.nombre}`}
+                                            foto={oferta.id_producto.imagen}
+                                            descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                            descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                            descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
+                                            descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                            children={
+                                                <OverlayTrigger
+                                                    placement="top"
+                                                    overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                >
+                                                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                </OverlayTrigger>
                                             }
-                                        }}
-                                        titulo={`${oferta.id_producto.nombre}`}
-                                        foto={oferta.id_producto.imagen}
-                                        descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
-                                        descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                        descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
-                                        descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
-                                        children={
-                                            <OverlayTrigger
-                                                        placement="top"
-                                                        overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
-                                                    >
-                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
-                                            </OverlayTrigger>
-                                        }
-                                    />
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
+                            )}
+                        </div>
+                    </Tab>
+                            <Tab key='ofertas' eventKey='ofertas' title='Ofertas para mi' style={{ backgroundColor: "transparent" }}>
+                                <div className='cardCategori'>
+                                    <h1>Viendo ofertas disponibles</h1>
+                                    {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
+                                        sortedOfertas.map(oferta => (
+                                            <div key={oferta.id_oferta}>
+                                                <GenericCard
+                                                    onClick={() => {
+                                                        setSelectedOferta(oferta);
+                                                        setShowTakeOfertaModal(true);
+                                                        if (obras.length > 1) {
+                                                            const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
+                                                            if (filteredObras.length > 0) {
+                                                                setSelectedObra(filteredObras[0]);
+                                                            }
+                                                        }
+                                                    }}
+                                                    titulo={`${oferta.id_producto.nombre}`}
+                                                    foto={oferta.id_producto.imagen}
+                                                    descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                                    descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                                    descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
+                                                    descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                                    children={
+                                                        <OverlayTrigger
+                                                            placement="top"
+                                                            overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                        >
+                                                            <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                        </OverlayTrigger>
+                                                    }
+                                                />
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
+                                    )}
                                 </div>
-                            ))
-                        ) : (
-                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
-                        )}
-                    </div>
+                            </Tab>
+                        </Tabs>
                 </div>
             </div>
 

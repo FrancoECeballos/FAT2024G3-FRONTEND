@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tabs, Tab, Breadcrumb } from 'react-bootstrap';
+import { Tabs, Tab, Breadcrumb, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
@@ -11,7 +12,9 @@ import PedidoListing from '../../components/cards/pedido_card/pedido_listing/Ped
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 import postData from '../../functions/postData.jsx';
 import Loading from '../../components/loading/loading.jsx';
+import Semaforo from '../../components/semaforo/Semaforo.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
+import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 
 function Pedidos() {
     const navigate = useNavigate();
@@ -22,6 +25,7 @@ function Pedidos() {
     const [obras, setObras] = useState([]);
 
     const [pedidos, setPedidos] = useState([]);
+    const [userPedidos , setUserPedidos] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -38,13 +42,19 @@ function Pedidos() {
                 if (userTokenData.is_superuser) {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
                     setPedidos(pedidosRecibidos);
-                    console.log('Pedidos recibidos:', pedidosRecibidos);
+                    
+                    const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${token}/`, token);
+                    setUserPedidos(pedidosData);
 
                     const obrasData = await fetchData(`obra/`, token);
                     setObras(obrasData);
                 } else {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
                     setPedidos(pedidosRecibidos);
+                    
+                    const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${token}/`, token);
+                    setUserPedidos(pedidosData);
+                    console.log(pedidosData);
 
                     const obrasData = await fetchData(`obra/user/${token}/`, token);
                     setObras(obrasData);
@@ -194,6 +204,40 @@ function Pedidos() {
         }
     });
 
+    const filteredUserPedidos = userPedidos.filter(pedido => {
+        return filters.some(filter => {
+            const filterPath = filter.type.split('.').slice(1).join('.');
+            const value = getNestedValue(pedido, filterPath);
+            return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
+        });
+    });
+
+    const sortedUserPedidos = [...filteredUserPedidos].sort((a, b) => {
+        if (!orderCriteria) return 0;
+        const getValue = (obj, path) => {
+            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+        };
+
+        const aValue = getValue(a, orderCriteria.replace('pedido.', ''));
+        const bValue = getValue(b, orderCriteria.replace('pedido.', ''));
+
+        if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
+            const aDate = new Date(aValue);
+            const bDate = new Date(bValue);
+            return aDate - bDate;
+        }
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+        }
+
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return bValue - aValue;
+        }
+
+        return 0;
+    });
+
     const handleSearchChange = (value) => {
         setSearchQuery(value);
     };
@@ -229,6 +273,33 @@ function Pedidos() {
                         </div>
 
                         <Tabs defaultActiveKey={obras.length > 0 ? obras[0].id_obra : 'obras'} id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
+                            <Tab key='user_pedidos' eventKey='user_pedidos' title={<strong>Mis Pedidos</strong>} style={{ backgroundColor: "transparent" }}>
+                                <>
+                                    <h1>Viendo pedidos creados por usted</h1>
+                                    {Array.isArray(sortedUserPedidos) && sortedUserPedidos.length > 0 ? (
+                                        sortedUserPedidos.map((pedido) => (
+                                            <GenericCard hoverable={true}
+                                                foto={pedido.id_producto.imagen}
+                                                titulo={pedido.id_producto.nombre}
+                                                descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
+                                                descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente}/></>}
+                                                descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
+                                                descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
+                                                children={
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar el pedido</Tooltip>}
+                                                    >
+                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                    </OverlayTrigger>
+                                                }
+                                            />
+                                        ))
+                                    ) : (
+                                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay entregas disponibles.</p>
+                                    )}
+                                </>
+                            </Tab>
                             {obras.map((obra) => {
                                 const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
@@ -238,7 +309,6 @@ function Pedidos() {
                                 );
                             })}
                         </Tabs>
-
                     </>
                 )}
             </div>
