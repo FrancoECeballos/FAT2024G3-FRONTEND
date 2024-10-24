@@ -64,10 +64,11 @@ function Ofertas() {
 
                 const [ofertasData, userOfertasData] = await Promise.all([
                     fetchData('/oferta/', token),
-                    fetchData(`GetOfertaCreadaPorUsuario/${token}/`, token)
+                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token) // Asegurarse de usar el id_usuario
                 ]);
                 setOfertas(ofertasData);
                 setUserOfertas(userOfertasData);
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -143,9 +144,10 @@ function Ofertas() {
             return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
         });
     });
+
+    const sortedUserOfertas = [...userOfertas].sort((a, b) => {
+        if (!orderCriteria) return new Date(b.fechainicio) - new Date(a.fechainicio);
     
-    const sortedUserOfertas = [...filteredUserOfertas].sort((a, b) => {
-        if (!orderCriteria) return 0;
         const getValue = (obj, path) => {
             return path.split('.').reduce((acc, part) => acc && acc[part], obj);
         };
@@ -266,35 +268,34 @@ function Ofertas() {
                     </div>
                     <Tabs defaultActiveKey='ofertas' id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
                     <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong>Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
-                        <div className='cardCategori'>
-                            <h1>Viendo ofertas creadas por usted</h1>
-                            <h1>{sortedUserOfertas[0]}</h1>
-                            {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
-                                sortedUserOfertas.map(oferta => (
-                                    <div>
-                                        <GenericCard
-                                            titulo={`${oferta.id_producto.nombre}`}
-                                            foto={oferta.id_producto.imagen}
-                                            descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
-                                            descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                            descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
-                                            descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
-                                            children={
-                                                <OverlayTrigger
-                                                    placement="top"
-                                                    overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
-                                                >
-                                                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
-                                                </OverlayTrigger>
-                                            }
-                                        />
-                                    </div>
-                                ))
-                            ) : (
-                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
-                            )}
-                        </div>
-                    </Tab>
+                            <div className='cardCategori'>
+                                <h1>Viendo ofertas creadas por usted</h1>
+                                {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
+                                    sortedUserOfertas.map(oferta => (
+                                        <div key={oferta.id_oferta}>
+                                            <GenericCard
+                                                titulo={`${oferta.id_producto.nombre}`}
+                                                foto={oferta.id_producto.imagen}
+                                                descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                                descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                                descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
+                                                descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                                children={
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                    >
+                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                    </OverlayTrigger>
+                                                }
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No hay ofertas disponibles.</p>
+                                )}
+                            </div>
+                        </Tab>
                             <Tab key='ofertas' eventKey='ofertas' title='Ofertas para mi' style={{ backgroundColor: "transparent" }}>
                                 <div className='cardCategori'>
                                     <h1>Viendo ofertas disponibles</h1>
