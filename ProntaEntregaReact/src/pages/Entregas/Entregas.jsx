@@ -7,7 +7,7 @@ import GenericCard from '../../components/cards/generic_card/GenericCard';
 import LittleCard from '../../components/cards/little_card/LittleCard';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Modal from '../../components/modals/Modal.jsx';
-import EntregaProgressBar from '../../components/EntrgaProgressBar/EntregaProgressBar.jsx';
+import EntregaCard from '../../components/cards/entrega_card/EntregaCard.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 import putData from '../../functions/putData.jsx';
@@ -28,6 +28,7 @@ const Entregas = () => {
     const [vehiculos, setVehiculos] = useState([]);
     const [selectedVehiculo, setSelectedVehiculo] = useState(null);
 
+    const [selectedEntrega, setSelectedEntrega] = useState({});
     const [recorridoModal, setRecorridoModal] = useState(null);
 
     const navigate = useNavigate();
@@ -197,7 +198,9 @@ const Entregas = () => {
                                                                     console.log(aporte);
                                                                 } else {
                                                                     setRecorridoModal(aporte);
+                                                                    setSelectedEntrega(entrega);
                                                                     console.log(aporte);
+                                                                    console.log(entrega);
                                                                 }
                                                                 
                                                             }}
@@ -255,19 +258,12 @@ const Entregas = () => {
                             handleCloseModal={() => setRecorridoModal(null)}
                             handleSave={() => handleUpdateEntregaAporte()}
                             title = 'Información de la Entrega'
-                            saveButtonText={'Tomar'}
+                            saveButtonText={recorridoModal && recorridoModal.id_estadoEntrega.id_estadoEntrega === 1 ? 'Tomar' : null}
+                            saveButtonShown={recorridoModal && recorridoModal.id_estadoEntrega.id_estadoEntrega === 1}
                             content={
                                 <>
                                     {recorridoModal && (
-                                        <>
-                                            <EntregaProgressBar estado={recorridoModal.id_estadoEntrega - 1} wid='29rem'/>
-                                            <div>
-                                                <a><strong>Estado Actual:</strong> {recorridoModal.id_estadoEntrega.nombre} <br/><br/></a>
-                                                <a><strong>Usuario a Cargo:</strong> {recorridoModal.id_usuario.nombre} {recorridoModal.id_usuario.apellido} <br/></a>
-                                                <a><strong>Fecha de Entrega Estimada:</strong> {recorridoModal.fechaEntrega ? recorridoModal.fechaEntrega : 'No especificada'} <br/></a>
-                                                <a><strong>Vehiculo Usado:</strong> {recorridoModal.id_transporte ? `${recorridoModal.id_transporte.marca}, ${recorridoModal.id_transporte.modelo} ${recorridoModal.id_transporte.patente}` : 'Medios Propios'}</a>
-                                            </div>
-                                        </>
+                                        <EntregaCard recorridoModal={recorridoModal} entrega={selectedEntrega} user={user}/>
                                     )}
                                 </>
                             }
