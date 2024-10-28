@@ -348,11 +348,12 @@ function Pedidos() {
                             descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
                             descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
                             descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
+                            descrip5={<><strong>Estado</strong> {selectedPedido.id_estadoPedido}</>}
                         />
                     </BootstrapModal.Body>
                     <BootstrapModal.Footer>
-                        <Button variant="danger" onClick={() => handleDeletePedido(selectedPedido.id_pedido)}>Eliminar</Button>
-                        <Button variant="primary">Otro Botón</Button>
+                        <Button variant="danger">Cancelar Pedido</Button>
+                        <Button variant="primary">Terminar Pedido</Button>
                     </BootstrapModal.Footer>
                 </BootstrapModal>
             )}
