@@ -5,6 +5,12 @@
   .full-height-container {
     height: 100vh;
   }
+  .background {
+    background-image: url(../../assets/backgroundImage.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30%;
+  }
   
   .custom-card {
     background-color: white;
