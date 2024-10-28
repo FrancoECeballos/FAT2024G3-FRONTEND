@@ -10,6 +10,7 @@ import Modal from '../../components/modals/Modal.jsx';
 import EntregaCard from '../../components/cards/entrega_card/EntregaCard.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
+import postData from '../../functions/postData.jsx';
 import putData from '../../functions/putData.jsx';
 import fetchUser from '../../functions/fetchUser.jsx';
 
@@ -30,6 +31,7 @@ const Entregas = () => {
 
     const [selectedEntrega, setSelectedEntrega] = useState({});
     const [recorridoModal, setRecorridoModal] = useState(null);
+    const [estado, setEstado] = useState({ texto: '', imagen: 0, boton: 'Tomar', enable: true, newEstado: 2 });
 
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -55,7 +57,6 @@ const Entregas = () => {
         fetchUserData().then(() => {
             fetchData('entrega/', token).then((result) => {
                 setEntregas(result);
-                console.log(result);
                 setIsLoading(false);
             }).catch(error => {
                 console.error('Error fetching entregas:', error);
@@ -127,26 +128,38 @@ const Entregas = () => {
     };
 
     const handleUpdateEntregaAporte = () => {
-        const data = {
-            ...aporteModal,
-            fechaEntrega: fechaEntrega,
-            id_transporte: parseInt(selectedVehiculo),
-            id_estadoEntrega: 2,
-            id_aportePedido: aporteModal.id_aportePedido ? aporteModal.id_aportePedido.id_aportePedido : null,
-            id_aporteOferta: aporteModal.id_aporteOferta ? aporteModal.id_aporteOferta.id_aporteOferta : null,
-            id_usuario: user.id_usuario
+        if (estado.newEstado == 2) {
+            const data = {
+                ...aporteModal,
+                fechaEntrega: fechaEntrega,
+                id_transporte: parseInt(selectedVehiculo),
+                id_estadoEntrega: 2,
+                id_aportePedido: aporteModal.id_aportePedido ? aporteModal.id_aportePedido.id_aportePedido : null,
+                id_aporteOferta: aporteModal.id_aporteOferta ? aporteModal.id_aporteOferta.id_aporteOferta : null,
+                id_usuario: user.id_usuario
 
-        };
-        putData(`editar_entrega_aporte/${data.id_entregaAporte}/`, data, token).then(() => {
-            setAporteModal(null);
-            fetchData('entrega/', token).then(
-                window.location.reload()
-            ).catch(error => {
-                console.error('Error fetching entregas:', error);
+            };
+            putData(`editar_entrega_aporte/${data.id_entregaAporte}/`, data, token).then(() => {
+                setAporteModal(null);
+                fetchData('entrega/', token).then(
+                    window.location.reload()
+                ).catch(error => {
+                    console.error('Error fetching entregas:', error);
+                });
+            }).catch(error => {
+                console.error('Error updating entrega aporte:', error);
             });
-        }).catch(error => {
-            console.error('Error updating entrega aporte:', error);
-        });
+        } else {
+            postData(`editar_entrega_aporte_estado/${recorridoModal.id_entregaAporte}/${estado.newEstado}/`, token).then(() => {
+                fetchData('entrega/', token).then(
+                    window.location.reload()
+                ).catch(error => {
+                    console.error('Error fetching entregas:', error);
+                });
+            }).catch(error => {
+                console.error('Error updating entrega aporte:', error);
+            });
+        }
     };
 
     const handleSearchChange = (value) => {
@@ -195,12 +208,9 @@ const Entregas = () => {
                                                                 if (aporte.id_estadoEntrega.id_estadoEntrega === 1) {
                                                                     setAporteModal(aporte);
                                                                     handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.id_obra : aporte.id_aportePedido.id_obra.id_obra);
-                                                                    console.log(aporte);
                                                                 } else {
                                                                     setRecorridoModal(aporte);
                                                                     setSelectedEntrega(entrega);
-                                                                    console.log(aporte);
-                                                                    console.log(entrega);
                                                                 }
                                                                 
                                                             }}
@@ -258,12 +268,12 @@ const Entregas = () => {
                             handleCloseModal={() => setRecorridoModal(null)}
                             handleSave={() => handleUpdateEntregaAporte()}
                             title = 'Información de la Entrega'
-                            saveButtonText={recorridoModal && recorridoModal.id_estadoEntrega.id_estadoEntrega === 1 ? 'Tomar' : null}
-                            saveButtonShown={recorridoModal && recorridoModal.id_estadoEntrega.id_estadoEntrega === 1}
+                            saveButtonText={estado.boton}
+                            saveButtonShown={estado.enable}
                             content={
                                 <>
                                     {recorridoModal && (
-                                        <EntregaCard recorridoModal={recorridoModal} entrega={selectedEntrega} user={user}/>
+                                        <EntregaCard recorridoModal={recorridoModal} entrega={selectedEntrega} user={user} estado={estado} setEstado={setEstado}/>
                                     )}
                                 </>
                             }
