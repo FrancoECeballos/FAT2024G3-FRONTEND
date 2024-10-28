@@ -201,7 +201,15 @@ const Entregas = () => {
                                                             descrip2={<>
                                                                 {aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
                                                                 <br />
-                                                                <strong>{aporte.id_estadoEntrega.id_estadoEntrega === 1 ? "Click para tomar Entrega" : "Click para ver el recorrido"}</strong>
+                                                                <strong>
+                                                                    {aporte.id_estadoEntrega.id_estadoEntrega === 5 ? 
+                                                                        "Este aporte fue entregado" : 
+                                                                        (aporte.id_estadoEntrega.id_estadoEntrega === 1 ? 
+                                                                            "Click para tomar Entrega" : 
+                                                                            "Click para ver el recorrido"
+                                                                        )
+                                                                    }
+                                                                </strong>
                                                             </>}
                                                             foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
                                                             onSelect={() => {
@@ -214,6 +222,7 @@ const Entregas = () => {
                                                                 }
                                                                 
                                                             }}
+                                                            greyedOut={aporte.id_estadoEntrega.id_estadoEntrega === 5}
                                                         />
                                                     ))}
                                                 </div>
