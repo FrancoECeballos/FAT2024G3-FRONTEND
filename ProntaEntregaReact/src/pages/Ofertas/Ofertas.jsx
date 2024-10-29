@@ -14,6 +14,7 @@ import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
 import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
+import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
 function Ofertas() {
     const navigate = useNavigate();
@@ -391,6 +392,12 @@ function Ofertas() {
                         </div>
                     }
                 />
+            )}
+
+            {user.is_superuser && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
+                    <SendButton onClick={() => navigate(`/informe_ofertas`)} text='Ver Informe de Ofertas' wide='14'/>
+                </div>
             )}
         </div>
     );

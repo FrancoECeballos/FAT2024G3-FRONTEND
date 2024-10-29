@@ -11,7 +11,9 @@ import UserListing from './pages/Perfil/UserListing.jsx';
 import Categories from './pages/Stock/Categories/Categories.jsx';
 import Products from './pages/Stock/Products/Products.jsx';
 import Pedidos from './pages/Pedidos/Pedidos.jsx';
+import InformePedidos from './pages/Informes/InformePedidos.jsx';
 import Ofertas from './pages/Ofertas/Ofertas.jsx';
+import InformeOfertas from './pages/Informes/InformeOfertas.jsx';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -43,7 +45,9 @@ function App() {
         <Route path="/obra/:stockId/categoria/:categoriaID" element={<Products />} />
         <Route path="/obra/:stockId/categoria/:categoriaId/producto/:productoId" element={<OneProduct />} />
         <Route path="/pedidos" element={<Pedidos />} />
+        <Route path="/informe_pedidos" element={<InformePedidos />} />
         <Route path="/oferta" element={<Ofertas />} />
+        <Route path="/informe_ofertas" element={<InformeOfertas />} />
         <Route path="/obras" element={<Obras />} />
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/entregas" element={<Entregas />} />
