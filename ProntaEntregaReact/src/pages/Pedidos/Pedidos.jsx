@@ -263,6 +263,23 @@ function Pedidos() {
         });
     };
 
+    const handleUpdatePedidoEstado = async (idPedido, action) => {
+        const url = action === 'cancel' ? `/CancelPedido/${idPedido}/` : `/EndPedido/${idPedido}/`;
+        try {
+            const response = await deleteData(url, token);
+            
+            if (response.status === 200) {
+                console.log(`Pedido ${idPedido} ${action === 'cancel' ? 'cancelado' : 'terminado'}`);
+                window.location.reload();
+            } else {
+                console.error(`Error al ${action === 'cancel' ? 'cancelar' : 'terminar'} el pedido:`, response.data);
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error(`Error al ${action === 'cancel' ? 'cancelar' : 'terminar'} el pedido:`, error);
+        }
+    };
+
     return (
         <>
             <FullNavbar selectedPage='Pedidos' />
@@ -341,31 +358,31 @@ function Pedidos() {
                 )}
             </div>
             <Modal
-                showButton={false}
-                showDeleteButton={true}
-                saveButtonShown={true}
-                showModal={showModal}
-                saveButtonText='Terminar Pedido'
-                handleCloseModal={handleCloseModal}
-                deleteFunction={() => handleDeletePedido(selectedPedido.id_pedido)}
-                deleteButtonText='Cancelar Pedido'
-                title='Detalles del Pedido'
-                handleSave={() => console.log('Terminar Pedido')}
-                content={
-                    <div>
-                        {selectedPedido && selectedPedido.id_producto && (
-                            <GenericCard
-                                foto={selectedPedido.id_producto.imagen}
-                                titulo={selectedPedido.id_producto.nombre}
-                                descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
-                                descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
-                                descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
-                                descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
-                                descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
-                            />
-                        )}
-                    </div>
-                }
+            showButton={false}
+            showDeleteButton={true}
+            saveButtonShown={true}
+            showModal={showModal}
+            saveButtonText='Terminar Pedido'
+            handleCloseModal={handleCloseModal}
+            deleteFunction={() => handleUpdatePedidoEstado(selectedPedido.id_pedido, 'cancel')}
+            deleteButtonText='Cancelar Pedido'
+            title='Detalles del Pedido'
+            handleSave={() => handleUpdatePedidoEstado(selectedPedido.id_pedido, 'end')}
+            content={
+                <div>
+                    {selectedPedido && selectedPedido.id_producto && (
+                        <GenericCard
+                            foto={selectedPedido.id_producto.imagen}
+                            titulo={selectedPedido.id_producto.nombre}
+                            descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
+                            descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
+                            descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
+                            descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
+                            descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
+                        />
+                    )}
+                </div>
+            }
             />
 
             
