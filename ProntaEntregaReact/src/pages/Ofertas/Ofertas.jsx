@@ -64,7 +64,7 @@ function Ofertas() {
 
                 const [ofertasData, userOfertasData] = await Promise.all([
                     fetchData('/oferta/', token),
-                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token) // Asegurarse de usar el id_usuario
+                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token)
                 ]);
                 setOfertas(ofertasData);
                 setUserOfertas(userOfertasData);
@@ -88,36 +88,6 @@ function Ofertas() {
 
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = {
-            id_obra: selectedObra ? selectedObra.id_obra : null,
-            // otros campos del formulario
-        };
-
-        // Enviar datos al backend
-        fetch('/api/ofertas', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                // Manejar errores
-                console.error('Error:', data.error);
-            } else {
-                // Manejar éxito
-                console.log('Success:', data);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    };
     
     const filters = [
         { type: 'id_producto.nombre', label: 'Nombre del Producto' },
@@ -175,7 +145,7 @@ function Ofertas() {
         });
     });
 
-    const sortedUserOfertas = [...userOfertas].sort((a, b) => {
+    const sortedUserOfertas = [...filteredUserOfertas].sort((a, b) => {
         if (!orderCriteria) return new Date(b.fechainicio) - new Date(a.fechainicio);
     
         const getValue = (obj, path) => {
@@ -218,13 +188,13 @@ function Ofertas() {
     const handleCreateOferta = () => {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
-            const { producto, obra } = ofertaForm;
+            const { id_producto, id_obra } = ofertaForm;
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
 
                 const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const descripcionNotificacion = `Nueva oferta creada de "${productos.nombre}" por "${obras.nombre}"`;
+                const descripcionNotificacion = `Nueva oferta creada de "${id_producto.nombre}" por "${id_obra.nombre}"`;
                 const dataNotificacion = {
                     titulo: tituloNotificacion,
                     descripcion: descripcionNotificacion,
