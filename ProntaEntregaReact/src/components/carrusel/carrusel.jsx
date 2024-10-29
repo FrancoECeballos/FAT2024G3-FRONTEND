@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
+import './carrusel.scss';
 
 function ControlledCarousel({foto1, foto2, foto3}) {
   const [index, setIndex] = useState(0);
@@ -19,10 +20,10 @@ function ControlledCarousel({foto1, foto2, foto3}) {
     interval={2000}>
       <Carousel.Item>
         <img 
+          className='imagen' 
           src={foto1} 
           style={{ 
             width: '100%', 
-            height: '40rem',  
             objectFit: 'cover' 
           }} 
         />
@@ -32,10 +33,10 @@ function ControlledCarousel({foto1, foto2, foto3}) {
       </Carousel.Item>
       <Carousel.Item>
         <img 
+          className='imagen' 
           src={foto2} 
           style={{ 
             width: '100%', 
-            height: '40rem',  
             objectFit: 'cover' 
           }} 
         />
@@ -45,10 +46,10 @@ function ControlledCarousel({foto1, foto2, foto3}) {
       </Carousel.Item>
       <Carousel.Item>
         <img 
+          className='imagen' 
           src={foto3} 
           style={{ 
             width: '100%', 
-            height: '40rem',  
             objectFit: 'cover' 
           }} 
         />

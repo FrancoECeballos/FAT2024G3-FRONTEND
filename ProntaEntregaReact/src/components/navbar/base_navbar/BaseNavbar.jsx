@@ -11,7 +11,7 @@ export default function BaseNavbar({ children }) {
             id="base-navbar" 
             expand="sm" 
             fixed="top" 
-            style={{ backgroundColor: 'white', color: 'white' }}>
+            style={{ backgroundColor: 'white', color: 'white',position:"relative" }}>
             <Container fluid>
                 <Navbar.Brand href="#login">
                     <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} onClick={navigate('/')} />
