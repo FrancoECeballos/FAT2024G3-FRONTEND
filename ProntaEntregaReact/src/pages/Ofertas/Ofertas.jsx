@@ -292,7 +292,7 @@ function Ofertas() {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>No hay ofertas disponibles.</p>
+                                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
                                 )}
                             </div>
                         </Tab>
