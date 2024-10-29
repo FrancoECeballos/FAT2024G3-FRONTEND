@@ -5,6 +5,8 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import './Main.scss';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 import NotificationListingCard from '../../components/cards/notification_listing_card/NotificationListingCard'
+import OfertaListingCard from '../../components/cards/oferta_listing_card/OfertaListingCard';
+import PedidoListingCard from '../../components/cards/pedido_listing_card/PedidoListingCard';
 
 import background from '../../assets/backgroundImage.png';
 
@@ -34,16 +36,12 @@ function Main() {
             <Col md={4}>
               <Row className="h-50 d-flex">
                 <Col>
-                  <Card className="custom-card w-100 h-50">
-                    <Card.Body>Card in Progress</Card.Body>
-                  </Card>
+                  <OfertaListingCard />
                 </Col>
               </Row>
               <Row className="h-50 d-flex">
                 <Col>
-                  <Card className="custom-card w-100 h-50">
-                    <Card.Body>Card in Progress</Card.Body>
-                  </Card>
+                  <PedidoListingCard />
                 </Col>
               </Row>
             </Col>

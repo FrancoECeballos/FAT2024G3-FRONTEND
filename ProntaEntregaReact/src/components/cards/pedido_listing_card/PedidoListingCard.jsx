@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from "react";
 import { Card } from "react-bootstrap";
 import Cookies from 'js-cookie';
-import Loading from '../../../components/loading/loading';
+import Loading from '../../loading/loading';
 
 import fetchUser from '../../../functions/fetchUser';
 import fetchData from "../../../functions/fetchData";
 
-import './NotificationListingCard.scss';
+import './PedidoListingCard.scss';
 
-function NotificationListingCard() {
+function PedidoListingCard() {
   const [user, setUser] = useState({});
   const [notifications, setNotifications] = useState([]);
   const token = Cookies.get('token');
@@ -37,12 +37,12 @@ function NotificationListingCard() {
   return (
     <div>
       {isLoading ? (
-        <Card className="nl-card w-100 h-100">
+        <Card className="pl-card w-100 h-100">
           <Loading />
         </Card>
       ) : (
-        <Card className="nl-card w-100 h-100">
-            <Card.Title><h1>NotificationListingCard</h1></Card.Title>
+        <Card className="pl-card w-100 h-100">
+            <Card.Title><h1>PedidoListingCard</h1></Card.Title>
             <Card.Body>
                 
             </Card.Body>
@@ -50,4 +50,4 @@ function NotificationListingCard() {
       )}
     </div>
   );
-} export default NotificationListingCard;
+} export default PedidoListingCard;
