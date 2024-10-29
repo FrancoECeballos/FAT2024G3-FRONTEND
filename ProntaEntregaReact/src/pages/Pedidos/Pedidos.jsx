@@ -16,6 +16,7 @@ import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
+import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
 
 function Pedidos() {
@@ -348,6 +349,11 @@ function Pedidos() {
                                 );
                             })}
                         </Tabs>
+                        {user.is_superuser && (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
+                                <SendButton onClick={() => navigate(`/informe_pedidos`)} text='Ver Informe de Pedidos' wide='14'/>
+                            </div>
+                        )}
                     </>
                 )}
             </div>
@@ -378,6 +384,8 @@ function Pedidos() {
                 </div>
             }
             />
+
+            
         </>
     );
 }

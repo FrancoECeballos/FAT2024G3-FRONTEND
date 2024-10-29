@@ -517,7 +517,7 @@ const Cuenta = ({ user }) => {
         <Col>
           <SendButton
             text="Borrar Usuario"
-            backcolor="#D10000"
+            backcolor="#9B0101"
             letercolor="white"
             onClick={() => setDeleteUserConfirmation(true)}
           />
