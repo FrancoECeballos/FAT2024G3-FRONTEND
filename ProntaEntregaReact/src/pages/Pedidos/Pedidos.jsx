@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tabs, Tab, Breadcrumb, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Tabs, Tab, Breadcrumb, OverlayTrigger, Tooltip, Button, Modal as BootstrapModal } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
 import fetchUser from '../../functions/fetchUser';
-import Modal from '../../components/modals/Modal.jsx';
 import PedidoListing from '../../components/cards/pedido_card/pedido_listing/PedidoListing.jsx';
 import PedidoCard from '../../components/cards/pedido_card/PedidoCard.jsx';
 import postData from '../../functions/postData.jsx';
@@ -15,6 +14,9 @@ import Loading from '../../components/loading/loading.jsx';
 import Semaforo from '../../components/semaforo/Semaforo.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
+import deleteData from '../../functions/deleteData.jsx';
+import Modal from '../../components/modals/Modal.jsx';
+
 
 function Pedidos() {
     const navigate = useNavigate();
@@ -23,14 +25,14 @@ function Pedidos() {
     const [isFormValid, setIsFormValid] = useState(false);
 
     const [obras, setObras] = useState([]);
-
     const [pedidos, setPedidos] = useState([]);
-    const [userPedidos , setUserPedidos] = useState([]);
-
+    const [userPedidos, setUserPedidos] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedPedido, setSelectedPedido] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchDataAsync = async () => {
@@ -242,6 +244,24 @@ function Pedidos() {
         setSearchQuery(value);
     };
 
+    const handleCardClick = (pedido) => {
+        setSelectedPedido(pedido);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedPedido(null);
+        setShowModal(false);
+    };
+
+    const handleDeletePedido = (pedidoId) => {
+        deleteData(`delete_pedido/${pedidoId}/`, token).then(() => {
+            window.location.reload();
+        }).catch(error => {
+            console.error('Error deleting pedido:', error);
+        });
+    };
+
     return (
         <>
             <FullNavbar selectedPage='Pedidos' />
@@ -278,22 +298,24 @@ function Pedidos() {
                                     <h1>Viendo pedidos creados por usted</h1>
                                     {Array.isArray(sortedUserPedidos) && sortedUserPedidos.length > 0 ? (
                                         sortedUserPedidos.map((pedido) => (
-                                            <GenericCard hoverable={true}
-                                                foto={pedido.id_producto.imagen}
-                                                titulo={pedido.id_producto.nombre}
-                                                descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
-                                                descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente}/></>}
-                                                descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
-                                                descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
-                                                children={
-                                                    <OverlayTrigger
-                                                        placement="top"
-                                                        overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar el pedido</Tooltip>}
-                                                    >
-                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
-                                                    </OverlayTrigger>
-                                                }
-                                            />
+                                            <div key={pedido.id_pedido} onClick={() => handleCardClick(pedido)}>
+                                                <GenericCard hoverable={true}
+                                                    foto={pedido.id_producto.imagen}
+                                                    titulo={pedido.id_producto.nombre}
+                                                    descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
+                                                    descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente}/></>}
+                                                    descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
+                                                    descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
+                                                    children={
+                                                        <OverlayTrigger
+                                                            placement="top"
+                                                            overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar el pedido</Tooltip>}
+                                                        >
+                                                            <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                        </OverlayTrigger>
+                                                    }
+                                                />
+                                            </div>
                                         ))
                                     ) : (
                                         <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay entregas disponibles.</p>
@@ -312,9 +334,31 @@ function Pedidos() {
                     </>
                 )}
             </div>
+
+            {selectedPedido && (
+                <BootstrapModal show={showModal} onHide={handleCloseModal}>
+                    <BootstrapModal.Header closeButton>
+                        <BootstrapModal.Title>Detalles del Pedido</BootstrapModal.Title>
+                    </BootstrapModal.Header>
+                    <BootstrapModal.Body>
+                        <GenericCard
+                            foto={selectedPedido.id_producto.imagen}
+                            titulo={selectedPedido.id_producto.nombre}
+                            descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
+                            descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
+                            descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
+                            descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
+                            descrip5={<><strong>Estado</strong> {selectedPedido.id_estadoPedido}</>}
+                        />
+                    </BootstrapModal.Body>
+                    <BootstrapModal.Footer>
+                        <Button variant="danger">Cancelar Pedido</Button>
+                        <Button variant="primary">Terminar Pedido</Button>
+                    </BootstrapModal.Footer>
+                </BootstrapModal>
+            )}
         </>
     );
-
 }
 
 export default Pedidos;
