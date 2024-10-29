@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tabs, Tab, Breadcrumb, OverlayTrigger, Tooltip, Button, Modal as BootstrapModal } from 'react-bootstrap';
+import { Tabs, Tab, Breadcrumb, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
@@ -274,7 +274,7 @@ function Pedidos() {
                             <Breadcrumb.Item active>Pedidos</Breadcrumb.Item>
                         </Breadcrumb>
                         <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-
+    
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                             <Modal
                                 tamaño={'lg'}
@@ -291,7 +291,7 @@ function Pedidos() {
                                 }
                             />
                         </div>
-
+    
                         <Tabs defaultActiveKey={obras.length > 0 ? obras[0].id_obra : 'obras'} id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
                             <Tab key='user_pedidos' eventKey='user_pedidos' title={<strong>Mis Pedidos</strong>} style={{ backgroundColor: "transparent" }}>
                                 <>
@@ -334,29 +334,33 @@ function Pedidos() {
                     </>
                 )}
             </div>
-
-            {selectedPedido && (
-                <BootstrapModal show={showModal} onHide={handleCloseModal}>
-                    <BootstrapModal.Header closeButton>
-                        <BootstrapModal.Title>Detalles del Pedido</BootstrapModal.Title>
-                    </BootstrapModal.Header>
-                    <BootstrapModal.Body>
-                        <GenericCard
-                            foto={selectedPedido.id_producto.imagen}
-                            titulo={selectedPedido.id_producto.nombre}
-                            descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
-                            descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
-                            descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
-                            descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
-                            descrip5={<><strong>Estado</strong> {selectedPedido.id_estadoPedido}</>}
-                        />
-                    </BootstrapModal.Body>
-                    <BootstrapModal.Footer>
-                        <Button variant="danger">Cancelar Pedido</Button>
-                        <Button variant="primary">Terminar Pedido</Button>
-                    </BootstrapModal.Footer>
-                </BootstrapModal>
-            )}
+            <Modal
+                showButton={false}
+                showDeleteButton={true}
+                saveButtonShown={true}
+                showModal={showModal}
+                saveButtonText='Terminar Pedido'
+                handleCloseModal={handleCloseModal}
+                deleteFunction={() => handleDeletePedido(selectedPedido.id_pedido)}
+                deleteButtonText='Cancelar Pedido'
+                title='Detalles del Pedido'
+                handleSave={() => console.log('Terminar Pedido')}
+                content={
+                    <div>
+                        {selectedPedido && selectedPedido.id_producto && (
+                            <GenericCard
+                                foto={selectedPedido.id_producto.imagen}
+                                titulo={selectedPedido.id_producto.nombre}
+                                descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
+                                descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
+                                descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
+                                descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
+                                descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
+                            />
+                        )}
+                    </div>
+                }
+            />
         </>
     );
 }

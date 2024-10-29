@@ -88,36 +88,6 @@ function Ofertas() {
 
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = {
-            id_obra: selectedObra ? selectedObra.id_obra : null,
-            // otros campos del formulario
-        };
-
-        // Enviar datos al backend
-        fetch('/api/ofertas', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                // Manejar errores
-                console.error('Error:', data.error);
-            } else {
-                // Manejar éxito
-                console.log('Success:', data);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    };
     
     const filters = [
         { type: 'id_producto.nombre', label: 'Nombre del Producto' },
