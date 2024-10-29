@@ -256,28 +256,19 @@ function Pedidos() {
     };
 
     const handleDeletePedido = (pedidoId) => {
-        deleteData(`delete_pedido/${pedidoId}/`, token).then(() => {
+        deleteData(`CancelPedido/${pedidoId}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error deleting pedido:', error);
         });
     };
 
-    const handleUpdatePedidoEstado = async (idPedido, action) => {
-        const url = action === 'cancel' ? `/CancelPedido/${idPedido}/` : `/EndPedido/${idPedido}/`;
-        try {
-            const response = await deleteData(url, token);
-            
-            if (response.status === 200) {
-                console.log(`Pedido ${idPedido} ${action === 'cancel' ? 'cancelado' : 'terminado'}`);
-                window.location.reload();
-            } else {
-                console.error(`Error al ${action === 'cancel' ? 'cancelar' : 'terminar'} el pedido:`, response.data);
-                window.location.reload();
-            }
-        } catch (error) {
-            console.error(`Error al ${action === 'cancel' ? 'cancelar' : 'terminar'} el pedido:`, error);
-        }
+    const handleEndPedido = (pedidoId) => {
+        deleteData(`EndPedido/${pedidoId}/`, token).then(() => {
+            window.location.reload();
+        }).catch(error => {
+            console.error('Error ending pedido:', error);
+        });
     };
 
     return (
@@ -327,7 +318,7 @@ function Pedidos() {
                                                     children={
                                                         <OverlayTrigger
                                                             placement="top"
-                                                            overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar el pedido</Tooltip>}
+                                                            overlay={<Tooltip style={{ fontSize: '100%' }}>Editar mi pedido</Tooltip>}
                                                         >
                                                             <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
                                                         </OverlayTrigger>
@@ -358,31 +349,31 @@ function Pedidos() {
                 )}
             </div>
             <Modal
-            showButton={false}
-            showDeleteButton={true}
-            saveButtonShown={true}
-            showModal={showModal}
-            saveButtonText='Terminar Pedido'
-            handleCloseModal={handleCloseModal}
-            deleteFunction={() => handleUpdatePedidoEstado(selectedPedido.id_pedido, 'cancel')}
-            deleteButtonText='Cancelar Pedido'
-            title='Detalles del Pedido'
-            handleSave={() => handleUpdatePedidoEstado(selectedPedido.id_pedido, 'end')}
-            content={
-                <div>
-                    {selectedPedido && selectedPedido.id_producto && (
-                        <GenericCard
-                            foto={selectedPedido.id_producto.imagen}
-                            titulo={selectedPedido.id_producto.nombre}
-                            descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
-                            descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
-                            descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
-                            descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
-                            descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
-                        />
-                    )}
-                </div>
-            }
+                showButton={false}
+                showDeleteButton={true}
+                saveButtonShown={true}
+                showModal={showModal}
+                saveButtonText='Terminar Pedido'
+                handleCloseModal={handleCloseModal}
+                deleteFunction={() => handleDeletePedido(selectedPedido.id_pedido)}
+                deleteButtonText='Cancelar Pedido'
+                title='Detalles del Pedido'
+                handleSave={() => handleEndPedido(selectedPedido.id_pedido)}
+                content={
+                    <div>
+                        {selectedPedido && selectedPedido.id_producto && (
+                            <GenericCard
+                                foto={selectedPedido.id_producto.imagen}
+                                titulo={selectedPedido.id_producto.nombre}
+                                descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
+                                descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
+                                descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
+                                descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
+                                descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
+                            />
+                        )}
+                    </div>
+                }
             />
 
             
