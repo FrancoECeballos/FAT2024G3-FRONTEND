@@ -136,7 +136,8 @@ const Entregas = () => {
                 id_estadoEntrega: 2,
                 id_aportePedido: aporteModal.id_aportePedido ? aporteModal.id_aportePedido.id_aportePedido : null,
                 id_aporteOferta: aporteModal.id_aporteOferta ? aporteModal.id_aporteOferta.id_aporteOferta : null,
-                id_usuario: user.id_usuario
+                id_usuario: user.id_usuario,
+                id_entrega: aporteModal.id_entrega.id_entrega
 
             };
             putData(`editar_entrega_aporte/${data.id_entregaAporte}/`, data, token).then(() => {
