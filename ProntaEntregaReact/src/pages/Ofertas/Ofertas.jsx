@@ -64,7 +64,7 @@ function Ofertas() {
 
                 const [ofertasData, userOfertasData] = await Promise.all([
                     fetchData('/oferta/', token),
-                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token) // Asegurarse de usar el id_usuario
+                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token)
                 ]);
                 setOfertas(ofertasData);
                 setUserOfertas(userOfertasData);
@@ -145,7 +145,7 @@ function Ofertas() {
         });
     });
 
-    const sortedUserOfertas = [...userOfertas].sort((a, b) => {
+    const sortedUserOfertas = [...filteredUserOfertas].sort((a, b) => {
         if (!orderCriteria) return new Date(b.fechainicio) - new Date(a.fechainicio);
     
         const getValue = (obj, path) => {
@@ -188,13 +188,13 @@ function Ofertas() {
     const handleCreateOferta = () => {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
-            const { producto, obra } = ofertaForm;
+            const { id_producto, id_obra } = ofertaForm;
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
 
                 const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const descripcionNotificacion = `Nueva oferta creada de "${productos.nombre}" por "${obras.nombre}"`;
+                const descripcionNotificacion = `Nueva oferta creada de "${id_producto.nombre}" por "${id_obra.nombre}"`;
                 const dataNotificacion = {
                     titulo: tituloNotificacion,
                     descripcion: descripcionNotificacion,
@@ -292,7 +292,7 @@ function Ofertas() {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>No hay ofertas disponibles.</p>
+                                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
                                 )}
                             </div>
                         </Tab>

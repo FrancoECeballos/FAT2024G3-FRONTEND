@@ -173,15 +173,29 @@ function Products() {
 
     const handleProductInputChange = (event) => {
         const { name, value } = event.target;
-        setNewProduct((prevProduct) => {
-            const updatedProduct = { 
-                ...prevProduct, 
-                [name]: name === 'unidadmedida' ? parseInt(value, 10) : value 
-            };
-            return updatedProduct;
-        });
-        console.log(newProduct);
+    
+        // Si el campo que cambió es el nombre
+        if (name === 'nombre') {
+            // Verificamos si el nombre es similar a alguno existente
+            const isSimilar = isProductNameSimilar(value, products);
+    
+            if (isSimilar) {
+                // Mostramos una alerta
+                setAlertMessage('El nombre del producto es similar o igual a uno existente. Por favor, verifica.');
+                setShowAlert(true);
+            } else {
+                // Si no es similar, ocultamos la alerta
+                setShowAlert(false);
+            }
+        }
+    
+        // Actualizamos el estado del nuevo producto
+        setNewProduct((prevProduct) => ({
+            ...prevProduct,
+            [name]: name === 'unidadmedida' ? parseInt(value, 10) : value,
+        }));
     };
+z    
 
     const handleFileChange = (file) => {
         setNewProduct((prevProduct) => ({
@@ -301,6 +315,15 @@ function Products() {
             }
         }
     };
+
+    // Función para comparar similitud (puedes mejorar la lógica según la necesidad)
+const isProductNameSimilar = (newName, existingProducts) => {
+    return existingProducts.some(product => 
+        product.nombre.toLowerCase() === newName.toLowerCase() ||
+        product.nombre.toLowerCase().includes(newName.toLowerCase())
+    );
+};
+
 
     if (isLoading) {
         return <div><FullNavbar/><Loading /></div>;
