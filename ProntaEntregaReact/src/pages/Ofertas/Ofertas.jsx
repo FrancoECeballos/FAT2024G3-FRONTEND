@@ -133,16 +133,14 @@ function Ofertas() {
         return 0;
     });
 
-    const getNestedValue = (obj, path) => {
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-    };
-
     const filteredUserOfertas = userOfertas.filter(oferta => {
-        return filters.some(filter => {
-            const filterPath = filter.type.split('.').slice(1).join('.');
-            const value = getNestedValue(oferta, filterPath);
-            return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
-        });
+        return (
+            oferta.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
     });
 
     const sortedUserOfertas = [...filteredUserOfertas].sort((a, b) => {
@@ -230,6 +228,7 @@ function Ofertas() {
 
         try {
             await postData('crear_detalle_oferta/', data, token).then(() => {
+                window.location.reload();
                 return true;
             });
         } catch (error) {
@@ -285,7 +284,7 @@ function Ofertas() {
                                                         placement="top"
                                                         overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
                                                     >
-                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
                                                     </OverlayTrigger>
                                                 }
                                             />

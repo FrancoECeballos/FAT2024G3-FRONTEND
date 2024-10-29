@@ -311,7 +311,7 @@ function Pedidos() {
                                                             placement="top"
                                                             overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar el pedido</Tooltip>}
                                                         >
-                                                            <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                            <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
                                                         </OverlayTrigger>
                                                     }
                                                 />
