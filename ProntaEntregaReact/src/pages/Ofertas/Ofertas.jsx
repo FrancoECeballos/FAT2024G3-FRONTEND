@@ -64,7 +64,7 @@ function Ofertas() {
 
                 const [ofertasData, userOfertasData] = await Promise.all([
                     fetchData('/oferta/', token),
-                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token) // Asegurarse de usar el id_usuario
+                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token)
                 ]);
                 setOfertas(ofertasData);
                 setUserOfertas(userOfertasData);
@@ -88,7 +88,7 @@ function Ofertas() {
 
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
-
+    
     const filters = [
         { type: 'id_producto.nombre', label: 'Nombre del Producto' },
         { type: 'fechainicio', label: 'Fecha Inicio' },
@@ -133,19 +133,17 @@ function Ofertas() {
         return 0;
     });
 
-    const getNestedValue = (obj, path) => {
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-    };
-
     const filteredUserOfertas = userOfertas.filter(oferta => {
-        return filters.some(filter => {
-            const filterPath = filter.type.split('.').slice(1).join('.');
-            const value = getNestedValue(oferta, filterPath);
-            return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
-        });
+        return (
+            oferta.fechainicio?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.fechavencimiento?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            oferta.id_usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
     });
 
-    const sortedUserOfertas = [...userOfertas].sort((a, b) => {
+    const sortedUserOfertas = [...filteredUserOfertas].sort((a, b) => {
         if (!orderCriteria) return new Date(b.fechainicio) - new Date(a.fechainicio);
     
         const getValue = (obj, path) => {
@@ -188,13 +186,13 @@ function Ofertas() {
     const handleCreateOferta = () => {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
-            const { producto, obra } = ofertaForm;
+            const { id_producto, id_obra } = ofertaForm;
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
 
                 const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const descripcionNotificacion = `Nueva oferta creada de "${productos.nombre}" por "${obras.nombre}"`;
+                const descripcionNotificacion = `Nueva oferta creada de "${id_producto.nombre}" por "${id_obra.nombre}"`;
                 const dataNotificacion = {
                     titulo: tituloNotificacion,
                     descripcion: descripcionNotificacion,
@@ -230,6 +228,7 @@ function Ofertas() {
 
         try {
             await postData('crear_detalle_oferta/', data, token).then(() => {
+                window.location.reload();
                 return true;
             });
         } catch (error) {
@@ -285,14 +284,14 @@ function Ofertas() {
                                                         placement="top"
                                                         overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
                                                     >
-                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
                                                     </OverlayTrigger>
                                                 }
                                             />
                                         </div>
                                     ))
                                 ) : (
-                                    <p>No hay ofertas disponibles.</p>
+                                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
                                 )}
                             </div>
                         </Tab>
@@ -367,11 +366,7 @@ function Ofertas() {
                                 style={{ marginTop: '1rem' }}
                             />
                             {obras.length === 1 ? (
-                                useEffect(() => {
-                                    if (selectedOferta.id_obra.id_obra !== obras[0].id_obra) {
-                                        setSelectedObra(obras[0]);
-                                    }
-                                }, [obras])
+                                <></>
                             ) : (
                                 <>
                                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>

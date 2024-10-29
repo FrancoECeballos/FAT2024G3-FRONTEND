@@ -22,4 +22,16 @@
       transform: scale(1.05);
     }
   }
+
+  &.greyed-out {
+    background-color: #f0f0f0;
+
+    &.hoverable-little-card {
+      cursor: pointer;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
 }

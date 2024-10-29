@@ -173,15 +173,23 @@ function Products() {
 
     const handleProductInputChange = (event) => {
         const { name, value } = event.target;
-        setNewProduct((prevProduct) => {
-            const updatedProduct = { 
-                ...prevProduct, 
-                [name]: name === 'unidadmedida' ? parseInt(value, 10) : value 
-            };
-            return updatedProduct;
-        });
-        console.log(newProduct);
-    };
+    
+        if (name === 'nombre') {
+            const isSimilar = isProductNameSimilar(value, products);
+    
+            if (isSimilar) {
+                setAlertMessage('El nombre del producto es similar o igual a uno existente. Por favor, verifica.');
+                setShowAlert(true);
+            } else {
+                setShowAlert(false);
+            }
+        }
+    
+        setNewProduct((prevProduct) => ({
+            ...prevProduct,
+            [name]: name === 'unidadmedida' ? parseInt(value, 10) : value,
+        }));
+    }; 
 
     const handleFileChange = (file) => {
         setNewProduct((prevProduct) => ({
@@ -301,6 +309,14 @@ function Products() {
             }
         }
     };
+
+    const isProductNameSimilar = (newName, existingProducts) => {
+        return existingProducts.some(product => 
+            product.nombre.toLowerCase() === newName.toLowerCase() ||
+            product.nombre.toLowerCase().includes(newName.toLowerCase())
+        );
+    };
+
 
     if (isLoading) {
         return <div><FullNavbar/><Loading /></div>;
