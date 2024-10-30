@@ -86,6 +86,10 @@ const RegisterCard = () => {
     });
   };
 
+  const handleLocalidadChange = (key) => {
+    setDirecFormData((prevData) => ({ ...prevData, localidad: key }));
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
@@ -320,7 +324,7 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
-                    <SelectLocalidad/>
+                    <SelectLocalidad onSelect={handleLocalidadChange} onChange={() => setDirecFormData((...prevData) => ({ ...prevData, localidad: '' }))} />
                     <Form.Label id='errorLocalidad' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 

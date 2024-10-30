@@ -34,6 +34,10 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         }).catch(error => {
             console.error('Error fetching categories:', error);
         });
+
+        if (!stock && stocksDisponibles.length === 1) {
+            stock = stocksDisponibles[0].id_obra;
+        }
     }, [token]);
 
     const handleCategoryChange = (event) => {

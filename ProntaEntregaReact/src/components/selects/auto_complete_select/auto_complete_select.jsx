@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import "./auto_complete_select.scss";
 
-function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange }) {
+function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, width = '95%' }) {
   const [inputValue, setInputValue] = useState("");
   const [filteredLists, setFilteredLists] = useState(lists);
   const [isListVisible, setIsListVisible] = useState(false);
@@ -68,7 +68,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
         className="select-input"
       />
       {isListVisible && (
-        <div className="select-button-container">
+        <div className="select-button-container" style={{ position: 'absolute', zIndex: 1000, width: width }}>
           <ul>
             {filteredLists.map((item, index) => (
               <li
