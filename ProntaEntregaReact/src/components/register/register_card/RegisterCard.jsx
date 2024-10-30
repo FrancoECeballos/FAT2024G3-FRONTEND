@@ -86,8 +86,8 @@ const RegisterCard = () => {
     });
   };
 
-  const handleLocalidadChange = (key) => {
-    setDirecFormData((prevData) => ({ ...prevData, localidad: key }));
+  const handleLocalidadChange = (label) => {
+    setDirecFormData((prevData) => ({ ...prevData, localidad: label }));
   };
 
   const handleInputChange = (event) => {
@@ -207,7 +207,8 @@ const RegisterCard = () => {
     event.preventDefault();
     setAlertMessage('');
 
-    if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email || !formData.genero || !formData.id_tipodocumento) {
+    if (!formData.nombre || !formData.apellido || !formData.nombreusuario || !formData.password || !formData.documento || !formData.telefono || !formData.email
+       || !formData.genero || !formData.id_tipodocumento || !direcFormData.calle || !direcFormData.numero || !direcFormData.localidad) {
       setAlertMessage('Los campos fueron ingresados incorrectamente: ');
       if (!formData.nombre) {
         setAlertMessage(prevMessage => prevMessage + "\n- Nombre vacio");
@@ -227,6 +228,12 @@ const RegisterCard = () => {
         setAlertMessage(prevMessage => prevMessage + "\n- Genero vacio");
       } if (!formData.id_tipodocumento) {
         setAlertMessage(prevMessage => prevMessage + "\n- Tipo de documento vacio");
+      } if (!direcFormData.calle) {
+        setAlertMessage(prevMessage => prevMessage + "\n- Calle vacia");
+      } if (!direcFormData.numero) {
+        setAlertMessage(prevMessage => prevMessage + "\n- Numero de calle vacio");
+      } if (!direcFormData.localidad) {
+        setAlertMessage(prevMessage => prevMessage + "\n- Localidad vacia");
       }
       setShowAlert(true);
       return;
@@ -324,7 +331,7 @@ const RegisterCard = () => {
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Localidad (*)</Form.Label>
-                    <SelectLocalidad onSelect={handleLocalidadChange} onChange={() => setDirecFormData((...prevData) => ({ ...prevData, localidad: '' }))} />
+                    <SelectLocalidad onSelect={handleLocalidadChange} onChange={() => setDirecFormData((...prevData) => ({ ...prevData, localidad: "" }))} />
                     <Form.Label id='errorLocalidad' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 

@@ -271,6 +271,22 @@ function Pedidos() {
         });
     };
 
+    if (obras.length === 0) {
+        return (
+            <>
+                <FullNavbar selectedPage='Pedidos' />
+                <div className='margen-arriba'>
+                    <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
+                        <Breadcrumb.Item active>Pedidos</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                    <br/>
+                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
+                </div>
+            </>
+        );
+    }
+
     return (
         <>
             <FullNavbar selectedPage='Pedidos' />

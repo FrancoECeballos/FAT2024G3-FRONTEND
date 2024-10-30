@@ -267,10 +267,17 @@ const SelectLocalidad = ({ onSelect, onChange }) => {
         
       ]
       
-    return(
+    const handleSelect = (key) => {
+        const selectedLocalidad = Localidades.find(localidad => localidad.key === key);
+        if (selectedLocalidad) {
+            onSelect(selectedLocalidad.label);
+        }
+    };
+
+    return (
         <AutoCompleteSelect
             lists={Localidades}
-            onClick={onSelect}
+            onClick={handleSelect}
             onInputChange={onChange}
             width="95%"
         />
