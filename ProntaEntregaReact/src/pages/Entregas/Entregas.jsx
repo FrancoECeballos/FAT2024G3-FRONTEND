@@ -186,48 +186,46 @@ const Entregas = () => {
                                 return (
                                     <GenericCard
                                         key={entrega.id_entrega}
-                                        titulo={entrega.id_pedido === null ? 'Oferta de ' + entrega.id_oferta.id_producto.nombre : 'Pedido de ' + entrega.id_pedido.id_producto.nombre}
-                                        descrip1={<><strong>{entrega.id_pedido === null ? 'Ofrecido por la obra:' : 'Pedido por la obra:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta.id_obra.nombre : entrega.id_pedido.id_obra.nombre}</>}
-                                        descrip2={<><strong>{entrega.id_pedido === null ? 'Ofrecido por el usuario:' : 'Pedido por el usuario:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta.id_usuario.nombre + ' ' + entrega.id_oferta.id_usuario.apellido : entrega.id_pedido.id_usuario.nombre + ' ' + entrega.id_pedido.id_usuario.apellido}</>}
-                                        descrip3={<><strong>Creado en:</strong> {entrega.id_pedido === null ? entrega.id_oferta.fechainicio : entrega.id_pedido.fechainicio}</>}
-                                        foto={entrega.id_pedido === null ? entrega.id_oferta.id_producto.imagen : entrega.id_pedido.id_producto.imagen}
+                                        titulo={entrega.id_pedido === null ? 'Oferta de ' + entrega.id_oferta?.id_producto?.nombre : 'Pedido de ' + entrega.id_pedido?.id_producto?.nombre}
+                                        descrip1={<><strong>{entrega.id_pedido === null ? 'Ofrecido por la obra:' : 'Pedido por la obra:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta?.id_obra?.nombre : entrega.id_pedido?.id_obra?.nombre}</>}
+                                        descrip2={<><strong>{entrega.id_pedido === null ? 'Ofrecido por el usuario:' : 'Pedido por el usuario:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta?.id_usuario?.nombre + ' ' + entrega.id_oferta?.id_usuario?.apellido : entrega.id_pedido?.id_usuario?.nombre + ' ' + entrega.id_pedido?.id_usuario?.apellido}</>}
+                                        descrip3={<><strong>Creado en:</strong> {entrega.id_pedido === null ? entrega.id_oferta?.fechainicio : entrega.id_pedido?.fechainicio}</>}
+                                        foto={entrega.id_pedido === null ? entrega.id_oferta?.id_producto?.imagen : entrega.id_pedido?.id_producto?.imagen}
                                         children={
                                             <>
                                                 <div className='scroll-horizontal-entregas'>
                                                     {entrega.entrega_aportes.map((aporte) => (
                                                         <LittleCard
                                                             key={aporte.id_entregaAporte}
-                                                            titulo={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.cantidad} ${aporte.id_aporteOferta.id_oferta.id_producto.unidadmedida} tomados` : `${aporte.id_aportePedido.cantidad} ${aporte.id_aportePedido.id_pedido.id_producto.unidadmedida} dados`}
-                                                            descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta.id_usuario.nombre} ${aporte.id_aporteOferta.id_usuario.apellido}` : `${aporte.id_aportePedido.id_usuario.nombre} ${aporte.id_aportePedido.id_usuario.apellido}`}
+                                                            titulo={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta?.cantidad} ${aporte.id_aporteOferta?.id_oferta?.id_producto?.unidadmedida} tomados` : `${aporte.id_aportePedido?.cantidad} ${aporte.id_aportePedido?.id_pedido?.id_producto?.unidadmedida} dados`}
+                                                            descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta?.id_usuario?.nombre} ${aporte.id_aporteOferta?.id_usuario?.apellido}` : `${aporte.id_aportePedido?.id_usuario?.nombre} ${aporte.id_aportePedido?.id_usuario?.apellido}`}
                                                             descrip2={<>
-                                                                {aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.nombre : aporte.id_aportePedido.id_obra.nombre}
+                                                                {aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.nombre : aporte.id_aportePedido?.id_obra?.nombre}
                                                                 <br />
                                                                 <strong>
-                                                                    {aporte.id_estadoEntrega.id_estadoEntrega === 5 ? 
+                                                                    {aporte.id_estadoEntrega?.id_estadoEntrega === 5 ? 
                                                                         "Este aporte fue entregado" : 
-                                                                        (aporte.id_estadoEntrega.id_estadoEntrega === 1 ? 
+                                                                        (aporte.id_estadoEntrega?.id_estadoEntrega === 1 ? 
                                                                             "Click para tomar Entrega" : 
                                                                             "Click para ver el recorrido"
                                                                         )
                                                                     }
                                                                 </strong>
                                                             </>}
-                                                            foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.imagen : aporte.id_aportePedido.id_obra.imagen}
+                                                            foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.imagen : aporte.id_aportePedido?.id_obra?.imagen}
                                                             onSelect={() => {
-                                                                if (aporte.id_estadoEntrega.id_estadoEntrega === 1) {
+                                                                if (aporte.id_estadoEntrega?.id_estadoEntrega === 1) {
                                                                     setAporteModal(aporte);
-                                                                    handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta.id_obra.id_obra : aporte.id_aportePedido.id_obra.id_obra);
+                                                                    handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.id_obra : aporte.id_aportePedido?.id_obra?.id_obra);
                                                                 } else {
                                                                     setRecorridoModal(aporte);
                                                                     setSelectedEntrega(entrega);
                                                                 }
-                                                                
                                                             }}
-                                                            greyedOut={aporte.id_estadoEntrega.id_estadoEntrega === 5}
+                                                            greyedOut={aporte.id_estadoEntrega?.id_estadoEntrega === 5}
                                                         />
                                                     ))}
                                                 </div>
-                                                
                                             </>
                                         }
                                     />

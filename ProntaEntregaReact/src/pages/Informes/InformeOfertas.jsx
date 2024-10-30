@@ -34,7 +34,7 @@ const InformeOfertas = () => {
                 navigate('/oferta');
             }
 
-            fetchData('oferta/', token).then(data => {
+            fetchData('oferta_all/', token).then(data => {
                 setOfertas(data);
                 setIsLoading(false);
             });

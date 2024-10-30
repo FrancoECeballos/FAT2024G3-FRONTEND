@@ -10,7 +10,6 @@ import Modal from '../../../modals/Modal.jsx';
 import GenericAccordion from '../../../accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../../../functions/postData.jsx';
 import Semaforo from '../../../semaforo/Semaforo.jsx';
-import fetchData from '../../../../functions/fetchData.jsx';
 
 function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) {
     const token = Cookies.get('token');
@@ -39,6 +38,14 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
             setIsLoading(false);
         }
     }, [sortedPedidos]);
+
+    useEffect(() => {
+        if (obrasDisponibles && obrasDisponibles.length === 1) {
+            if (selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obrasDisponibles[0].id_obra) {
+                setSelectedObra(obrasDisponibles[0]);
+            }
+        }
+    }, [obrasDisponibles, selectedPedido]);
 
     const handleChange = (event) => {
         setCantidad(event.target.value);
@@ -180,35 +187,32 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                                                 }
                                             }}
                                         />
-                                        {obrasDisponibles && (
-                                            obrasDisponibles.length === 1 ? (
-                                                useEffect(() => {
-                                                    if (selectedPedido.id_obra.id_obra !== obrasDisponibles[0].id_obra) {
-                                                        setSelectedObra(obrasDisponibles[0]);
-                                                    }
-                                                }, [obrasDisponibles])
-                                            ) : (
-                                                <>
-                                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                                        Ingrese la obra que realiza el aporte (*)
-                                                    </Form.Label>
-                                                    <Form.Control
-                                                        as="select"
-                                                        name="obra"
-                                                        onChange={(event) => {
-                                                            setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === Number(event.target.value)));
-                                                        }}
-                                                    >
-                                                        {obrasDisponibles.map(obra => (
-                                                            selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obra.id_obra && (
-                                                                <option key={obra.id_obra} value={obra.id_obra}>
-                                                                    {obra.nombre}
-                                                                </option>
-                                                            )
-                                                        ))}
-                                                    </Form.Control>
-                                                </>
-                                            )
+                                        {selectedObra && (
+                                            <Form.Label className="font-rubik" style={{ marginTop: '1rem', fontSize: '1rem' }}>
+                                                Usted esta aportando desde la obra <strong>{selectedObra.nombre}</strong>
+                                            </Form.Label>
+                                        )}
+                                        {obrasDisponibles && obrasDisponibles.length > 1 && (
+                                            <>
+                                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                                    Ingrese la obra que realiza el aporte (*)
+                                                </Form.Label>
+                                                <Form.Control
+                                                    as="select"
+                                                    name="obra"
+                                                    onChange={(event) => {
+                                                        setSelectedObra(obrasDisponibles.find(obra => obra.id_obra === Number(event.target.value)));
+                                                    }}
+                                                >
+                                                    {obrasDisponibles.map(obra => (
+                                                        selectedPedido.id_obra && selectedPedido.id_obra.id_obra !== obra.id_obra && (
+                                                            <option key={obra.id_obra} value={obra.id_obra}>
+                                                                {obra.nombre}
+                                                            </option>
+                                                        )
+                                                    ))}
+                                                </Form.Control>
+                                            </>
                                         )}
                                         {error && <p style={{ color: 'red', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
                                     </Form.Group>

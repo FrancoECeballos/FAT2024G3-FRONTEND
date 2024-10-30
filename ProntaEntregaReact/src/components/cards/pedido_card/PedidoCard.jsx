@@ -32,7 +32,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         "cantidad": 0,
         "urgente": "",
         "id_producto": productDefault ? productDefault.id_producto: "",
-        "id_estadoPedido": 3,
+        "id_estadoPedido": 1,
         "obras": []
     });
 

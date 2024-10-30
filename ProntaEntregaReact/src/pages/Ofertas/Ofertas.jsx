@@ -7,8 +7,11 @@ import { Icon } from '@iconify/react';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
+
 import fetchData from '../../functions/fetchData';
 import fetchUser from '../../functions/fetchUser';
+import deleteData from '../../functions/deleteData.jsx';
+
 import Modal from '../../components/modals/Modal.jsx';
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import postData from '../../functions/postData.jsx';
@@ -38,6 +41,7 @@ function Ofertas() {
     const [stocks, setStocks] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
+    const [showUserOfertaModal, setShowUserOfertaModal] = useState(false);
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
     useEffect(() => {
@@ -238,6 +242,22 @@ function Ofertas() {
         }
     };
 
+    const handleDeleteOferta = (ofertaId) => {
+        deleteData(`CancelOferta/${ofertaId}/`, token).then(() => {
+            window.location.reload();
+        }).catch(error => {
+            console.error('Error deleting oferta:', error);
+        });
+    };
+
+    const handleEndOferta = (ofertaId) => {
+        deleteData(`EndOferta/${ofertaId}/`, token).then(() => {
+            window.location.reload();
+        }).catch(error => {
+            console.error('Error ending oferta:', error);
+        });
+    };
+
     if (isLoading) {
         return <div><FullNavbar /><Loading /></div>;
     }
@@ -274,6 +294,10 @@ function Ofertas() {
                                     sortedUserOfertas.map(oferta => (
                                         <div key={oferta.id_oferta}>
                                             <GenericCard
+                                                onClick={() => {
+                                                    setSelectedOferta(oferta);
+                                                    setShowUserOfertaModal(true);
+                                                }}
                                                 titulo={`${oferta.id_producto.nombre}`}
                                                 foto={oferta.id_producto.imagen}
                                                 descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
@@ -312,6 +336,9 @@ function Ofertas() {
                                                                 setSelectedObra(filteredObras[0]);
                                                             }
                                                         }
+                                                        if (obras.length === 1) {
+                                                            setSelectedObra(obras[0]);
+                                                        }
                                                     }}
                                                     titulo={`${oferta.id_producto.nombre}`}
                                                     foto={oferta.id_producto.imagen}
@@ -345,6 +372,7 @@ function Ofertas() {
                     showModal={showTakeOfertaModal}
                     saveButtonText='Tomar'
                     handleCloseModal={() => { setShowTakeOfertaModal(false), setSelectedOferta(null) }}
+                    saveButtonShown={!(obras.length === 1 && obras[0].id_obra === selectedOferta.id_obra.id_obra)}
                     title='Tomar Oferta'
                     handleSave={() => createAporteOferta(selectedOferta.id_oferta, user.id_usuario, selectedObra, cantidad, new Date().toISOString().split('T')[0])}
                     content={
@@ -359,33 +387,40 @@ function Ofertas() {
                                 descrip4={<><strong>Estado:</strong> {selectedOferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {selectedOferta.cantidad} {selectedOferta.id_producto.unidadmedida}</>}
                                 descrip5={<><strong>Fecha Vencimiento:</strong> {selectedOferta.fechavencimiento ? selectedOferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
                             />
-                            <Form.Control
-                                type='number'
-                                placeholder='Ingrese la cantidad que quiere tomar'
-                                value={cantidad}
-                                onChange={handleChange}
-                                style={{ marginTop: '1rem' }}
-                            />
-                            {obras.length === 1 ? (
-                                <></>
-                            ) : (
+
+                            {!(obras.length === 1 && obras[0].id_obra === selectedOferta.id_obra.id_obra) && (
                                 <>
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                        Ingrese la obra que realiza el aporte
-                                    </Form.Label>
                                     <Form.Control
-                                        as="select"
-                                        name="obra"
-                                        onChange={(event) => {
-                                            setSelectedObra(obras.find(obra => obra.id_obra === Number(event.target.value)));
-                                        }}
-                                    >
-                                        {obras.filter(obra => selectedOferta.id_obra && selectedOferta.id_obra.id_obra !== obra.id_obra).map(obra => (
-                                            <option key={obra.id_obra} value={obra.id_obra}>
-                                                {obra.nombre}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
+                                        type='number'
+                                        placeholder='Ingrese la cantidad que quiere tomar'
+                                        value={cantidad}
+                                        onChange={handleChange}
+                                        style={{ marginTop: '1rem' }}
+                                    />
+                                    {obras.length === 1 ? (
+                                        <Form.Label className="font-rubik" style={{ marginTop: '1rem', fontSize: '1rem' }}>
+                                            Usted esta aportando desde la obra <strong>{obras[0].nombre}</strong>
+                                        </Form.Label>
+                                    ) : (
+                                        <>
+                                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                                Ingrese la obra que realiza el aporte
+                                            </Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="obra"
+                                                onChange={(event) => {
+                                                    setSelectedObra(obras.find(obra => obra.id_obra === Number(event.target.value)));
+                                                }}
+                                            >
+                                                {obras.filter(obra => selectedOferta.id_obra && selectedOferta.id_obra.id_obra !== obra.id_obra).map(obra => (
+                                                    <option key={obra.id_obra} value={obra.id_obra}>
+                                                        {obra.nombre}
+                                                    </option>
+                                                ))}
+                                            </Form.Control>
+                                        </>
+                                    )}
                                 </>
                             )}
                             {error && <p style={{ color: 'red', marginTop: '0.5rem', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
@@ -393,6 +428,34 @@ function Ofertas() {
                     }
                 />
             )}
+
+            <Modal
+                showButton={false}
+                showModal={showUserOfertaModal}
+                title='Detalles de la Oferta'
+                showDeleteButton={true}
+                saveButtonText='Terminar Oferta'
+                deleteButtonText='Cancelar Oferta'
+                handleCloseModal={() => setShowUserOfertaModal(false)}
+                deleteFunction={() => handleDeleteOferta(selectedOferta.id_oferta)}
+                handleSave={() => handleEndOferta(selectedOferta.id_oferta)}
+                content={
+                    <div>
+                        {selectedOferta && selectedOferta.id_producto && (
+                            <GenericCard
+                                key={selectedOferta.id_oferta}
+                                titulo={`${selectedOferta.id_producto.nombre}`}
+                                foto={selectedOferta.id_producto.imagen}
+                                descrip1={`Cantidad: ${selectedOferta.progreso} / ${selectedOferta.cantidad} ${selectedOferta.id_producto.unidadmedida}`}
+                                descrip2={<><strong>Obra:</strong> {selectedOferta.id_obra.nombre}</>}
+                                descrip3={<><strong>Usuario:</strong> {selectedOferta.id_usuario.nombre} {selectedOferta.id_usuario.apellido}</>}
+                                descrip4={<><strong>Estado:</strong> {selectedOferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {selectedOferta.cantidad} {selectedOferta.id_producto.unidadmedida}</>}
+                                descrip5={<><strong>Fecha Vencimiento:</strong> {selectedOferta.fechavencimiento ? selectedOferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                            />
+                        )}
+                    </div>
+                }
+            />
 
             {user.is_superuser && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>

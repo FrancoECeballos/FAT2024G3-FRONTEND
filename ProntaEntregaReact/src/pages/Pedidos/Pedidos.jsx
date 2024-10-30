@@ -327,7 +327,7 @@ function Pedidos() {
                                             </div>
                                         ))
                                     ) : (
-                                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay entregas disponibles.</p>
+                                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay pedidos disponibles.</p>
                                     )}
                                 </>
                             </Tab>
@@ -350,14 +350,13 @@ function Pedidos() {
             </div>
             <Modal
                 showButton={false}
-                showDeleteButton={true}
-                saveButtonShown={true}
                 showModal={showModal}
+                title='Detalles del Pedido'
+                showDeleteButton={true}
                 saveButtonText='Terminar Pedido'
+                deleteButtonText='Cancelar Pedido'
                 handleCloseModal={handleCloseModal}
                 deleteFunction={() => handleDeletePedido(selectedPedido.id_pedido)}
-                deleteButtonText='Cancelar Pedido'
-                title='Detalles del Pedido'
                 handleSave={() => handleEndPedido(selectedPedido.id_pedido)}
                 content={
                     <div>
