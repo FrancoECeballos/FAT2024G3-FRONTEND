@@ -94,21 +94,22 @@ function Pedidos() {
                     postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
                 );
                 return Promise.all(obrasPromises).then(() => result);
-            }).then((result) => {
-                console.log('Detalles de pedido creados:', result);
 
-                const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
+            }).then((result2) => {
+                console.log('Detalles de pedido creados:', result2);
+
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const dataNotificacion = {
-                    titulo: tituloNotificacion,
+                    titulo: `Notificacion Creada - ${user.nombre} ${user.apellido}`,
                     descripcion: 'Nuevo pedido creado',
                     id_usuario: user.id_usuario,
                     fecha_creacion: fechaCreacion
                 };
-                console.log('Datos de la notificación:', dataNotificacion);
+
                 return crearNotificacion(dataNotificacion, token).then(() => {
                     window.location.reload();
                 });
+                
             }).then((notificacionResult) => {
                 console.log('Notificación creada:', notificacionResult);
             }).catch((error) => {
