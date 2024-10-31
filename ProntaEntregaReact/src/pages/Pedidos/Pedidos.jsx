@@ -271,7 +271,7 @@ function Pedidos() {
         });
     };
 
-    if (obras.length === 0) {
+    if (obras.length === 0 && !user.is_superuser) {
         return (
             <>
                 <FullNavbar selectedPage='Pedidos' />
