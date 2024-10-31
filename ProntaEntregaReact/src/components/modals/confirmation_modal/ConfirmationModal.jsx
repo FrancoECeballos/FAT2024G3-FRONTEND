@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import './ConfirmationModal.scss'; // Archivo de estilos para personalizaciones adicionales
-
+import './ConfirmationModal.scss';
 function ConfirmationModal({ BodyText, Open, CloseButtonText, ConfirmButtonText, onClickConfirm, onClose }) {
     const [show, setShow] = useState(Open);
 
@@ -23,7 +22,7 @@ function ConfirmationModal({ BodyText, Open, CloseButtonText, ConfirmButtonText,
             onHide={handleClose}
             backdrop="static"
             keyboard={false}
-            dialogClassName="custom-modal" // Clase personalizada para estilos del modal
+            dialogClassName="custom-modal"
         >
             <Modal.Body className="text-center">
                 <p className="modal-body-text">

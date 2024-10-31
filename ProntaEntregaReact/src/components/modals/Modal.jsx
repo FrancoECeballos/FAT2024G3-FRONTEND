@@ -5,7 +5,7 @@ import './Modal.scss';
 
 function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, 
     title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteButtonText, 
-    deleteFunction, saveButtonEnabled = true, saveButtonShown = true }) {
+    deleteFunction, saveButtonEnabled = true, saveButtonShown = true, position = false }) {
         
     const [show, setShow] = useState(false);
 
@@ -33,7 +33,6 @@ function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, o
             handleClose();
         }
     };
-    
 
     return (
         <>
@@ -47,7 +46,7 @@ function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, o
                 hid={!showButton}
             />
 
-            <Modal size={tamaño} centered show={show} onHide={handleClose}>
+            <Modal size={tamaño} style={position ? { top: '5%' } : {}} show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>

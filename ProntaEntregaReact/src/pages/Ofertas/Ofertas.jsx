@@ -192,22 +192,22 @@ function Ofertas() {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
             const { id_producto, id_obra } = ofertaForm;
+
             postData('crear_oferta/', ofertaForm, token).then((result) => {
                 console.log('Oferta creada:', result);
 
-                const tituloNotificacion = ` "Notificacion Creada" - ${user.nombre} ${user.apellido}`;
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const descripcionNotificacion = `Nueva oferta creada de "${id_producto.nombre}" por "${id_obra.nombre}"`;
                 const dataNotificacion = {
-                    titulo: tituloNotificacion,
-                    descripcion: descripcionNotificacion,
+                    titulo: `Notificacion Creada - ${user.nombre} ${user.apellido}`,
+                    descripcion: `Nueva oferta creada de ${id_producto.nombre} por ${id_obra.nombre}`,
                     id_usuario: user.id_usuario,
                     fecha_creacion: fechaCreacion
                 };
-                console.log('Datos de la notificación:', dataNotificacion);
+
                 return crearNotificacion(dataNotificacion, token).then(() => {
                     window.location.reload();
                 });
+                
             }).catch((error) => {
                 console.error('Error al crear la oferta:', error);
             });

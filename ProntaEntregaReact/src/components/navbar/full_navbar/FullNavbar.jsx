@@ -5,7 +5,6 @@ import { Icon } from '@iconify/react';
 import { Container, Nav, Navbar, Offcanvas, Dropdown, Modal, Button } from 'react-bootstrap';
 import fetchData from '../../../functions/fetchData';
 
-import whiteLogo from '../../../assets/WhiteLogo.png';
 import blueLogo from '../../../assets/BlueLogo.png';
 
 import NotificationCard from '../../notifications/notification_card/NotificationCard';
@@ -129,27 +128,23 @@ function FullNavbar({ selectedPage }) {
             </Dropdown>
           </Navbar.Brand>
 
-          <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedNotification?.titulo}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div>
-                {selectedNotification?.descripcion}
-              </div>
-              <div style={{ marginTop: "2rem" }}>
-                {selectedNotification?.fecha_creacion}
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>
-                Cerrar
-              </Button>
-              <Button variant="primary" color='#3E4692' onClick={() => { handleMarkAsRead(); fetchUserData(); }}>
-                Marcar como leido
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <GenericModal
+            showModal={showModal}
+            handleCloseModal={handleCloseModal}
+            title={selectedNotification?.titulo}
+            content={
+              <>
+                <div>{selectedNotification?.descripcion}</div>
+                <div style={{ marginTop: "2rem" }}>{selectedNotification?.fecha_creacion}</div>
+              </>
+            }
+            saveButtonText="Marcar como leido"
+            handleSave={() => { handleMarkAsRead(); fetchUserData(); }}
+            saveButtonEnabled={true}
+            saveButtonShown={true}
+            showButton={false}
+            position={true}
+          />
 
           <Navbar.Brand>
             <Icon icon="line-md:account" style={{ width: '2rem', height: '2rem', marginRight: '0.3rem', marginLeft: '0.3rem', color: '#02005E' }} onClick={handleSuperUserAuth} />
