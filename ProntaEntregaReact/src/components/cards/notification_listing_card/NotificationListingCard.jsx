@@ -21,7 +21,7 @@ function NotificationListingCard() {
             const userData = await fetchUser();
             setUser(userData);
 
-            const notifications = await fetchData(`getNotificacion/${userData.id_usuario}`, token);
+            const notifications = await fetchData(`GetNotificacionesObrasDeUsuario/${userData.id_usuario}`, token);
             setNotifications(notifications);
             console.log(notifications);
             
@@ -42,9 +42,15 @@ function NotificationListingCard() {
         </Card>
       ) : (
         <Card className="nl-card w-100 h-100">
-            <Card.Title><h1>NotificationListingCard</h1></Card.Title>
+            <Card.Title>Notificaciones <hr /></Card.Title>
             <Card.Body>
-                
+                {Array.isArray(notifications) && notifications.length > 0 ? (
+                    notifications.map((notification, index) => (
+                        <Card.Text key={index} className="notification-text">{notification.nombre}</Card.Text>
+                    ))
+                ) : (
+                    <Card.Text>No hay notificaciones</Card.Text>
+                )}
             </Card.Body>
         </Card>
       )}
