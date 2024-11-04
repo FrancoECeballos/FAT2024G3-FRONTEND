@@ -88,11 +88,16 @@ function Pedidos() {
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
     
             postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-                const obrasPromises = obras.map((obra) => {
+                const obrasPromises = obras.map(async (obra) => {
                     const fechaCreacion = new Date().toISOString().split('T')[0];
+                    const producto = await fetchData(`producto/${pedidoForm.id_producto}/`, token);
+                    const pendingObra = await fetchData(`obra/${pedidoForm.id_obra}/`, token);
+                    const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
+
                     const dataNotificacion = {
                         titulo: 'Nuevo Pedido',
-                        descripcion: `Pedido creado por ${user.nombre} ${user.apellido} a la obra ${obra}`,
+                        descripcion: `Pedido creado por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
+                        Se piden ${pedidoForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre} con ${urgenciaLabel} urgencia.`,
                         id_usuario: user.id_usuario,
                         id_obra: obra,
                         fecha_creacion: fechaCreacion
@@ -102,7 +107,7 @@ function Pedidos() {
                     return postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                 });
     
-                return Promise.all(obrasPromises);
+                return Promise.all(obrasPromises).then(() => window.location.reload());
             }).catch((error) => {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
             });

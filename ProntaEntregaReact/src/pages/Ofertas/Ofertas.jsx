@@ -191,15 +191,16 @@ function Ofertas() {
     const handleCreateOferta = () => {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
-            const { id_producto, id_obra } = ofertaForm;
 
-            postData('crear_oferta/', ofertaForm, token).then((result) => {
-                console.log('Oferta creada:', result);
-
+            postData('crear_oferta/', ofertaForm, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
+                const producto = await fetchData(`producto/${ofertaForm.id_producto}/`, token);
+                const pendingObra = await fetchData(`obra/${ofertaForm.id_obra}/`, token);
+
                 const dataNotificacion = {
-                    titulo: `Notificacion Creada - ${user.nombre} ${user.apellido}`,
-                    descripcion: `Nueva oferta creada de ${id_producto.nombre} por ${id_obra.nombre}`,
+                    titulo: 'Nueva Oferta',
+                    descripcion: `Oferta creada por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}. 
+                    Se ofrecen ${ofertaForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre}.`,
                     id_usuario: user.id_usuario,
                     fecha_creacion: fechaCreacion
                 };

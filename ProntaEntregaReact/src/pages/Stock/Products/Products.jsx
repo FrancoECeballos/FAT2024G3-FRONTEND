@@ -286,12 +286,16 @@ function Products() {
                 const { obras, ...pedidoFormWithoutObras } = pedidoForm;
                 
                 postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-                    const obrasPromises = obras.map((obra) =>
-                        {
+                    const obrasPromises = obras.map(async (obra) => {
                             const fechaCreacion = new Date().toISOString().split('T')[0];
+                            const producto = await fetchData(`producto/${pedidoForm.id_producto}/`, token);
+                            const pendingObra = await fetchData(`obra/${pedidoForm.id_obra}/`, token);
+                            const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
+                            
                             const dataNotificacion = {
                                 titulo: 'Nuevo Pedido',
-                                descripcion: `Pedido creado por ${user.nombre} ${user.apellido}`,
+                                descripcion: `Pedido creado por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
+                                Se piden ${pedidoForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre} con ${urgenciaLabel} urgencia.`,
                                 id_usuario: user.id_usuario,
                                 id_obra: obra,
                                 fecha_creacion: fechaCreacion
@@ -299,8 +303,7 @@ function Products() {
     
                             postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                             crearNotificacion(dataNotificacion, token, 'Obra', obra);
-                        }
-                    );
+                        });
                     return Promise.all(obrasPromises).then(() => window.location.reload());
                 }).catch((error) => {
                     console.error('Error al crear el pedido o los detalles del pedido:', error);
@@ -309,9 +312,24 @@ function Products() {
         } else if (pedidoOrOferta === 'oferta') {
             if (ofertaCardRef.current) {
                 const ofertaForm = ofertaCardRef.current.getOfertaForm();
-                postData('crear_oferta/', ofertaForm, token).then((result) => {
-                    console.log('Oferta creada:', result);
-                    window.location.reload();
+
+                postData('crear_oferta/', ofertaForm, token).then(async () => {
+                    const fechaCreacion = new Date().toISOString().split('T')[0];
+                    const producto = await fetchData(`producto/${ofertaForm.id_producto}/`, token);
+                    const pendingObra = await fetchData(`obra/${ofertaForm.id_obra}/`, token);
+    
+                    const dataNotificacion = {
+                        titulo: 'Nueva Oferta',
+                        descripcion: `Oferta creada por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
+                        Se ofrecen ${ofertaForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre}.`,
+                        id_usuario: user.id_usuario,
+                        fecha_creacion: fechaCreacion
+                    };
+    
+                    return crearNotificacion(dataNotificacion, token).then(() => {
+                        window.location.reload();
+                    });
+                    
                 }).catch((error) => {
                     console.error('Error al crear la oferta:', error);
                 });
