@@ -31,6 +31,7 @@ function FullNavbar({ selectedPage }) {
   const handleMarkAsRead = () => {
     fetchData(`/MarkNotificacionAsRead/${selectedNotification.notificacion_id}`, token).then(() => {
       setShowModal(false);
+      fetchUserData();
     }).catch((error) => {
       console.error(error);
     });
@@ -139,7 +140,7 @@ function FullNavbar({ selectedPage }) {
               </>
             }
             saveButtonText="Marcar como leido"
-            handleSave={() => { handleMarkAsRead(); fetchUserData(); }}
+            handleSave={handleMarkAsRead}
             saveButtonEnabled={true}
             saveButtonShown={true}
             showButton={false}
@@ -219,9 +220,3 @@ function FullNavbar({ selectedPage }) {
 }
 
 export default FullNavbar;
-
-
-
-
-
-

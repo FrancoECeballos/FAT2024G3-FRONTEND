@@ -20,6 +20,7 @@ import fetchData from '../../../functions/fetchData';
 import postData from '../../../functions/postData.jsx';
 import deleteData from '../../../functions/deleteData.jsx';
 import fetchUser from '../../../functions/fetchUser.jsx';
+import crearNotificacion from '../../../functions/createNofiticacion.jsx';
 
 import Modal from '../../../components/modals/Modal.jsx';
 import ConfirmationModal from '../../../components/modals/confirmation_modal/ConfirmationModal.jsx';
@@ -285,14 +286,22 @@ function Products() {
                 const { obras, ...pedidoFormWithoutObras } = pedidoForm;
                 
                 postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-                    console.log('Pedido creado:', result);
-                    const obrasPromises = obras.map((obra) => 
-                        postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
+                    const obrasPromises = obras.map((obra) =>
+                        {
+                            const fechaCreacion = new Date().toISOString().split('T')[0];
+                            const dataNotificacion = {
+                                titulo: 'Nuevo Pedido',
+                                descripcion: `Pedido creado por ${user.nombre} ${user.apellido}`,
+                                id_usuario: user.id_usuario,
+                                id_obra: obra,
+                                fecha_creacion: fechaCreacion
+                            };
+    
+                            postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
+                            crearNotificacion(dataNotificacion, token, 'Obra', obra);
+                        }
                     );
-                    return Promise.all(obrasPromises);
-                }).then((detalleResults) => {
-                    console.log('Detalles de pedido creados:', detalleResults);
-                    window.location.reload();
+                    return Promise.all(obrasPromises).then(() => window.location.reload());
                 }).catch((error) => {
                     console.error('Error al crear el pedido o los detalles del pedido:', error);
                 });
