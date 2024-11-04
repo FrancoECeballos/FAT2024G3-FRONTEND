@@ -8,3 +8,14 @@
     font-weight: bold;
     margin-bottom: 1rem;
   }
+
+  .ol-derecha {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
+
+.ol-derecha .text-content {
+    margin-left: 1rem;
+    text-align: left;
+}

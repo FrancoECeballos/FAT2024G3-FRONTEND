@@ -86,32 +86,23 @@ function Pedidos() {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-            console.log('Pedido form:', pedidoForm);
-
+    
             postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-                console.log('Pedido creado:', result);
-                const obrasPromises = obras.map((obra) =>
-                    postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token)
-                );
-                return Promise.all(obrasPromises).then(() => result);
-
-            }).then((result2) => {
-                console.log('Detalles de pedido creados:', result2);
-
-                const fechaCreacion = new Date().toISOString().split('T')[0];
-                const dataNotificacion = {
-                    titulo: `Notificacion Creada - ${user.nombre} ${user.apellido}`,
-                    descripcion: 'Nuevo pedido creado',
-                    id_usuario: user.id_usuario,
-                    fecha_creacion: fechaCreacion
-                };
-
-                return crearNotificacion(dataNotificacion, token).then(() => {
-                    window.location.reload();
+                const obrasPromises = obras.map((obra) => {
+                    const fechaCreacion = new Date().toISOString().split('T')[0];
+                    const dataNotificacion = {
+                        titulo: 'Nuevo Pedido',
+                        descripcion: `Pedido creado por ${user.nombre} ${user.apellido} a la obra ${obra}`,
+                        id_usuario: user.id_usuario,
+                        id_obra: obra,
+                        fecha_creacion: fechaCreacion
+                    };
+                    
+                    crearNotificacion(dataNotificacion, token, 'Obra', obra);
+                    return postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                 });
-                
-            }).then((notificacionResult) => {
-                console.log('Notificación creada:', notificacionResult);
+    
+                return Promise.all(obrasPromises);
             }).catch((error) => {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
             });
