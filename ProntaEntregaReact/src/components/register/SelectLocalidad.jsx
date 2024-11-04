@@ -2,9 +2,9 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import AutoCompleteSelect from "../selects/auto_complete_select/auto_complete_select"
 
-const SelectLocalidad = ({ onSelect, onChange }) => {
+const SelectLocalidad = (style, name, type, onBlur, onChange, placeholder) => {
     const Localidades = [
-        
+
         { key: "1", label: "Achiras, Río Cuarto" },
         { key: "2", label: "Adelia María, Río Cuarto" },
         { key: "3", label: "Agua de Oro, Colón" },
@@ -103,7 +103,7 @@ const SelectLocalidad = ({ onSelect, onChange }) => {
         { key: "96", label: "Jesús María, Colón" },
         { key: "97", label: "Jovita, General Roca" },
         { key: "98", label: "Justiniano Posse, Unión" },
-        { key: "99", label: "La Calera, Colón" },
+        { key: "99",  label: "La Calera, Colón" },
         { key: "100", label: "La Carlota, Juárez Celman" },
         { key: "101", label: "La Cautiva, Río Cuarto" },
         { key: "102", label: "La Cesira, Presidente Roque Sáenz Peña" },
@@ -267,20 +267,10 @@ const SelectLocalidad = ({ onSelect, onChange }) => {
         
       ]
       
-    const handleSelect = (key) => {
-        const selectedLocalidad = Localidades.find(localidad => localidad.key === key);
-        if (selectedLocalidad) {
-            onSelect(selectedLocalidad.label);
-        }
-    };
-
-    return (
-        <AutoCompleteSelect
-            lists={Localidades}
-            onClick={handleSelect}
-            onInputChange={onChange}
-            width="95%"
-        />
+    return(
+        <AutoCompleteSelect lists={Localidades}>
+            
+        </AutoCompleteSelect>
     );
 } 
 export default SelectLocalidad;
