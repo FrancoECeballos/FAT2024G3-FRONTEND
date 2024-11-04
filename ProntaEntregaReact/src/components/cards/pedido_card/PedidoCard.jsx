@@ -143,7 +143,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     };
 
     const handleSelectAllObras = () => {
-        const allObrasIds = orderedObras.map(obra => obra.id_obra.id_obra);
+        const allObrasIds = orderedObras.filter(obra => obra.id_obra.id_obra !== pedidoForm.id_obra).map(obra => obra.id_obra.id_obra);
         const allSelected = allObrasIds.every(id => pedidoForm.obras.includes(id));
         
         setPedidoForm(prevForm => {
