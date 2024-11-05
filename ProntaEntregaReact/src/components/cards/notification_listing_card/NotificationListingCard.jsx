@@ -60,11 +60,11 @@ function NotificationListingCard() {
     <>
       <div>
         {isLoading ? (
-          <Card className="nl-card w-100 h-100">
+          <Card className="nl-card w-100">
             <Loading />
           </Card>
         ) : (
-          <Card className="nl-card w-100 h-100">
+          <Card className="nl-card w-100 h-100 centered">
             <Card.Title>Notificaciones <hr /></Card.Title>
             <Card.Body>
               {Array.isArray(notifications) && notifications.length > 0 ? (

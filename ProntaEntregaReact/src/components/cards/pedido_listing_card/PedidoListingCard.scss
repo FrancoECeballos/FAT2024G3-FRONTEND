@@ -1,21 +1,38 @@
 .pl-card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem; 
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2); 
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
 
-  .pl-derecha {
-    display: flex;
-    align-items: center;
-    padding-left: 1rem;
+.carousel-item-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  height: 18rem; 
+  max-width: 50rem; 
+  margin: 0 auto; 
+}
+
+.carousel-image {
+  width: 7.5rem; 
+  height: 7.5rem;
+  border-radius: 1rem; 
+  object-fit: scale-down;
+}
+
+.pl-derecha {
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
 }
 
 .pl-derecha .text-content {
-    margin-left: 1rem;
-    text-align: left;
+  margin-left: 1rem;
+  text-align: left;
 }

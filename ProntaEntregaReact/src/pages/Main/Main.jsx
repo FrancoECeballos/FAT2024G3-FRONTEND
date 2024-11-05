@@ -8,8 +8,6 @@ import NotificationListingCard from '../../components/cards/notification_listing
 import OfertaListingCard from '../../components/cards/oferta_listing_card/OfertaListingCard';
 import PedidoListingCard from '../../components/cards/pedido_listing_card/PedidoListingCard';
 
-import background from '../../assets/backgroundImage.png';
-
 function Main() {
   const navigate = useNavigate();
   const token = Cookies.get('token');
@@ -28,7 +26,9 @@ function Main() {
         <Container className="h-100">
           <Row className="h-100">
             <Col md={4} className="d-flex">
-              <NotificationListingCard />
+              <div className='w-100'>
+                <NotificationListingCard />
+              </div>
             </Col>
             <Col md={4} className="d-flex">
 
@@ -36,21 +36,22 @@ function Main() {
             <Col md={4}>
               <Row className="h-50 d-flex">
                 <Col>
-                  <OfertaListingCard />
+                  <div className='w-100'>
+                    <OfertaListingCard />
+                  </div>
                 </Col>
               </Row>
               <Row className="h-50 d-flex">
                 <Col>
-                  <PedidoListingCard />
+                  <div className='w-100'>
+                   <PedidoListingCard />
+                  </div>
                 </Col>
               </Row>
             </Col>
           </Row>
         </Container>
       </div>
-      <Container style={{height:'3rem'}}>
-
-      </Container>
     </div>
   );
 }
