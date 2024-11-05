@@ -464,7 +464,7 @@ function Products() {
                                                     icon="line-md:alert-circle-twotone" 
                                                     className="hoverable-icon"
                                                     style={{ width: "2rem", height: "2rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} 
-                                                    onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`)}
+                                                    onClick={() => navigate(`/obra/${stockId}/categoria/${categoriaID}/producto/${product.id_producto}`, { state: { id_stock: stockId, id_categoria: categoriaID } })}
                                                 />
                                             </OverlayTrigger>
                                         </Col>

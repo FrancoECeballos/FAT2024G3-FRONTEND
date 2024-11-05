@@ -3,6 +3,7 @@ import FullNavbar from "../../../components/navbar/full_navbar/FullNavbar";
 import ProductCard from "../../../components/cards/product_card/ProductCard";
 import SendButton from "../../../components/buttons/send_button/send_button";
 import Loading from "../../../components/loading/loading.jsx";
+import BackButton from '../../../components/buttons/back_button/back_button';
 
 import { Table } from "react-bootstrap";
 import './OneProduct.scss';
@@ -18,7 +19,7 @@ function OneProduct() {
   const [detallesProduct, setDetallesProduct] = useState([]);
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const { productoId, stockId } = useParams();
+  const { productoId, stockId, categoriaID } = useParams();
   const token = Cookies.get('token');
 
   useEffect(() => {
@@ -56,6 +57,8 @@ function OneProduct() {
     <div>
       <FullNavbar selectedPage={'Stock'}/>
         <div className="product-page">
+          <BackButton url={`/obra/${stockId}/categoria/${categoriaID}/`}/>
+          <p>{categoriaID}sexo</p>
           <ProductCard product={product} />
           <Table striped bordered hover responsive className="custom-table mt-4">
             <thead>
