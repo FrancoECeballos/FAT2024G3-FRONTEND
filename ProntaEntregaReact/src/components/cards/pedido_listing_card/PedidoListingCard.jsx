@@ -33,7 +33,7 @@ function PedidoListingCard() {
   return (
     <div>
       {isLoading ? (
-        <Card className="pl-card w-100 h-100">
+        <Card className="pl-card w-100 h-100 centered">
           <Loading />
         </Card>
       ) : (

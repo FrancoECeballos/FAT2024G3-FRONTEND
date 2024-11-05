@@ -33,11 +33,11 @@ function OfertaListingCard() {
   return (
     <div>
       {isLoading ? (
-        <Card className="ol-card w-100 h-100" style={{ minWidth: '100%', minHeight: '100%' }}>
+        <Card className="ol-card w-100 h-100 centered" style={{ minWidth: '100%', minHeight: '100%' }}>
           <Loading />
         </Card>
       ) : (
-        <Card className="ol-card w-100 h-100">
+        <Card className="ol-card w-100 h-100 centered">
           <Card.Title>Ofertas Recientes <hr /></Card.Title>
           <Card.Body>
             <Carousel>

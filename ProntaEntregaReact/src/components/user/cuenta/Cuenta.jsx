@@ -28,6 +28,7 @@ const Cuenta = ({ user }) => {
   const [GuardarButtonIsValid, setGuardarButtonIsValid] = useState(false);
   const [AñadirButtonIsValid, setAñadirButtonIsValid] = useState(false);
   const [deleteUserConfirmation, setDeleteUserConfirmation] = useState(false);
+  const [deleteUserObraConfirmation, setDeleteUserObraConfirmation] = useState(false);
   const [userData, setUserData] = useState({
     "id_usuario": "",
     "nombre": "",
@@ -483,8 +484,9 @@ const Cuenta = ({ user }) => {
                             text="Eliminar"
                             backcolor="#D10000"
                             letercolor="white"
-                            onClick={() => handleDeleteObraFromUser(userobra.id_obra)}
+                            onClick={() => setDeleteUserObraConfirmation(true)}
                           />
+                          <ConfirmationModal Open={deleteUserObraConfirmation} BodyText="¿Está seguro que desea eliminar la obra de este usuario?" onClickConfirm={() => handleDeleteObraFromUser(userobra.id_obra)} onClose={() => setDeleteUserObraConfirmation(false)} />
                         </>
                       )}
                     </li>

@@ -223,6 +223,7 @@ const Entregas = () => {
                                                                 }
                                                             }}
                                                             greyedOut={aporte.id_estadoEntrega?.id_estadoEntrega === 5}
+                                                            taken={aporte.id_estadoEntrega?.id_estadoEntrega > 1 && aporte.id_estadoEntrega?.id_estadoEntrega < 5}
                                                         />
                                                     ))}
                                                 </div>
