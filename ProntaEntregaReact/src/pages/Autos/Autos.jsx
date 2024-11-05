@@ -115,14 +115,17 @@ function AutosComponent() {
         data.append('marca', formData.marca);
         data.append('modelo', formData.modelo);
         data.append('patente', formData.patente);
-        data.append('kilometraje', formData.kilometraje);
+        data.append('kilometraje', formData.kilometraje === '' ? 0 : formData.kilometraje); // Asegurarse de que 0 se maneje correctamente
     
         try {
             const result = await postData(`crear_transporte/`, data, token);
+            if (!result || !result.id_transporte) {
+                throw new Error('Invalid response from server');
+            }
             await postData(`crear_detalle_transporte/`, { id_obra: obraId, id_transporte: result.id_transporte }, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const obra = await fetchData(`/obra/${obraId}`, token);
-
+    
                 const dataNotificacion = {
                     titulo: 'Vehiculo Creado',
                     descripcion: `Se creó el vehiculo ${formData.marca} ${formData.modelo} de la obra ${obra[0].nombre}.`,
