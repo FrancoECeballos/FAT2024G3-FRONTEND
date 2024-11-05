@@ -41,7 +41,7 @@ function PedidoListingCard() {
           <Loading />
         </Card>
       ) : (
-        <Card className="pl-card w-100 h-100">
+        <Card className="pl-card w-100 h-100 centered">
             <Card.Title>Pedidos Recientes <hr /></Card.Title>
             <Card.Body>
             <Carousel>
