@@ -69,7 +69,7 @@ function Ofertas() {
 
                 const [ofertasData, userOfertasData] = await Promise.all([
                     fetchData('/oferta/', token),
-                    fetchData(`GetOfertaCreadaPorUsuario/${token}`, token)
+                    fetchData(`GetOfertaCreadaPorUsuario/${userData.id_usuario}`, token)
                 ]);
                 setOfertas(ofertasData);
                 setUserOfertas(userOfertasData);
