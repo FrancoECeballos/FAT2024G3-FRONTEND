@@ -6,7 +6,6 @@ import './Categories.scss';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
-import SendButton from '../../../components/buttons/send_button/send_button.jsx';
 import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 import Footer from '../../../components/footer/Footer.jsx';
 import Loading from '../../../components/loading/loading.jsx';
@@ -28,6 +27,7 @@ function Categories() {
     const [categories, setCategories] = useState([]);
     const [currentObra, setCurrentObra] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [obra, setObra] = useState({});
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
@@ -49,7 +49,6 @@ function Categories() {
     useEffect(() => {
         if (!token) {
             navigate('/login');
-            return;
         }
 
         fetchData('categoria/', token).then((result) => {
@@ -61,6 +60,12 @@ function Categories() {
         fetchData(`/stock/${stockId}`, token).then((result) => {
             setCurrentObra(result[0].id_obra.nombre);
         });
+
+        fetchData(`/user/obrasToken/${token}/`, token).then((result) => {
+            const filteredResult = result.filter(item => item.id_obra === stockId);
+            setObra(filteredResult);
+        });
+
         const img = new Image();
         img.src = defaultImage;
         img.onload = () => {
@@ -180,18 +185,20 @@ function Categories() {
                     <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
                 </Breadcrumb>
                 <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
-                        <div>
-                            <h2 className='centered'> Nueva Categoria </h2>
-                            <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
-                            <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
-                            <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
-                        </div>
-                    }></Modal>
-                </div>
+                {(obra.id_tipousuario === 2) && (
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                        <Modal openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
+                            <div>
+                                <h2 className='centered'> Nueva Categoria </h2>
+                                <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
+                                <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                                <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
+                            </div>
+                        }></Modal>
+                    </div>
+                )}
                 <div className='cardCategori'>
                 {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
                     <GenericCard 
