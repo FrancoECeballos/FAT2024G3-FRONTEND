@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Breadcrumb, Form } from 'react-bootstrap';
+import { Breadcrumb, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
@@ -17,7 +17,6 @@ import fetchUser from '../../functions/fetchUser';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
-
 
 import Modal from '../../components/modals/Modal.jsx';
 import defaultImage from '../../assets/no_image.png';
@@ -287,7 +286,7 @@ function AutosComponent() {
                         sortedAutos.map(auto => {
                             const maintenance = maintenanceStatus[auto.id_transporte] || {};
                             const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
-                            const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
+                            const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%' } : {};
                             return (
                                 <GenericCard
                                     key={auto.id_transporte}
@@ -325,11 +324,31 @@ function AutosComponent() {
                                             </div>
                                             <div style={{marginTop:"1rem", marginRight: "1rem"}}>
                                             <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={() => handleEditAutoSave(auto)} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' content={
-                                                <>
-                                                    <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
-                                                    <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />
-                                                    <Form.Control name="patente" type="text" defaultValue={auto.patente} onChange={handleInputChange} className="input-autos" />
-                                                    <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
+                                                <>  
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-marca">Marca del vehículo</Tooltip>}
+                                                    >
+                                                        <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
+                                                    </OverlayTrigger>
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-modelo">Modelo del vehículo</Tooltip>}
+                                                    >
+                                                        <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />
+                                                    </OverlayTrigger>
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-patente">Patente del vehículo</Tooltip>}
+                                                    >
+                                                        <Form.Control name="patente" type="text" defaultValue={auto.patente} onChange={handleInputChange} className="input-autos" />
+                                                    </OverlayTrigger>
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-kilometraje">Kilometraje del vehículo</Tooltip>}
+                                                    >
+                                                        <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
+                                                    </OverlayTrigger>
                                                 </>
                                             }/>
                                     
@@ -350,6 +369,5 @@ function AutosComponent() {
         </div>
     );
 };
-
 
 export default AutosComponent;
