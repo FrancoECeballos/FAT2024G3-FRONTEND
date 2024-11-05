@@ -16,7 +16,7 @@ const Novedades = () => {
             <EntregaProgressBar />
             <BackButton url='/' />
             <Button onClick={() => setShow(true)}>Show Popup</Button>
-            <Popup show={show} setShow={setShow} />
+            <Popup show={show} setShow={setShow} message={"Renzo es gay"} title={"Putaso"}/>
         </div>
     );
 };
