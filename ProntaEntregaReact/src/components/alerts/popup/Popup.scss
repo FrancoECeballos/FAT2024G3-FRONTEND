@@ -1,0 +1,17 @@
+/* Suaviza la entrada y salida */
+.toast-container .toast {
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  .toast-header {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+  }
+  
+  .toast-progress-bar {
+    height: 4px;
+    margin-top: 8px;
+    transition: width 0.1s linear; /* Animación suave de la barra */
+  }
+  
