@@ -184,8 +184,8 @@ const Cuenta = ({ user }) => {
           fecha_creacion: fechaCreacion
         };
 
-        return crearNotificacion(dataNotificacionObra, token).then(() => {
-          crearNotificacion(dataNotificacionUser, token).then(() => {
+        return crearNotificacion(dataNotificacionObra, token, 'Obra', newObra[0].id_obra).then(() => {
+          crearNotificacion(dataNotificacionUser, token, 'User', userData.id_usuario).then(() => {
             window.location.reload();
           })
         });
