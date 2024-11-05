@@ -12,7 +12,7 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [], style }) => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '0 auto', ...style }}>
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '0 auto', ...style, marginBottom:'1rem' }}>
             <input 
                 type="text" 
                 name="search" 
