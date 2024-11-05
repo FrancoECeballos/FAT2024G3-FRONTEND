@@ -1,21 +1,38 @@
 .ol-card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem; // Changed to rem
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2); // Changed to rem
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
 
-  .ol-derecha {
-    display: flex;
-    align-items: center;
-    padding-left: 1rem;
+.carousel-item-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  height: 40rem; // Set a fixed height for the carousel item using rem
+  max-width: 40rem; // Set a max width for the carousel item using rem
+  margin: 0 auto; // Center the item horizontally
+}
+
+.carousel-image {
+  width: 7.5rem; // Adjust size as needed using rem
+  height: 7.5rem; // Adjust size as needed using rem
+  border-radius: 1rem; // Changed to rem
+  object-fit: scale-down;
+}
+
+.ol-derecha {
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
 }
 
 .ol-derecha .text-content {
-    margin-left: 1rem;
-    text-align: left;
+  margin-left: 1rem;
+  text-align: left;
 }

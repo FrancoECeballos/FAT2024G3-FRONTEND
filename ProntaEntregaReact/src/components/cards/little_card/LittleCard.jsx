@@ -4,7 +4,7 @@ import './LittleCard.scss';
 
 import notPic from "../../../assets/no_image.png";
 
-function LittleCard({ foto, titulo, descrip1, descrip2, selected, onSelect, hoverable = true, greyedOut = false }) {
+function LittleCard({ foto, titulo, descrip1, descrip2, selected, onSelect, hoverable = true, greyedOut = false, taken = false }) {
   
   const handleCardClick = () => {
     if (onSelect) {
@@ -15,7 +15,7 @@ function LittleCard({ foto, titulo, descrip1, descrip2, selected, onSelect, hove
   return (
     <Card 
       onClick={handleCardClick} 
-      className={`litcard ${selected ? 'selected' : 'not-selected'} ${hoverable ? 'hoverable-little-card' : ''} ${greyedOut ? 'greyed-out' : ''}`}
+      className={`litcard ${selected ? 'selected' : 'not-selected'} ${hoverable ? 'hoverable-little-card' : ''} ${greyedOut ? 'greyed-out' : ''} ${taken ? 'taken' : ''}`}
       style={{maxHeight:'20rem', maxWidth:'15rem'}}
     >
       <Card.Img variant="top" src={foto || notPic} style={{ width: "10rem", justifyContent: "center", margin: "auto", marginTop: "0.5rem", height: '9rem' }} />

@@ -6,75 +6,89 @@ import './Categories.scss';
 import SearchBar from '../../../components/searchbar/searchbar.jsx';
 import FullNavbar from '../../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx';
-import SendButton from '../../../components/buttons/send_button/send_button.jsx';
 import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 import Footer from '../../../components/footer/Footer.jsx';
 import Loading from '../../../components/loading/loading.jsx';
 
 import fetchData from '../../../functions/fetchData';
+import fetchUser from '../../../functions/fetchUser.jsx';
+import crearNotificacion from '../../../functions/createNofiticacion.jsx';
 
 import Modal from '../../../components/modals/Modal.jsx';
 import {Breadcrumb, Form} from 'react-bootstrap';
 import postData from '../../../functions/postData.jsx';
 import defaultImage from '../../../assets/no_image.png';
 
-
-
 function Categories() {
     const navigate = useNavigate();
     const { stockId } = useParams();
     const token = Cookies.get('token');
+    const [user, setUser] = useState({});
 
     const [categories, setCategories] = useState([]);
     const [currentObra, setCurrentObra] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [obra, setObra] = useState({});
 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
     const [isLoading, setIsLoading] = useState(true);
 
-
     const [formData, setFormData] = useState({
         "imagen": null,
         "nombre": "",
         "descripcion": "",
-      });
+    });
 
     const [errors, setErrors] = useState({
         nombre: '',
         descripcion: '',
     });
-    
+
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
+        const fetchDataAsync = async () => {
+            const userData = await fetchUser(navigate);
+            setUser(userData);
 
-        fetchData('categoria/', token).then((result) => {
-            setCategories(result);
-        }).catch(error => {
-            console.error('Error fetching categories:', error);
-        });
+            try {
+                const categoriesResult = await fetchData('categoria/', token);
+                setCategories(categoriesResult);
 
-        fetchData(`/stock/${stockId}`, token).then((result) => {
-            setCurrentObra(result[0].id_obra.nombre);
-        });
-        const img = new Image();
-        img.src = defaultImage;
-        img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        canvas.toBlob((blob) => {
-            const file = new File([blob], 'no_image.png', { type: 'image/png' });
-            setFormData((prevData) => ({ ...prevData, imagen: file }));
-        })};
+                const stockResult = await fetchData(`/stock/${stockId}`, token);
+                setCurrentObra(stockResult[0].id_obra.nombre);
 
-        setIsLoading(false);
+                if (userData.is_superuser) {
+                    const obrasResult = await fetchData('/obra/', token);
+                    const filteredResult = obrasResult.filter(item => item.id_obra === stockResult[0].id_obra.id_obra);
+                    setObra(filteredResult[0]);
+                } else {
+                    const obrasResult = await fetchData(`/user/obrasToken/${token}/`, token);
+                    const filteredResult = obrasResult.filter(item => item.id_obra === stockResult[0].id_obra.id_obra);
+                    setObra(filteredResult[0]);
+                }
+
+                const img = new Image();
+                img.src = defaultImage;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob((blob) => {
+                        const file = new File([blob], 'no_image.png', { type: 'image/png' });
+                        setFormData((prevData) => ({ ...prevData, imagen: file }));
+                    });
+                };
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchDataAsync();
     }, [token, navigate, stockId]);
 
     const filteredCategories = categories.filter(category => {
@@ -138,7 +152,6 @@ function Categories() {
                 setErrors((prevErrors) => ({ ...prevErrors, descripcion: '' }));
             }
         }
-
     };
 
     const newcategory = async () => {
@@ -146,15 +159,27 @@ function Categories() {
             console.error('No image file selected');
             return;
         }
-    
+
         const data = new FormData();
         data.append('imagen', formData.imagen);
         data.append('nombre', formData.nombre);
         data.append('descripcion', formData.descripcion);
-    
+
         try {
-            await postData('crear_categoria/', data, token);
-            window.location.reload();
+            await postData('crear_categoria/', data, token).then(async () => {
+                const fechaCreacion = new Date().toISOString().split('T')[0];
+
+                const dataNotificacion = {
+                    titulo: 'Nueva Categoría',
+                    descripcion: `Se creo una nueva categoría '${formData.nombre}' en la obra ${obra.nombre}.`,
+                    id_usuario: user.id_usuario,
+                    fecha_creacion: fechaCreacion
+                };
+
+                return crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra).then(() => {
+                    
+                });
+            });
         } catch (error) {
             console.error('Error creating category:', error);
         }
@@ -174,42 +199,44 @@ function Categories() {
                 {isLoading ? (
                     <Loading />
                 ) : (
-                <div>
-                <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
-                    <Breadcrumb.Item href="/stock">Stock</Breadcrumb.Item>
-                    <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
-                </Breadcrumb>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                    <Modal openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
-                        <div>
-                            <h2 className='centered'> Nueva Categoria </h2>
-                            <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
-                            <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
-                            <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                            <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
+                    <div>
+                        <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                            <Breadcrumb.Item href="/stock">Stock</Breadcrumb.Item>
+                            <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
+                        </Breadcrumb>
+                        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
+                        {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
+                            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                                <Modal openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
+                                    <div>
+                                        <h2 className='centered'> Nueva Categoria </h2>
+                                        <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
+                                        <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                                        <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                        <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
+                                    </div>
+                                }></Modal>
+                            </div>
+                        )}
+                        <div className='cardCategori'>
+                            {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
+                                <GenericCard 
+                                    onClick={() => navigate(`/obra/${stockId}/categoria/${category.id_categoria}/`, { state: { id_stock: stockId } })}
+                                    foto={category.imagen}
+                                    key={category.id_categoria}
+                                    titulo={category.nombre}
+                                    descrip1={category.descripcion}
+                                />
+                            )) : (
+                                <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
+                            )}
                         </div>
-                    }></Modal>
-                </div>
-                <div className='cardCategori'>
-                {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
-                    <GenericCard 
-                        onClick={() => navigate(`/obra/${stockId}/categoria/${category.id_categoria}/`, { state: { id_stock: stockId } })}
-                        foto={category.imagen}
-                        key={category.id_categoria}
-                        titulo={category.nombre}
-                        descrip1={category.descripcion}
-                    />
-                )) : (
-                    <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
+                        <Footer/>
+                    </div>
                 )}
-                </div>
-                <Footer/>
             </div>
-            )}
         </div>
-    </div>
     );
 }
 
