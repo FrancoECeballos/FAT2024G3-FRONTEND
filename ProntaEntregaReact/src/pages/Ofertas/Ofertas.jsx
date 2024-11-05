@@ -233,8 +233,18 @@ function Ofertas() {
         };
 
         try {
-            await postData('crear_detalle_oferta/', data, token).then(() => {
-                window.location.reload();
+            await postData('crear_detalle_oferta/', data, token).then(async () => {
+                const fechaCreacion = new Date().toISOString().split('T')[0];
+                const ofertaAportada = await fetchData(`oferta/${ofertaId}/`, token);
+
+                const dataNotificacion = {
+                    titulo: 'Nuevo Aporte',
+                    descripcion: `Aporte de ${data.cantidad} creado por ${user.nombre} ${user.apellido} a tu oferta de ${ofertaAportada[0].id_producto.nombre}.`,
+                    id_obra: selectedOferta.id_obra.id_obra,
+                    fecha_creacion: fechaCreacion
+                };
+                
+                crearNotificacion(dataNotificacion, token, 'User', selectedOferta.id_usuario.id_usuario).then(() => window.location.reload());
                 return true;
             });
         } catch (error) {

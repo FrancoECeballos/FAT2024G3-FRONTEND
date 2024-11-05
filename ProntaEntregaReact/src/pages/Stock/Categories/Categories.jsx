@@ -177,7 +177,7 @@ function Categories() {
                 };
 
                 return crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra).then(() => {
-                    
+                    window.location.reload();
                 });
             });
         } catch (error) {

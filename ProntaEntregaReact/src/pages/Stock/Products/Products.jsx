@@ -38,6 +38,7 @@ function Products() {
     const [isFormValid, setIsFormValid] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [obra, setObra] = useState({});
     
     const [products, setProducts] = useState([]);
     const [excludedProducts, setExcludedProducts] = useState([]);
@@ -76,6 +77,20 @@ function Products() {
             try {
                 const userData = await fetchUser();
                 setUser(userData);
+                
+                const stockResult = await fetchData(`/stock/${stockId}`, token);
+                setCurrentObra(stockResult[0].id_obra.nombre);
+
+                if (userData.is_superuser) {
+                    const obrasResult = await fetchData('/obra/', token);
+                    const filteredResult = obrasResult.filter(item => item.id_obra === stockResult[0].id_obra.id_obra);
+                    setObra(filteredResult[0]);
+                } else {
+                    const obrasResult = await fetchData(`/user/obrasToken/${token}/`, token);
+                    const filteredResult = obrasResult.filter(item => item.id_obra === stockResult[0].id_obra.id_obra);
+                    setObra(filteredResult[0]);
+                }
+
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -94,10 +109,6 @@ function Products() {
                     console.log(transformedResult)
                 });
             });
-        });
-
-        fetchData(`/stock/${stockId}`, token).then((result) => {
-            setCurrentObra(result[0].id_obra.nombre);
         });
 
         fetchData(`/categoria/${categoriaID}`, token).then((result) => {
@@ -209,8 +220,20 @@ function Products() {
             data.append('unidadmedida', newProduct.unidadmedida);
             data.append('id_categoria', newProduct.id_categoria);
 
-            const createdProduct = await postData(`crear_productos/`, data, token);
-            handleSave(parseFloat(cantidadRef.current.value), null, createdProduct.id_producto);
+            postData(`crear_productos/`, data, token).then(async (response) => {
+                const fechaCreacion = new Date().toISOString().split('T')[0];
+                
+                const dataNotificacion = {
+                    titulo: 'Nuevo Producto',
+                    descripcion: `Se creó un nuevo producto '${newProduct.nombre}' en la obra ${obra.nombre}.`,
+                    id_usuario: user.id_usuario,
+                    id_obra: obra.id_obra,
+                    fecha_creacion: fechaCreacion
+                };
+            
+                await crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra);
+                handleSave(parseFloat(cantidadRef.current.value), null, response.id_producto);
+            });
         } catch (error) {
             console.error('Error creating product:', error);
             setAlertMessage('Ocurrió un error. Por favor, inténtelo de nuevo.');
