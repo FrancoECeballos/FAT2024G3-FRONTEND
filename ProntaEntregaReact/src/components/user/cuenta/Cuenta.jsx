@@ -13,6 +13,7 @@ import NullToEmpty from '../../../functions/nulltoempty.jsx'
 import SendButton from '../../buttons/send_button/send_button.jsx';
 import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
 import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
+import crearNotificacion from "../../../functions/createNofiticacion.jsx";
 
 const Cuenta = ({ user }) => {
   const navigate = useNavigate();
@@ -158,19 +159,37 @@ const Cuenta = ({ user }) => {
       return;
     }
 
-    const url = `user/obras/post/`;
-    const result = await postData(url,
-      {
-        descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`,
+    const result = await postData(`user/obras/post/`,
+      { descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`,
         fechaingreso: today,
         id_obra: parseInt(selectedObject),
         id_usuario: userData.id_usuario,
-        id_tipousuario: 1
-      },
-      token
-    );
+        id_tipousuario: 1 }, token
 
-    window.location.reload();
+    ).then(async () => {
+        const fechaCreacion = new Date().toISOString().split('T')[0];
+        const newObra = await fetchData(`obra/${selectedObject}/`, token);
+
+        const dataNotificacionObra = {
+          titulo: 'Voluntario en Obra',
+          descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${newObra[0].nombre}.`,
+          id_usuario: user.id_usuario,
+          fecha_creacion: fechaCreacion
+        };
+
+        const dataNotificacionUser = {
+          titulo: 'Ingreso a Obra',
+          descripcion: `Se te añadió a la obra ${newObra[0].nombre}.`,
+          id_usuario: user.id_usuario,
+          fecha_creacion: fechaCreacion
+        };
+
+        return crearNotificacion(dataNotificacionObra, token).then(() => {
+          crearNotificacion(dataNotificacionUser, token).then(() => {
+            window.location.reload();
+          })
+        });
+      })
   };
 
 
