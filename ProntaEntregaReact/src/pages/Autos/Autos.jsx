@@ -90,14 +90,26 @@ function AutosComponent() {
         fetchDataAsync();
     }, [token, navigate, obraId]);
 
-    const handleMaintenanceRequest = async (id) => {
+    const handleMaintenanceRequest = async (id, auto) => {
         const currentStatus = maintenanceStatus[id]?.isMaintained || false;
         const newStatus = !currentStatus;
         const currentDescription = description || '';
     
         try {
-            await putData(`editar_transporte/${id}/`, { necesita_mantenimiento: newStatus, descripcion_mantenimiento: currentDescription }, token);
-            window.location.reload();
+            await putData(`editar_transporte/${id}/`, { necesita_mantenimiento: newStatus, descripcion_mantenimiento: currentDescription }, token).then(async () => {
+                const fechaCreacion = new Date().toISOString().split('T')[0];
+                const obraData = await fetchData(`/obra/${obraId}`, token);
+
+                const dataNotificacion = {
+                    titulo: newStatus ? 'Mantenimiento Solicitado' : 'Mantenimiento Realizado',
+                    descripcion: newStatus ? `Se pidió mantenimiento al vehiculo ${auto.marca} ${auto.modelo} de la obra ${obraData[0].nombre}.` : `Se completó el mantenimiento del vehiculo ${auto.marca} ${auto.modelo} de la obra ${obraData[0].nombre}.`,
+                    id_usuario: user.id_usuario,
+                    id_obra: obraData[0].id_obra,
+                    fecha_creacion: fechaCreacion
+                };
+                
+                crearNotificacion(dataNotificacion, token, 'Obra', obraData[0].id_obra).then(() => window.location.reload());
+            });
         } catch (error) {
             console.error('Error updating maintenance status:', error);
         }
@@ -114,7 +126,7 @@ function AutosComponent() {
         data.append('marca', formData.marca);
         data.append('modelo', formData.modelo);
         data.append('patente', formData.patente);
-        data.append('kilometraje', formData.kilometraje === '' ? 0 : formData.kilometraje); // Asegurarse de que 0 se maneje correctamente
+        data.append('kilometraje', formData.kilometraje === '' ? 0 : formData.kilometraje);
     
         try {
             const result = await postData(`crear_transporte/`, data, token);
@@ -302,7 +314,7 @@ function AutosComponent() {
                                     <div>    
                                         <div>
                                             {!maintenance.isMaintained ? (
-                                                <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte)}                             
+                                                <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte, auto)}                             
                                                 content={
                                                     <Form.Control
                                                         as="textarea"
@@ -318,7 +330,7 @@ function AutosComponent() {
                                                     text={maintenance.buttonText || 'Mantenimiento realizado'}
                                                     backcolor={maintenance.buttonColor || 'green'}
                                                     letercolor='white'
-                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, '')}
+                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, auto)}
                                                 />
                                             )}
                                             </div>
