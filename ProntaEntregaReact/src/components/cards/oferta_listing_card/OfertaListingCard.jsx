@@ -45,7 +45,7 @@ function OfertaListingCard() {
                 ofertas.map((oferta, index) => (
                   <Carousel.Item key={index}>
                     <div className="carousel-item-content">
-                      <img
+                      <img 
                         src={oferta.id_producto.imagen}
                         alt=""
                         className="carousel-image"
