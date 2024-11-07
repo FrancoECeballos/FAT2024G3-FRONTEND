@@ -14,11 +14,18 @@ import Cookies from 'js-cookie';
 
 import { useNavigate } from 'react-router-dom';
 
+import SearchBar from '../../../components/searchbar/searchbar.jsx';
+
+
 function OneProduct() {
   const navigate = useNavigate();
   const [detallesProduct, setDetallesProduct] = useState([]);
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [order, setOrder] = useState('');
+
   const { productoId, stockId, categoriaID } = useParams();
   const token = Cookies.get('token');
 
@@ -49,6 +56,35 @@ function OneProduct() {
     fetchProductData();
   }, [productoId, stockId, token]);
 
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+};
+
+const handleOrderChange = (order) => {
+    setOrder(order);
+};
+
+const filteredData = detallesProduct.filter(detalleProduct => {
+  const fullName = `${detalleProduct.id_usuario?.nombre} ${detalleProduct.id_usuario?.apellido}`;
+  return (
+    detalleProduct.id_producto.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    detalleProduct.fecha_creacion.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    detalleProduct.id_obra.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    detalleProduct.cantidad.toString().includes(searchQuery)
+  );
+});
+
+const sortedData = [...filteredData].sort((a, b) => {
+    if (!order) return 0;
+    const [key, direction] = order.split(' ');
+    const aValue = key.includes('+') ? key.split('+').map(part => part.trim()).map(part => part.split('.').reduce((acc, key) => acc && acc[key], a)).join(' ') : key.split('.').reduce((acc, key) => acc && acc[key], a);
+    const bValue = key.includes('+') ? key.split('+').map(part => part.trim()).map(part => part.split('.').reduce((acc, key) => acc && acc[key], b)).join(' ') : key.split('.').reduce((acc, key) => acc && acc[key], b);
+    if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+    return 0;
+});
+
   if (isLoading) {
     return <Loading />;
   }
@@ -59,6 +95,17 @@ function OneProduct() {
         <div className="product-page">
           <BackButton url={`/obra/${stockId}/categoria/${categoriaID}/`}/>
           <ProductCard product={product} />
+          <SearchBar 
+                    onSearchChange={handleSearchChange} 
+                    onOrderChange={handleOrderChange} 
+                    filters={[
+                        { type: 'fecha_creacion', label: 'Fecha de Creación' },
+                        { type: 'id_usuario.nombre', label: 'Nombre del Usuario' },
+                        { type: 'id_obra.nombre', label: 'Nombre de la Obra' },
+                        { type: 'cantidad', label: 'Cantidad' },
+                    ]}
+                    style={{ width: '80rem' }}
+          />
           <Table striped bordered hover responsive className="custom-table mt-4">
             <thead>
               <tr>
@@ -69,7 +116,7 @@ function OneProduct() {
               </tr>
             </thead>
             <tbody>
-              {detallesProduct.map((detalleProduct, index) => {
+              {sortedData.map((detalleProduct, index) => {
                 return (
                   console.log(detalleProduct),
                   <tr key={index}>

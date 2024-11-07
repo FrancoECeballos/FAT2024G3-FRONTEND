@@ -9,9 +9,8 @@ function Popup({ show, setShow, message, title }) {
     if (show) {
       let interval = setInterval(() => {
         setProgress(prev => (prev > 0 ? prev - 1 : 0));
-      }, 30); // Ajusta la velocidad de la barra
+      }, 30);
 
-      // Oculta el Toast al final del temporizador
       const timer = setTimeout(() => setShow(false), 3000);
 
       return () => {
@@ -19,7 +18,7 @@ function Popup({ show, setShow, message, title }) {
         clearTimeout(timer);
       };
     } else {
-      setProgress(100); // Reinicia el progreso si el Toast se reabre
+      setProgress(100);
     }
   }, [show, setShow]);
 

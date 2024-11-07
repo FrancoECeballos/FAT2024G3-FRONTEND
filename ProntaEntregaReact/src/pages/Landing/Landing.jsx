@@ -81,7 +81,7 @@ function Landing (){
                         </div>
                     </div>
                 </div>
-            </section>
+            </section>0
         <Footer/>
     </div>
     );
