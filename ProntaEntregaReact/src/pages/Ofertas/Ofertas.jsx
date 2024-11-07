@@ -19,6 +19,8 @@ import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
+import './Ofertas.scss';
+
 import ConfirmationModal from "../../components/modals/confirmation_modal/ConfirmationModal.jsx";
 
 function Ofertas() {
@@ -238,8 +240,18 @@ function Ofertas() {
         };
 
         try {
-            await postData('crear_detalle_oferta/', data, token).then(() => {
-                window.location.reload();
+            await postData('crear_detalle_oferta/', data, token).then(async () => {
+                const fechaCreacion = new Date().toISOString().split('T')[0];
+                const ofertaAportada = await fetchData(`oferta/${ofertaId}/`, token);
+
+                const dataNotificacion = {
+                    titulo: 'Nuevo Aporte',
+                    descripcion: `Aporte de ${data.cantidad} creado por ${user.nombre} ${user.apellido} a tu oferta de ${ofertaAportada[0].id_producto.nombre}.`,
+                    id_obra: selectedOferta.id_obra.id_obra,
+                    fecha_creacion: fechaCreacion
+                };
+                
+                crearNotificacion(dataNotificacion, token, 'User', selectedOferta.id_usuario.id_usuario).then(() => window.location.reload());
                 return true;
             });
         } catch (error) {
@@ -308,7 +320,7 @@ function Ofertas() {
                         />
                     </div>
                     <Tabs defaultActiveKey='ofertas' id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
-                    <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong>Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
+                    <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong className="custom-tab-title">Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
                             <div className='cardCategori'>
                                 <h1>Viendo ofertas creadas por usted</h1>
                                 {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
@@ -341,7 +353,7 @@ function Ofertas() {
                                 )}
                             </div>
                         </Tab>
-                            <Tab key='ofertas' eventKey='ofertas' title='Ofertas para mi' style={{ backgroundColor: "transparent" }}>
+                            <Tab key='ofertas' eventKey='ofertas' title={<span className="custom-tab-title">Ofertas para mi</span>} style={{ backgroundColor: "transparent" }}>
                                 <div className='cardCategori'>
                                     <h1>Viendo ofertas disponibles</h1>
                                     {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (

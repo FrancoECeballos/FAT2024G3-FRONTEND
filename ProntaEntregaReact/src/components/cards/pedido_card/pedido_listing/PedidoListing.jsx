@@ -10,6 +10,8 @@ import Modal from '../../../modals/Modal.jsx';
 import GenericAccordion from '../../../accordions/generic_accordion/GenericAccordion.jsx';
 import postData from '../../../../functions/postData.jsx';
 import Semaforo from '../../../semaforo/Semaforo.jsx';
+import fetchData from '../../../../functions/fetchData.jsx';
+import crearNotificacion from '../../../../functions/createNofiticacion.jsx';
 
 function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) {
     const token = Cookies.get('token');
@@ -81,8 +83,18 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         };
 
         try {
-            await postData('crear_aporte_pedido/', data, token).then(() => {
-                window.location.reload();
+            await postData('crear_aporte_pedido/', data, token).then(async () => {
+                const fechaCreacion = new Date().toISOString().split('T')[0];
+                const pedidoAportado = await fetchData(`pedido/${pedidoId}/`, token);
+
+                const dataNotificacion = {
+                    titulo: 'Nuevo Aporte',
+                    descripcion: `Aporte de ${data.cantidad} creado por ${user.nombre} ${user.apellido} a tu pedido de ${pedidoAportado[0].id_producto.nombre}.`,
+                    id_obra: selectedPedido.id_obra.id_obra,
+                    fecha_creacion: fechaCreacion
+                };
+                
+                crearNotificacion(dataNotificacion, token, 'User', selectedPedido.id_usuario.id_usuario).then(() => window.location.reload());
                 return true;
             });
         } catch (error) {

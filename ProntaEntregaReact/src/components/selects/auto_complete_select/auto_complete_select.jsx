@@ -25,7 +25,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
     setSelectedIndex(-1);
 
     if (onInputChange) {
-      onInputChange(null);
+      onInputChange(value);
     }
   };
 
@@ -36,6 +36,28 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
   const handleInputBlur = () => {
     setIsListVisible(false);
   };
+
+  const onSelect = (index) => {
+    if (index >= 0 && index < filteredLists.length) {
+      const selectedItem = filteredLists[index];
+      setInputValue(selectedItem.label);
+      setIsListVisible(false);
+      if (typeof onClick === 'function') {
+        onClick(selectedItem);
+      } else {
+        console.error('onClick is not a function');
+      }
+    } else if (index === filteredLists.length && addNewButton) {
+      setInputValue("Nuevo Producto");
+      setIsListVisible(false);
+      if (typeof onClick === 'function') {
+        onClick('New');
+      } else {
+        console.error('onClick is not a function');
+      }
+    }
+  };
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredLists.length > 0) {
@@ -76,11 +98,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
                 className={`select-button ${
                   selectedKey === item.key ? "selected" : ""
                 } ${index === selectedIndex ? "highlighted" : ""}`}
-                onMouseDown={() => {
-                  onClick(item.key);
-                  setInputValue(item.label);
-                  setIsListVisible(false);
-                }}
+                onMouseDown={() => onSelect(index)}
                 onMouseEnter={() => setSelectedIndex(index)}
               >
                 {item.label}
@@ -89,11 +107,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
             {addNewButton && (
               <li
                 className={`select-button ${filteredLists.length === selectedIndex ? "highlighted" : ""}`}
-                onMouseDown={() => {
-                  onClick('New');
-                  setInputValue("Nuevo Producto");
-                  setIsListVisible(false);
-                }}
+                onMouseDown={() => onSelect(filteredLists.length)}
                 onMouseEnter={() => setSelectedIndex(filteredLists.length)}
               >
                 <strong>Agregar un nuevo Producto </strong>

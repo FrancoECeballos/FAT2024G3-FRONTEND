@@ -18,6 +18,7 @@ import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
+import './Pedidos.scss';
 
 function Pedidos() {
     const navigate = useNavigate();
@@ -315,7 +316,7 @@ function Pedidos() {
                         </div>
     
                         <Tabs defaultActiveKey={obras.length > 0 ? obras[0].id_obra : 'obras'} id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
-                            <Tab key='user_pedidos' eventKey='user_pedidos' title={<strong>Mis Pedidos</strong>} style={{ backgroundColor: "transparent" }}>
+                            <Tab key='user_pedidos' eventKey='user_pedidos' title={<strong className="custom-tab-title">Mis Pedidos</strong>} style={{ backgroundColor: "transparent" }}>
                                 <>
                                     <h1>Viendo pedidos creados por usted</h1>
                                     {Array.isArray(sortedUserPedidos) && sortedUserPedidos.length > 0 ? (
@@ -347,7 +348,7 @@ function Pedidos() {
                             {obras.map((obra) => {
                                 const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
-                                    <Tab key={obra.id_obra} eventKey={obra.id_obra} title={obra.nombre} style={{ backgroundColor: "transparent" }}>
+                                    <Tab key={obra.id_obra} eventKey={obra.id_obra} title={<span className="custom-tab-title">{obra.nombre}</span>} style={{ backgroundColor: "transparent" }}>
                                         <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} obraSelected={obra} user={user} />
                                     </Tab>
                                 );
@@ -387,8 +388,6 @@ function Pedidos() {
                     </div>
                 }
             />
-
-            
         </>
     );
 }

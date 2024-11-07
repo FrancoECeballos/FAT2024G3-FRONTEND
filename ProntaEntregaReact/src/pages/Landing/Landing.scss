@@ -1,60 +1,35 @@
-.nav-tabs {
-  .nav-item {
-    .nav-link {
-      background-color: #ECECEC; // Color de fondo de las pestañas
-      border-radius: 0.25rem; // Bordes redondeados
-      color: #495057; // Color del texto
-      padding: 0.5rem; // Relleno interno
-      text-align: center; // Centrar el texto
-      font-size: 1.25rem; // Tamaño de fuente más grande
-
-      &:hover {
-        background-color: #b9b9b9; // Color de fondo al pasar el mouse
-        color: #212529; // Color del texto al pasar el mouse
-      }
-
-      &.active {
-        background-color: white; // Color de fondo de la pestaña activa
-        color: black; // Color del texto de la pestaña activa
-        border-color: white; // Color del borde de la pestaña activa
-      }
-    }
-  }
+.img-fluid{
+  width: 100%;
+  height: 100%;
 }
 
-.tab-content {
-  .tab-pane {
-    padding: 1rem;
-    border-radius: 0.25rem;
-    background-color: white;
-    margin-top: -1.1rem;
-  }
+.features-icons {
+  padding-top: 7rem;
+  padding-bottom: 7rem;
+}
+.features-icons .features-icons-item {
+  max-width: 20rem;
+}
+.features-icons .features-icons-item .features-icons-icon {
+  height: 7rem;
+  display: flex;
+  justify-content: space-around;
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-image: none;
+header.masthead {
+  position: relative;
+  background: url("../../assets/manos.png") no-repeat center center;
+  background-size: cover;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
 }
-
-.carousel-control-prev-icon::before,
-.carousel-control-next-icon::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: solid black;
-    border-width: 0 3px 3px 0;
+header.masthead:before {
+  content: "";
+  position: absolute;
+  background-color: #1c375e;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.1;
 }
-
-.carousel-control-prev-icon::before {
-    transform: rotate(135deg);
-}
-
-.carousel-control-next-icon::before {
-    transform: rotate(-45deg);
-}
-
-
-
-
-

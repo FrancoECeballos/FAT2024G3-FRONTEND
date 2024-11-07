@@ -40,7 +40,7 @@ function PedidoListingCard() {
         <Card className="pl-card w-100 h-100 centered">
           <Card.Title>Pedidos Recientes <hr /></Card.Title>
           <Card.Body>
-            <Carousel>
+            <Carousel indicators={false}>
               {Array.isArray(pedidos) && pedidos.length > 0 ? (
                 pedidos.map((pedido, index) => (
                   <Carousel.Item key={index}>

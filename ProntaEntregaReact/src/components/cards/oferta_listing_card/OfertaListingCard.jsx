@@ -40,12 +40,12 @@ function OfertaListingCard() {
         <Card className="ol-card w-100 h-100 centered">
           <Card.Title>Ofertas Recientes <hr /></Card.Title>
           <Card.Body>
-            <Carousel>
+            <Carousel indicators={false}>
               {Array.isArray(ofertas) && ofertas.length > 0 ? (
                 ofertas.map((oferta, index) => (
                   <Carousel.Item key={index}>
                     <div className="carousel-item-content">
-                      <img
+                      <img 
                         src={oferta.id_producto.imagen}
                         alt=""
                         className="carousel-image"

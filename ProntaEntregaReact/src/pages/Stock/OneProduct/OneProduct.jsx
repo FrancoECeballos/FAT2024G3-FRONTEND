@@ -58,7 +58,6 @@ function OneProduct() {
       <FullNavbar selectedPage={'Stock'}/>
         <div className="product-page">
           <BackButton url={`/obra/${stockId}/categoria/${categoriaID}/`}/>
-          <p>{categoriaID}sexo</p>
           <ProductCard product={product} />
           <Table striped bordered hover responsive className="custom-table mt-4">
             <thead>

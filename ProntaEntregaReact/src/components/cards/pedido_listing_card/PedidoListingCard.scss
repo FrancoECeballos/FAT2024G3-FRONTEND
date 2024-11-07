@@ -1,7 +1,7 @@
 .pl-card {
   background-color: white;
   padding: 2rem;
-  border-radius: 1rem; 
+  border-radius: 1rem;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2); 
   text-align: center;
   font-size: 1rem;
@@ -11,6 +11,7 @@
 
 .carousel-item-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 1rem;
@@ -24,15 +25,29 @@
   height: 7.5rem;
   border-radius: 1rem; 
   object-fit: scale-down;
+  margin-bottom: 1rem;
+  object-fit: cover;
 }
 
 .pl-derecha {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding-left: 1rem;
+  padding-left: 0;
 }
 
 .pl-derecha .text-content {
-  margin-left: 1rem;
-  text-align: left;
+  text-align: center;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+  color: black;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-size: 200%, 200%;
+  filter: invert(1);
 }

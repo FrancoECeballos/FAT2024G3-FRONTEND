@@ -37,7 +37,7 @@ const Datos = ({ user }) => {
     }, [token, navigate, location.state, user.viewedUser]);
 
     return (
-        <div className="micuenta">
+        <div className="datos">
           <h1>
             <img src={userData.imagen} className="fotoperfil" alt="User" />
             {`Bienvenido ${userData.nombre + " " + userData.apellido}`}
