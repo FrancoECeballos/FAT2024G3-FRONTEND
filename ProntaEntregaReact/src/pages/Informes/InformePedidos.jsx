@@ -12,6 +12,8 @@ import Loading from '../../components/loading/loading.jsx';
 
 import fetchUser from '../../functions/fetchUser.jsx';
 import fetchData from '../../functions/fetchData.jsx';
+import './InformePedidos.css'; // Asegúrate de crear este archivo CSS
+
 
 const InformePedidos = () => {
     const navigate = useNavigate();
@@ -108,11 +110,13 @@ const InformePedidos = () => {
                     style={{ width: '80rem' }}
                 />
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                {sortedData.length === 0 ? (
+            <div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                    {sortedData.length === 0 ? (
                     <p style={{ marginTop: '1rem' }}>No hay pedidos disponibles.</p>
-                ) : (
-                    <GenericTable 
+                    ) : (
+                    <div className="table-container">
+                        <GenericTable 
                         headers={['id_pedido', 'id_producto.imagen', 'id_producto.nombre', 'fechainicio', 'fechavencimiento', 'id_obra.nombre', 'id_usuario.nombre + id_usuario.apellido', 'id_estadoPedido.nombre', 'cantidad']} 
                         shownHeaders={['#', 'Imagen', 'Producto', 'Fecha de Inicio', 'Fecha de Vencimiento', 'Obra', 'Usuario', 'Estado', 'Cantidad Pedida']} 
                         data={sortedData} 
@@ -120,8 +124,10 @@ const InformePedidos = () => {
                         createNewFunction={() => {}} 
                         minWid='80rem'
                         maxWid='80rem' 
-                    />
-                )}
+                        />
+                    </div>
+                    )}
+                </div>
             </div>
         </div>
     );
