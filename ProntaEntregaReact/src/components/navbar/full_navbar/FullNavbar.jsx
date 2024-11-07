@@ -92,7 +92,6 @@ function FullNavbar({ selectedPage }) {
         </div>
 
         <Nav className="nav-link">
-          <Nav.Link className='naving' onClick={() => navigate('/novedades')}>{selectedPage === 'Novedades' ? <strong>Novedades</strong> : 'Novedades'}</Nav.Link>
           <Nav.Link className='naving' onClick={() => navigate('/stock')}> {selectedPage === 'Stock' ? <strong>Stock</strong> : 'Stock'}</Nav.Link>
           <Nav.Link className='naving' onClick={() => navigate('/pedidos')}>{selectedPage === 'Pedidos' ? <strong>Pedidos</strong> : 'Pedidos'}</Nav.Link>
           <Nav.Link className='naving' onClick={() => navigate('/oferta')}>{selectedPage === 'Ofertas' ? <strong>Ofertas</strong> : 'Ofertas'}</Nav.Link>
@@ -170,11 +169,6 @@ function FullNavbar({ selectedPage }) {
                 <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={handleSuperUserAuth}>
                   <Icon icon="line-md:account" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
                   <Nav.Link onClick={handleSuperUserAuth}>Mi Cuenta</Nav.Link>
-                </div>
-
-                <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/novedades')}>
-                  <Icon icon="line-md:lightbulb" style={{ width: "2rem", height: "2rem", marginRight: "0.2rem" }} />
-                  <Nav.Link onClick={() => navigate('/novedades')}>Novedades</Nav.Link>
                 </div>
 
                 <div className='hoverable-off-canvas' style={{ display: 'flex', alignItems: 'center', marginLeft: "30%", color: '#02005E', padding: "0.6rem" }} onClick={() => navigate('/stock')}>
