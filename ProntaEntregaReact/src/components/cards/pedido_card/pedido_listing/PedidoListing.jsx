@@ -12,17 +12,21 @@ import postData from '../../../../functions/postData.jsx';
 import Semaforo from '../../../semaforo/Semaforo.jsx';
 import fetchData from '../../../../functions/fetchData.jsx';
 import crearNotificacion from '../../../../functions/createNofiticacion.jsx';
+import AutoCompleteSelect from '../../../selects/auto_complete_select/auto_complete_select.jsx';
 
 function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) {
     const token = Cookies.get('token');
 
     const [cantidad, setCantidad] = useState('');
+    const [productos, setProductos] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
     const [error, setError] = useState('');
     const pedidoCardRef = useRef(null);
 
     const [selectedPedido, setSelectedPedido] = useState({});
     const [selectedObra, setSelectedObra] = useState(obraSelected);
+    const [selectedProducto, setSelectedProducto] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -72,11 +76,18 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
             setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${pedido.id_producto.unidadmedida}`);
             return false;
+        } else if (parseFloat(cantidad) <= 0 || !cantidad) {
+            setError('La cantidad ofrecida no puede ser menor o igual a 0');
+            return false;
+        } else if (!selectedProducto || selectedProducto == {}) {
+            setError('El producto ingresado no es correcto');
+            return false;
         }
 
         const data = {
             cantidad: parseInt(cantidad, 10),
             fechaAportado: fechaAportado,
+            id_producto: selectedProducto,  
             id_pedido: pedidoId,
             id_usuario: usuarioId,
             id_obra: selectedObra.id_obra,
@@ -94,13 +105,32 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                     fecha_creacion: fechaCreacion
                 };
                 
-                crearNotificacion(dataNotificacion, token, 'User', selectedPedido.id_usuario.id_usuario).then(() => window.location.reload());
+                crearNotificacion(dataNotificacion, token, 'User', selectedPedido.id_usuario.id_usuario).then(() => { window.location.reload() });
                 return true;
             });
         } catch (error) {
             console.error('Error creando el aporte del pedido:', error);
             return false;
         }
+    };
+
+    const handlePedidoClick = async (pedido) => {
+        setSelectedPedido(pedido);
+        if (obrasDisponibles && obrasDisponibles.length > 1) {
+            const filteredObras = obrasDisponibles.filter(obra => pedido.id_obra && pedido.id_obra.id_obra !== obra.id_obra);
+            if (filteredObras.length > 0) {
+                setSelectedObra(filteredObras[0]);
+            }
+        }
+        await fetchData(`producto/categoria/${pedido.id_producto.id_categoria.id_categoria}/`, token).then((result) => {
+            const transformedResult = result.map(product => ({
+                key: product.id_producto,
+                label: `${product.nombre} - ${product.descripcion}`,
+            }));
+            setProductos(result);
+            setFilteredProducts(transformedResult);
+            setSelectedProducto(pedido.id_producto.id_producto);
+        });
     };
 
     if (isLoading) {
@@ -117,16 +147,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                     sortedPedidos.map(obra => (
                         <GenericAccordion titulo={`Pedidos de '${obra.obra.nombre}'`} wide='80%' key={obra.obra.id_obra}
                             children={obra.pedidos.map(pedido => (
-                                <div key={pedido.id_pedido} onClick={() => {setSelectedPedido(pedido);
-                                    if (obrasDisponibles && obrasDisponibles.length > 1) {
-                                        const filteredObras = obrasDisponibles.filter(obra => pedido.id_obra && pedido.id_obra.id_obra !== obra.id_obra);
-                                        if (filteredObras.length > 0) {
-                                            setSelectedObra(filteredObras[0]);
-                                        }
-                                    };
-                                }
-                                    
-                                }>
+                                <div key={pedido.id_pedido} onClick={() => handlePedidoClick(pedido)}>
                                     <GenericCard hoverable={true}
                                         foto={pedido.id_producto.imagen}
                                         titulo={pedido.id_producto.nombre}
@@ -157,7 +178,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 saveButtonShown={shouldShowButtons}
                 showModal={Object.keys(selectedPedido).length > 0}
                 saveButtonText='Tomar'
-                handleCloseModal={() => setSelectedPedido({})}
+                handleCloseModal={() => {setSelectedPedido({}); setProductos([]);}}
                 handleShowModal={() => console.log(selectedPedido)}
                 deleteFunction={() => deletePedido(selectedObra.id_obra, selectedPedido.id_pedido)}
                 deleteButtonText='Rechazar'
@@ -181,6 +202,25 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                             
                                 {shouldShowButtons && (
                                     <Form.Group className="mb-2" controlId="formBasicCantidad">
+                                        {productos && productos.length !== 0 && (
+                                            <div style={{ marginBottom: "1rem" }}>
+                                                <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                                    Ingrese el producto que quiere aportar (*)
+                                                </Form.Label>
+                                                <AutoCompleteSelect
+                                                    lists={filteredProducts}
+                                                    selectedKey={selectedProducto}
+                                                    onClick={(selectedKey) => {
+                                                        setSelectedProducto(selectedKey.key);
+                                                    }}
+                                                    addNewButton={false}
+                                                    onInputChange={() => { setSelectedProducto(); }}
+                                                    defaultValue={selectedPedido.id_producto.id_producto}
+                                                    showLabel={true}
+                                                    label={`Si quiere aportar un producto que no es el pedido, ${selectedPedido.id_usuario.nombre} ${selectedPedido.id_usuario.apellido} tendrá que confirmar si lo desea.`}
+                                                />
+                                            </div>
+                                        )}
                                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
                                             Ingrese la cantidad que quiere aportar (*)
                                         </Form.Label>

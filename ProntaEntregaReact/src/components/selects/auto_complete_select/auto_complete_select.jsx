@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import "./auto_complete_select.scss";
 
-function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, width = '95%' }) {
+function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, width = '95%', defaultValue, showLabel = false, label }) {
   const [inputValue, setInputValue] = useState("");
   const [filteredLists, setFilteredLists] = useState(lists);
   const [isListVisible, setIsListVisible] = useState(false);
@@ -10,7 +10,13 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
 
   useEffect(() => {
     setSelectedIndex(-1);
-  }, [filteredLists, inputValue]);
+    if (defaultValue && lists.length > 0) {
+      const defaultItem = lists.find(item => item.key === defaultValue);
+      if (defaultItem) {
+        setInputValue(defaultItem.label);
+      }
+    }
+  }, [defaultValue, lists]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -92,6 +98,11 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
       {isListVisible && (
         <div className="select-button-container" style={{ position: 'absolute', zIndex: 1000, width: width }}>
           <ul>
+            {showLabel && label && (
+              <li className="select-button" style={{ color: 'grey', pointerEvents: 'none' }} disabled>
+                <strong>{label}</strong>
+              </li>
+            )}
             {filteredLists.map((item, index) => (
               <li
                 key={item.key}
