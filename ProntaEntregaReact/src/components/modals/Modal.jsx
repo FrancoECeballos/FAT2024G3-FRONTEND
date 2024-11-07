@@ -46,7 +46,7 @@ function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, o
                 hid={!showButton}
             />
 
-            <Modal size={tamaño} style={position ? { top: '5%' } : {}} show={show} onHide={handleClose}>
+            <Modal size={tamaño} style={position ? { top: '5%' } : { display: 'flex', alignItems: 'center', justifyContent: 'center' }} show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
