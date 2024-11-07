@@ -19,6 +19,8 @@ import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
+import ConfirmationModal from "../../components/modals/confirmation_modal/ConfirmationModal.jsx";
+
 function Ofertas() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -43,6 +45,9 @@ function Ofertas() {
     const [showModal, setShowModal] = useState(false);
     const [showUserOfertaModal, setShowUserOfertaModal] = useState(false);
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
+
+    const [terminarOfertaConfirmation, setTerminarOfertaConfirmation] = useState(false);
+    const [cancelarOfertaConfirmation, setCancelarOfertaConfirmation] = useState(false);
 
     useEffect(() => {
         const fetchDataAsync = async () => {
@@ -453,8 +458,8 @@ function Ofertas() {
                 saveButtonText='Terminar Oferta'
                 deleteButtonText='Cancelar Oferta'
                 handleCloseModal={() => setShowUserOfertaModal(false)}
-                deleteFunction={() => handleDeleteOferta(selectedOferta.id_oferta)}
-                handleSave={() => handleEndOferta(selectedOferta.id_oferta)}
+                deleteFunction={() => setCancelarOfertaConfirmation(true)}
+                handleSave={() => setTerminarOfertaConfirmation(true)}
                 content={
                     <div>
                         {selectedOferta && selectedOferta.id_producto && (
@@ -472,6 +477,9 @@ function Ofertas() {
                     </div>
                 }
             />
+            <ConfirmationModal Open={terminarOfertaConfirmation} BodyText="¿Está seguro que desea terminar con esta oferta?" onClickConfirm={() => handleEndOferta(selectedOferta.id_oferta)} onClose={() => setTerminarOfertaConfirmation(false)} />
+            <ConfirmationModal Open={cancelarOfertaConfirmation} BodyText="¿Está seguro que desea cancelar esta oferta?" onClickConfirm={() => handleDeleteOferta(selectedOferta.id_oferta)} onClose={() => setCancelarOfertaConfirmation(false)} />
+            
 
             {user.is_superuser && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
