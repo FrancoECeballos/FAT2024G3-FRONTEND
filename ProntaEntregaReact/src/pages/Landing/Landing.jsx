@@ -8,13 +8,10 @@ import logo from '../../assets/BlueLogo.png';
 import pronta from '../../assets/prontalogo.png';
 import stock from  '../../assets/stock.png';
 import envios from '../../assets/envios.png';
-import ceballos from '../../assets/ceballos.png';
 import pedidos from '../../assets/pedidos.png';
 import'./Landing.scss';
 
 function Landing (){
-    const navigate = useNavigate();
- 
     return (
         <div>
             <BaseNavbar children={
@@ -32,7 +29,7 @@ function Landing (){
                     </div>
                 </div>
             </div>
-</header>
+        </header>
     <section className="features-icons bg-light text-center">
         <div className="container">
         <div class="row" style={{justifyContent:"space-around"}}>

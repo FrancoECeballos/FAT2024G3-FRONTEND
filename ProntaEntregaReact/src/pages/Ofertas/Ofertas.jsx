@@ -19,6 +19,8 @@ import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
+import './Ofertas.scss';
+
 function Ofertas() {
     const navigate = useNavigate();
     const token = Cookies.get('token');
@@ -313,7 +315,7 @@ function Ofertas() {
                         />
                     </div>
                     <Tabs defaultActiveKey='ofertas' id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
-                    <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong>Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
+                    <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong className="custom-tab-title">Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
                             <div className='cardCategori'>
                                 <h1>Viendo ofertas creadas por usted</h1>
                                 {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
@@ -346,7 +348,7 @@ function Ofertas() {
                                 )}
                             </div>
                         </Tab>
-                            <Tab key='ofertas' eventKey='ofertas' title='Ofertas para mi' style={{ backgroundColor: "transparent" }}>
+                            <Tab key='ofertas' eventKey='ofertas' title={<span className="custom-tab-title">Ofertas para mi</span>} style={{ backgroundColor: "transparent" }}>
                                 <div className='cardCategori'>
                                     <h1>Viendo ofertas disponibles</h1>
                                     {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
