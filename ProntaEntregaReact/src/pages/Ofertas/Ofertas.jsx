@@ -427,7 +427,7 @@ function Ofertas() {
                                     />
                                     {obras.length === 1 ? (
                                         <Form.Label className="font-rubik" style={{ marginTop: '1rem', fontSize: '1rem' }}>
-                                            Usted esta aportando desde la obra <strong>{obras[0].nombre}</strong>
+                                            Usted esta tomando esta oferta para la obra <strong>{obras[0].nombre}</strong>
                                         </Form.Label>
                                     ) : (
                                         <>
