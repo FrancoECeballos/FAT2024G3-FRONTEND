@@ -287,110 +287,114 @@ function AutosComponent() {
         <div>
             <FullNavbar selectedPage='Autos' />
             <div className='margen-arriba'>
-                <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
-                    <Breadcrumb.Item href="/vehiculos">Vehículos</Breadcrumb.Item>
-                    <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
-                </Breadcrumb>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                <div className='auto-list'>
-                {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                    <div className="auto-modal">
-                        <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su vehículo? Añadalo' content={
-                            <>
-                                <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
-                                <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
-                                <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
-                                <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
-                                <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos" />
-                            </>
-                        }/>
-                    </div>
-                )}
-                    {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
-                        sortedAutos.map(auto => {
-                            const maintenance = maintenanceStatus[auto.id_transporte] || {};
-                            const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
-                            const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
-                            return (
-                                <GenericCard
-                                    key={auto.id_transporte}
-                                    foto={auto.imagen}
-                                    titulo={<><strong>Marca:</strong> {auto.marca} - <strong>Modelo:</strong> {auto.modelo}</>}
-                                    descrip1={<><strong>Patente:</strong> {auto.patente}</>}
-                                    descrip2={<><strong>Kilometraje:</strong> {auto.kilometraje} km</>}
-                                    descrip3={auto.descripcion_mantenimiento !== '' && (<><strong>Mantenimiento:</strong> {auto.descripcion_mantenimiento}</>)}
-                                    cardStyle={cardStyle}
-                                    imageStyle={imageStyle}
-                                    children={
+            {isLoading ? (
+                    <Loading />
+                ) : (
+                    <>
+                            <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                                <Breadcrumb.Item href="/vehiculos">Vehículos</Breadcrumb.Item>
+                                <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
+                            </Breadcrumb>
+                            <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                            <div className='auto-list'>
+                            {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
+                                <div className="auto-modal">
+                                    <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su vehículo? Añadalo' content={
                                         <>
-                                    <div>    
-                                        <div>
-                                            {!maintenance.isMaintained ? (
-                                                <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte, auto)}                             
-                                                content={
-                                                    <Form.Control
-                                                        as="textarea"
-                                                        rows={3}
-                                                        defaultValue={description}
-                                                        onChange={(e) => setDescription(e.target.value)}
-                                                        placeholder="Descripción del mantenimiento"
-                                                    />
-                                                }/>
-                                            ) : (
-                                                <SendButton
-                                                    wide='15'
-                                                    text={maintenance.buttonText || 'Mantenimiento realizado'}
-                                                    backcolor={maintenance.buttonColor || 'green'}
-                                                    letercolor='white'
-                                                    onClick={() => handleMaintenanceRequest(auto.id_transporte, auto)}
-                                                />
-                                            )}
-                                            </div>
-                                            <div style={{marginTop:"1rem", marginRight: "1rem"}}>
-                                                {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                                                    <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={() => handleEditAutoSave(auto)} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' content={
-                                                        <>  
-                                                            <OverlayTrigger
-                                                                placement="top"
-                                                                overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-marca">Marca del vehículo</Tooltip>}
-                                                            >
-                                                                <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
-                                                            </OverlayTrigger>
-                                                            <OverlayTrigger
-                                                                placement="top"
-                                                                overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-modelo">Modelo del vehículo</Tooltip>}
-                                                            >
-                                                                <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />
-                                                            </OverlayTrigger>
-                                                            <OverlayTrigger
-                                                                placement="top"
-                                                                overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-patente">Patente del vehículo</Tooltip>}
-                                                            >
-                                                                <Form.Control name="patente" type="text" defaultValue={auto.patente} onChange={handleInputChange} className="input-autos" />
-                                                            </OverlayTrigger>
-                                                            <OverlayTrigger
-                                                                placement="top"
-                                                                overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-kilometraje">Kilometraje del vehículo</Tooltip>}
-                                                            >
-                                                                <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
-                                                            </OverlayTrigger>
-                                                        </>
-                                                    }/>
-                                                )}
-                                            </div>
-                                    </div>
+                                            <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
+                                            <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
+                                            <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
+                                            <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
+                                            <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos" />
                                         </>
-                                    }
-                                />
-                            );
-                        })
-                    ) : (
-                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay vehiculos disponibles.</p>
-                    )}
-                </div>
-            </div>
-
-            
+                                    }/>
+                                </div>
+                            )}
+                                {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
+                                    sortedAutos.map(auto => {
+                                        const maintenance = maintenanceStatus[auto.id_transporte] || {};
+                                        const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
+                                        const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
+                                        return (
+                                            <GenericCard
+                                                key={auto.id_transporte}
+                                                foto={auto.imagen}
+                                                titulo={<><strong>Marca:</strong> {auto.marca} - <strong>Modelo:</strong> {auto.modelo}</>}
+                                                descrip1={<><strong>Patente:</strong> {auto.patente}</>}
+                                                descrip2={<><strong>Kilometraje:</strong> {auto.kilometraje} km</>}
+                                                descrip3={auto.descripcion_mantenimiento !== '' && (<><strong>Mantenimiento:</strong> {auto.descripcion_mantenimiento}</>)}
+                                                cardStyle={cardStyle}
+                                                imageStyle={imageStyle}
+                                                children={
+                                                    <>
+                                                <div>    
+                                                    <div>
+                                                        {!maintenance.isMaintained ? (
+                                                            <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte, auto)}                             
+                                                            content={
+                                                                <Form.Control
+                                                                    as="textarea"
+                                                                    rows={3}
+                                                                    defaultValue={description}
+                                                                    onChange={(e) => setDescription(e.target.value)}
+                                                                    placeholder="Descripción del mantenimiento"
+                                                                />
+                                                            }/>
+                                                        ) : (
+                                                            <SendButton
+                                                                wide='15'
+                                                                text={maintenance.buttonText || 'Mantenimiento realizado'}
+                                                                backcolor={maintenance.buttonColor || 'green'}
+                                                                letercolor='white'
+                                                                onClick={() => handleMaintenanceRequest(auto.id_transporte, auto)}
+                                                            />
+                                                        )}
+                                                        </div>
+                                                        <div style={{marginTop:"1rem", marginRight: "1rem"}}>
+                                                            {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
+                                                                <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={() => handleEditAutoSave(auto)} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' content={
+                                                                    <>  
+                                                                        <OverlayTrigger
+                                                                            placement="top"
+                                                                            overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-marca">Marca del vehículo</Tooltip>}
+                                                                        >
+                                                                            <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
+                                                                        </OverlayTrigger>
+                                                                        <OverlayTrigger
+                                                                            placement="top"
+                                                                            overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-modelo">Modelo del vehículo</Tooltip>}
+                                                                        >
+                                                                            <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />
+                                                                        </OverlayTrigger>
+                                                                        <OverlayTrigger
+                                                                            placement="top"
+                                                                            overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-patente">Patente del vehículo</Tooltip>}
+                                                                        >
+                                                                            <Form.Control name="patente" type="text" defaultValue={auto.patente} onChange={handleInputChange} className="input-autos" />
+                                                                        </OverlayTrigger>
+                                                                        <OverlayTrigger
+                                                                            placement="top"
+                                                                            overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-kilometraje">Kilometraje del vehículo</Tooltip>}
+                                                                        >
+                                                                            <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
+                                                                        </OverlayTrigger>
+                                                                    </>
+                                                                }/>
+                                                            )}
+                                                        </div>
+                                                </div>
+                                                    </>
+                                                }
+                                            />
+                                        );
+                                    })
+                                ) : (
+                                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay vehiculos disponibles.</p>
+                                )}
+                            </div>
+                        </>
+                )}    
+            </div>            
         </div>
     );
 };

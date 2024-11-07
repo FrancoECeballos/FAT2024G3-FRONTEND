@@ -171,123 +171,126 @@ const Entregas = () => {
         <div>
             <FullNavbar selectedPage='Entregas' />
             <div className='margen-arriba'>
-                <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
-                    <Breadcrumb.Item active>Entregas</Breadcrumb.Item>
-                </Breadcrumb>
-                <SearchBar filters={filters} onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} />
+                
                 {isLoading ? (
                     <Loading />
                 ) : (
-                    <div style={{marginTop: '2.5rem'}}>
-                        {sortedEntregas.length === 0 ? (
-                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay entregas disponibles.</p>
-                        ) : (
-                            sortedEntregas.map((entrega) => {
-                                return (
-                                    <GenericCard
-                                        key={entrega.id_entrega}
-                                        titulo={entrega.id_pedido === null ? 'Oferta de ' + entrega.id_oferta?.id_producto?.nombre : 'Pedido de ' + entrega.id_pedido?.id_producto?.nombre}
-                                        descrip1={<><strong>{entrega.id_pedido === null ? 'Ofrecido por la obra:' : 'Pedido por la obra:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta?.id_obra?.nombre : entrega.id_pedido?.id_obra?.nombre}</>}
-                                        descrip2={<><strong>{entrega.id_pedido === null ? 'Ofrecido por el usuario:' : 'Pedido por el usuario:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta?.id_usuario?.nombre + ' ' + entrega.id_oferta?.id_usuario?.apellido : entrega.id_pedido?.id_usuario?.nombre + ' ' + entrega.id_pedido?.id_usuario?.apellido}</>}
-                                        descrip3={<><strong>Creado en:</strong> {entrega.id_pedido === null ? entrega.id_oferta?.fechainicio : entrega.id_pedido?.fechainicio}</>}
-                                        foto={entrega.id_pedido === null ? entrega.id_oferta?.id_producto?.imagen : entrega.id_pedido?.id_producto?.imagen}
-                                        children={
-                                            <>
-                                                <div className='scroll-horizontal-entregas'>
-                                                    {entrega.entrega_aportes.map((aporte) => (
-                                                        <LittleCard
-                                                            key={aporte.id_entregaAporte}
-                                                            titulo={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta?.cantidad} ${aporte.id_aporteOferta?.id_oferta?.id_producto?.unidadmedida} tomados` : `${aporte.id_aportePedido?.cantidad} ${aporte.id_aportePedido?.id_pedido?.id_producto?.unidadmedida} dados`}
-                                                            descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta?.id_usuario?.nombre} ${aporte.id_aporteOferta?.id_usuario?.apellido}` : `${aporte.id_aportePedido?.id_usuario?.nombre} ${aporte.id_aportePedido?.id_usuario?.apellido}`}
-                                                            descrip2={<>
-                                                                {aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.nombre : aporte.id_aportePedido?.id_obra?.nombre}
-                                                                <br />
-                                                                <strong>
-                                                                    {aporte.id_estadoEntrega?.id_estadoEntrega === 5 ? 
-                                                                        "Este aporte fue entregado" : 
-                                                                        (aporte.id_estadoEntrega?.id_estadoEntrega === 1 ? 
-                                                                            "Click para tomar Entrega" : 
-                                                                            "Click para ver el recorrido"
-                                                                        )
+                    <>
+                        <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
+                    <Breadcrumb.Item active>Entregas</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <SearchBar filters={filters} onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} />
+                        <div style={{marginTop: '2.5rem'}}>
+                            {sortedEntregas.length === 0 ? (
+                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay entregas disponibles.</p>
+                            ) : (
+                                sortedEntregas.map((entrega) => {
+                                    return (
+                                        <GenericCard
+                                            key={entrega.id_entrega}
+                                            titulo={entrega.id_pedido === null ? 'Oferta de ' + entrega.id_oferta?.id_producto?.nombre : 'Pedido de ' + entrega.id_pedido?.id_producto?.nombre}
+                                            descrip1={<><strong>{entrega.id_pedido === null ? 'Ofrecido por la obra:' : 'Pedido por la obra:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta?.id_obra?.nombre : entrega.id_pedido?.id_obra?.nombre}</>}
+                                            descrip2={<><strong>{entrega.id_pedido === null ? 'Ofrecido por el usuario:' : 'Pedido por el usuario:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta?.id_usuario?.nombre + ' ' + entrega.id_oferta?.id_usuario?.apellido : entrega.id_pedido?.id_usuario?.nombre + ' ' + entrega.id_pedido?.id_usuario?.apellido}</>}
+                                            descrip3={<><strong>Creado en:</strong> {entrega.id_pedido === null ? entrega.id_oferta?.fechainicio : entrega.id_pedido?.fechainicio}</>}
+                                            foto={entrega.id_pedido === null ? entrega.id_oferta?.id_producto?.imagen : entrega.id_pedido?.id_producto?.imagen}
+                                            children={
+                                                <>
+                                                    <div className='scroll-horizontal-entregas'>
+                                                        {entrega.entrega_aportes.map((aporte) => (
+                                                            <LittleCard
+                                                                key={aporte.id_entregaAporte}
+                                                                titulo={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta?.cantidad} ${aporte.id_aporteOferta?.id_oferta?.id_producto?.unidadmedida} tomados` : `${aporte.id_aportePedido?.cantidad} ${aporte.id_aportePedido?.id_pedido?.id_producto?.unidadmedida} dados`}
+                                                                descrip1={aporte.id_aportePedido === null ? `${aporte.id_aporteOferta?.id_usuario?.nombre} ${aporte.id_aporteOferta?.id_usuario?.apellido}` : `${aporte.id_aportePedido?.id_usuario?.nombre} ${aporte.id_aportePedido?.id_usuario?.apellido}`}
+                                                                descrip2={<>
+                                                                    {aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.nombre : aporte.id_aportePedido?.id_obra?.nombre}
+                                                                    <br />
+                                                                    <strong>
+                                                                        {aporte.id_estadoEntrega?.id_estadoEntrega === 5 ? 
+                                                                            "Este aporte fue entregado" : 
+                                                                            (aporte.id_estadoEntrega?.id_estadoEntrega === 1 ? 
+                                                                                "Click para tomar Entrega" : 
+                                                                                "Click para ver el recorrido"
+                                                                            )
+                                                                        }
+                                                                    </strong>
+                                                                </>}
+                                                                foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.imagen : aporte.id_aportePedido?.id_obra?.imagen}
+                                                                onSelect={() => {
+                                                                    if (aporte.id_estadoEntrega?.id_estadoEntrega === 1) {
+                                                                        setAporteModal(aporte);
+                                                                        handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.id_obra : aporte.id_aportePedido?.id_obra?.id_obra);
+                                                                    } else {
+                                                                        setRecorridoModal(aporte);
+                                                                        setSelectedEntrega(entrega);
                                                                     }
-                                                                </strong>
-                                                            </>}
-                                                            foto={aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.imagen : aporte.id_aportePedido?.id_obra?.imagen}
-                                                            onSelect={() => {
-                                                                if (aporte.id_estadoEntrega?.id_estadoEntrega === 1) {
-                                                                    setAporteModal(aporte);
-                                                                    handleFetchVehiculos(aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.id_obra : aporte.id_aportePedido?.id_obra?.id_obra);
-                                                                } else {
-                                                                    setRecorridoModal(aporte);
-                                                                    setSelectedEntrega(entrega);
-                                                                }
-                                                            }}
-                                                            greyedOut={aporte.id_estadoEntrega?.id_estadoEntrega === 5}
-                                                            taken={aporte.id_estadoEntrega?.id_estadoEntrega > 1 && aporte.id_estadoEntrega?.id_estadoEntrega < 5}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </>
-                                        }
-                                    />
-                                );
-                            })
-                        )}
-                        <Modal
-                            showButton = {false}
-                            showModal = {aporteModal != null}
-                            handleCloseModal={() => setAporteModal(null)}
-                            handleSave={() => handleUpdateEntregaAporte()}
-                            title = 'Tomar Aporte'
-                            saveButtonText={'Tomar'}
-                            content={
-                                <>
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                        Ingrese la fecha estimada de la entrega (Opcional)
-                                    </Form.Label>
-                                    <Form.Control
-                                        name="fechaEntrega"
-                                        type="date"
-                                        min={new Date().toISOString().split('T')[0]}
-                                        value={fechaEntrega || null}
-                                        onChange={(e) => setFechaEntrega(e.target.value)}
-                                    />
-                                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
-                                        Ingrese el vehiculo con el que se realizará la entrega (Opcional)
-                                    </Form.Label>
-                                    <Form.Control
-                                        name="id_transporte"
-                                        as="select"
-                                        value={selectedVehiculo || null}
-                                        onChange={(event) => setSelectedVehiculo(event.target.value)}
-                                    >
-                                        <option value="medios_propios">Medios Propios</option>
-                                        {vehiculos && (
-                                            vehiculos.map(vehiculo => 
-                                                <option key={vehiculo.id_transporte} value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
-                                            )
+                                                                }}
+                                                                greyedOut={aporte.id_estadoEntrega?.id_estadoEntrega === 5}
+                                                                taken={aporte.id_estadoEntrega?.id_estadoEntrega > 1 && aporte.id_estadoEntrega?.id_estadoEntrega < 5}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            }
+                                        />
+                                    );
+                                })
+                            )}
+                            <Modal
+                                showButton = {false}
+                                showModal = {aporteModal != null}
+                                handleCloseModal={() => setAporteModal(null)}
+                                handleSave={() => handleUpdateEntregaAporte()}
+                                title = 'Tomar Aporte'
+                                saveButtonText={'Tomar'}
+                                content={
+                                    <>
+                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                            Ingrese la fecha estimada de la entrega (Opcional)
+                                        </Form.Label>
+                                        <Form.Control
+                                            name="fechaEntrega"
+                                            type="date"
+                                            min={new Date().toISOString().split('T')[0]}
+                                            value={fechaEntrega || null}
+                                            onChange={(e) => setFechaEntrega(e.target.value)}
+                                        />
+                                        <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
+                                            Ingrese el vehiculo con el que se realizará la entrega (Opcional)
+                                        </Form.Label>
+                                        <Form.Control
+                                            name="id_transporte"
+                                            as="select"
+                                            value={selectedVehiculo || null}
+                                            onChange={(event) => setSelectedVehiculo(event.target.value)}
+                                        >
+                                            <option value="medios_propios">Medios Propios</option>
+                                            {vehiculos && (
+                                                vehiculos.map(vehiculo => 
+                                                    <option key={vehiculo.id_transporte} value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
+                                                )
+                                            )}
+                                        </Form.Control>
+                                    </>
+                                }
+                            />
+                            <Modal
+                                showButton = {false}
+                                showModal = {recorridoModal != null}
+                                handleCloseModal={() => setRecorridoModal(null)}
+                                handleSave={() => handleUpdateEntregaAporte()}
+                                title = 'Información de la Entrega'
+                                saveButtonText={estado.boton}
+                                saveButtonShown={estado.enable}
+                                content={
+                                    <>
+                                        {recorridoModal && (
+                                            <EntregaCard recorridoModal={recorridoModal} entrega={selectedEntrega} user={user} estado={estado} setEstado={setEstado}/>
                                         )}
-                                    </Form.Control>
-                                </>
-                            }
-                        />
-                        <Modal
-                            showButton = {false}
-                            showModal = {recorridoModal != null}
-                            handleCloseModal={() => setRecorridoModal(null)}
-                            handleSave={() => handleUpdateEntregaAporte()}
-                            title = 'Información de la Entrega'
-                            saveButtonText={estado.boton}
-                            saveButtonShown={estado.enable}
-                            content={
-                                <>
-                                    {recorridoModal && (
-                                        <EntregaCard recorridoModal={recorridoModal} entrega={selectedEntrega} user={user} estado={estado} setEstado={setEstado}/>
-                                    )}
-                                </>
-                            }
-                        />
-                    </div>
+                                    </>
+                                }
+                            />
+                        </div>
+                    </>
                 )}
             </div>
         </div>
