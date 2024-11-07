@@ -296,107 +296,113 @@ function Ofertas() {
     
 
     return (
-        <div>
+        <>
             <FullNavbar selectedPage='Ofertas' />
             <div className='margen-arriba'>
-                <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
-                    <Breadcrumb.Item active>Ofertas</Breadcrumb.Item>
-                </Breadcrumb>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                <div className='oferta-list'>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
-                        <Modal
-                            openButtonText='Crear una Oferta'
-                            openButtonWidth='10'
-                            title='Nueva Oferta'
-                            saveButtonText='Crear'
-                            handleSave={handleCreateOferta}
-                            saveButtonEnabled={isFormValid}
-                            content={
-                                <OfertaCard user={user} stocksDisponibles={stocks} ref={ofertaCardRef} />
-                            }
-                            showModal={showModal}
-                            handleCloseModal={() => setShowModal(false)}
-                        />
-                    </div>
-                    <Tabs defaultActiveKey='ofertas' id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
-                    <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong className="custom-tab-title">Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
-                            <div className='cardCategori'>
-                                <h1>Viendo ofertas creadas por usted</h1>
-                                {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
-                                    sortedUserOfertas.map(oferta => (
-                                        <div key={oferta.id_oferta}>
-                                            <GenericCard
-                                                onClick={() => {
-                                                    setSelectedOferta(oferta);
-                                                    setShowUserOfertaModal(true);
-                                                }}
-                                                titulo={`${oferta.id_producto.nombre}`}
-                                                foto={oferta.id_producto.imagen}
-                                                descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
-                                                descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                                descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
-                                                descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
-                                                children={
-                                                    <OverlayTrigger
-                                                        placement="top"
-                                                        overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
-                                                    >
-                                                        <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
-                                                    </OverlayTrigger>
-                                                }
-                                            />
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
-                                )}
+            {isLoading ? (
+                    <Loading />
+                ) : (
+                    <>
+                        <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
+                            <Breadcrumb.Item active>Ofertas</Breadcrumb.Item>
+                        </Breadcrumb>
+                        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                        <div className='oferta-list'>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
+                                <Modal
+                                    openButtonText='Crear una Oferta'
+                                    openButtonWidth='10'
+                                    title='Nueva Oferta'
+                                    saveButtonText='Crear'
+                                    handleSave={handleCreateOferta}
+                                    saveButtonEnabled={isFormValid}
+                                    content={
+                                        <OfertaCard user={user} stocksDisponibles={stocks} ref={ofertaCardRef} />
+                                    }
+                                    showModal={showModal}
+                                    handleCloseModal={() => setShowModal(false)}
+                                />
                             </div>
-                        </Tab>
-                            <Tab key='ofertas' eventKey='ofertas' title={<span className="custom-tab-title">Ofertas para mi</span>} style={{ backgroundColor: "transparent" }}>
-                                <div className='cardCategori'>
-                                    <h1>Viendo ofertas disponibles</h1>
-                                    {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
-                                        sortedOfertas.map(oferta => (
-                                            <div key={oferta.id_oferta}>
-                                                <GenericCard
-                                                    onClick={() => {
-                                                        setSelectedOferta(oferta);
-                                                        setShowTakeOfertaModal(true);
-                                                        if (obras.length > 1) {
-                                                            const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
-                                                            if (filteredObras.length > 0) {
-                                                                setSelectedObra(filteredObras[0]);
+                            <Tabs defaultActiveKey='ofertas' id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
+                            <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong className="custom-tab-title">Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
+                                    <div className='cardCategori'>
+                                        <h1>Viendo ofertas creadas por usted</h1>
+                                        {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
+                                            sortedUserOfertas.map(oferta => (
+                                                <div key={oferta.id_oferta}>
+                                                    <GenericCard
+                                                        onClick={() => {
+                                                            setSelectedOferta(oferta);
+                                                            setShowUserOfertaModal(true);
+                                                        }}
+                                                        titulo={`${oferta.id_producto.nombre}`}
+                                                        foto={oferta.id_producto.imagen}
+                                                        descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                                        descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                                        descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
+                                                        descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                                        children={
+                                                            <OverlayTrigger
+                                                                placement="top"
+                                                                overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                            >
+                                                                <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
+                                                            </OverlayTrigger>
+                                                        }
+                                                    />
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
+                                        )}
+                                    </div>
+                                </Tab>
+                                    <Tab key='ofertas' eventKey='ofertas' title={<span className="custom-tab-title">Ofertas para mi</span>} style={{ backgroundColor: "transparent" }}>
+                                        <div className='cardCategori'>
+                                            <h1>Viendo ofertas disponibles</h1>
+                                            {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
+                                                sortedOfertas.map(oferta => (
+                                                    <div key={oferta.id_oferta}>
+                                                        <GenericCard
+                                                            onClick={() => {
+                                                                setSelectedOferta(oferta);
+                                                                setShowTakeOfertaModal(true);
+                                                                if (obras.length > 1) {
+                                                                    const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
+                                                                    if (filteredObras.length > 0) {
+                                                                        setSelectedObra(filteredObras[0]);
+                                                                    }
+                                                                }
+                                                                if (obras.length === 1) {
+                                                                    setSelectedObra(obras[0]);
+                                                                }
+                                                            }}
+                                                            titulo={`${oferta.id_producto.nombre}`}
+                                                            foto={oferta.id_producto.imagen}
+                                                            descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                                            descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                                            descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
+                                                            descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                                            children={
+                                                                <OverlayTrigger
+                                                                    placement="top"
+                                                                    overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                                >
+                                                                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                                </OverlayTrigger>
                                                             }
-                                                        }
-                                                        if (obras.length === 1) {
-                                                            setSelectedObra(obras[0]);
-                                                        }
-                                                    }}
-                                                    titulo={`${oferta.id_producto.nombre}`}
-                                                    foto={oferta.id_producto.imagen}
-                                                    descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
-                                                    descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                                    descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
-                                                    descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
-                                                    children={
-                                                        <OverlayTrigger
-                                                            placement="top"
-                                                            overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
-                                                        >
-                                                            <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
-                                                        </OverlayTrigger>
-                                                    }
-                                                />
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
-                                    )}
-                                </div>
-                            </Tab>
-                        </Tabs>
-                </div>
+                                                        />
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
+                                            )}
+                                        </div>
+                                    </Tab>
+                                </Tabs>
+                        </div>
+                    </>
+                )}
             </div>
 
             {selectedOferta && (
@@ -498,7 +504,7 @@ function Ofertas() {
                     <SendButton onClick={() => navigate(`/informe_ofertas`)} text='Ver Informe de Ofertas' wide='14'/>
                 </div>
             )}
-        </div>
+        </>
     );
 }
 
