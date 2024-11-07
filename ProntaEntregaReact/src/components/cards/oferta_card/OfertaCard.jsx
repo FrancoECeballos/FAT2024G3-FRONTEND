@@ -11,6 +11,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const [selectedCategory, setSelectedCategory] = useState("");
     const [products, setProducts] = useState([]);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [total, setTotal] = useState();
 
     const today = new Date();
     const formattedDate = today.toLocaleDateString('en-GB').split('/').reverse().join('-');
@@ -38,6 +39,11 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         if (!stock && stocksDisponibles.length === 1) {
             stock = stocksDisponibles[0].id_obra;
         }
+
+        if (productDefault) {
+            setTotal(productDefault.total);
+        }
+
     }, [token]);
 
     const handleCategoryChange = (event) => {
@@ -57,6 +63,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const handleFetchProducts = (id_stock, id_categoria) => {
         fetchData(`GetDetallestockproducto_Total/${id_stock}/${id_categoria}/`, token).then((result) => {
             setProducts(result);
+            console.log(result);
         }).catch(error => {
             console.error('Error fetching products:', error);
         });
@@ -122,6 +129,9 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
         if (form.cantidad === "" || form.cantidad <= 0 || isNaN(form.cantidad)) {
             formIsValid = false;
             errors.cantidad = "Debe ingresar una cantidad mayor que 0";
+        } else if (form.cantidad > total) {
+            formIsValid = false;
+            errors.cantidad = "No puede ofrecer más de lo que tienes en el Stock";
         }
     
         if (form.fechainicio === "" || isNaN(new Date(form.fechainicio).getTime())) {
@@ -219,15 +229,23 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
                     {!stock && (ofertaForm.id_obra != "") && (ofertaForm.id_obra) && (!isNaN(ofertaForm.id_obra)) && (selectedCategory != "")  && (selectedCategory) && (!isNaN(selectedCategory)) && (products != null) && (
                         <Form.Group className="mb-2" controlId="formBasicProducto">
                             <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Producto (*)</Form.Label>
-                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onBlur={handleInputChange} onChange={handleInputChange}>
-                                <option value="" hidden>Producto</option>
-                                {products.length > 0 ? (
-                                    products.map(product => (
-                                        <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
-                                    ))
-                                ) : (
-                                    <option value="" disabled>No hay productos disponibles</option>
-                                )}
+                            <Form.Control style={{width:"100%", border:"1px solid grey"}} name="id_producto" as="select" defaultValue="" onBlur={handleInputChange}
+                            onChange={(e) => {
+                                handleInputChange(e);
+                                const selectedProduct = products.find(product => product.id_producto === parseInt(e.target.value));
+                                if (selectedProduct) {
+                                    setTotal(selectedProduct.total);
+                                }
+                            }}
+                            >
+                            <option value="" hidden>Producto</option>
+                            {products.length > 0 ? (
+                                products.map(product => (
+                                <option key={product.id_producto} value={product.id_producto}>{product.nombre}</option>
+                                ))
+                            ) : (
+                                <option value="" disabled>No hay productos disponibles</option>
+                            )}
                             </Form.Control>
                             <Form.Label id='errorId_producto' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                         </Form.Group>

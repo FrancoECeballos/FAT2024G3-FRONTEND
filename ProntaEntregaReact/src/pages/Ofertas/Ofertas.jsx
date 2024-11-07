@@ -10,11 +10,11 @@ import SearchBar from '../../components/searchbar/searchbar.jsx';
 
 import fetchData from '../../functions/fetchData';
 import fetchUser from '../../functions/fetchUser';
+import postData from '../../functions/postData.jsx';
 import deleteData from '../../functions/deleteData.jsx';
 
 import Modal from '../../components/modals/Modal.jsx';
 import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
-import postData from '../../functions/postData.jsx';
 import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
@@ -202,7 +202,15 @@ function Ofertas() {
             postData('crear_oferta/', ofertaForm, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const producto = await fetchData(`producto/${ofertaForm.id_producto}/`, token);
+                const pendingStock = await fetchData(`stock/${ofertaForm.id_obra}/`, token);
                 const pendingObra = await fetchData(`obra/${ofertaForm.id_obra}/`, token);
+
+                await postData('SubtractDetallestockproducto/', {
+                    cantidad: ofertaForm.cantidad,
+                    id_stock: pendingStock[0].id_stock,
+                    id_producto: ofertaForm.id_producto,
+                    id_usuario: user.id_usuario
+                }, token)
 
                 const dataNotificacion = {
                     titulo: 'Nueva Oferta',

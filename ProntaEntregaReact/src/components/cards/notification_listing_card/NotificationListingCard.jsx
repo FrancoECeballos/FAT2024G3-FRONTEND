@@ -10,6 +10,7 @@ import fetchUser from '../../../functions/fetchUser';
 import fetchData from "../../../functions/fetchData";
 
 import './NotificationListingCard.scss';
+import SendButton from "../../buttons/send_button/send_button.jsx";
 
 function NotificationListingCard() {
   const token = Cookies.get('token');
@@ -66,6 +67,7 @@ function NotificationListingCard() {
         ) : (
           <Card className="nl-card w-100 h-100 centered">
             <Card.Title>Notificaciones <hr /></Card.Title>
+            <SendButton text="Marcar todo como Leido" wide="20"/>
             <Card.Body>
               {Array.isArray(notifications) && notifications.length > 0 ? (
                 notifications.map((notificationGroup, index) => (
