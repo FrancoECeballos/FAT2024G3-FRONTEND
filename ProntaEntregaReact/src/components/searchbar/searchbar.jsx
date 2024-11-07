@@ -32,12 +32,14 @@ const SearchBar = ({ onSearchChange, onOrderChange, filters = [], style }) => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    {filters.map(filter => (
+                    {filters.map((filter, index) => (
                         <div key={filter.type}>
                             <Dropdown.Item onClick={() => { handleFilterChange(filter.type, filter.label); }}>
                                 {filter.label}
                             </Dropdown.Item>
-                            <div style={{ border: "1px solid #D9D9D9" }}></div>
+                            {index < filters.length - 1 && (
+                                <div style={{ border: "1px solid #D9D9D9" }}></div>
+                            )}
                         </div>
                     ))}
                 </Dropdown.Menu>
