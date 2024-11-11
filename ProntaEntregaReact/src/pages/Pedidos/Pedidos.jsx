@@ -18,6 +18,8 @@ import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 
+import ConfirmationModal from "../../components/modals/confirmation_modal/ConfirmationModal.jsx";
+
 import './Pedidos.scss';
 
 function Pedidos() {
@@ -35,6 +37,9 @@ function Pedidos() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedPedido, setSelectedPedido] = useState(null);
     const [showModal, setShowModal] = useState(false);
+
+    const [cancelarPedidoConfirmation, setCancelarPedidoConfirmation] = useState(false);
+    const [endPedidoConfirmation, setEndPedidoConfirmation] = useState(false);
 
     useEffect(() => {
         const fetchDataAsync = async () => {
@@ -362,7 +367,7 @@ function Pedidos() {
                     </>
                 )}
             </div>
-            <Modal
+            <Modal 
                 showButton={false}
                 showModal={showModal}
                 title='Detalles del Pedido'
@@ -370,8 +375,8 @@ function Pedidos() {
                 saveButtonText='Terminar Pedido'
                 deleteButtonText='Cancelar Pedido'
                 handleCloseModal={handleCloseModal}
-                deleteFunction={() => handleDeletePedido(selectedPedido.id_pedido)}
-                handleSave={() => handleEndPedido(selectedPedido.id_pedido)}
+                deleteFunction={() => setCancelarPedidoConfirmation(true)}
+                handleSave={() => setEndPedidoConfirmation(true)}
                 content={
                     <div>
                         {selectedPedido && selectedPedido.id_producto && (
@@ -388,6 +393,8 @@ function Pedidos() {
                     </div>
                 }
             />
+            <ConfirmationModal Open={cancelarPedidoConfirmation} BodyText="¿Está seguro que desea cancelar este pedido?" onClickConfirm={() => handleDeletePedido(selectedPedido.id_pedido)} onClose={() => setCancelarPedidoConfirmation(false)} />
+            <ConfirmationModal Open={endPedidoConfirmation} BodyText="¿Está seguro que desea terminar este pedido?" onClickConfirm={() => handleEndPedido(selectedPedido.id_pedido)} onClose={() => setEndPedidoConfirmation(false)} />
         </>
     );
 }
