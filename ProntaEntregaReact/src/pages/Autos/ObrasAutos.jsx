@@ -88,6 +88,11 @@ function ObrasAutos() {
         setSearchQuery(value);
     };
 
+    if (Array.isArray(obras) && obras.length === 1) {
+        const obra = obras[0];
+        navigate(`/vehiculos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}});
+    }
+
     if (isLoading) {
         return <div><FullNavbar/><Loading /></div> ;
     }
