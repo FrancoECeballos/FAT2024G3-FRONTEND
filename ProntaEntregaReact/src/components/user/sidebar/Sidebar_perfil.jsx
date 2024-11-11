@@ -75,7 +75,7 @@ const Sidebar = ({ selectedPage, user }) => {
           />
           <SelectableButton
             selected={selectedPage === "seguridad"}
-            texto="Seguridad y Privacidad"
+            texto="Cambiar Contraseña"
             link="/perfil/seguridad"
             locationStore={user.viewingOtherUser ? { user_email: viewedUser.email } : undefined}
           />
