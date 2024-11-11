@@ -7,8 +7,8 @@ import Footer from '../../components/footer/Footer.jsx';
 import logo from '../../assets/BlueLogo.png';
 import pronta from '../../assets/prontalogo.png';
 import stock from  '../../assets/stock.png';
-import envios from '../../assets/envios.png';
-import pedidos from '../../assets/pedidos.png';
+import pedidos from '../../assets/envios.png';
+import envios from '../../assets/camion.png';
 import'./Landing.scss';
 
 function Landing (){
@@ -24,7 +24,7 @@ function Landing (){
                 <div class="row justify-content-center">
                     <div class="col-xl-6">
                         <div class="text-center text-white">
-                            <h1 class="mb-5" style={{color: 'black',fontSize:"4rem"}}>Pronta Entrega</h1>
+                            <h1 class="mb-5 titulo" style={{color: 'black',fontSize:"4rem",}}>Pronta Entrega</h1>
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@ function Landing (){
                         </div>
                     </div>
                     <div className="row g-0">
-                        <div className="col-lg-6 text-white showcase-img"><img src={envios} alt="Responsive Design" className="img-fluid" /></div>
+                        <div className="col-lg-6 text-white showcase-img"><img src={pedidos} alt="Responsive Design" className="img-fluid" /></div>
                         <div className="col-lg-6 my-auto showcase-text">
                             <h2>Pedidos</h2>
                             <p className="lead mb-0">Basado en el sistema anterior, si se necesita o se tiene demasiado de un producto, un voluntario puede crear un pedido o una oferta que será vista por los integrantes de todas las casas. 
@@ -73,7 +73,7 @@ function Landing (){
                         </div>
                     </div>
                     <div className="row g-0">
-                        <div className="col-lg-6 order-lg-2 text-white showcase-img" ><img src={pedidos} alt="Responsive Design" className="img-fluid" /></div>
+                        <div className="col-lg-6 order-lg-2 text-white showcase-img" ><img src={envios} alt="Responsive Design" className="img-fluid" /></div>
                         <div className="col-lg-6 order-lg-1 my-auto showcase-text">
                             <h2>Envios</h2>
                             <p className="lead mb-0">Cuando se reclama un pedido o una oferta, los voluntarios podrán acordar la fecha de entrega y la forma del traslado.
@@ -81,7 +81,7 @@ function Landing (){
                         </div>
                     </div>
                 </div>
-            </section>0
+            </section>
         <Footer/>
     </div>
     );
