@@ -241,7 +241,7 @@ function AutosComponent() {
             }
             return 0;
         }
-        return a.necesita_mantenimiento ? -1 : 1;
+        return a.necesita_mantenimiento ? 1 : -1;
     });
 
     const filters = [
