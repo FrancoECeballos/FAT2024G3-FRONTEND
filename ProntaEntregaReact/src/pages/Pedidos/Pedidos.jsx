@@ -390,6 +390,8 @@ function Pedidos() {
                     <div>
                         {selectedPedido && selectedPedido.id_producto && (
                             <GenericCard
+                                borde={'none'}
+                                shadow={'none'}
                                 hoverable={false}
                                 foto={selectedPedido.id_producto.imagen}
                                 titulo={selectedPedido.id_producto.nombre}
