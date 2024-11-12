@@ -9,13 +9,14 @@ import GenericCard from '../../../components/cards/generic_card/GenericCard.jsx'
 import UploadImage from '../../../components/buttons/upload_image/uploadImage.jsx';
 import Footer from '../../../components/footer/Footer.jsx';
 import Loading from '../../../components/loading/loading.jsx';
+import Popup from '../../../components/alerts/popup/Popup.jsx';
 
 import fetchData from '../../../functions/fetchData';
 import fetchUser from '../../../functions/fetchUser.jsx';
 import crearNotificacion from '../../../functions/createNofiticacion.jsx';
 
 import Modal from '../../../components/modals/Modal.jsx';
-import {Breadcrumb, Form} from 'react-bootstrap';
+import { Breadcrumb, Form } from 'react-bootstrap';
 import postData from '../../../functions/postData.jsx';
 import defaultImage from '../../../assets/no_image.png';
 
@@ -45,6 +46,10 @@ function Categories() {
         nombre: '',
         descripcion: '',
     });
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(null);
+    const [popupTitle, setPopupTitle] = useState(null);
 
     useEffect(() => {
         const fetchDataAsync = async () => {
@@ -177,11 +182,16 @@ function Categories() {
                 };
 
                 return crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra).then(() => {
-                    window.location.reload();
+                    setPopupTitle('Categoría Creada');
+                    setPopupMessage(`La categoría ${<strong>{formData.nombre}</strong>} ha sido creada con éxito.`);
+                    setShowPopup(true);
                 });
             });
         } catch (error) {
             console.error('Error creating category:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Ha ocurrido un error al crear la categoría.');
+            setShowPopup(true);
         }
     };
 
@@ -200,28 +210,28 @@ function Categories() {
                     <Loading />
                 ) : (
                     <div>
-                        <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
+                        <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
                             <Breadcrumb.Item href="/stock">Stock</Breadcrumb.Item>
                             <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
                         </Breadcrumb>
-                        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters}/>
+                        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                         {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                                 <Modal openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
                                     <div>
                                         <h2 className='centered'> Nueva Categoria </h2>
-                                        <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage}/>
+                                        <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage} />
                                         <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                        <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                                        <Form.Label id='errorNombre' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
                                         <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
-                                        <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
+                                        <Form.Label id='errorDescripcion' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
                                     </div>
                                 }></Modal>
                             </div>
                         )}
                         <div className='cardCategori'>
-                            {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (  
-                                <GenericCard 
+                            {Array.isArray(sortedCategories) && sortedCategories.length > 0 ? sortedCategories.map(category => (
+                                <GenericCard
                                     onClick={() => navigate(`/obra/${stockId}/categoria/${category.id_categoria}/`, { state: { id_stock: stockId } })}
                                     foto={category.imagen}
                                     key={category.id_categoria}
@@ -229,13 +239,14 @@ function Categories() {
                                     descrip1={category.descripcion}
                                 />
                             )) : (
-                                <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay categorías disponibles.</p>
+                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay categorías disponibles.</p>
                             )}
                         </div>
-                        <Footer/>
+                        <Footer />
                     </div>
                 )}
             </div>
+            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
         </div>
     );
 }
