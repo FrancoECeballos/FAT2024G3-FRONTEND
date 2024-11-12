@@ -12,7 +12,7 @@ import Loading from '../../components/loading/loading.jsx';
 
 import fetchUser from '../../functions/fetchUser.jsx';
 import fetchData from '../../functions/fetchData.jsx';
-import './InformePedidos.scss';
+import './Informes.scss';
 
 
 const InformePedidos = () => {
@@ -116,15 +116,36 @@ const InformePedidos = () => {
                     <p style={{ marginTop: '1rem' }}>No hay pedidos disponibles.</p>
                     ) : (
                     <div className="table-container">
-                        <GenericTable 
-                        headers={['id_pedido', 'id_producto.imagen', 'id_producto.nombre', 'fechainicio', 'fechavencimiento', 'id_obra.nombre', 'id_usuario.nombre + id_usuario.apellido', 'id_estadoPedido.nombre', 'cantidad']} 
-                        shownHeaders={['#', 'Imagen', 'Producto', 'Fecha de Inicio', 'Fecha de Vencimiento', 'Obra', 'Usuario', 'Estado', 'Cantidad Pedida']} 
-                        data={sortedData} 
-                        showCreateNew={false} 
-                        createNewFunction={() => {}} 
-                        minWid='80rem'
-                        maxWid='80rem' 
-                        />
+                        <table className="generic-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Imagen</th>
+                                    <th>Producto</th>
+                                    <th>Fecha de Inicio</th>
+                                    <th>Fecha de Vencimiento</th>
+                                    <th>Obra</th>
+                                    <th>Usuario</th>
+                                    <th>Estado</th>
+                                    <th>Cantidad Pedida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {sortedData.map((pedido, index) => (
+                                    <tr key={pedido.id}>
+                                        <td>{pedido.id_pedido}</td>
+                                        <td><img src={pedido.id_producto.imagen} alt={pedido.id_producto.nombre} style={{ width: '50px', height: '50px' }} /></td>
+                                        <td>{pedido.id_producto.nombre}</td>
+                                        <td>{pedido.fechainicio}</td>
+                                        <td>{pedido.fechavencimiento}</td>
+                                        <td>{pedido.id_obra.nombre}</td>
+                                        <td>{`${pedido.id_usuario.nombre} ${pedido.id_usuario.apellido}`}</td>
+                                        <td>{pedido.id_estadoPedido.nombre}</td>
+                                        <td>{pedido.cantidad}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                     )}
                 </div>

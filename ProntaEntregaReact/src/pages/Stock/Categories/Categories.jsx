@@ -69,9 +69,14 @@ function Categories() {
                     setObra(filteredResult[0]);
                 } else {
                     const obrasResult = await fetchData(`/user/obrasToken/${token}/`, token);
+                    console.log('obrasResult:', obrasResult);
+                    console.log('stockResult[0].id_obra.id_obra:', stockResult[0].id_obra.id_obra);
+                    
                     const filteredResult = obrasResult.filter(item => item.id_obra === stockResult[0].id_obra.id_obra);
+                    console.log('filteredResult:', filteredResult);
+                    
                     setObra(filteredResult[0]);
-                }
+                  }
 
                 const img = new Image();
                 img.src = defaultImage;

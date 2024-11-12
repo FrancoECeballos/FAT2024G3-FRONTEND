@@ -1,0 +1,53 @@
+.table-container {
+    max-height: 660px; /* Ajusta según necesites */
+    overflow-y: auto;
+    border-radius: 10px; /* Redondeado para el contenedor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Opcional: sombra para destacar */
+    width: 90%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+}
+
+/* Ocultar la barra de desplazamiento en navegadores basados en WebKit */
+.table-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ocultar la barra de desplazamiento en Firefox */
+.table-container {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.generic-table {
+    width: 100%; /* Asegura que la tabla ocupe todo el ancho del contenedor */
+    border-collapse: collapse; /* Asegura que no haya espacio entre las celdas */
+}
+
+.generic-table th,
+.generic-table td {
+    padding: 8px 12px;
+    text-align: center; /* Centra el texto dentro de las celdas */
+}
+
+/* Fija el encabezado */
+.generic-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Para que el fondo del encabezado no sea transparente */
+    z-index: 1; /* Asegura que el encabezado se quede encima del contenido */
+    border-bottom: 2px solid #ddd; /* Mantiene el borde inferior del encabezado */
+}
+
+/* Fondo alternado para las filas */
+.generic-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Fondo gris claro */
+}
+
+/* Efecto hover para las filas */
+.generic-table tbody tr:hover {
+    background-color: #f1f1f1; /* Fondo gris más claro */
+}
+
+/* Estilo para las imágenes */
+.generic-table img {
+    border-radius: 5px; /* Bordes redondeados para las imágenes */
+}
