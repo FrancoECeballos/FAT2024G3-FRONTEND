@@ -109,7 +109,7 @@ const InformeOfertas = () => {
             <div>
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                     {sortedData.length === 0 ? (
-                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
+                        <p style={{ marginTop: '1rem' }}>No hay ofertas disponibles.</p>
                     ) : (
                         <div className="table-container">
                         <table className="generic-table">
