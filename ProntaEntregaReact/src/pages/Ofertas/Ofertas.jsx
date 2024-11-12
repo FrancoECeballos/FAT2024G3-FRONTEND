@@ -353,7 +353,6 @@ function Ofertas() {
                                                             setSelectedOferta(oferta);
                                                             setShowUserOfertaModal(true);
                                                         }}
-                                                        hoverable={false}
                                                         titulo={`${oferta.id_producto.nombre}`}
                                                         foto={oferta.id_producto.imagen}
                                                         descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
@@ -510,7 +509,7 @@ function Ofertas() {
 
             <Modal
                 showButton={false}
-                showModal={showUserOfertaModal}
+                showModal={showUserOfertaModal && !showAporteModal}
                 title='Detalles de la Oferta'
                 showDeleteButton={true}
                 saveButtonText='Terminar Oferta'

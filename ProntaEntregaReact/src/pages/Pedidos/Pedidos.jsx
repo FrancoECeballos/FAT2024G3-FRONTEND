@@ -308,7 +308,9 @@ function Pedidos() {
         });
     } 
 
-    if (obras.length === 0 && !user.is_superuser) {
+    if (isLoading) {
+        return <div><FullNavbar /><Loading /></div>;
+    } else if (obras.length === 0 && !user.is_superuser) {
         return (
             <>
                 <FullNavbar selectedPage='Pedidos' />
