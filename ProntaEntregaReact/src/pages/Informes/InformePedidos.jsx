@@ -12,7 +12,7 @@ import Loading from '../../components/loading/loading.jsx';
 
 import fetchUser from '../../functions/fetchUser.jsx';
 import fetchData from '../../functions/fetchData.jsx';
-import './InformePedidos.css'; // Asegúrate de crear este archivo CSS
+import './InformePedidos.scss';
 
 
 const InformePedidos = () => {

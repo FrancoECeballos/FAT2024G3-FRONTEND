@@ -57,6 +57,16 @@ function NotificationListingCard() {
     });
   };
 
+  const handleMarkAllAsRead = () => {
+    fetchData(`/LeerNotificacionesDeUser/${user.id_usuario}`, token).then(() => {
+      fetchDataAsync();
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
+  const shouldShowMarkAllAsReadButton = notifications.some(notificationGroup => notificationGroup[1].length > 0);
+
   return (
     <>
       <div>
@@ -67,9 +77,11 @@ function NotificationListingCard() {
         ) : (
           <Card className="nl-card w-100 h-100 centered">
             <Card.Title>Notificaciones <hr /></Card.Title>
-            <SendButton text="Marcar todo como Leido" wide="20"/>
+            {shouldShowMarkAllAsReadButton && (
+              <SendButton text="Marcar todo como Leido" wide="20" hoverable={false} onClick={() => handleMarkAllAsRead()}/>
+            )}
             <Card.Body>
-              {Array.isArray(notifications) && notifications.length > 0 ? (
+              {shouldShowMarkAllAsReadButton ? (
                 notifications.map((notificationGroup, index) => (
                   <>
                     <div key={index}>

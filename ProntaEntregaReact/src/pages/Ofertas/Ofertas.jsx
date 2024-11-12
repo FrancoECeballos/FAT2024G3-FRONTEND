@@ -425,6 +425,9 @@ function Ofertas() {
                     content={
                         <div>
                             <GenericCard
+                                borde={'none'}
+                                shadow={'none'}
+                                hoverable={false}
                                 key={selectedOferta.id_oferta}
                                 titulo={`${selectedOferta.id_producto.nombre}`}
                                 foto={selectedOferta.id_producto.imagen}

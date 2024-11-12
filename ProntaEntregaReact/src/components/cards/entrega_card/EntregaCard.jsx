@@ -7,9 +7,10 @@ import './EntregaCard.scss';
 
 const EntregaCard = ({ recorridoModal, entrega, user, estado, setEstado }) => {
     useEffect(() => {
+        console.log(entrega);
+
         if (recorridoModal.id_estadoEntrega.id_estadoEntrega === 1) {
             setEstado({ texto: "", imagen: 0, boton: 'Tomar', enable: true, newEstado: 2 });
-        
         } else if (recorridoModal.id_estadoEntrega.id_estadoEntrega === 2) {
             if (recorridoModal.id_usuario.id_usuario === user.id_usuario) {
                 if (recorridoModal.fechaEntrega) {
@@ -28,16 +29,14 @@ const EntregaCard = ({ recorridoModal, entrega, user, estado, setEstado }) => {
         } else if (recorridoModal.id_estadoEntrega.id_estadoEntrega === 3) {
             if (recorridoModal.id_usuario.id_usuario === user.id_usuario) {
                 setEstado({ texto: "La entrega esta en proceso. Haga click en 'Confirmar' para completar el envío.", imagen: 1, boton: 'Confirmar', enable: true, newEstado: 4 });
-            } else if ((entrega.id_pedido && entrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
-                       (entrega.id_oferta && entrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
+            } else if ((entrega.id_pedido && entrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || (entrega.id_oferta && entrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
                 setEstado({ texto: "La entrega esta en proceso. Haga click en 'Confirmar' para confirmar que recibiste el producto.", imagen: 1, boton: 'Confirmar', enable: true, newEstado: 5 });
             } else {
                 setEstado({ texto: "La entrega esta en proceso.", imagen: 1, boton: '', enable: false, newEstado: 4  });
             }
 
         } else if (recorridoModal.id_estadoEntrega.id_estadoEntrega === 4) {
-            if ((entrega.id_pedido && entrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
-                (entrega.id_oferta && entrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
+            if ((entrega.id_pedido && entrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || (entrega.id_oferta && entrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
                 setEstado({ texto: "La entrega fue marcada como completada. Haga click en 'Confirmar' para confirmar que recibiste el producto.", imagen: 2, boton: 'Confirmar', enable: true, newEstado: 5 });
             } else {
                 setEstado({ texto: "La entrega fue marcada como completada.", imagen: 2, boton: '', enable: false, newEstado: 5 });

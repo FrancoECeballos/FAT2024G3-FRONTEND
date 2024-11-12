@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tabs, Tab, Breadcrumb, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import Cookies from 'js-cookie';
+
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import fetchData from '../../functions/fetchData';
@@ -17,6 +18,7 @@ import GenericCard from '../../components/cards/generic_card/GenericCard.jsx';
 import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import Popup from '../../components/alerts/popup/Popup.jsx'
 
 import ConfirmationModal from "../../components/modals/confirmation_modal/ConfirmationModal.jsx";
 
@@ -38,6 +40,10 @@ function Pedidos() {
     const [selectedPedido, setSelectedPedido] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(null);
+    const [popupTitle, setPopupTitle] = useState(null);
+
     const [cancelarPedidoConfirmation, setCancelarPedidoConfirmation] = useState(false);
     const [endPedidoConfirmation, setEndPedidoConfirmation] = useState(false);
 
@@ -51,7 +57,7 @@ function Pedidos() {
                 if (userTokenData.is_superuser) {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
                     setPedidos(pedidosRecibidos);
-                    
+
                     const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                     setUserPedidos(pedidosData);
 
@@ -60,7 +66,7 @@ function Pedidos() {
                 } else {
                     const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
                     setPedidos(pedidosRecibidos);
-                    
+
                     const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                     setUserPedidos(pedidosData);
                     console.log(pedidosData);
@@ -92,7 +98,7 @@ function Pedidos() {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-    
+
             postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
                 const obrasPromises = obras.map(async (obra) => {
                     const fechaCreacion = new Date().toISOString().split('T')[0];
@@ -108,14 +114,22 @@ function Pedidos() {
                         id_obra: obra,
                         fecha_creacion: fechaCreacion
                     };
-                    
+
                     crearNotificacion(dataNotificacion, token, 'Obra', obra);
                     return postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                 });
-    
-                return Promise.all(obrasPromises).then(() => window.location.reload());
+
+                return Promise.all(obrasPromises).then(() => {
+                    setPopupTitle('Pedido Creado');
+                    setPopupMessage('El pedido ha sido creado exitosamente.');
+                    setShowPopup(true);
+                    window.location.reload();
+                });
             }).catch((error) => {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
+                setPopupTitle('Error');
+                setPopupMessage('Hubo un error al crear el pedido.');
+                setShowPopup(true);
             });
         }
     };
@@ -127,23 +141,23 @@ function Pedidos() {
         { type: 'pedido.id_producto.nombre', label: 'Nombre del Producto' },
         { type: 'pedido.id_usuario.nombre', label: 'Nombre del Usuario' }
     ];
-    
+
     const getNestedValue = (obj, path) => {
         return path.split('.').reduce((acc, part) => acc && acc[part], obj);
     };
-    
-    const filteredPedidos = pedidos.map(obra => { 
-        const filteredPedidosInObra = obra.pedidos.map(pedido => { 
-            const filteredInnerPedidos = pedido.pedidos.filter(innerPedido => { 
-                return filters.some(filter => { 
-                    const filterPath = filter.type.split('.').slice(1).join('.'); 
-                    const value = getNestedValue(innerPedido, filterPath); 
-                    return value?.toString().toLowerCase().includes(searchQuery.toLowerCase()); 
-                }); 
-            }); 
-            return { ...pedido, pedidos: filteredInnerPedidos }; 
-        }).filter(pedido => pedido.pedidos.length > 0); 
-        return { ...obra, pedidos: filteredPedidosInObra }; 
+
+    const filteredPedidos = pedidos.map(obra => {
+        const filteredPedidosInObra = obra.pedidos.map(pedido => {
+            const filteredInnerPedidos = pedido.pedidos.filter(innerPedido => {
+                return filters.some(filter => {
+                    const filterPath = filter.type.split('.').slice(1).join('.');
+                    const value = getNestedValue(innerPedido, filterPath);
+                    return value?.toString().toLowerCase().includes(searchQuery.toLowerCase());
+                });
+            });
+            return { ...pedido, pedidos: filteredInnerPedidos };
+        }).filter(pedido => pedido.pedidos.length > 0);
+        return { ...obra, pedidos: filteredPedidosInObra };
     }).filter(obra => obra.pedidos.length > 0);
 
     const sortedPedidos = filteredPedidos.map(obra => {
@@ -153,27 +167,27 @@ function Pedidos() {
                 const getValue = (obj, path) => {
                     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
                 };
-        
+
                 const aValue = getValue(a, orderCriteria.replace('obra.pedido.', ''));
                 const bValue = getValue(b, orderCriteria.replace('obra.pedido.', ''));
-        
+
                 if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
                     const aDate = new Date(aValue);
                     const bDate = new Date(bValue);
                     return aDate - bDate;
                 }
-        
+
                 if (typeof aValue === 'string' && typeof bValue === 'string') {
                     return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
                 }
-        
+
                 if (typeof aValue === 'number' && typeof bValue === 'number') {
                     return bValue - aValue;
                 }
-        
+
                 return 0;
             });
-        
+
             return { ...obra, pedidos: sortedPedidosInObra };
         } else {
             const sortedPedidosInObra = [...obra.pedidos].map(pedido => {
@@ -283,7 +297,7 @@ function Pedidos() {
                         <Breadcrumb.Item active>Pedidos</Breadcrumb.Item>
                     </Breadcrumb>
                     <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                    <br/>
+                    <br />
                     <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
                 </div>
             </>
@@ -302,7 +316,7 @@ function Pedidos() {
                             <Breadcrumb.Item active>Pedidos</Breadcrumb.Item>
                         </Breadcrumb>
                         <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-    
+
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
                             <Modal
                                 tamaño={'lg'}
@@ -319,7 +333,7 @@ function Pedidos() {
                                 }
                             />
                         </div>
-    
+
                         <Tabs defaultActiveKey={obras.length > 0 ? obras[0].id_obra : 'obras'} id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
                             <Tab key='user_pedidos' eventKey='user_pedidos' title={<strong className="custom-tab-title">Mis Pedidos</strong>} style={{ backgroundColor: "transparent" }}>
                                 <>
@@ -331,7 +345,7 @@ function Pedidos() {
                                                     foto={pedido.id_producto.imagen}
                                                     titulo={pedido.id_producto.nombre}
                                                     descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
-                                                    descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente}/></>}
+                                                    descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente} /></>}
                                                     descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                                     descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
                                                     children={
@@ -361,7 +375,7 @@ function Pedidos() {
                         </Tabs>
                         {user.is_superuser && (
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
-                                <SendButton onClick={() => navigate(`/informe_pedidos`)} text='Ver Informe de Pedidos' wide='14'/>
+                                <SendButton onClick={() => navigate(`/informe_pedidos`)} text='Ver Informe de Pedidos' wide='14' />
                             </div>
                         )}
                     </>
@@ -381,10 +395,13 @@ function Pedidos() {
                     <div>
                         {selectedPedido && selectedPedido.id_producto && (
                             <GenericCard
+                                borde={'none'}
+                                shadow={'none'}
+                                hoverable={false}
                                 foto={selectedPedido.id_producto.imagen}
                                 titulo={selectedPedido.id_producto.nombre}
                                 descrip1={<><strong>Cantidad:</strong> {selectedPedido.progreso} / {selectedPedido.cantidad} {selectedPedido.id_producto.unidadmedida}</>}
-                                descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente}/></>}
+                                descrip2={<><strong>Urgencia:</strong> {selectedPedido.urgente_label} <Semaforo urgencia={selectedPedido.urgente} /></>}
                                 descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
                                 descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
                                 descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
@@ -393,6 +410,7 @@ function Pedidos() {
                     </div>
                 }
             />
+            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
             <ConfirmationModal Open={cancelarPedidoConfirmation} BodyText="¿Está seguro que desea cancelar este pedido?" onClickConfirm={() => handleDeletePedido(selectedPedido.id_pedido)} onClose={() => setCancelarPedidoConfirmation(false)} />
             <ConfirmationModal Open={endPedidoConfirmation} BodyText="¿Está seguro que desea terminar este pedido?" onClickConfirm={() => handleEndPedido(selectedPedido.id_pedido)} onClose={() => setEndPedidoConfirmation(false)} />
         </>
