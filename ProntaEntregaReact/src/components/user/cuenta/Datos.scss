@@ -1,54 +1,82 @@
 .datos {
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    margin-top: 2rem;
-    background-color: #f9f9f9;
-  }
-  
-  .fotoperfil {
-    display: block;
-    margin: 0 auto;
-    width: 8rem;
-    height: 8rem;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1.5rem;
-  }
-  
-  .form-container {
-    background-color: #ffffff;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  
-    label {
-      font-weight: bold;
-      margin-bottom: 0.5rem;    
-      display: block;
-    }
-  
-    .form-control {
-      margin-bottom: 1rem;
-      border-radius: 0.25rem;
-      box-shadow: none;
-      &:focus {
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-      }
-    }
-  }
-  
-  .groupderec {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0rem;
+  width: 90%;
+  max-width: 1200px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  margin: 2rem auto; 
+  background-color: #f9f9f9;
+}
 
+.fotoperfil {
+  display: block;
+  margin: 0 auto;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+}
+
+.filainputs {
+  width: 100%; 
+}
+
+.form-container {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+
+  label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
   }
-  
+
+  .form-control {
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+    box-shadow: none;
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+}
+
+.groupderec {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .filainputs {
+    flex-direction: column; 
+    align-items: center;
+  }
+
+  .form-container {
+    width: 100%;
+    max-width: 500px; 
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.2rem; 
+    }
+
+  .fotoperfil {
+    width: 6rem; 
+    height: 6rem;
+  }
+}

@@ -563,9 +563,9 @@ function Ofertas() {
                     </div>
                 }
             />
-            <ConfirmationModal Open={terminarOfertaConfirmation} BodyText="¿Está seguro que desea terminar con esta oferta?" onClickConfirm={() => handleEndOferta(selectedOferta.id_oferta)} onClose={() => setTerminarOfertaConfirmation(false)} />
-            <ConfirmationModal Open={cancelarOfertaConfirmation} BodyText="¿Está seguro que desea cancelar esta oferta?" onClickConfirm={() => handleDeleteOferta(selectedOferta.id_oferta)} onClose={() => setCancelarOfertaConfirmation(false)} />
-
+            <ConfirmationModal Open={terminarOfertaConfirmation} BodyText="Al terminar la oferta se donaran los productos tomados." onClickConfirm={() => handleEndOferta(selectedOferta.id_oferta)} onClose={() => setTerminarOfertaConfirmation(false)} />
+            <ConfirmationModal Open={cancelarOfertaConfirmation} BodyText="Si cancelas la oferta no se donaran los productos tomados ¿Está seguro?" onClickConfirm={() => handleDeleteOferta(selectedOferta.id_oferta)} onClose={() => setCancelarOfertaConfirmation(false)} />
+            
 
             {user.is_superuser && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>

@@ -23,7 +23,7 @@ function Popup({ show, setShow, message, title }) {
   }, [show, setShow]);
 
   return (
-    <ToastContainer position="top-end" className="p-3">
+    <ToastContainer className="toast-container p-3">
       <Toast onClose={() => setShow(false)} show={show} autohide>
         <Toast.Header className="toast-header">
           <strong className="me-auto">{title}</strong>
