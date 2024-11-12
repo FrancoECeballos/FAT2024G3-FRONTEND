@@ -471,8 +471,8 @@ function Pedidos() {
                 }
             />
             <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
-            <ConfirmationModal Open={cancelarPedidoConfirmation} BodyText="¿Está seguro que desea cancelar este pedido?" onClickConfirm={() => handleDeletePedido(selectedPedido.id_pedido)} onClose={() => setCancelarPedidoConfirmation(false)} />
-            <ConfirmationModal Open={endPedidoConfirmation} BodyText="¿Está seguro que desea terminar este pedido?" onClickConfirm={() => handleEndPedido(selectedPedido.id_pedido)} onClose={() => setEndPedidoConfirmation(false)} />
+            <ConfirmationModal Open={cancelarPedidoConfirmation} BodyText="Al cancelar el pedido se eliminara lo aportado y no se guardara. ¿Estas seguro?" onClickConfirm={() => handleDeletePedido(selectedPedido.id_pedido)} onClose={() => setCancelarPedidoConfirmation(false)} />
+            <ConfirmationModal Open={endPedidoConfirmation} BodyText="Al terminar el pedido se tomara lo que se a aportado hasta ahora." onClickConfirm={() => handleEndPedido(selectedPedido.id_pedido)} onClose={() => setEndPedidoConfirmation(false)} />
         </>
     );
 }
