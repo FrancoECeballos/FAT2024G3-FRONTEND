@@ -1,16 +1,16 @@
 .scroll-horizontal-entregas {
     display: flex;
     flex-direction: row;
-    overflow-x: auto; /* Habilitar scroll horizontal */
-    gap: 1rem; /* Espaciado entre las tarjetas */
-    padding: 1rem; /* Padding opcional alrededor del scroll */
+    overflow-x: auto;
+    gap: 1rem;
+    padding: 1rem;
 }
 
 .scroll-horizontal-entregas::-webkit-scrollbar {
-    height: 0.75rem; /* Tamaño de la barra de desplazamiento */
+    height: 0.75rem;
 }
 
 .scroll-horizontal-entregas::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.3); /* Color de la barra */
-    border-radius: 1rem; /* Bordes redondeados */
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 1rem;
 }

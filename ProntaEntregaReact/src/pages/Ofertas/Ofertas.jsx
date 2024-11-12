@@ -18,6 +18,7 @@ import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 
 import './Ofertas.scss';
 
@@ -31,7 +32,6 @@ function Ofertas() {
     const ofertaCardRef = useRef(null);
     const [isFormValid, setIsFormValid] = useState(false);
 
-    const [selectedOferta, setSelectedOferta] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [cantidad, setCantidad] = useState('');
     const [error, setError] = useState('');
@@ -45,6 +45,9 @@ function Ofertas() {
     const [stocks, setStocks] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
+    const [selectedOferta, setSelectedOferta] = useState(null);
+    const [showAporteModal, setShowAporteModal] = useState(false);
+    const [selectedAporte, setSelectedAporte] = useState(null);
     const [showUserOfertaModal, setShowUserOfertaModal] = useState(false);
     const [showTakeOfertaModal, setShowTakeOfertaModal] = useState(false);
 
@@ -250,7 +253,7 @@ function Ofertas() {
         try {
             await postData('crear_detalle_oferta/', data, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const ofertaAportada = await fetchData(`oferta/${ofertaId}/`, token);
+                const ofertaAportada = await fetchData(`oferta_id/${ofertaId}/`, token);
 
                 const dataNotificacion = {
                     titulo: 'Nuevo Aporte',
@@ -258,7 +261,6 @@ function Ofertas() {
                     id_obra: selectedOferta.id_obra.id_obra,
                     fecha_creacion: fechaCreacion
                 };
-                
                 crearNotificacion(dataNotificacion, token, 'User', selectedOferta.id_usuario.id_usuario).then(() => window.location.reload());
                 return true;
             });
@@ -283,6 +285,14 @@ function Ofertas() {
             console.error('Error ending oferta:', error);
         });
     };
+
+    const handleRejectAporte = (aporte) => {
+        deleteData(`delete_detalle_oferta/${aporte.id_aportePedido}/`, token).then(() => {
+            window.location.reload();
+        }).catch(error => {
+            console.error('Error ending pedido:', error);
+        });
+    } 
 
     if (isLoading) {
         return <div><FullNavbar /><Loading /></div>;
@@ -350,12 +360,29 @@ function Ofertas() {
                                                         descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
                                                         descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
                                                         children={
-                                                            <OverlayTrigger
-                                                                placement="top"
-                                                                overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
-                                                            >
-                                                                <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
-                                                            </OverlayTrigger>
+                                                            <>
+                                                                <OverlayTrigger
+                                                                    placement="top"
+                                                                    overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                                >
+                                                                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
+                                                                </OverlayTrigger>
+                                                                {oferta.aportes.map((aporte) => (
+                                                                    <div className='scroll-horizontal-entregas'>
+                                                                        <LittleCard
+                                                                            key={aporte.id_aporteOferta}
+                                                                            titulo={`${aporte.cantidad} ${aporte.id_oferta.id_producto.unidadmedida} de ${aporte.id_oferta.id_producto.nombre}`}
+                                                                            descrip1={aporte.id_obra.nombre}
+                                                                            descrip2={`${aporte.id_usuario.nombre} ${aporte.id_usuario.apellido}`}
+                                                                            foto={aporte.id_obra.imagen}
+                                                                            onSelect={() => {
+                                                                                setSelectedAporte(aporte);
+                                                                                setShowAporteModal(true);
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                ))}
+                                                            </>
                                                         }
                                                     />
                                                 </div>
@@ -486,7 +513,7 @@ function Ofertas() {
                 showDeleteButton={true}
                 saveButtonText='Terminar Oferta'
                 deleteButtonText='Cancelar Oferta'
-                handleCloseModal={() => setShowUserOfertaModal(false)}
+                handleCloseModal={() => {setShowUserOfertaModal(false); setShowAporteModal(false);}}
                 deleteFunction={() => setCancelarOfertaConfirmation(true)}
                 handleSave={() => setTerminarOfertaConfirmation(true)}
                 content={
@@ -504,6 +531,31 @@ function Ofertas() {
                                 descrip3={<><strong>Usuario:</strong> {selectedOferta.id_usuario.nombre} {selectedOferta.id_usuario.apellido}</>}
                                 descrip4={<><strong>Estado:</strong> {selectedOferta.id_estadoOferta.nombre} <strong>Cantidad:</strong> {selectedOferta.cantidad} {selectedOferta.id_producto.unidadmedida}</>}
                                 descrip5={<><strong>Fecha Vencimiento:</strong> {selectedOferta.fechavencimiento ? selectedOferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                            />
+                        )}
+                    </div>
+                }
+            />
+            <Modal
+                showModal={showAporteModal}
+                title='Detalles del Aporte'
+                showDeleteButton={true}
+                deleteFunction={() => handleRejectAporte(selectedAporte)}
+                saveButtonShown={false}
+                deleteButtonText='Devolver Aporte'
+                handleCloseModal={() => {setShowUserOfertaModal(false); setShowAporteModal(false);}}
+                showButton={false}
+                content={
+                    <div>
+                        {selectedAporte && (
+                            <GenericCard
+                                borde={'none'}
+                                shadow={'none'}
+                                hoverable={false}
+                                foto={selectedAporte.id_obra.imagen}
+                                titulo={`${selectedAporte.cantidad} ${selectedAporte.id_oferta.id_producto.unidadmedida} de ${selectedAporte.id_oferta.id_producto.nombre}`}
+                                descrip1={<><strong>Obra: </strong>{selectedAporte.id_obra.nombre}</>}
+                                descrip2={<><strong>Usuario: </strong>{selectedAporte.id_usuario.nombre} {selectedAporte.id_usuario.apellido}</>}
                             />
                         )}
                     </div>
