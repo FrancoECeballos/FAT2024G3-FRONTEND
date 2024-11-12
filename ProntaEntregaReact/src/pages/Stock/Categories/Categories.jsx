@@ -47,7 +47,6 @@ function Categories() {
         descripcion: '',
     });
 
-    const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState(null);
     const [popupTitle, setPopupTitle] = useState(null);
 
@@ -69,14 +68,9 @@ function Categories() {
                     setObra(filteredResult[0]);
                 } else {
                     const obrasResult = await fetchData(`/user/obrasToken/${token}/`, token);
-                    console.log('obrasResult:', obrasResult);
-                    console.log('stockResult[0].id_obra.id_obra:', stockResult[0].id_obra.id_obra);
-                    
                     const filteredResult = obrasResult.filter(item => item.id_obra === stockResult[0].id_obra.id_obra);
-                    console.log('filteredResult:', filteredResult);
-                    
                     setObra(filteredResult[0]);
-                  }
+                }
 
                 const img = new Image();
                 img.src = defaultImage;
@@ -167,7 +161,7 @@ function Categories() {
     const newcategory = async () => {
         if (!formData.imagen) {
             console.error('No image file selected');
-            return;
+            return false;
         }
 
         const data = new FormData();
@@ -186,17 +180,16 @@ function Categories() {
                     fecha_creacion: fechaCreacion
                 };
 
-                return crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra).then(() => {
-                    setPopupTitle('Categoría Creada');
-                    setPopupMessage(`La categoría ${<strong>{formData.nombre}</strong>} ha sido creada con éxito.`);
-                    setShowPopup(true);
-                });
+                await crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra);
+                setPopupTitle('Categoría Creada');
+                setPopupMessage(`La categoría ${formData.nombre} ha sido creada con éxito.`);
+                return true;
             });
         } catch (error) {
             console.error('Error creating category:', error);
             setPopupTitle('Error');
             setPopupMessage('Ha ocurrido un error al crear la categoría.');
-            setShowPopup(true);
+            return false;
         }
     };
 
@@ -222,7 +215,7 @@ function Categories() {
                         <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                         {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
-                                <Modal openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
+                                <Modal popupShows={true} popupTitle={popupTitle} popupMessage={popupMessage} openButtonText='Añadir una categoria nueva' openButtonWidth='15' title='Crear Categoria' saveButtonText='Crear' handleSave={newcategory} saveButtonEnabled={isFormValid} content={
                                     <div>
                                         <h2 className='centered'> Nueva Categoria </h2>
                                         <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage} />
@@ -251,7 +244,6 @@ function Categories() {
                     </div>
                 )}
             </div>
-            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
         </div>
     );
 }

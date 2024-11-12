@@ -410,7 +410,7 @@ function Products() {
                         <div>
                             <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
                             {selectedCardId === 'New' ? <h2 className='centered'> Cree un Producto </h2> : <h2 className='centered'> Elija el Producto </h2>}
-                            <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'flex', overflowX: 'auto', whiteSpace: 'nowrap', marginBottom:'1rem' }}>
                                 <AutoCompleteSelect lists={excludedProducts} selectedKey={selectedCardId} onClick={setSelectedNewProduct} onInputChange={() => { setSelectedCardId(); cantidadRef.current = 0; }} addNewButton={true} />
                             </div>
                             {selectedCardId && selectedCardId !== 'New' && selectedCardId !== -1 &&

@@ -12,6 +12,8 @@ import fetchData from "../../../functions/fetchData";
 import './NotificationListingCard.scss';
 import SendButton from "../../buttons/send_button/send_button.jsx";
 
+import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
+
 function NotificationListingCard() {
   const token = Cookies.get('token');
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +23,8 @@ function NotificationListingCard() {
 
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [handleMarkAllAsReadConfirmation, setHandleMarkAllAsReadConfirmation] = useState(false);
 
   const fetchDataAsync = async () => {
     try {
@@ -78,8 +82,9 @@ function NotificationListingCard() {
           <Card className="nl-card w-100 h-100 centered">
             <Card.Title>Notificaciones <hr /></Card.Title>
             {shouldShowMarkAllAsReadButton && (
-              <SendButton text="Marcar todo como Leido" wide="20" hoverable={false} onClick={() => handleMarkAllAsRead()}/>
+              <SendButton text="Marcar todo como Leido" wide="20" hoverable={false} onClick={() => setHandleMarkAllAsReadConfirmation(true)}/>
             )}
+            <ConfirmationModal Open={handleMarkAllAsReadConfirmation} BodyText="¿Está seguro de querer marcar todas sus notificaciones como leidas?" onClickConfirm={() => { handleMarkAllAsRead(); setHandleMarkAllAsReadConfirmation(false); }} onClose={() => setHandleMarkAllAsReadConfirmation(false)} />
             <Card.Body>
               {shouldShowMarkAllAsReadButton ? (
                 notifications.map((notificationGroup, index) => (
