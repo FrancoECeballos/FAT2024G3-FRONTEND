@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Modal from 'react-bootstrap/Modal';
+import Popup from '../../components/alerts/popup/Popup.jsx';
 import './Modal.scss';
 
 function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, openButtonWidth, handleShowModal, handleCloseModal, 
     title, content, saveButtonText, handleSave, showModal, showButton = true, showDeleteButton = false, deleteButtonText, 
-    deleteFunction, saveButtonEnabled = true, saveButtonShown = true, position = false }) {
+    deleteFunction, saveButtonEnabled = true, saveButtonShown = true, position = false, showPopup = false, popupTitle = '', popupMessage = '' }) {
         
     const [show, setShow] = useState(false);
+    const [popup, setPopup] = useState(false);
 
     useEffect(() => {
         setShow(showModal);
@@ -28,9 +30,18 @@ function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, o
     };
 
     const handleSaveAndClose = async () => {
-        const saveSuccess = await handleSave();
-        if (saveSuccess) {
-            handleClose();
+        try {
+            const saveSuccess = await handleSave();
+            if (saveSuccess) {
+                handleClose();
+                if (showPopup) {
+                    setPopup(true);
+                }
+            } else {
+                console.error("Save operation failed.");
+            }
+        } catch (error) {
+            console.error("Error during save operation:", error);
         }
     };
 
@@ -57,6 +68,8 @@ function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, o
                     <SendButton backcolor='#3E4692' letercolor='white' text={saveButtonText} onClick={handleSaveAndClose} disabled={!saveButtonEnabled} hid={!saveButtonShown}/>
                 </Modal.Footer>
             </Modal>
+
+            {showPopup && <Popup show={popup} setShow={setPopup} title={popupTitle} message={popupMessage} />}
         </>
     );
 }
