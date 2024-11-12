@@ -88,13 +88,20 @@ function ObrasAutos() {
         setSearchQuery(value);
     };
 
-    if (isLoading) {
-        return <div><FullNavbar/><Loading /></div> ;
+    if (Array.isArray(obras) && obras.length === 1) {
+        const obra = obras[0];
+        navigate(`/vehiculos/${obra.id_obra}`, {state: {id_obra: `${obra.id_obra}`}});
     }
+
     return (
         <div>
             <FullNavbar selectedPage='Autos'/>
             <div className='margen-arriba'>
+            {isLoading ? (
+                    <Loading />
+                ) : (
+                    <>
+
                 <Breadcrumb style={{marginLeft:"8%", fontSize:"1.2rem"}}>
                     <Breadcrumb.Item active>Vehículos</Breadcrumb.Item>
                 </Breadcrumb>
@@ -115,6 +122,8 @@ function ObrasAutos() {
                     <p style={{marginLeft: '7rem', marginTop: '1rem'}}>No hay obras disponibles.</p>
                 )}
                 </div> 
+                </>
+                )}
             </div>
             <Footer/>
         </div>
