@@ -176,7 +176,6 @@ const Entregas = () => {
                             }
                         }
                     } else if (estado.newEstado === 5 && recorridoModal.id_estadoEntrega.id_estadoEntrega === 3) {
-                        console.log('YIPPIEEEEEEEEEEEEEE');
                         if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
                         (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
                             if (recorridoModal.id_aportePedido) {

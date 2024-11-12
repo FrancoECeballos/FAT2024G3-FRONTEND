@@ -29,6 +29,9 @@ const Cuenta = ({ user }) => {
   const [AñadirButtonIsValid, setAñadirButtonIsValid] = useState(false);
   const [deleteUserConfirmation, setDeleteUserConfirmation] = useState(false);
   const [deleteUserObraConfirmation, setDeleteUserObraConfirmation] = useState(false);
+
+  const [logOutConfirmation, setLogOutConfirmation] = useState(false);
+
   const [userData, setUserData] = useState({
     "id_usuario": "",
     "nombre": "",
@@ -550,10 +553,11 @@ const Cuenta = ({ user }) => {
               text="Cerrar Sesión"
               backcolor="#D10000"
               letercolor="white"
-              onClick={handleLogout}
+              onClick={() => setLogOutConfirmation(true)}
             />
           )}
         </Col>
+        <ConfirmationModal Open={logOutConfirmation} BodyText="¿Estas seguro de querer cerrar sesion?" onClickConfirm={handleLogout} onClose={() => setLogOutConfirmation(false)} />
       </Row>
     </div>
   );
