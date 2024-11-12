@@ -292,6 +292,7 @@ const Entregas = () => {
                                 sortedEntregas.map((entrega) => {
                                     return (
                                         <GenericCard
+                                            hoverable={false}
                                             key={entrega.id_entrega}
                                             titulo={entrega.id_pedido === null ? 'Oferta de ' + entrega.id_oferta?.id_producto?.nombre : 'Pedido de ' + entrega.id_pedido?.id_producto?.nombre}
                                             descrip1={<><strong>{entrega.id_pedido === null ? 'Ofrecido por la obra:' : 'Pedido por la obra:'}</strong> {entrega.id_pedido === null ? entrega.id_oferta?.id_obra?.nombre : entrega.id_pedido?.id_obra?.nombre}</>}
