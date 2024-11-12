@@ -445,6 +445,7 @@ function Products() {
                 {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? sortedProducts.map(product => {
                     return (
                         <GenericCard
+                            hoverable={false}
                             foto={product.imagen}
                             key={product.id_producto}
                             titulo={product.nombre}
