@@ -23,7 +23,7 @@ function Main() {
     <div className="full-height-container">
       <FullNavbar />
       <div className="h-100 background margen-arriba">
-        <Container fluid className="h-100 px-5"> {/* Margen más amplio con px-5 */}
+        <Container fluid className="h-100">
           <Row className="h-100">
             <Col xs={12} md={4} className="d-flex mb-3 mb-md-0">
               <div className="w-100">
@@ -31,7 +31,6 @@ function Main() {
               </div>
             </Col>
             <Col xs={12} md={4} className="d-flex mb-3 mb-md-0">
-              {/* Espacio reservado */}
             </Col>
             <Col xs={12} md={4}>
               <Row className="h-50 d-flex mb-3 mb-md-0">
