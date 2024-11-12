@@ -42,7 +42,7 @@ function Pedidos() {
     const [showModal, setShowModal] = useState(false);
     const [selectedPedido, setSelectedPedido] = useState(null);
     const [showAporteModal, setShowAporteModal] = useState(false);
-    const [selectedAporte, setSelectedAporte] = useState({});
+    const [selectedAporte, setSelectedAporte] = useState(null);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState(null);
@@ -267,14 +267,21 @@ function Pedidos() {
         setSearchQuery(value);
     };
 
-    const handleCardClick = (pedido) => {
-        setSelectedPedido(pedido);
-        setShowModal(true);
+    const handleCardClick = (content, aporte) => {
+        if (aporte) {
+            setShowAporteModal(true);
+            setSelectedAporte(content);
+        } else {
+            setShowModal(true);
+            setSelectedPedido(content);
+        }
     };
 
     const handleCloseModal = () => {
         setSelectedPedido(null);
         setShowModal(false);
+        setShowAporteModal(false); 
+        setSelectedAporte(null);
     };
 
     const handleDeletePedido = (pedidoId) => {
@@ -292,6 +299,14 @@ function Pedidos() {
             console.error('Error ending pedido:', error);
         });
     };
+
+    const handleRejectAporte = (aporte) => {
+        deleteData(`delete_aporte_pedido/${aporte.id_aportePedido}/`, token).then(() => {
+            window.location.reload();
+        }).catch(error => {
+            console.error('Error ending pedido:', error);
+        });
+    } 
 
     if (obras.length === 0 && !user.is_superuser) {
         return (
@@ -345,16 +360,18 @@ function Pedidos() {
                                     <h1>Viendo pedidos creados por usted</h1>
                                     {Array.isArray(sortedUserPedidos) && sortedUserPedidos.length > 0 ? (
                                         sortedUserPedidos.map((pedido) => (
-                                            <div key={pedido.id_pedido} onClick={() => handleCardClick(pedido)}>
+                                            <div>
                                                 <GenericCard hoverable={true}
+                                                    key={pedido.id_pedido}
                                                     foto={pedido.id_producto.imagen}
                                                     titulo={pedido.id_producto.nombre}
                                                     descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
                                                     descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente} /></>}
                                                     descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                                     descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
+                                                    onClick={() => handleCardClick(pedido, false)}
                                                     children={
-                                                        <>
+                                                        <div className='scroll-horizontal-entregas'>
                                                             <OverlayTrigger
                                                                 placement="top"
                                                                 overlay={<Tooltip style={{ fontSize: '100%' }}>Editar mi pedido</Tooltip>}
@@ -362,16 +379,17 @@ function Pedidos() {
                                                                 <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
                                                             </OverlayTrigger>
                                                             {pedido.aportes.map((aporte) => (
-                                                                <LittleCard
-                                                                    key={aporte.id_aportePedido}
-                                                                    titulo={`${aporte.cantidad} ${aporte.id_producto.unidadmedida} de ${aporte.id_producto.nombre}`}
-                                                                    descrip1={aporte.id_obra.nombre}
-                                                                    descrip2={`${aporte.id_usuario.nombre} ${aporte.id_usuario.apellido}`}
-                                                                    foto={aporte.id_obra.imagen}
-                                                                    onClick={() => handleCardClick(pedido)}
-                                                                />
+                                                                <div key={aporte.id_aportePedido} onClick={(e) => e.stopPropagation()}>
+                                                                    <LittleCard
+                                                                        titulo={`${aporte.cantidad} ${aporte.id_producto.unidadmedida} de ${aporte.id_producto.nombre}`}
+                                                                        descrip1={aporte.id_obra.nombre}
+                                                                        descrip2={`${aporte.id_usuario.nombre} ${aporte.id_usuario.apellido}`}
+                                                                        foto={aporte.id_obra.imagen}
+                                                                        onSelect={() => handleCardClick(aporte, true)}
+                                                                    />
+                                                                </div>
                                                             ))}
-                                                        </>
+                                                        </div>
                                                     }
                                                 />
                                             </div>
@@ -400,7 +418,7 @@ function Pedidos() {
             </div>
             <Modal 
                 showButton={false}
-                showModal={showModal}
+                showModal={showModal && !showAporteModal}
                 title='Detalles del Pedido'
                 showDeleteButton={true}
                 saveButtonText='Terminar Pedido'
@@ -422,6 +440,31 @@ function Pedidos() {
                                 descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
                                 descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
                                 descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
+                            />
+                        )}
+                    </div>
+                }
+            />
+            <Modal
+                showModal={showAporteModal}
+                title='Detalles del Aporte'
+                showDeleteButton={true}
+                deleteFunction={() => handleRejectAporte(selectedAporte)}
+                saveButtonShown={false}
+                deleteButtonText='Devolver Aporte'
+                handleCloseModal={handleCloseModal}
+                showButton={false}
+                content={
+                    <div>
+                        {selectedAporte && (
+                            <GenericCard
+                                borde={'none'}
+                                shadow={'none'}
+                                hoverable={false}
+                                foto={selectedAporte.id_obra.imagen}
+                                titulo={`${selectedAporte.cantidad} ${selectedAporte.id_producto.unidadmedida} de ${selectedAporte.id_producto.nombre}`}
+                                descrip1={<><strong>Obra: </strong>{selectedAporte.id_obra.nombre}</>}
+                                descrip2={<><strong>Usuario: </strong>{selectedAporte.id_usuario.nombre} {selectedAporte.id_usuario.apellido}</>}
                             />
                         )}
                     </div>
