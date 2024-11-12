@@ -19,6 +19,7 @@ import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Popup from '../../components/alerts/popup/Popup.jsx'
+import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 
 import './Pedidos.scss';
 
@@ -35,8 +36,11 @@ function Pedidos() {
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedPedido, setSelectedPedido] = useState(null);
+
     const [showModal, setShowModal] = useState(false);
+    const [selectedPedido, setSelectedPedido] = useState(null);
+    const [showAporteModal, setShowAporteModal] = useState(false);
+    const [selectedAporte, setSelectedAporte] = useState({});
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState(null);
@@ -55,6 +59,7 @@ function Pedidos() {
 
                     const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                     setUserPedidos(pedidosData);
+                    console.log(pedidosData);
 
                     const obrasData = await fetchData(`obra/`, token);
                     setObras(obrasData);
@@ -344,12 +349,24 @@ function Pedidos() {
                                                     descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                                     descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
                                                     children={
-                                                        <OverlayTrigger
-                                                            placement="top"
-                                                            overlay={<Tooltip style={{ fontSize: '100%' }}>Editar mi pedido</Tooltip>}
-                                                        >
-                                                            <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
-                                                        </OverlayTrigger>
+                                                        <>
+                                                            <OverlayTrigger
+                                                                placement="top"
+                                                                overlay={<Tooltip style={{ fontSize: '100%' }}>Editar mi pedido</Tooltip>}
+                                                            >
+                                                                <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
+                                                            </OverlayTrigger>
+                                                            {pedido.aportes.map((aporte) => (
+                                                                <LittleCard
+                                                                    key={aporte.id_aportePedido}
+                                                                    titulo={`${aporte.cantidad} ${aporte.id_producto.unidadmedida} de ${aporte.id_producto.nombre}`}
+                                                                    descrip1={aporte.id_obra.nombre}
+                                                                    descrip2={`${aporte.id_usuario.nombre} ${aporte.id_usuario.apellido}`}
+                                                                    foto={aporte.id_obra.imagen}
+                                                                    onClick={() => handleCardClick(pedido)}
+                                                                />
+                                                            ))}
+                                                        </>
                                                     }
                                                 />
                                             </div>

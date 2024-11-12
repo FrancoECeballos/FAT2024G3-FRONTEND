@@ -18,6 +18,7 @@ import OfertaCard from '../../components/cards/oferta_card/OfertaCard.jsx';
 import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
+import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 
 import './Ofertas.scss';
 
@@ -250,7 +251,7 @@ function Ofertas() {
         try {
             await postData('crear_detalle_oferta/', data, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const ofertaAportada = await fetchData(`oferta/${ofertaId}/`, token);
+                const ofertaAportada = await fetchData(`oferta_id/${ofertaId}/`, token);
 
                 const dataNotificacion = {
                     titulo: 'Nuevo Aporte',
@@ -258,7 +259,6 @@ function Ofertas() {
                     id_obra: selectedOferta.id_obra.id_obra,
                     fecha_creacion: fechaCreacion
                 };
-                
                 crearNotificacion(dataNotificacion, token, 'User', selectedOferta.id_usuario.id_usuario).then(() => window.location.reload());
                 return true;
             });
@@ -350,12 +350,23 @@ function Ofertas() {
                                                         descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
                                                         descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
                                                         children={
-                                                            <OverlayTrigger
-                                                                placement="top"
-                                                                overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
-                                                            >
-                                                                <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
-                                                            </OverlayTrigger>
+                                                            <>
+                                                                <OverlayTrigger
+                                                                    placement="top"
+                                                                    overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                                >
+                                                                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
+                                                                </OverlayTrigger>
+                                                                {oferta.aportes.map((aporte) => (
+                                                                    <LittleCard
+                                                                        key={aporte.id_aporteOferta}
+                                                                        titulo={`${aporte.cantidad} ${aporte.id_oferta.id_producto.unidadmedida} de ${aporte.id_oferta.id_producto.nombre}`}
+                                                                        descrip1={aporte.id_obra.nombre}
+                                                                        descrip2={`${aporte.id_usuario.nombre} ${aporte.id_usuario.apellido}`}
+                                                                        foto={aporte.id_obra.imagen}
+                                                                    />
+                                                                ))}
+                                                            </>
                                                         }
                                                     />
                                                 </div>
