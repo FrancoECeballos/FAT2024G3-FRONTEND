@@ -103,7 +103,7 @@ function Ofertas() {
 
         return () => clearInterval(interval);
     }, [ofertaCardRef]);
-    
+
     const filters = [
         { type: 'id_producto.nombre', label: 'Nombre del Producto' },
         { type: 'fechainicio', label: 'Fecha Inicio' },
@@ -160,28 +160,28 @@ function Ofertas() {
 
     const sortedUserOfertas = [...filteredUserOfertas].sort((a, b) => {
         if (!orderCriteria) return new Date(b.fechainicio) - new Date(a.fechainicio);
-    
+
         const getValue = (obj, path) => {
             return path.split('.').reduce((acc, part) => acc && acc[part], obj);
         };
-    
+
         const aValue = getValue(a, orderCriteria.replace('oferta.', ''));
         const bValue = getValue(b, orderCriteria.replace('oferta.', ''));
-    
+
         if (orderCriteria.includes('fechainicio') || orderCriteria.includes('fechavencimiento')) {
             const aDate = new Date(aValue);
             const bDate = new Date(bValue);
             return aDate - bDate;
         }
-    
+
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return aValue.toLowerCase().localeCompare(bValue.toLowerCase());
         }
-    
+
         if (typeof aValue === 'number' && typeof bValue === 'number') {
             return bValue - aValue;
         }
-    
+
         return 0;
     });
 
@@ -226,7 +226,7 @@ function Ofertas() {
                 return crearNotificacion(dataNotificacion, token).then(() => {
                     window.location.reload();
                 });
-                
+
             }).catch((error) => {
                 console.error('Error al crear la oferta:', error);
             });
@@ -292,7 +292,7 @@ function Ofertas() {
         }).catch(error => {
             console.error('Error ending pedido:', error);
         });
-    } 
+    }
 
     if (isLoading) {
         return <div><FullNavbar /><Loading /></div>;
@@ -305,19 +305,19 @@ function Ofertas() {
                         <Breadcrumb.Item active>Ofertas</Breadcrumb.Item>
                     </Breadcrumb>
                     <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                    <br/>
+                    <br />
                     <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
                 </div>
             </>
         );
     }
-    
+
 
     return (
         <>
             <FullNavbar selectedPage='Ofertas' />
             <div className='margen-arriba'>
-            {isLoading ? (
+                {isLoading ? (
                     <Loading />
                 ) : (
                     <>
@@ -342,7 +342,7 @@ function Ofertas() {
                                 />
                             </div>
                             <Tabs defaultActiveKey='ofertas' id="uncontrolled-tab-example" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', marginLeft: '1rem', marginRight: '1rem' }}>
-                            <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong className="custom-tab-title">Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
+                                <Tab key='user_ofertas' eventKey='user_ofertas' title={<strong className="custom-tab-title">Mis Ofertas</strong>} style={{ backgroundColor: "transparent" }}>
                                     <div className='cardCategori'>
                                         <h1>Viendo ofertas creadas por usted</h1>
                                         {Array.isArray(sortedUserOfertas) && sortedUserOfertas.length > 0 ? (
@@ -367,8 +367,8 @@ function Ofertas() {
                                                                 >
                                                                     <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
                                                                 </OverlayTrigger>
-                                                                {oferta.aportes.map((aporte) => (
-                                                                    <div className='scroll-horizontal-entregas'>
+                                                                <div className='scroll-horizontal-entregas'>
+                                                                    {oferta.aportes.map((aporte) => (
                                                                         <LittleCard
                                                                             key={aporte.id_aporteOferta}
                                                                             titulo={`${aporte.cantidad} ${aporte.id_oferta.id_producto.unidadmedida} de ${aporte.id_oferta.id_producto.nombre}`}
@@ -380,8 +380,8 @@ function Ofertas() {
                                                                                 setShowAporteModal(true);
                                                                             }}
                                                                         />
-                                                                    </div>
-                                                                ))}
+                                                                    ))}
+                                                                </div>
                                                             </>
                                                         }
                                                     />
@@ -392,49 +392,50 @@ function Ofertas() {
                                         )}
                                     </div>
                                 </Tab>
-                                    <Tab key='ofertas' eventKey='ofertas' title={<span className="custom-tab-title">Ofertas para mi</span>} style={{ backgroundColor: "transparent" }}>
-                                        <div className='cardCategori'>
-                                            <h1>Viendo ofertas disponibles</h1>
-                                            {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
-                                                sortedOfertas.map(oferta => (
-                                                    <div key={oferta.id_oferta}>
-                                                        <GenericCard
-                                                            onClick={() => {
-                                                                setSelectedOferta(oferta);
-                                                                setShowTakeOfertaModal(true);
-                                                                if (obras.length > 1) {
-                                                                    const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
-                                                                    if (filteredObras.length > 0) {
-                                                                        setSelectedObra(filteredObras[0]);
-                                                                    }
+                                <Tab key='ofertas' eventKey='ofertas' title={<span className="custom-tab-title">Ofertas para mi</span>} style={{ backgroundColor: "transparent" }}>
+                                    <div className='cardCategori'>
+                                        <h1>Viendo ofertas disponibles</h1>
+                                        {Array.isArray(sortedOfertas) && sortedOfertas.length > 0 ? (
+                                            sortedOfertas.map(oferta => (
+                                                <div key={oferta.id_oferta}>
+                                                    <GenericCard
+                                                        onClick={() => {
+                                                            setSelectedOferta(oferta);
+                                                            setShowTakeOfertaModal(true);
+                                                            if (obras.length > 1) {
+                                                                const filteredObras = obras.filter(obra => oferta.id_obra && oferta.id_obra.id_obra !== obra.id_obra);
+                                                                if (filteredObras.length > 0) {
+                                                                    setSelectedObra(filteredObras[0]);
                                                                 }
-                                                                if (obras.length === 1) {
-                                                                    setSelectedObra(obras[0]);
-                                                                }
-                                                            }}
-                                                            titulo={`${oferta.id_producto.nombre}`}
-                                                            foto={oferta.id_producto.imagen}
-                                                            descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
-                                                            descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
-                                                            descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
-                                                            descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
-                                                            children={
-                                                                <OverlayTrigger
-                                                                    placement="top"
-                                                                    overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
-                                                                >
-                                                                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
-                                                                </OverlayTrigger>
                                                             }
-                                                        />
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
-                                            )}
-                                        </div>
-                                    </Tab>
-                                </Tabs>
+                                                            if (obras.length === 1) {
+                                                                setSelectedObra(obras[0]);
+                                                            }
+                                                        }}
+                                                        hoverable={false}
+                                                        titulo={`${oferta.id_producto.nombre}`}
+                                                        foto={oferta.id_producto.imagen}
+                                                        descrip1={<><strong>Cantidad:</strong> {oferta.progreso} / {oferta.cantidad} {oferta.id_producto.unidadmedida}</>}
+                                                        descrip2={<><strong>Obra:</strong> {oferta.id_obra.nombre} <strong>Usuario:</strong> {oferta.id_usuario.nombre} {oferta.id_usuario.apellido}</>}
+                                                        descrip3={<><strong>Estado:</strong> {oferta.id_estadoOferta.nombre}</>}
+                                                        descrip4={<><strong>Fecha Vencimiento:</strong> {oferta.fechavencimiento ? oferta.fechavencimiento.split('-').reverse().join('/') : ''}</>}
+                                                        children={
+                                                            <OverlayTrigger
+                                                                placement="top"
+                                                                overlay={<Tooltip style={{ fontSize: '100%' }}>Tomar la oferta</Tooltip>}
+                                                            >
+                                                                <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:download-outline" />
+                                                            </OverlayTrigger>
+                                                        }
+                                                    />
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay ofertas disponibles.</p>
+                                        )}
+                                    </div>
+                                </Tab>
+                            </Tabs>
                         </div>
                     </>
                 )}
@@ -500,7 +501,7 @@ function Ofertas() {
                                     )}
                                 </>
                             )}
-                            {error && <p style={{ color: 'red', marginTop: '0.5rem', fontSize: '0.8rem', marginBottom:"0px" }}>{error}</p>}
+                            {error && <p style={{ color: 'red', marginTop: '0.5rem', fontSize: '0.8rem', marginBottom: "0px" }}>{error}</p>}
                         </div>
                     }
                 />
@@ -508,12 +509,12 @@ function Ofertas() {
 
             <Modal
                 showButton={false}
-                showModal={showUserOfertaModal}
+                showModal={showUserOfertaModal && !showAporteModal}
                 title='Detalles de la Oferta'
                 showDeleteButton={true}
                 saveButtonText='Terminar Oferta'
                 deleteButtonText='Cancelar Oferta'
-                handleCloseModal={() => {setShowUserOfertaModal(false); setShowAporteModal(false);}}
+                handleCloseModal={() => { setShowUserOfertaModal(false); setShowAporteModal(false); }}
                 deleteFunction={() => setCancelarOfertaConfirmation(true)}
                 handleSave={() => setTerminarOfertaConfirmation(true)}
                 content={
@@ -543,7 +544,7 @@ function Ofertas() {
                 deleteFunction={() => handleRejectAporte(selectedAporte)}
                 saveButtonShown={false}
                 deleteButtonText='Devolver Aporte'
-                handleCloseModal={() => {setShowUserOfertaModal(false); setShowAporteModal(false);}}
+                handleCloseModal={() => { setShowUserOfertaModal(false); setShowAporteModal(false); }}
                 showButton={false}
                 content={
                     <div>
@@ -561,13 +562,13 @@ function Ofertas() {
                     </div>
                 }
             />
-            <ConfirmationModal Open={terminarOfertaConfirmation} BodyText="¿Está seguro que desea terminar con esta oferta?" onClickConfirm={() => handleEndOferta(selectedOferta.id_oferta)} onClose={() => setTerminarOfertaConfirmation(false)} />
-            <ConfirmationModal Open={cancelarOfertaConfirmation} BodyText="¿Está seguro que desea cancelar esta oferta?" onClickConfirm={() => handleDeleteOferta(selectedOferta.id_oferta)} onClose={() => setCancelarOfertaConfirmation(false)} />
+            <ConfirmationModal Open={terminarOfertaConfirmation} BodyText="Al terminar la oferta se donaran los productos tomados." onClickConfirm={() => handleEndOferta(selectedOferta.id_oferta)} onClose={() => setTerminarOfertaConfirmation(false)} />
+            <ConfirmationModal Open={cancelarOfertaConfirmation} BodyText="Si cancelas la oferta no se donaran los productos tomados ¿Está seguro?" onClickConfirm={() => handleDeleteOferta(selectedOferta.id_oferta)} onClose={() => setCancelarOfertaConfirmation(false)} />
             
 
             {user.is_superuser && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
-                    <SendButton onClick={() => navigate(`/informe_ofertas`)} text='Ver Informe de Ofertas' wide='14'/>
+                    <SendButton onClick={() => navigate(`/informe_ofertas`)} text='Ver Informe de Ofertas' wide='14' />
                 </div>
             )}
         </>

@@ -38,6 +38,7 @@ function Products() {
     const [isFormValid, setIsFormValid] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [popupData, setPopupData] = useState({});
     const [obra, setObra] = useState({});
     
     const [products, setProducts] = useState([]);
@@ -149,6 +150,25 @@ function Products() {
             return () => clearInterval(interval);
         }
     }, [pedidoCardRef, ofertaCardRef, pedidoOrOferta]);
+
+    const reloadData = async () => {
+        try {
+            const productsResult = await fetchData(`GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token);
+            setProducts(productsResult);
+            const productsID = productsResult.map(product => product.id_producto);
+            const excludedProductsResult = await postData(`GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token);
+            const transformedResult = excludedProductsResult.map(product => ({
+                key: product.id_producto,
+                label: `${product.nombre} - ${product.descripcion}`,
+            }));
+            setExcludedProducts(transformedResult);
+    
+            const categoryResult = await fetchData(`/categoria/${categoriaID}`, token);
+            setCurrentCategory(categoryResult[0].nombre);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     const filteredProducts = products.filter(product => {
         return (
@@ -266,13 +286,15 @@ function Products() {
                 cantidad: cantidad,
             };
             if (selectedOperacion === 'sumar' || producto) {
-                await postData(`AddDetallestockproducto/`, updatedDetalle, token).then(() => {
-                    window.location.reload();
+                await postData(`AddDetallestockproducto/`, updatedDetalle, token).then(async () => {
+                    await reloadData();
+                    setPopupData({"title": 'Suma exitosa', "message": `Se sumó el valor de ${cantidad} exitosamente.`});
                 });
                 return true;
             } else if (selectedOperacion === 'restar') {
-                await postData(`SubtractDetallestockproducto/`, updatedDetalle, token).then(() => {
-                    window.location.reload();
+                await postData(`SubtractDetallestockproducto/`, updatedDetalle, token).then(async () => {
+                    await reloadData();
+                    setPopupData({"title": 'Resta exitosa', "message": `Se restó el valor de ${cantidad} exitosamente.`});
                 });
                 return true; 
             }
@@ -303,69 +325,79 @@ function Products() {
     };
 
     const handleCreatePedidoOrOferta = () => {
-        if (pedidoOrOferta === 'pedido') {
-            if (pedidoCardRef.current) {
-                const pedidoForm = pedidoCardRef.current.getPedidoForm();
-                const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-                
-                postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
-                    const obrasPromises = obras.map(async (obra) => {
-                            const fechaCreacion = new Date().toISOString().split('T')[0];
-                            const producto = await fetchData(`producto/${pedidoForm.id_producto}/`, token);
-                            const pendingObra = await fetchData(`obra/${pedidoForm.id_obra}/`, token);
-                            const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
-                            
-                            const dataNotificacion = {
-                                titulo: 'Nuevo Pedido',
-                                descripcion: `Pedido creado por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
-                                Se piden ${pedidoForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre} con ${urgenciaLabel} urgencia.`,
-                                id_usuario: user.id_usuario,
-                                id_obra: obra,
-                                fecha_creacion: fechaCreacion
-                            };
+        return new Promise((resolve, reject) => {
+            if (pedidoOrOferta === 'pedido') {
+                if (pedidoCardRef.current) {
+                    const pedidoForm = pedidoCardRef.current.getPedidoForm();
+                    const { obras, ...pedidoFormWithoutObras } = pedidoForm;
     
+                    postData('crear_pedido/', pedidoFormWithoutObras, token).then(async (result) => {
+                        const fechaCreacion = new Date().toISOString().split('T')[0];
+                        const producto = await fetchData(`producto/${pedidoForm.id_producto}/`, token);
+                        const pendingObra = await fetchData(`obra/${pedidoForm.id_obra}/`, token);
+                        const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
+
+                        const dataNotificacion = {
+                            titulo: 'Nuevo Pedido',
+                            descripcion: `Pedido creado por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
+                            Se piden ${pedidoForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre} con ${urgenciaLabel} urgencia.`,
+                            id_usuario: user.id_usuario,
+                            id_obra: obra,
+                            fecha_creacion: fechaCreacion
+                        };
+
+                        const obrasPromises = obras.map(async (obra) => {
                             postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                             crearNotificacion(dataNotificacion, token, 'Obra', obra);
                         });
-                    return Promise.all(obrasPromises).then(() => window.location.reload());
-                }).catch((error) => {
-                    console.error('Error al crear el pedido o los detalles del pedido:', error);
-                });
-            } 
-        } else if (pedidoOrOferta === 'oferta') {
-            if (ofertaCardRef.current) {
-                const ofertaForm = ofertaCardRef.current.getOfertaForm();
-
-                postData('crear_oferta/', ofertaForm, token).then(async () => {
-                    const fechaCreacion = new Date().toISOString().split('T')[0];
-                    const producto = await fetchData(`producto/${ofertaForm.id_producto}/`, token);
-                    const pendingStock = await fetchData(`stock/${ofertaForm.id_obra}/`, token);
-                    const pendingObra = await fetchData(`obra/${ofertaForm.id_obra}/`, token);
-
-                    await postData('SubtractDetallestockproducto/', {
-                        cantidad: ofertaForm.cantidad,
-                        id_stock: pendingStock[0].id_stock,
-                        id_producto: ofertaForm.id_producto,
-                        id_usuario: user.id_usuario
-                    }, token)
-    
-                    const dataNotificacion = {
-                        titulo: 'Nueva Oferta',
-                        descripcion: `Oferta creada por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
-                        Se ofrecen ${ofertaForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre}.`,
-                        id_usuario: user.id_usuario,
-                        fecha_creacion: fechaCreacion
-                    };
-    
-                    return crearNotificacion(dataNotificacion, token).then(() => {
-                        window.location.reload();
+                        
+                        return Promise.all(obrasPromises).then(async () => {
+                            setPopupData({"title": 'Pedido Creado', "message": `Se creó el pedido de ${producto[0].nombre} exitosamente.`});
+                            await reloadData();
+                            resolve(true);
+                        });
+                    }).catch((error) => {
+                        console.error('Error al crear el pedido o los detalles del pedido:', error);
+                        reject(false);
                     });
-                    
-                }).catch((error) => {
-                    console.error('Error al crear la oferta:', error);
-                });
+                } 
+            } else if (pedidoOrOferta === 'oferta') {
+                if (ofertaCardRef.current) {
+                    const ofertaForm = ofertaCardRef.current.getOfertaForm();
+    
+                    postData('crear_oferta/', ofertaForm, token).then(async () => {
+                        const fechaCreacion = new Date().toISOString().split('T')[0];
+                        const producto = await fetchData(`producto/${ofertaForm.id_producto}/`, token);
+                        const pendingStock = await fetchData(`stock/${ofertaForm.id_obra}/`, token);
+                        const pendingObra = await fetchData(`obra/${ofertaForm.id_obra}/`, token);
+    
+                        await postData('SubtractDetallestockproducto/', {
+                            cantidad: ofertaForm.cantidad,
+                            id_stock: pendingStock[0].id_stock,
+                            id_producto: ofertaForm.id_producto,
+                            id_usuario: user.id_usuario
+                        }, token)
+    
+                        const dataNotificacion = {
+                            titulo: 'Nueva Oferta',
+                            descripcion: `Oferta creada por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
+                            Se ofrecen ${ofertaForm.cantidad} ${producto[0].unidadmedida} de ${producto[0].nombre}.`,
+                            id_usuario: user.id_usuario,
+                            fecha_creacion: fechaCreacion
+                        };
+    
+                        return crearNotificacion(dataNotificacion, token).then(async () => {
+                            setPopupData({"title": 'Oferta Creada', "message": `Se creó la oferta de ${producto[0].nombre} exitosamente.`});
+                            await reloadData();
+                            resolve(true);
+                        });
+                    }).catch((error) => {
+                        console.error('Error al crear la oferta:', error);
+                        reject(false);
+                    });
+                }
             }
-        }
+        });
     };
 
     const isProductNameSimilar = (newName, existingProducts) => {
@@ -395,7 +427,7 @@ function Products() {
 
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='Añadir un producto nuevo' openButtonWidth='15' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
-                    handleSave={() => {
+                    showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={() => {
                         if (cantidadRef.current) {
                             if (selectedCardId === 'New') {
                                 handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
@@ -456,7 +488,7 @@ function Products() {
                                     <Row>
                                         <Col xs={12} md={6} style={{ marginTop: '1rem' }}>
                                             <Modal buttonTextColor="black" buttonColor="#D9D9D9" openButtonText="Modificar Stock" openButtonWidth='10' handleShowModal={() => setDetalle({id_producto: product.id_producto, id_stock: parseInt(stockId, 10) })} handleCloseModal={() => setShowAlert(false)} title="Modificar Stock" saveButtonText="Guardar" handleSave={() => handleSave(parseFloat(cantidadRef.current.value), product.total)}
-                                                content={
+                                            showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} content={
                                                     <div>
                                                         <GenericAlert ptamaño="0.9" title="Error" description={alertMessage} type="danger" show={showAlert} setShow={setShowAlert}></GenericAlert>
                                                         <h2 className='centered'> Producto: {product.nombre} </h2>
@@ -475,7 +507,7 @@ function Products() {
                                         </Col>
                                         <Col xs={12} md={6} style={{ marginTop: '1rem' }}>
                                             <Modal tamaño="lg" openButtonText="Crear Pedido / Oferta" openButtonWidth='12' handleCloseModal={() => {setShowAlert(false); setPedidoOrOferta('pedido');}} title="Crear Pedido / Oferta" saveButtonText="Crear" handleSave={handleCreatePedidoOrOferta} saveButtonEnabled={isFormValid}
-                                                content={
+                                                showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} content={
                                                     <Tabs onSelect={(eventKey) => setPedidoOrOferta(eventKey)}>
                                                         <Tab style={{ backgroundColor: 'transparent' }} key='pedido' eventKey='pedido' title='Pedido' onClick={() => setPedidoOrOferta('pedido')}>
                                                             <PedidoCard productDefault={product} user={user} stock={parseInt(stockId, 10)} ref={pedidoCardRef}/>
