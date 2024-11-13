@@ -1,9 +1,13 @@
 .gencard {
-    width: 18rem;
+    width: 80%;
     flex: 0 0 auto;
     border-style: solid;
     box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
     transition: transform 0.2s !important;
+
+    @media (max-width: 768px){
+        width: 100%;
+    }
   
     &.selected {
       border-color: blue;
@@ -17,12 +21,16 @@
 }
 
 .hoverable-generic-card {
-  width: 18rem;
+  width: 80%;
   flex: 0 0 auto;
   border-style: solid;
   box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
   transition: transform 0.2s !important;
   cursor: pointer;
+
+  @media (max-width: 768px){
+    width: 90%;
+}
 
   &.selected {
     border-color: blue;

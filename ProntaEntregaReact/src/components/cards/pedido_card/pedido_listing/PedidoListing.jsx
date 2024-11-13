@@ -145,10 +145,11 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
             <div className='cardCategori'>
                 {Array.isArray(sortedPedidos) && sortedPedidos.length > 0 ? (
                     sortedPedidos.map(obra => (
-                        <GenericAccordion titulo={`Pedidos de '${obra.obra.nombre}'`} wide='80%' key={obra.obra.id_obra}
+                        <GenericAccordion titulo={`Pedidos de '${obra.obra.nombre}'`} key={obra.obra.id_obra}
                             children={obra.pedidos.map(pedido => (
                                 <div onClick={() => handlePedidoClick(pedido)}>
                                     <GenericCard hoverable={true}
+                                        wide={'100%'}
                                         key={pedido.id_pedido} 
                                         foto={pedido.id_producto.imagen}
                                         titulo={pedido.id_producto.nombre}

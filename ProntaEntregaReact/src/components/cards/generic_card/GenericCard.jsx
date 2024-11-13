@@ -12,7 +12,7 @@ function GenericCard({ borde,foto,shadow, titulo, descrip1, descrip2, descrip3, 
                 style={{ 
                     ...cardStyle,
                     border: `${borde}`, 
-                    width: `${wide || '80%'}`,
+                    width: `${wide}`,
                     borderRadius: `${borderRadius || '1rem'}`,
                     boxShadow: `${shadow ||'0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}`, 
                     padding: '0.5rem',
