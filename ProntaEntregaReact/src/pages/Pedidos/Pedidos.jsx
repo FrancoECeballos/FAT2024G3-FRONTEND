@@ -288,21 +288,7 @@ function Pedidos() {
         });
     };
 
-<<<<<<< HEAD
     if (obras.length === 0 && !user.is_superuser) {
-=======
-    const handleRejectAporte = (aporte) => {
-        deleteData(`delete_aporte_pedido/${aporte.id_aportePedido}/`, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
-            console.error('Error ending pedido:', error);
-        });
-    } 
-
-    if (isLoading) {
-        return <div><FullNavbar /><Loading /></div>;
-    } else if (obras.length === 0 && !user.is_superuser) {
->>>>>>> 3012daff7622979565ef65dc6e0151f5ebd3bce7
         return (
             <>
                 <FullNavbar selectedPage='Pedidos' />
