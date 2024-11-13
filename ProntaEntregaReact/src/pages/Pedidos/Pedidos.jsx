@@ -19,7 +19,6 @@ import deleteData from '../../functions/deleteData.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import Popup from '../../components/alerts/popup/Popup.jsx'
-import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
 
 import ConfirmationModal from "../../components/modals/confirmation_modal/ConfirmationModal.jsx";
 
@@ -38,11 +37,8 @@ function Pedidos() {
     const [orderCriteria, setOrderCriteria] = useState(null);
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
-
-    const [showModal, setShowModal] = useState(false);
     const [selectedPedido, setSelectedPedido] = useState(null);
-    const [showAporteModal, setShowAporteModal] = useState(false);
-    const [selectedAporte, setSelectedAporte] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState(null);
@@ -64,7 +60,6 @@ function Pedidos() {
 
                     const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                     setUserPedidos(pedidosData);
-                    console.log(pedidosData);
 
                     const obrasData = await fetchData(`obra/`, token);
                     setObras(obrasData);
@@ -267,21 +262,14 @@ function Pedidos() {
         setSearchQuery(value);
     };
 
-    const handleCardClick = (content, aporte) => {
-        if (aporte) {
-            setShowAporteModal(true);
-            setSelectedAporte(content);
-        } else {
-            setShowModal(true);
-            setSelectedPedido(content);
-        }
+    const handleCardClick = (pedido) => {
+        setSelectedPedido(pedido);
+        setShowModal(true);
     };
 
     const handleCloseModal = () => {
         setSelectedPedido(null);
         setShowModal(false);
-        setShowAporteModal(false); 
-        setSelectedAporte(null);
     };
 
     const handleDeletePedido = (pedidoId) => {
@@ -299,14 +287,6 @@ function Pedidos() {
             console.error('Error ending pedido:', error);
         });
     };
-
-    const handleRejectAporte = (aporte) => {
-        deleteData(`delete_aporte_pedido/${aporte.id_aportePedido}/`, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
-            console.error('Error ending pedido:', error);
-        });
-    } 
 
     if (obras.length === 0 && !user.is_superuser) {
         return (
@@ -360,36 +340,21 @@ function Pedidos() {
                                     <h1>Viendo pedidos creados por usted</h1>
                                     {Array.isArray(sortedUserPedidos) && sortedUserPedidos.length > 0 ? (
                                         sortedUserPedidos.map((pedido) => (
-                                            <div>
+                                            <div key={pedido.id_pedido} onClick={() => handleCardClick(pedido)}>
                                                 <GenericCard hoverable={true}
-                                                    key={pedido.id_pedido}
                                                     foto={pedido.id_producto.imagen}
                                                     titulo={pedido.id_producto.nombre}
                                                     descrip1={<><strong>Cantidad:</strong> {pedido.progreso} / {pedido.cantidad} {pedido.id_producto.unidadmedida}</>}
                                                     descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente} /></>}
                                                     descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                                     descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
-                                                    onClick={() => handleCardClick(pedido, false)}
                                                     children={
-                                                        <div className='scroll-horizontal-entregas'>
-                                                            <OverlayTrigger
-                                                                placement="top"
-                                                                overlay={<Tooltip style={{ fontSize: '100%' }}>Editar mi pedido</Tooltip>}
-                                                            >
-                                                                <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
-                                                            </OverlayTrigger>
-                                                            {pedido.aportes.map((aporte) => (
-                                                                <div key={aporte.id_aportePedido} onClick={(e) => e.stopPropagation()}>
-                                                                    <LittleCard
-                                                                        titulo={`${aporte.cantidad} ${aporte.id_producto.unidadmedida} de ${aporte.id_producto.nombre}`}
-                                                                        descrip1={aporte.id_obra.nombre}
-                                                                        descrip2={`${aporte.id_usuario.nombre} ${aporte.id_usuario.apellido}`}
-                                                                        foto={aporte.id_obra.imagen}
-                                                                        onSelect={() => handleCardClick(aporte, true)}
-                                                                    />
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                                        <OverlayTrigger
+                                                            placement="top"
+                                                            overlay={<Tooltip style={{ fontSize: '100%' }}>Editar mi pedido</Tooltip>}
+                                                        >
+                                                            <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1.1rem", right: "0.5rem", color: "#858585", transition: "transform 0.3s" }} icon="line-md:edit-twotone" />
+                                                        </OverlayTrigger>
                                                     }
                                                 />
                                             </div>
@@ -418,7 +383,7 @@ function Pedidos() {
             </div>
             <Modal 
                 showButton={false}
-                showModal={showModal && !showAporteModal}
+                showModal={showModal}
                 title='Detalles del Pedido'
                 showDeleteButton={true}
                 saveButtonText='Terminar Pedido'
@@ -445,34 +410,9 @@ function Pedidos() {
                     </div>
                 }
             />
-            <Modal
-                showModal={showAporteModal}
-                title='Detalles del Aporte'
-                showDeleteButton={true}
-                deleteFunction={() => handleRejectAporte(selectedAporte)}
-                saveButtonShown={false}
-                deleteButtonText='Devolver Aporte'
-                handleCloseModal={handleCloseModal}
-                showButton={false}
-                content={
-                    <div>
-                        {selectedAporte && (
-                            <GenericCard
-                                borde={'none'}
-                                shadow={'none'}
-                                hoverable={false}
-                                foto={selectedAporte.id_obra.imagen}
-                                titulo={`${selectedAporte.cantidad} ${selectedAporte.id_producto.unidadmedida} de ${selectedAporte.id_producto.nombre}`}
-                                descrip1={<><strong>Obra: </strong>{selectedAporte.id_obra.nombre}</>}
-                                descrip2={<><strong>Usuario: </strong>{selectedAporte.id_usuario.nombre} {selectedAporte.id_usuario.apellido}</>}
-                            />
-                        )}
-                    </div>
-                }
-            />
             <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
-            <ConfirmationModal Open={cancelarPedidoConfirmation} BodyText="Al cancelar el pedido se eliminara lo aportado y no se guardara. ¿Estas seguro?" onClickConfirm={() => handleDeletePedido(selectedPedido.id_pedido)} onClose={() => setCancelarPedidoConfirmation(false)} />
-            <ConfirmationModal Open={endPedidoConfirmation} BodyText="Al terminar el pedido se tomara lo que se a aportado hasta ahora." onClickConfirm={() => handleEndPedido(selectedPedido.id_pedido)} onClose={() => setEndPedidoConfirmation(false)} />
+            <ConfirmationModal Open={cancelarPedidoConfirmation} BodyText="¿Está seguro que desea cancelar este pedido?" onClickConfirm={() => handleDeletePedido(selectedPedido.id_pedido)} onClose={() => setCancelarPedidoConfirmation(false)} />
+            <ConfirmationModal Open={endPedidoConfirmation} BodyText="¿Está seguro que desea terminar este pedido?" onClickConfirm={() => handleEndPedido(selectedPedido.id_pedido)} onClose={() => setEndPedidoConfirmation(false)} />
         </>
     );
 }
