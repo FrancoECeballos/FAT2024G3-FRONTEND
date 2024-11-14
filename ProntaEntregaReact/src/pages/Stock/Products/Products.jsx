@@ -231,7 +231,7 @@ function Products() {
         console.log(newProduct);
     };
 
-    const handleCreateProduct = async () => {
+    const handleCreateProduct = async (cantidad, total) => {
         try {
             const data = new FormData();
             data.append('imagen', newProduct.imagen);
@@ -252,7 +252,7 @@ function Products() {
                 };
             
                 await crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra);
-                handleSave(parseFloat(cantidadRef.current.value), null, response.id_producto);
+                handleSave(cantidad, null, response.id_producto);
             });
         } catch (error) {
             console.error('Error creating product:', error);
@@ -427,12 +427,13 @@ function Products() {
 
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='Añadir un producto nuevo' openButtonWidth='15' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
-                    showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={() => {
+                    showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={async () => {
                         if (cantidadRef.current) {
                             if (selectedCardId === 'New') {
-                                handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
+                                console.log(cantidadRef.current.value);
+                                await handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
                             } else {
-                                handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
+                                await handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);
                             }
                         } else {
                             setAlertMessage('Por favor seleccione un producto');
