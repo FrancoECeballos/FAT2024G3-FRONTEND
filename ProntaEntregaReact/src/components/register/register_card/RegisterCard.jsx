@@ -287,7 +287,7 @@ const RegisterCard = () => {
   return (
     <>
       <Container className="d-flex justify-content-center align-items-center register-container">
-        <Card style={{ width: '80%', borderRadius: '0.3rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
+        <Card className='cardreg' style={{borderRadius: '0.3rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
           <Card.Body>
             <UploadImage wide='13' onFileChange={handleFileChange}/>
             <Form.Label className="font-rubik" style={{ fontSize: '1.3rem' }}>Registro:</Form.Label>
@@ -299,6 +299,12 @@ const RegisterCard = () => {
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Nombre (*)</Form.Label>
                       <Form.Control style={{ height: '2.4rem' }} name="nombre" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su nombre"/>
                       <Form.Label id='errorNombre' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2">
+                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido (*)</Form.Label>
+                    <Form.Control style={{ height: '2.4rem' }} name="apellido" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su apellido"/>
+                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
@@ -319,6 +325,12 @@ const RegisterCard = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
+                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de documento (*)</Form.Label>
+                    <Form.Control style={{ height: '2.4rem' }} name="documento" type="documento" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su documento"/>
+                    <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                   <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Genero (*)</Form.Label>
                     <Form.Select style={{ height: '2.4rem' }} name="genero" onChange={handleInputChange} aria-label="Default select example" >
                       <option autoFocus hidden>Seleccione un genero</option>
@@ -334,6 +346,11 @@ const RegisterCard = () => {
                     <SelectLocalidad onSelect={handleLocalidadChange} onChange={() => setDirecFormData((...prevData) => ({ ...prevData, localidad: "" }))} />
                     <Form.Label id='errorLocalidad' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
+                  
+              </Col>   
+              <Col  xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
+
+              
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Calle (*)</Form.Label>
@@ -346,13 +363,7 @@ const RegisterCard = () => {
                     <Form.Control style={{ height: '2.4rem' }} name="numero" type="number" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su Numero"/>
                     <Form.Label id='errorNumero' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
-              </Col>   
-              <Col  xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-                  <Form.Group className="mb-2">
-                  <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Apellido (*)</Form.Label>
-                    <Form.Control style={{ height: '2.4rem' }} name="apellido" type="text" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su apellido"/>
-                    <Form.Label id='errorApellido' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
-                  </Form.Group>
+                  
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
                     <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Email (*)</Form.Label>
@@ -360,11 +371,7 @@ const RegisterCard = () => {
                     <Form.Label id='errorEmail' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
                   </Form.Group>
 
-                  <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
-                    <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>Numero de documento (*)</Form.Label>
-                    <Form.Control style={{ height: '2.4rem' }} name="documento" type="documento" onBlur={handleInputChange} onChange={handleInputChange} placeholder="Ingrese su documento"/>
-                    <Form.Label id='errorDocumento' className="font-rubik" style={{ fontSize: '0.8rem', color: 'red' }}>&nbsp;</Form.Label>
-                  </Form.Group>
+                  
 
 
                   <Form.Group className="mb-2" style={{maxHeight: '6.2979rem'}}>
@@ -398,7 +405,7 @@ const RegisterCard = () => {
               </Col>
               </Row>
             </Form>
-              <div style={{ marginTop: '5%',display:'flex', justifyContent:'end'}}>
+              <div className='botreg' style={{ marginTop: '5%'}}>
                 <SendButton onClick={handleSendData} text="Registrar" wide="10" backcolor="#02005D" letercolor='white' radius='0.2' shadow='none'/>
               </div>
           </Card.Body>
