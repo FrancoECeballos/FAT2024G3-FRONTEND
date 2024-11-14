@@ -57,7 +57,7 @@ function SeguridadYPrivacidad(){
                     <Sidebar selectedPage={"seguridad"} user={user}/>
                 </Col>
                 <Col className="colcuenta" style={{display:"flex",justifyContent:"center"}} xs={12} sm={9} md={9} lg={9} xl={9} xxl={9}>
-                        <ChangePasswordCard user={user.viewingUser}/>
+                    <ChangePasswordCard user={user.viewingUser}/>
                 </Col>
             </Row>
         </div>
