@@ -13,7 +13,7 @@ import SendButton from '../../buttons/send_button/send_button.jsx';
 
 const ForgotPasswordCard = () => {
     return (
-        <Container style={{display: 'flex'}} className="d-flex justify-content-center align-items-center vh-100 change-password-container">
+        <Container style={{display: 'flex'}} className="d-flex justify-content-center align-items-center vh-100 forgot-password-container">
             <Card style={{position: 'relative', width: '40rem', borderRadius:'1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)'}}>
                 <Card.Body>
                     <Form>
