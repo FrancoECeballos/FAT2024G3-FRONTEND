@@ -40,7 +40,7 @@ function OneProduct() {
             setProduct(productResult[0]);
 
             try {
-                const detallesResult = await fetchData(`GetDetallesProductoObra/${productoId}/${stockId}/`, token);
+                const detallesResult = await fetchData(`/GetDetallesProductoObra/${productoId}/${stockId}/`, token);
                 setDetallesProduct(detallesResult);
             } catch (error) {
                 console.error("Error fetching product details:", error);

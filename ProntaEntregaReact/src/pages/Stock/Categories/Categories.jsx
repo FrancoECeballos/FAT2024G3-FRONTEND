@@ -56,7 +56,7 @@ function Categories() {
         setUser(userData);
 
         try {
-            const categoriesResult = await fetchData('categoria/', token);
+            const categoriesResult = await fetchData('/categoria/', token);
             setCategories(categoriesResult);
 
             const stockResult = await fetchData(`/stock/${stockId}`, token);

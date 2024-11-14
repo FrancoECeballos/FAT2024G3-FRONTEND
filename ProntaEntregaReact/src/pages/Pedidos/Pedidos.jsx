@@ -48,6 +48,39 @@ function Pedidos() {
     const [endPedidoConfirmation, setEndPedidoConfirmation] = useState(false);
 
     useEffect(() => {
+        const fetchDataAsync = async () => {
+            try {
+                const userData = await fetchUser(navigate);
+                setUser(userData);
+
+                const userTokenData = await fetchData(`/userToken/${token}`, token);
+                if (userTokenData.is_superuser) {
+                    const pedidosRecibidos = await fetchData(`/get_pedidos_recibidos_for_admin/`, token);
+                    setPedidos(pedidosRecibidos);
+
+                    const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                    setUserPedidos(pedidosData);
+
+                    const obrasData = await fetchData(`/obra/`, token);
+                    setObras(obrasData);
+                } else {
+                    const pedidosRecibidos = await fetchData(`/get_pedidos_recibidos_for_user/${token}/`, token);
+                    setPedidos(pedidosRecibidos);
+
+                    const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                    setUserPedidos(pedidosData);
+                    console.log(pedidosData);
+
+                    const obrasData = await fetchData(`/obra/user/${token}/`, token);
+                    setObras(obrasData);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         fetchDataAsync();
 
         const interval = setInterval(() => {
@@ -97,11 +130,11 @@ function Pedidos() {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
 
-            postData('crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+            postData('/crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
                 const obrasPromises = obras.map(async (obra) => {
                     const fechaCreacion = new Date().toISOString().split('T')[0];
-                    const producto = await fetchData(`producto/${pedidoForm.id_producto}/`, token);
-                    const pendingObra = await fetchData(`obra/${pedidoForm.id_obra}/`, token);
+                    const producto = await fetchData(`/producto/${pedidoForm.id_producto}/`, token);
+                    const pendingObra = await fetchData(`/obra/${pedidoForm.id_obra}/`, token);
                     const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
 
                     const dataNotificacion = {
@@ -114,7 +147,7 @@ function Pedidos() {
                     };
 
                     crearNotificacion(dataNotificacion, token, 'Obra', obra);
-                    return postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
+                    return postData('/crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                 });
 
                 return Promise.all(obrasPromises).then(() => {
@@ -271,7 +304,7 @@ function Pedidos() {
     };
 
     const handleDeletePedido = (pedidoId) => {
-        deleteData(`CancelPedido/${pedidoId}/`, token).then(() => {
+        deleteData(`/CancelPedido/${pedidoId}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error deleting pedido:', error);
@@ -279,7 +312,7 @@ function Pedidos() {
     };
 
     const handleEndPedido = (pedidoId) => {
-        deleteData(`EndPedido/${pedidoId}/`, token).then(() => {
+        deleteData(`/EndPedido/${pedidoId}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error ending pedido:', error);

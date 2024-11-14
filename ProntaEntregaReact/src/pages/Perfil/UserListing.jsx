@@ -35,7 +35,7 @@ function UserListing() {
                 };
         
                 if (userToken.is_superuser) {
-                    const obras = await fetchData(`obra/`, token);
+                    const obras = await fetchData(`/obra/`, token);
                     const obrasWithUsuarios = await fetchObrasWithUsuarios(obras);
                     setObras(obrasWithUsuarios);
                 } else {
@@ -52,7 +52,7 @@ function UserListing() {
         
         fetchObras();
         
-        fetchData(`user/obra/null/`, token).then(result => {
+        fetchData(`/user/obra/null/`, token).then(result => {
             setUsuariosSinObra(result);
             console.log(result);
         }).catch(error => {
