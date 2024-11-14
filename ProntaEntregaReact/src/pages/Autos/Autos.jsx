@@ -339,7 +339,7 @@ function AutosComponent() {
                 <div className='auto-list'>
                     {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
                         <div className="auto-modal">
-                            <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su vehículo? Añadalo' 
+                            <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='15' openButtonText='Añadir un vehiculo nuevo' 
                             showPopup={isPopupVisible} popupTitle={popupData.title} popupMessage={popupData.message} content={
                                 <>
                                     <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage} />
