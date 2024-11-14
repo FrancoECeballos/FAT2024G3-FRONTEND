@@ -128,7 +128,7 @@ function UserListing() {
                                 descrip1={obra.descripcion}
                                 descrip2={obra.usuarios_registrados}
                             >
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginLeft: '0.7rem'}}>
                                     {obra.usuarios.map(usuario => (
                                         <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
                                             <LittleCard
@@ -151,7 +151,7 @@ function UserListing() {
                                 wide={'80%'}
                                 titulo='Usuarios sin Obra'
                             >
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem',marginLeft: '0.7rem' }}>
                                     {filteredUsuariosSinObra.map(usuario => (
                                         <div key={usuario.id_usuario} style={{ flex: '', boxSizing: 'border-box' }}>
                                             <LittleCard

@@ -16,10 +16,10 @@ function LittleCard({ foto, titulo, descrip1, descrip2, selected, onSelect, hove
     <Card 
       onClick={handleCardClick} 
       className={`litcard ${selected ? 'selected' : 'not-selected'} ${hoverable ? 'hoverable-little-card' : ''} ${greyedOut ? 'greyed-out' : ''} ${taken ? 'taken' : ''}`}
-      style={{maxHeight:'20rem', maxWidth:'15rem'}}
+      style={{minHeight: '21rem', maxHeight:'21rem', maxWidth:'15rem'}}
     >
       <Card.Img variant="top" src={foto || notPic} style={{ width: "10rem", justifyContent: "center", margin: "auto", marginTop: "0.5rem", height: '9rem' }} />
-      <Card.Body>
+      <Card.Body className={`${scroll ? 'scroll-down':''}`}>
         <Card.Title>{titulo}</Card.Title>
         <Card.Text style={{maxWidth:"15rem",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
           {descrip1} <br />

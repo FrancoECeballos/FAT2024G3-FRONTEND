@@ -43,7 +43,7 @@ const LoginCard = () => {
       } else {
         Cookies.set('token', response.token, { secure: true });
       }
-      navigate('');
+      navigate('/');
     } else {
       setShowAlert(true);
     }
@@ -68,7 +68,7 @@ const LoginCard = () => {
                   style={{ width: "100%", marginLeft: "0" }}
                   className="input-field"
                   name="password"
-                  type={showPassword ? "text" : "password"} // Cambia el tipo de entrada según el estado
+                  type={showPassword ? "text" : "password"}
                   onChange={handleInputChange}
                   placeholder="Ingrese su contraseña"
                 />
