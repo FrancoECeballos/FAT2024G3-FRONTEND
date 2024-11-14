@@ -336,10 +336,20 @@ function Stock() {
                                                 />
                                                 <InputGroup>
                                                     <Form.Control
-                                                        type="text" name="calle" placeholder='Calle' onChange={handleInputChange} onBlur={handleInputChange}
+                                                        type="text" 
+                                                        name="calle" 
+                                                        placeholder='Calle' 
+                                                        onChange={handleInputChange} 
+                                                        onBlur={handleInputChange} 
+                                                        style={{borderRadius:'0', boxShadow:'none'}}
                                                     />
                                                     <Form.Control
-                                                        type="number" name="numero" placeholder='Número' onChange={handleInputChange} onBlur={handleInputChange}
+                                                        type="number" 
+                                                        name="numero" 
+                                                        placeholder='Número' 
+                                                        onChange={handleInputChange} 
+                                                        onBlur={handleInputChange} 
+                                                        style={{borderRadius:'0', boxShadow:'none'}}
                                                     />
                                                 </InputGroup>
                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -442,10 +452,22 @@ function Stock() {
                                                                 />
                                                                 <InputGroup>
                                                                     <Form.Control
-                                                                        type="text" name="calle" placeholder='Calle' value={obraForm.id_direccion.calle} onChange={handleInputChange} onBlur={handleInputChange}
+                                                                        type="text" 
+                                                                        name="calle" 
+                                                                        placeholder='Calle' 
+                                                                        value={obraForm.id_direccion.calle} 
+                                                                        onChange={handleInputChange} 
+                                                                        onBlur={handleInputChange}
+                                                                        style={{borderRadius:'0', boxShadow:'none'}}
                                                                     />
                                                                     <Form.Control
-                                                                        type="number" name="numero" placeholder='Número' value={obraForm.id_direccion.numero} onChange={handleInputChange} onBlur={handleInputChange}
+                                                                        type="number" 
+                                                                        name="numero" 
+                                                                        placeholder='Número' 
+                                                                        value={obraForm.id_direccion.numero} 
+                                                                        onChange={handleInputChange} 
+                                                                        onBlur={handleInputChange}
+                                                                        style={{borderRadius:'0', boxShadow:'none'}}
                                                                     />
                                                                 </InputGroup>
                                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>

@@ -36,7 +36,7 @@ function Landing (){
                 <div class="col-lg-4">
                     <div className="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
                         <div className="features-icons-icon d-flex"><img src={pronta} alt="Responsive Design"/></div>
-                        <h3>¿Que es Pronta Entrega?</h3>
+                        <h3 style={{marginLeft:"1rem"}}>¿Que es Pronta Entrega?</h3>
                         <p className="lead mb-0">Pronta Entrega es una aplicacion que busca brindar una forma de contactar a las casas para distribuir recursos y agilizar la administración de estos materiales.</p>
                     </div>
                 </div>
@@ -45,7 +45,7 @@ function Landing (){
                 <div className="container">
                     <div className="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
                         <div className="features-icons-icon d-flex"><img src={logo} alt="Responsive Design"/></div>
-                        <h3>¿Quienes Somos?</h3>
+                        <h3 style={{marginLeft:"1rem"}}>¿Quienes Somos?</h3>
                         <p className="lead mb-0">Una fundación de inspiración jesuita abierta a toda persona de buena voluntad. A través del compromiso de voluntarios nos proponemos servir y
                         promover a los más necesitados mejorando su calidad de vida y suavizando las situaciones de pobreza, dolor y soledad, interviniendo en espacios que están desatendidos e ignorados en la sociedad.</p>
                     </div>
@@ -59,7 +59,7 @@ function Landing (){
                     <div className="row g-0">
                         <div className="col-lg-6 order-lg-2 text-white showcase-img"><img src={stock} alt="Responsive Design" className="img-fluid" /></div>
                         <div className="col-lg-6 order-lg-1 my-auto showcase-text">
-                            <h2>Stock</h2>
+                            <h2 style={{marginLeft:"1rem"}}>Stock</h2>
                             <p className="lead mb-0">Se proporcionará un sistema de registro del stock rápido y sencillo de utilizar para que los voluntarios puedan visualizar los recursos de sus casas, 
                             ingresar cambios fácilmente y recibir notificaciones en caso de exceso o escasez de un producto</p>
                         </div>
@@ -67,7 +67,7 @@ function Landing (){
                     <div className="row g-0">
                         <div className="col-lg-6 text-white showcase-img"><img src={pedidos} alt="Responsive Design" className="img-fluid" /></div>
                         <div className="col-lg-6 my-auto showcase-text">
-                            <h2>Pedidos</h2>
+                            <h2 style={{marginLeft:"1rem"}}>Pedidos</h2>
                             <p className="lead mb-0">Basado en el sistema anterior, si se necesita o se tiene demasiado de un producto, un voluntario puede crear un pedido o una oferta que será vista por los integrantes de todas las casas. 
                             Este podrá ser tomado, lo que lo llevará al último apartado</p>
                         </div>
@@ -75,7 +75,7 @@ function Landing (){
                     <div className="row g-0">
                         <div className="col-lg-6 order-lg-2 text-white showcase-img" ><img src={envios} alt="Responsive Design" className="img-fluid" /></div>
                         <div className="col-lg-6 order-lg-1 my-auto showcase-text">
-                            <h2>Envios</h2>
+                            <h2 style={{marginLeft:"1rem"}}>Envios</h2>
                             <p className="lead mb-0">Cuando se reclama un pedido o una oferta, los voluntarios podrán acordar la fecha de entrega y la forma del traslado.
                             Finalmente, proporcionaremos una forma de almacenar los vehículos a disposición de la organización.</p>
                         </div>
