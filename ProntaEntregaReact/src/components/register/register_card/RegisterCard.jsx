@@ -240,6 +240,10 @@ const RegisterCard = () => {
     }
   
     let id_direccion = null;
+
+    if (typeof direcFormData.localidad === 'object') {
+      direcFormData.localidad = direcFormData.localidad.label;
+    }
   
     const existingDireccion = direc.find(
       (d) =>
@@ -249,9 +253,7 @@ const RegisterCard = () => {
     );
   
     if (!existingDireccion) {
-      const url = '/crear_direccion/';
-      const body = direcFormData;
-      const result = await postData(url, body);
+      const result = await postData('/crear_direccion/', direcFormData);
       id_direccion = result.id_direccion;
     } else {
       id_direccion = existingDireccion.id_direccion;

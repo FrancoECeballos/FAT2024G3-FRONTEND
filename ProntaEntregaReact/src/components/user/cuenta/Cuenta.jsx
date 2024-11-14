@@ -16,6 +16,9 @@ import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal
 import SelectLocalidad from '../../register/SelectLocalidad.jsx';
 import crearNotificacion from "../../../functions/createNofiticacion.jsx";
 
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
+
 const Cuenta = ({ user }) => {
   const navigate = useNavigate();
   const token = Cookies.get('token');
@@ -375,23 +378,16 @@ const Cuenta = ({ user }) => {
           <div className="form-container">
             <Form.Group controlId="telefono">
               <Form.Label>Teléfono:</Form.Label>
-              <InputGroup>
-                <Form.Control
-                  type="text"
-                  name="cai"
-                  value={userData.telefono.split(' ')[0] || ''}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                />
-                <Form.Control
-                  style={{ width: "60%" }}
-                  type="number"
-                  name="telnum"
-                  value={userData.telefono.split(' ')[1] || ''}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                />
-              </InputGroup>
+              <PhoneInput
+                defaultCountry="ar"
+                value={userData.telefono}
+                onChange={(phone) => handleInputChange({ target: { name: 'telefono', value: phone } })}
+                style={{ width: '100%', display: 'flex', height: '2.4rem' }} 
+                inputStyle={{ width: '95%' }}
+                charAfterDialCode=" "
+                disableFormatting={true}
+                disabled={!isEditing}
+              />
             </Form.Group>
 
             <Form.Group controlId="direccion">
