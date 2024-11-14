@@ -11,15 +11,18 @@ export default function BaseNavbar({ children }) {
             id="base-navbar" 
             expand="sm" 
             fixed="top" 
-            style={{ backgroundColor: 'white', color: 'white',position:"relative" }}>
-            <Container fluid>
-                <Navbar.Brand href="#login">
-                    <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} onClick={navigate('/landing')} />
-                </Navbar.Brand>
-            </Container>
-            <div>    
-                {children}
-            </div>
+            style={{ backgroundColor: 'white', color: 'white', position: "relative" }}>
+
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <div style={{ flex: 1 }}>
+                        <Navbar.Brand href="#login">
+                            <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} onClick={() => navigate('/landing')} />
+                        </Navbar.Brand>
+                    </div>
+                    <div style={{ display:"flex"}}>
+                        {children}
+                    </div>
+                </div>
         </Navbar>
     );
 };
