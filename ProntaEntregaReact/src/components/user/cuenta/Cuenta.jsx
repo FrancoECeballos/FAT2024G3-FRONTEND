@@ -13,6 +13,7 @@ import NullToEmpty from '../../../functions/nulltoempty.jsx'
 import SendButton from '../../buttons/send_button/send_button.jsx';
 import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
 import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
+import SelectLocalidad from '../../register/SelectLocalidad.jsx';
 import crearNotificacion from "../../../functions/createNofiticacion.jsx";
 
 const Cuenta = ({ user }) => {
@@ -75,6 +76,7 @@ const Cuenta = ({ user }) => {
     const updateUserState = (result) => {
       const transformedData = NullToEmpty(result);
       setUserData(transformedData);
+      console.log(transformedData);
       setUserDataDefault(transformedData);
     };
 
@@ -393,11 +395,15 @@ const Cuenta = ({ user }) => {
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
               <InputGroup>
-                <Form.Control
-                  type="text"
+                <SelectLocalidad
+                  style={{ width: '100%' }}
                   name="id_direccion.localidad"
-                  value={userData.id_direccion?.localidad || ''}
+                  type="text"
+                  onBlur={handleInputChange}
                   onChange={handleInputChange}
+                  placeholder="Ingrese su localidad"
+                  onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
+                  value={userData.id_direccion?.localidad || ''}
                   disabled={!isEditing}
                 />
                 <Form.Control

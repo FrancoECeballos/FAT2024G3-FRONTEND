@@ -2,7 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import AutoCompleteSelect from "../selects/auto_complete_select/auto_complete_select"
 
-const SelectLocalidad = (style, name, type, onBlur, onChange, placeholder, onSelect) => {
+const SelectLocalidad = ({ style, name, type, onBlur, onChange, placeholder, onSelect, value, disabled }) => {
     const Localidades = [
 
         { key: "1", label: "Achiras, Río Cuarto" },
@@ -268,7 +268,14 @@ const SelectLocalidad = (style, name, type, onBlur, onChange, placeholder, onSel
       ]
       
     return(
-        <AutoCompleteSelect lists={Localidades} onClick={onSelect} />
+        <AutoCompleteSelect
+            lists={Localidades}
+            onClick={onSelect}
+            defaultValue={Localidades.find(localidad => localidad.label === value)?.key}
+            disabled={disabled}
+            placeholder={placeholder}
+            style={style}
+        />
     );
 } 
 export default SelectLocalidad;

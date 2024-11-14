@@ -115,21 +115,21 @@ function Products() {
         fetchData(`/categoria/${categoriaID}`, token).then((result) => {
             setCurrentCategory(result[0].nombre);
         });
-        setIsLoading(false); 
 
         const img = new Image();
         img.src = defaultImage;
         img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        canvas.toBlob((blob) => {
-            const file = new File([blob], 'no_image.png', { type: 'image/png' });
-            setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
-        });
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob((blob) => {
+                const file = new File([blob], 'no_image.png', { type: 'image/png' });
+                setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
+            });
         };
+        setIsLoading(false); 
 
     }, [token, navigate, stockId, categoriaID]);
 
@@ -432,7 +432,8 @@ function Products() {
                             if (selectedCardId === 'New') {
                                 handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
                             } else {
-                                handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
+                                const func = handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);
+                                console.log(func);
                             }
                         } else {
                             setAlertMessage('Por favor seleccione un producto');
