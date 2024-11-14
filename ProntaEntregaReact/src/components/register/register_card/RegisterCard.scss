@@ -9,8 +9,16 @@
   display: none;
 }
 
+.cardreg{
+  width: 80%;
+  @media (max-width:800px) {
+    width: 100%;
+  }
+}
+
 .register-container {
-  margin-top: 8%;
+  margin-top: 0.5%;
+  margin-bottom: 2%;
 
   @media (min-width: 1200px) {
     .user-image {
@@ -33,14 +41,13 @@
   }
 
   @media (max-width: 768px) {
-    margin-top: 15%;
     .user-image{
       width: 80%;
     }
   }
 
   @media (max-width: 576px) {
-    margin-top: 26%;
+    margin-top: 8%;
 
     .move-to-top {
       order: -1;
@@ -74,5 +81,13 @@
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     background-color: #EEEEEE;
+  }
+
+  .botreg{
+    display: flex;
+    justify-content: end;
+    @media (max-width:800px) {
+      justify-content: space-around;
+    }
   }
 }

@@ -16,6 +16,9 @@ import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal
 import SelectLocalidad from '../../register/SelectLocalidad.jsx';
 import crearNotificacion from "../../../functions/createNofiticacion.jsx";
 
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
+
 const Cuenta = ({ user }) => {
   const navigate = useNavigate();
   const token = Cookies.get('token');
@@ -76,7 +79,6 @@ const Cuenta = ({ user }) => {
     const updateUserState = (result) => {
       const transformedData = NullToEmpty(result);
       setUserData(transformedData);
-      console.log(transformedData);
       setUserDataDefault(transformedData);
     };
 
@@ -258,21 +260,23 @@ const Cuenta = ({ user }) => {
     event.preventDefault();
     let id_direc = null;
 
+    if (typeof userData.id_direccion.localidad === 'object') {
+      userData.id_direccion.localidad = userData.id_direccion.localidad.label;
+    }
+
     const existingDireccion = direc.find(
       (d) =>
         d.calle === userData.id_direccion.calle &&
         d.numero === userData.id_direccion.numero &&
         d.localidad === userData.id_direccion.localidad
     );
-
+    
     if (!existingDireccion) {
-      const url = '/crear_direccion/';
-      const body = userData.id_direccion;
-      const result = await postData(url, body);
-      id_direc = result.id_direccion;
+        const result = await postData('/crear_direccion/', userData.id_direccion);
+        id_direc = result.id_direccion;
     } else {
-      id_direc = existingDireccion.id_direccion;
-    };
+        id_direc = existingDireccion.id_direccion;
+    }
 
     const updatedUserData = { ...userData, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento };
     setUserDataDefault(userData);
@@ -374,39 +378,39 @@ const Cuenta = ({ user }) => {
           <div className="form-container">
             <Form.Group controlId="telefono">
               <Form.Label>Teléfono:</Form.Label>
-              <InputGroup>
-                <Form.Control
-                  type="text"
-                  name="cai"
-                  value={userData.telefono.split(' ')[0] || ''}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                />
-                <Form.Control
-                  style={{ width: "60%" }}
-                  type="number"
-                  name="telnum"
-                  value={userData.telefono.split(' ')[1] || ''}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                />
-              </InputGroup>
+              <PhoneInput
+                defaultCountry="ar"
+                value={userData.telefono}
+                onChange={(phone) => handleInputChange({ target: { name: 'telefono', value: phone } })}
+                style={{ width: '100%', display: 'flex', height: '2.4rem' }} 
+                inputStyle={{ width: '95%' }}
+                charAfterDialCode=" "
+                disableFormatting={true}
+                disabled={!isEditing}
+              />
             </Form.Group>
 
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
               <InputGroup>
-                <SelectLocalidad
-                  style={{ width: '100%' }}
-                  name="id_direccion.localidad"
-                  type="text"
-                  onBlur={handleInputChange}
-                  onChange={handleInputChange}
-                  placeholder={userData.id_direccion?.localidad}
-                  onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
-                  value={userData.id_direccion?.localidad || ''}
-                  disabled={!isEditing}
-                />
+              <SelectLocalidad
+                style={{ width: '100%' }}
+                name="id_direccion.localidad"
+                type="text"
+                onChange={(value) => {
+                    const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                    if (!isValid) {
+                        handleInputChange({ target: { name: 'id_direccion.localidad', value: '' } });
+                    } else {
+                        handleInputChange({ target: { name: 'id_direccion.localidad', value } });
+                    }
+                    console.log(isValid);
+                }}
+                placeholder={userData.id_direccion?.localidad}
+                onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
+                value={userData.id_direccion?.localidad || ''}
+                disabled={!isEditing}
+              />
                 <Form.Control
                   type="text"
                   name="id_direccion.calle"

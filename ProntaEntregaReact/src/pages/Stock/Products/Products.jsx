@@ -98,10 +98,10 @@ function Products() {
         };
 
         fetchUserData().then(() => {
-            fetchData(`GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token).then((result) => {
+            fetchData(`/GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token).then((result) => {
                 setProducts(result);
                 const productsID = result.map(product => product.id_producto);
-                postData(`GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token).then((result) => {
+                postData(`/GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token).then((result) => {
                     const transformedResult = result.map(product => ({
                         key: product.id_producto,
                         label: `${product.nombre} - ${product.descripcion}`,
@@ -115,21 +115,21 @@ function Products() {
         fetchData(`/categoria/${categoriaID}`, token).then((result) => {
             setCurrentCategory(result[0].nombre);
         });
+        setIsLoading(false); 
 
         const img = new Image();
         img.src = defaultImage;
         img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            canvas.toBlob((blob) => {
-                const file = new File([blob], 'no_image.png', { type: 'image/png' });
-                setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
-            });
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob) => {
+            const file = new File([blob], 'no_image.png', { type: 'image/png' });
+            setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
+        });
         };
-        setIsLoading(false); 
 
     }, [token, navigate, stockId, categoriaID]);
 
@@ -153,10 +153,10 @@ function Products() {
 
     const reloadData = async () => {
         try {
-            const productsResult = await fetchData(`GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token);
+            const productsResult = await fetchData(`/GetDetallestockproducto_Total/${stockId}/${categoriaID}/`, token);
             setProducts(productsResult);
             const productsID = productsResult.map(product => product.id_producto);
-            const excludedProductsResult = await postData(`GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token);
+            const excludedProductsResult = await postData(`/GetProductosPorCategoriaExcluidos/${categoriaID}/`, { excluded_ids: productsID }, token);
             const transformedResult = excludedProductsResult.map(product => ({
                 key: product.id_producto,
                 label: `${product.nombre} - ${product.descripcion}`,
@@ -231,7 +231,7 @@ function Products() {
         console.log(newProduct);
     };
 
-    const handleCreateProduct = async () => {
+    const handleCreateProduct = async (cantidad, total) => {
         try {
             const data = new FormData();
             data.append('imagen', newProduct.imagen);
@@ -240,7 +240,7 @@ function Products() {
             data.append('unidadmedida', newProduct.unidadmedida);
             data.append('id_categoria', newProduct.id_categoria);
 
-            postData(`crear_productos/`, data, token).then(async (response) => {
+            postData(`/crear_productos/`, data, token).then(async (response) => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 
                 const dataNotificacion = {
@@ -252,7 +252,7 @@ function Products() {
                 };
             
                 await crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra);
-                handleSave(parseFloat(cantidadRef.current.value), null, response.id_producto);
+                handleSave(cantidad, null, response.id_producto);
             });
         } catch (error) {
             console.error('Error creating product:', error);
@@ -286,13 +286,13 @@ function Products() {
                 cantidad: cantidad,
             };
             if (selectedOperacion === 'sumar' || producto) {
-                await postData(`AddDetallestockproducto/`, updatedDetalle, token).then(async () => {
+                await postData(`/AddDetallestockproducto/`, updatedDetalle, token).then(async () => {
                     await reloadData();
                     setPopupData({"title": 'Suma exitosa', "message": `Se sumó el valor de ${cantidad} exitosamente.`});
                 });
                 return true;
             } else if (selectedOperacion === 'restar') {
-                await postData(`SubtractDetallestockproducto/`, updatedDetalle, token).then(async () => {
+                await postData(`/SubtractDetallestockproducto/`, updatedDetalle, token).then(async () => {
                     await reloadData();
                     setPopupData({"title": 'Resta exitosa', "message": `Se restó el valor de ${cantidad} exitosamente.`});
                 });
@@ -307,7 +307,7 @@ function Products() {
     };
 
     const handleDeleteProduct = async (id) => {
-        deleteData(`EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(() => {
+        deleteData(`/EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(() => {
             window.location.reload();
         });
     };
@@ -331,10 +331,10 @@ function Products() {
                     const pedidoForm = pedidoCardRef.current.getPedidoForm();
                     const { obras, ...pedidoFormWithoutObras } = pedidoForm;
     
-                    postData('crear_pedido/', pedidoFormWithoutObras, token).then(async (result) => {
+                    postData('/crear_pedido/', pedidoFormWithoutObras, token).then(async (result) => {
                         const fechaCreacion = new Date().toISOString().split('T')[0];
-                        const producto = await fetchData(`producto/${pedidoForm.id_producto}/`, token);
-                        const pendingObra = await fetchData(`obra/${pedidoForm.id_obra}/`, token);
+                        const producto = await fetchData(`/producto/${pedidoForm.id_producto}/`, token);
+                        const pendingObra = await fetchData(`/obra/${pedidoForm.id_obra}/`, token);
                         const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
 
                         const dataNotificacion = {
@@ -347,7 +347,7 @@ function Products() {
                         };
 
                         const obrasPromises = obras.map(async (obra) => {
-                            postData('crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
+                            postData('/crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                             crearNotificacion(dataNotificacion, token, 'Obra', obra);
                         });
                         
@@ -365,13 +365,13 @@ function Products() {
                 if (ofertaCardRef.current) {
                     const ofertaForm = ofertaCardRef.current.getOfertaForm();
     
-                    postData('crear_oferta/', ofertaForm, token).then(async () => {
+                    postData('/crear_oferta/', ofertaForm, token).then(async () => {
                         const fechaCreacion = new Date().toISOString().split('T')[0];
                         const producto = await fetchData(`producto/${ofertaForm.id_producto}/`, token);
                         const pendingStock = await fetchData(`stock/${ofertaForm.id_obra}/`, token);
                         const pendingObra = await fetchData(`obra/${ofertaForm.id_obra}/`, token);
     
-                        await postData('SubtractDetallestockproducto/', {
+                        await postData('/SubtractDetallestockproducto/', {
                             cantidad: ofertaForm.cantidad,
                             id_stock: pendingStock[0].id_stock,
                             id_producto: ofertaForm.id_producto,
@@ -430,7 +430,8 @@ function Products() {
                     showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={async () => {
                         if (cantidadRef.current) {
                             if (selectedCardId === 'New') {
-                                handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
+                                console.log(cantidadRef.current.value);
+                                await handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
                             } else {
                                 await handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);
                             }

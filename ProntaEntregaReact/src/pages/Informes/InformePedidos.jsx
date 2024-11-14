@@ -36,7 +36,7 @@ const InformePedidos = () => {
                 navigate('/pedidos');
             }
 
-            fetchData('pedido/', token).then(data => {
+            fetchData('/pedido/', token).then(data => {
                 setPedidos(data);
                 setIsLoading(false);
             });
@@ -82,7 +82,7 @@ const InformePedidos = () => {
 
     return (
         <div>
-            <FullNavbar selectedPage='Pedidos'/>
+            <FullNavbar selectedPage='/Pedidos'/>
             <div>
                 <OverlayTrigger
                     placement="top"

@@ -125,7 +125,7 @@ function AutosComponent() {
         const currentDescription = description || '';
         
         try {
-            await putData(`editar_transporte/${id}/`, { necesita_mantenimiento: newStatus, descripcion_mantenimiento: currentDescription }, token).then(async (result) => {
+            await putData(`/editar_transporte/${id}/`, { necesita_mantenimiento: newStatus, descripcion_mantenimiento: currentDescription }, token).then(async (result) => {
                 console.log(result);
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const obraData = await fetchData(`/obra/${obraId}`, token);
@@ -156,8 +156,19 @@ function AutosComponent() {
     
     const handleCreateAuto = async () => {
         if (!formData.imagen) {
-            console.error('No image file selected');
-            return;
+            const img = new Image();
+            img.src = defaultImage;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'no_image.png', { type: 'image/png' });
+                    setFormData((prevData) => ({ ...prevData, imagen: file }));
+                });
+            };
         }
     
         const data = new FormData();
@@ -168,11 +179,11 @@ function AutosComponent() {
         data.append('kilometraje', formData.kilometraje === '' ? 0 : formData.kilometraje);
     
         try {
-            const result = await postData(`crear_transporte/`, data, token);
+            const result = await postData(`/crear_transporte/`, data, token);
             if (!result || !result.id_transporte) {
                 throw new Error('Invalid response from server');
             }
-            await postData(`crear_detalle_transporte/`, { id_obra: obraId, id_transporte: result.id_transporte }, token).then(async () => {
+            await postData(`/crear_detalle_transporte/`, { id_obra: obraId, id_transporte: result.id_transporte }, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const obra = await fetchData(`/obra/${obraId}`, token);
     
@@ -186,7 +197,7 @@ function AutosComponent() {
                 
                 crearNotificacion(dataNotificacion, token, 'Obra', obra[0].id_obra).then(() => { 
                     handleReloadAutos(); 
-                    setPopupData({"title": 'Nuevo vehiculo', "message": `Se ha creado un nuevo vehiculo en ${obra[0].nombre}`});
+                    setPopupData({"title": 'Vehiculo Creado', "message": `Se creó el vehiculo ${formData.marca} ${formData.modelo} de la obra ${obra[0].nombre}.`});
                     setIsPopupVisible(true);
                 });
                 return true;
@@ -198,7 +209,7 @@ function AutosComponent() {
     
     const handleUpdateAuto = async (id, auto) => {
         try {
-            await putData(`editar_transporte/${id}/`, formData, token);
+            await putData(`/editar_transporte/${id}/`, formData, token);
             const fechaCreacion = new Date().toISOString().split('T')[0];
             const obra = await fetchData(`/obra/${obraId}`, token);
     
@@ -224,7 +235,7 @@ function AutosComponent() {
     
     const handleDeleteAuto = async (auto) => {
         try {
-            await deleteData(`eliminar_detalle_transporte/${obraId}/${auto.id_transporte}/`,token).then(async () => {
+            await deleteData(`/eliminar_detalle_transporte/${obraId}/${auto.id_transporte}/`,token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const obra = await fetchData(`/obra/${obraId}`, token);
     
@@ -382,7 +393,9 @@ function AutosComponent() {
                                                 </div>
                                                 <div style={{ marginTop: "1rem", marginRight: "1rem" }}>
                                                     {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                                                        <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={() => {handleUpdateAuto(autoModal, auto); setAutoModal(null);}} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' 
+                                                        <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={async () => {
+                                                            const a = await handleUpdateAuto(autoModal, auto); console.log(a); setAutoModal(null);
+                                                        }} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' 
                                                         showPopup={isPopupVisible} popupTitle={popupData.title} popupMessage={popupData.message} content={
                                                             <>
                                                                 <OverlayTrigger
