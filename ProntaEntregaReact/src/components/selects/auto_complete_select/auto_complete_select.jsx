@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import "./auto_complete_select.scss";
 
-function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, width = '95%', defaultValue, showLabel = false, label, disabled, placeholder, style }) {
+function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, onBlur, width = '95%', defaultValue, showLabel = false, label, disabled, placeholder, style }) {
   const [inputValue, setInputValue] = useState("");
   const [filteredLists, setFilteredLists] = useState(lists);
   const [isListVisible, setIsListVisible] = useState(false);
@@ -39,8 +39,11 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
     setIsListVisible(true);
   };
 
-  const handleInputBlur = () => {
+  const handleInputBlur = (e) => {
     setIsListVisible(false);
+    if (onBlur) {
+      onBlur(e.target.value);
+    }
   };
 
   const onSelect = (index) => {
