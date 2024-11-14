@@ -48,43 +48,8 @@ function Pedidos() {
     const [endPedidoConfirmation, setEndPedidoConfirmation] = useState(false);
 
     useEffect(() => {
-        const fetchDataAsync = async () => {
-            try {
-                const userData = await fetchUser(navigate);
-                setUser(userData);
-
-                const userTokenData = await fetchData(`/userToken/${token}`, token);
-                if (userTokenData.is_superuser) {
-                    const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
-                    setPedidos(pedidosRecibidos);
-
-                    const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
-                    setUserPedidos(pedidosData);
-
-                    const obrasData = await fetchData(`obra/`, token);
-                    setObras(obrasData);
-                } else {
-                    const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
-                    setPedidos(pedidosRecibidos);
-
-                    const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
-                    setUserPedidos(pedidosData);
-                    console.log(pedidosData);
-
-                    const obrasData = await fetchData(`obra/user/${token}/`, token);
-                    setObras(obrasData);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchDataAsync();
-    }, [token]);
 
-    useEffect(() => {
         const interval = setInterval(() => {
             if (pedidoCardRef.current) {
                 setIsFormValid(pedidoCardRef.current.isFormValid);
@@ -93,6 +58,39 @@ function Pedidos() {
 
         return () => clearInterval(interval);
     }, [pedidoCardRef]);
+
+    const fetchDataAsync = async () => {
+        try {
+            const userData = await fetchUser(navigate);
+            setUser(userData);
+
+            const userTokenData = await fetchData(`/userToken/${token}`, token);
+            if (userTokenData.is_superuser) {
+                const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
+                setPedidos(pedidosRecibidos);
+
+                const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                setUserPedidos(pedidosData);
+
+                const obrasData = await fetchData(`obra/`, token);
+                setObras(obrasData);
+            } else {
+                const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
+                setPedidos(pedidosRecibidos);
+
+                const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                setUserPedidos(pedidosData);
+                console.log(pedidosData);
+
+                const obrasData = await fetchData(`obra/user/${token}/`, token);
+                setObras(obrasData);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleCreatePedido = () => {
         if (pedidoCardRef.current) {

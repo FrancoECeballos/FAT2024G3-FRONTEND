@@ -107,7 +107,6 @@ function Products() {
                         label: `${product.nombre} - ${product.descripcion}`,
                     }));
                     setExcludedProducts(transformedResult);
-                    console.log(transformedResult)
                 });
             });
         });
@@ -307,8 +306,9 @@ function Products() {
     };
 
     const handleDeleteProduct = async (id) => {
-        deleteData(`EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(() => {
-            window.location.reload();
+        await deleteData(`EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(async () => {
+            await reloadData();
+            setPopupData({"title": 'Producto eliminado', "message": `Se eliminó el producto exitosamente.`});
         });
     };
 
@@ -547,9 +547,15 @@ function Products() {
                                                         />
                                                     </OverlayTrigger>
                                                 </Col>
-                                                <ConfirmationModal Open={confirmDelete == product.id_producto} onClose={() => setConfirmDelete(null)} 
+                                                <ConfirmationModal 
+                                                    Open={confirmDelete == product.id_producto} 
+                                                    onClose={() => setConfirmDelete(null)} 
                                                     BodyText={`¿Esta seguro que desea borrar el producto ${product.nombre}? Se borrarán todos sus registros`}
-                                                    onClickConfirm={() => handleDeleteProduct(product.id_producto)}/>
+                                                    onClickConfirm={async () => await handleDeleteProduct(product.id_producto)}
+                                                    showPopup={true} 
+                                                    popupTitle={popupData.title} 
+                                                    popupMessage={popupData.message}
+                                                />
                                             </>
                                         )}
                                     </Row>
