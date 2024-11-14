@@ -76,7 +76,6 @@ const Cuenta = ({ user }) => {
     const updateUserState = (result) => {
       const transformedData = NullToEmpty(result);
       setUserData(transformedData);
-      console.log(transformedData);
       setUserDataDefault(transformedData);
     };
 
@@ -258,21 +257,23 @@ const Cuenta = ({ user }) => {
     event.preventDefault();
     let id_direc = null;
 
+    if (typeof userData.id_direccion.localidad === 'object') {
+      userData.id_direccion.localidad = userData.id_direccion.localidad.label;
+    }
+
     const existingDireccion = direc.find(
       (d) =>
         d.calle === userData.id_direccion.calle &&
         d.numero === userData.id_direccion.numero &&
         d.localidad === userData.id_direccion.localidad
     );
-
+    
     if (!existingDireccion) {
-      const url = '/crear_direccion/';
-      const body = userData.id_direccion;
-      const result = await postData(url, body);
-      id_direc = result.id_direccion;
+        const result = await postData('/crear_direccion/', userData.id_direccion);
+        id_direc = result.id_direccion;
     } else {
-      id_direc = existingDireccion.id_direccion;
-    };
+        id_direc = existingDireccion.id_direccion;
+    }
 
     const updatedUserData = { ...userData, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento };
     setUserDataDefault(userData);
@@ -396,17 +397,24 @@ const Cuenta = ({ user }) => {
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
               <InputGroup>
-                <SelectLocalidad
-                  style={{ width: '100%' }}
-                  name="id_direccion.localidad"
-                  type="text"
-                  onBlur={handleInputChange}
-                  onChange={handleInputChange}
-                  placeholder={userData.id_direccion?.localidad}
-                  onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
-                  value={userData.id_direccion?.localidad || ''}
-                  disabled={!isEditing}
-                />
+              <SelectLocalidad
+                style={{ width: '100%' }}
+                name="id_direccion.localidad"
+                type="text"
+                onChange={(value) => {
+                    const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                    if (!isValid) {
+                        handleInputChange({ target: { name: 'id_direccion.localidad', value: '' } });
+                    } else {
+                        handleInputChange({ target: { name: 'id_direccion.localidad', value } });
+                    }
+                    console.log(isValid);
+                }}
+                placeholder={userData.id_direccion?.localidad}
+                onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
+                value={userData.id_direccion?.localidad || ''}
+                disabled={!isEditing}
+              />
                 <Form.Control
                   type="text"
                   name="id_direccion.calle"
