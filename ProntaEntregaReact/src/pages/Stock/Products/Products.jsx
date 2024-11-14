@@ -427,13 +427,12 @@ function Products() {
 
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='Añadir un producto nuevo' openButtonWidth='15' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
-                    showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={() => {
+                    showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={async () => {
                         if (cantidadRef.current) {
                             if (selectedCardId === 'New') {
                                 handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
                             } else {
-                                const func = handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);
-                                console.log(func);
+                                await handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);
                             }
                         } else {
                             setAlertMessage('Por favor seleccione un producto');
