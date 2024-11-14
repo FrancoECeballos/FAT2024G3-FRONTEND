@@ -55,7 +55,7 @@ const Entregas = () => {
         };
     
         fetchUserData().then(() => {
-            fetchData('entrega/', token).then((result) => {
+            fetchData('/entrega/', token).then((result) => {
                 setEntregas(result);
                 setIsLoading(false);
             }).catch(error => {
@@ -274,7 +274,7 @@ const Entregas = () => {
 
     return (
         <div>
-            <FullNavbar selectedPage='Entregas' />
+            <FullNavbar selectedPage='/Entregas' />
             <div className='margen-arriba'>
                 
                 {isLoading ? (
