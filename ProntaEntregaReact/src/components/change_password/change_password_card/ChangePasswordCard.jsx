@@ -75,84 +75,73 @@ const ChangePasswordCard = ({ user }) => {
     };
 
     return (
-        <Container style={{ display: 'flex' }} className="d-flex justify-content-center align-items-center change-password-container">
-            <Card style={{ position: 'relative', width: '50rem', borderRadius: '1rem', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}>
+        <Container className="d-flex justify-content-center align-items-center change-password-container">
+            <Card className="outer-card">
                 <Card.Body>
-                    <Form onSubmit={handleSubmit}>
-                        <h1 className="font-rubik" style={{ textAlign: "center", margin: '1.5rem', fontSize: '1.5rem' }}>Cambiar Contraseña</h1>
-                        <div style={{ display: "flex", alignItems: "center", marginLeft: "2rem" }}>
-                            <div style={{ width: '7rem', height: '7rem', borderRadius: '50%', overflow: 'hidden', marginRight: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <img src={getImageUrl(user.imagen)} style={{ width: '100%', height: 'auto', objectFit: 'cover' }} alt="User" />
-                            </div>
-                            <h2 className="font-rubik" style={{ margin: '2.8rem', fontSize: '1.5rem' }}>{user.nombreusuario}</h2>
-                        </div>
-                        {message && <Alert variant="success">{message}</Alert>}
-                        {error && <Alert variant="danger">{error}</Alert>}
-                        <Form.Group className="position-relative">
-                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem' }}>Contraseña Antigua</Form.Label>
-                            <InputGroup>
-                                <Form.Control
-                                    type={showOldPassword ? "text" : "password"}
-                                    value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
-                                    style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
-                                    required
-                                />
-                                <InputGroup.Text
-                                    onClick={() => setShowOldPassword(!showOldPassword)}
-                                    style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
-                                >
-                                    {showOldPassword ? <BsEyeSlash /> : <BsEye />}
-                                </InputGroup.Text>
-                            </InputGroup>
-                        </Form.Group>
-
-                        <Form.Group className="position-relative">
-                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem' }}>Nueva Contraseña</Form.Label>
-                            <InputGroup>
-                                <Form.Control
-                                    type={showNewPassword ? "text" : "password"}
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
-                                    required
-                                />
-                                <InputGroup.Text
-                                    onClick={() => setShowNewPassword(!showNewPassword)}
-                                    style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
-                                >
-                                    {showNewPassword ? <BsEyeSlash /> : <BsEye />}
-                                </InputGroup.Text>
-                            </InputGroup>
-                        </Form.Group>
-
-                        <Form.Group className="position-relative">
-                            <Form.Label className="font-rubik" style={{ fontSize: '0.8rem', marginTop: '2rem' }}>Repetir Nueva Contraseña</Form.Label>
-                            <InputGroup>
-                                <Form.Control
-                                    type={showNewPasswordRepeat ? "text" : "password"}
-                                    value={newPasswordRepeat}
-                                    onChange={(e) => setNewPasswordRepeat(e.target.value)}
-                                    style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }}
-                                    required
-                                />
-                                <InputGroup.Text
-                                    onClick={() => setShowNewPasswordRepeat(!showNewPasswordRepeat)}
-                                    style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
-                                >
-                                    {showNewPasswordRepeat ? <BsEyeSlash /> : <BsEye />}
-                                </InputGroup.Text>
-                            </InputGroup>
-                        </Form.Group>
-
-                        <div className="d-flex justify-content-end" style={{ marginTop: '2rem' }}>
-                            <SendButton text="Confirmar Cambio" />
-                        </div>
-                    </Form>
+                    <Card className="inner-card">
+                        <Card.Body>
+                            <Form onSubmit={handleSubmit}>
+                                <h1 className="font-rubik text-center mb-4">Cambiar Contraseña</h1>
+                                <div className="d-flex align-items-center mb-4">
+                                    <div className="user-image">
+                                        <img src={getImageUrl(user.imagen)} alt="User" />
+                                    </div>
+                                    <h2 className="font-rubik mx-3">{user.nombreusuario}</h2>
+                                </div>
+                                {message && <Alert variant="success">{message}</Alert>}
+                                {error && <Alert variant="danger">{error}</Alert>}
+                                <Form.Group>
+                                    <Form.Label>Contraseña Antigua</Form.Label>
+                                    <InputGroup>
+                                        <Form.Control
+                                            type={showOldPassword ? "text" : "password"}
+                                            value={oldPassword}
+                                            onChange={(e) => setOldPassword(e.target.value)}
+                                            required
+                                        />
+                                        <InputGroup.Text onClick={() => setShowOldPassword(!showOldPassword)}>
+                                            {showOldPassword ? <BsEyeSlash /> : <BsEye />}
+                                        </InputGroup.Text>
+                                    </InputGroup>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Nueva Contraseña</Form.Label>
+                                    <InputGroup>
+                                        <Form.Control
+                                            type={showNewPassword ? "text" : "password"}
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            required
+                                        />
+                                        <InputGroup.Text onClick={() => setShowNewPassword(!showNewPassword)}>
+                                            {showNewPassword ? <BsEyeSlash /> : <BsEye />}
+                                        </InputGroup.Text>
+                                    </InputGroup>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Repetir Nueva Contraseña</Form.Label>
+                                    <InputGroup>
+                                        <Form.Control
+                                            type={showNewPasswordRepeat ? "text" : "password"}
+                                            value={newPasswordRepeat}
+                                            onChange={(e) => setNewPasswordRepeat(e.target.value)}
+                                            required
+                                        />
+                                        <InputGroup.Text onClick={() => setShowNewPasswordRepeat(!showNewPasswordRepeat)}>
+                                            {showNewPasswordRepeat ? <BsEyeSlash /> : <BsEye />}
+                                        </InputGroup.Text>
+                                    </InputGroup>
+                                </Form.Group>
+                                <div className="d-flex justify-content-end mt-4">
+                                    <SendButton text="Confirmar Cambio" />
+                                </div>
+                            </Form>
+                        </Card.Body>
+                    </Card>
                 </Card.Body>
             </Card>
         </Container>
     );
-}
+};
 
 export default ChangePasswordCard;
