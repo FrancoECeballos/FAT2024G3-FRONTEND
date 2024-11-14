@@ -32,7 +32,6 @@ function Stock() {
     const [obraForm, setObraForm] = useState({
         nombre: '',
         descripcion: '',
-        imagen: '',
         id_direccion: {
             localidad: '',
             calle: '',
@@ -83,7 +82,7 @@ function Stock() {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 canvas.toBlob((blob) => {
-                    const file = new File([blob], 'user_default.png', { type: 'image/png' });
+                    const file = new File([blob], 'WhiteLogo.png', { type: 'image/png' });
                     setObraForm((prevData) => ({ ...prevData, imagen: file }));
                 });
             };
@@ -216,11 +215,23 @@ function Stock() {
 
     const handleSaveObra = async (id = null) => {
         let id_direc = null;
-
+    
         if (typeof obraForm.id_direccion.localidad === 'object') {
             obraForm.id_direccion.localidad = obraForm.id_direccion.localidad.label;
         }
-
+    
+        if (typeof obraForm.imagen === 'string') {
+            try {
+                const response = await fetch(obraForm.imagen);
+                const blob = await response.blob();
+                const file = new File([blob], 'image.png', { type: blob.type });
+                obraForm.imagen = file;
+            } catch (error) {
+                console.error('Error fetching image:', error);
+                return;
+            }
+        }
+    
         const direc = await fetchData('/direcciones/', token);
     
         const existingDireccion = direc.find(
@@ -246,18 +257,19 @@ function Stock() {
     
         const updatedObraForm = { ...obraForm, id_direccion: id_direc };
         setObraForm(updatedObraForm);
-  
+    
         const formDataToSend = new FormData();
         Object.entries(updatedObraForm).forEach(([key, value]) => {
             formDataToSend.append(key, value);
         });
-
+    
         try {
             if (id) {
                 await putData(`/editar_obra/${id}/`, formDataToSend, token);
             } else {
                 await postData(`/crear_obra/`, formDataToSend, token);
             }
+            window.location.reload();
         } catch (error) {
             console.error('Error saving obra:', error);
         }
@@ -287,7 +299,7 @@ function Stock() {
                                     saveButtonEnabled={isFormValid} handleSave={() => handleSaveObra()} handleShowModal={() => {setObraForm({
                                         nombre: '',
                                         descripcion: '',
-                                        imagen: '',
+                                        imagen: defaultImage,
                                         id_direccion: {
                                             localidad: '',
                                             calle: '',
@@ -385,7 +397,8 @@ function Stock() {
                                                         className="hoverable-icon"
                                                         style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
                                                         onClick={() => {
-                                                            setObraForm(obra);
+                                                            const { imagen, ...obraWithoutImagen } = obra;
+                                                            setObraForm({ ...obraWithoutImagen });
                                                             setIsFormValid(true);
                                                             setErrors({
                                                                 nombre: '',
@@ -401,7 +414,9 @@ function Stock() {
                                                 <Modal
                                                     showButton={false}
                                                     showModal={obraModal == obra.id_obra}
-                                                    handleShowModal={() => setObraForm(obra)}
+                                                    handleShowModal={() => {
+                                                        const { imagen, ...obraWithoutImagen } = obra;
+                                                        setObraForm({ ...obraWithoutImagen });}}
                                                     handleCloseModal={() => setObraModal(null)}
                                                     handleSave={() => handleSaveObra(obra.id_obra)}
                                                     saveButtonText={'Guardar'}
