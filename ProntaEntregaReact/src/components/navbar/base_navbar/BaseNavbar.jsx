@@ -14,7 +14,7 @@ export default function BaseNavbar({ children }) {
             style={{ backgroundColor: 'white', color: 'white',position:"relative" }}>
             <Container fluid>
                 <Navbar.Brand href="#login">
-                    <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} onClick={navigate('/')} />
+                    <img src={Logo} alt='Logo' id='logo' style={{ width: '4rem' }} onClick={navigate('/landing')} />
                 </Navbar.Brand>
             </Container>
             <div>    
