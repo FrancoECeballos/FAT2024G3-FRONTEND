@@ -267,8 +267,7 @@ const Localidades = [
   ]
 
 const SelectLocalidad = ({ style, name, type, onBlur, onChange, placeholder, onSelect, value, disabled }) => {
-      
-    return(
+    return (
         <AutoCompleteSelect
             lists={Localidades}
             onClick={onSelect}
@@ -277,9 +276,10 @@ const SelectLocalidad = ({ style, name, type, onBlur, onChange, placeholder, onS
             placeholder={placeholder}
             style={style}
             onInputChange={onChange}
+            onBlur={onBlur}
         />
     );
-} 
+};
 
 SelectLocalidad.Localidades = Localidades;
 

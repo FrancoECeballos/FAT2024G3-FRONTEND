@@ -10,6 +10,7 @@ import Modal from '../../components/modals/Modal.jsx';
 import { Form, InputGroup } from 'react-bootstrap';
 import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 import defaultImage from '../../assets/WhiteLogo.png';
+import SelectLocalidad from '../../components/register/SelectLocalidad.jsx';
 
 import fetchData from '../../functions/fetchData.jsx';
 import postData from '../../functions/postData.jsx';
@@ -51,7 +52,7 @@ function Stock() {
     const [orderCriteria, setOrderCriteria] = useState(null);
 
     useEffect(() => {
-        setIsLoading(true); // Inicia el estado de carga
+        setIsLoading(true);
         fetchUser(navigate).then((result) => {
             if (result.is_superuser) {
                 setIsAdmin(true);
@@ -72,9 +73,23 @@ function Stock() {
                     setIsLoading(false);
                 });
             }
+
+            const img = new Image();
+            img.src = defaultImage;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'user_default.png', { type: 'image/png' });
+                    setObraForm((prevData) => ({ ...prevData, imagen: file }));
+                });
+            };
         }).catch(error => {
             console.error('Error fetching user data:', error);
-            setIsLoading(false); // Asegura que el estado de carga se detenga en caso de error
+            setIsLoading(false);
         });
     }, [token, navigate]);
 
@@ -109,16 +124,19 @@ function Stock() {
     };
 
     const validateForm = (name, value) => {
-        let formErrors = errors;
+        let formErrors = { ...errors };
         let isValid = true;
-
+    
+        const trimmedValue = typeof value === 'string' ? value.trim() : '';
+    
         if (obraForm.nombre.trim() === '') {
             isValid = false;
         }
         if (obraForm.descripcion.trim() === '') {
             isValid = false;
         }
-        if (obraForm.id_direccion.localidad.trim() === '') {
+        const localidadValue = typeof obraForm.id_direccion.localidad === 'object' ? obraForm.id_direccion.localidad.label : obraForm.id_direccion.localidad;
+        if (localidadValue.trim() === '') {
             isValid = false;
         }
         if (obraForm.id_direccion.calle.trim() === '') {
@@ -127,27 +145,27 @@ function Stock() {
         if (isNaN(parseInt(obraForm.id_direccion.numero, 10))) {
             isValid = false;
         }
-
+    
         if (name === 'nombre') {
-            if (value.trim() === '') {
+            if (trimmedValue === '') {
                 formErrors.nombre = 'El nombre es obligatorio';
             } else {
                 formErrors.nombre = '';
             }
         } else if (name === 'descripcion') {
-            if (value.trim() === '') {
+            if (trimmedValue === '') {
                 formErrors.descripcion = 'La descripción es obligatoria';
             } else {
                 formErrors.descripcion = '';
             }
         } else if (name === 'localidad') {
-            if (value.trim() === '') {
+            if (trimmedValue === '') {
                 formErrors.localidad = 'La localidad es obligatoria';
             } else {
                 formErrors.localidad = '';
             }
         } else if (name === 'calle') {
-            if (value.trim() === '') {
+            if (trimmedValue === '') {
                 formErrors.calle = 'La calle es obligatoria';
             } else {
                 formErrors.calle = '';
@@ -160,13 +178,17 @@ function Stock() {
                 formErrors.numero = '';
             }
         }
-
+    
         setErrors(formErrors);
         setIsFormValid(isValid);
     };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+
+        if (typeof obraForm.id_direccion.localidad === 'object') {
+            obraForm.id_direccion.localidad = obraForm.id_direccion.localidad.label;
+        }
 
         if (name === 'localidad' || name === 'calle' || name === 'numero') {
             if (name === 'numero') {
@@ -180,6 +202,7 @@ function Stock() {
             return;
         }
         setObraForm({ ...obraForm, [name]: value });
+        console.log(obraForm);
         validateForm(name, value);
     };
 
@@ -193,6 +216,10 @@ function Stock() {
 
     const handleSaveObra = async (id = null) => {
         let id_direc = null;
+
+        if (typeof obraForm.id_direccion.localidad === 'object') {
+            obraForm.id_direccion.localidad = obraForm.id_direccion.localidad.label;
+        }
 
         const direc = await fetchData('/direcciones/', token);
     
@@ -231,7 +258,6 @@ function Stock() {
             } else {
                 await postData(`/crear_obra/`, formDataToSend, token);
             }
-            window.location.reload();
         } catch (error) {
             console.error('Error saving obra:', error);
         }
@@ -277,10 +303,38 @@ function Stock() {
                                             <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
                                             <Form.Group controlId="direccion">
                                                 <Form.Label style={{ marginTop: '1rem' }}>Dirección:</Form.Label>
+                                                <SelectLocalidad
+                                                    style={{ width: '100%' }}
+                                                    name="localidad"
+                                                    type="text"
+                                                    onChange={(value) => {
+                                                        const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                                                        if (!isValid) {
+                                                            handleInputChange({ target: { name: 'localidad', value: '' } });
+                                                        } else {
+                                                            handleInputChange({ target: { name: 'localidad', value } });
+                                                        }
+                                                        validateForm('localidad', value);
+                                                        console.log(isValid);
+                                                    }}
+                                                    onBlur={(value) => {
+                                                        const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                                                        if (!isValid) {
+                                                            handleInputChange({ target: { name: 'localidad', value: '' } });
+                                                        } else {
+                                                            handleInputChange({ target: { name: 'localidad', value } });
+                                                        }
+                                                        validateForm('localidad', value);
+                                                        console.log(isValid);
+                                                    }}
+                                                    placeholder={obraForm.id_direccion.localidad || 'Ingrese la Localidad'}
+                                                    onSelect={(label) => {
+                                                        handleInputChange({ target: { name: 'localidad', value: label } });
+                                                        validateForm('localidad', label);
+                                                    }}
+                                                    value={obraForm.id_direccion.localidad || ''}
+                                                />
                                                 <InputGroup>
-                                                    <Form.Control
-                                                        type="text" name="localidad" placeholder='Localidad' onChange={handleInputChange} onBlur={handleInputChange}
-                                                    />
                                                     <Form.Control
                                                         type="text" name="calle" placeholder='Calle' onChange={handleInputChange} onBlur={handleInputChange}
                                                     />
@@ -289,9 +343,9 @@ function Stock() {
                                                     />
                                                 </InputGroup>
                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                                    <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
-                                                        {errors.localidad}
-                                                    </Form.Label>
+                                                <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                    {errors.localidad}
+                                                </Form.Label>
                                                     <Form.Label id='errorCalle' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
                                                         {errors.calle}
                                                     </Form.Label>
@@ -355,10 +409,38 @@ function Stock() {
                                                             <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
                                                             <Form.Group controlId="direccion">
                                                                 <Form.Label style={{ marginTop: '1rem' }}>Dirección:</Form.Label>
+                                                                <SelectLocalidad
+                                                                    style={{ width: '100%' }}
+                                                                    name="localidad"
+                                                                    type="text"
+                                                                    onChange={(value) => {
+                                                                        const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                                                                        if (!isValid) {
+                                                                            handleInputChange({ target: { name: 'localidad', value: '' } });
+                                                                        } else {
+                                                                            handleInputChange({ target: { name: 'localidad', value } });
+                                                                        }
+                                                                        validateForm('localidad', value);
+                                                                        console.log(isValid);
+                                                                    }}
+                                                                    onBlur={(value) => {
+                                                                        const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                                                                        if (!isValid) {
+                                                                            handleInputChange({ target: { name: 'localidad', value: '' } });
+                                                                        } else {
+                                                                            handleInputChange({ target: { name: 'localidad', value } });
+                                                                        }
+                                                                        validateForm('localidad', value);
+                                                                        console.log(isValid);
+                                                                    }}
+                                                                    placeholder={obraForm.id_direccion.localidad || 'Ingrese la Localidad'}
+                                                                    onSelect={(label) => {
+                                                                        handleInputChange({ target: { name: 'localidad', value: label } });
+                                                                        validateForm('localidad', label);
+                                                                    }}
+                                                                    value={obraForm.id_direccion.localidad || ''}
+                                                                />
                                                                 <InputGroup>
-                                                                    <Form.Control
-                                                                        type="text" name="localidad" placeholder='Localidad' value={obraForm.id_direccion.localidad} onChange={handleInputChange} onBlur={handleInputChange}
-                                                                    />
                                                                     <Form.Control
                                                                         type="text" name="calle" placeholder='Calle' value={obraForm.id_direccion.calle} onChange={handleInputChange} onBlur={handleInputChange}
                                                                     />
@@ -367,9 +449,9 @@ function Stock() {
                                                                     />
                                                                 </InputGroup>
                                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                                                    <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
-                                                                        {errors.localidad}
-                                                                    </Form.Label>
+                                                                <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                                    {errors.localidad}
+                                                                </Form.Label>
                                                                     <Form.Label id='errorCalle' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
                                                                         {errors.calle}
                                                                     </Form.Label>
