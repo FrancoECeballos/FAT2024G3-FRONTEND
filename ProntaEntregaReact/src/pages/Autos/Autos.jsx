@@ -156,8 +156,19 @@ function AutosComponent() {
     
     const handleCreateAuto = async () => {
         if (!formData.imagen) {
-            console.error('No image file selected');
-            return;
+            const img = new Image();
+            img.src = defaultImage;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'no_image.png', { type: 'image/png' });
+                    setFormData((prevData) => ({ ...prevData, imagen: file }));
+                });
+            };
         }
     
         const data = new FormData();
@@ -186,7 +197,7 @@ function AutosComponent() {
                 
                 crearNotificacion(dataNotificacion, token, 'Obra', obra[0].id_obra).then(() => { 
                     handleReloadAutos(); 
-                    setPopupData({"title": 'Resta exitosa', "message": `Se restó el valor de ${cantidad} exitosamente.`});
+                    setPopupData({"title": 'Vehiculo Creado', "message": `Se creó el vehiculo ${formData.marca} ${formData.modelo} de la obra ${obra[0].nombre}.`});
                     setIsPopupVisible(true);
                 });
                 return true;
@@ -328,7 +339,7 @@ function AutosComponent() {
                 <div className='auto-list'>
                     {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
                         <div className="auto-modal">
-                            <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='20' openButtonText='¿No encuentra su vehículo? Añadalo' 
+                            <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='15' openButtonText='Añadir un vehiculo nuevo' 
                             showPopup={isPopupVisible} popupTitle={popupData.title} popupMessage={popupData.message} content={
                                 <>
                                     <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage} />
@@ -382,7 +393,9 @@ function AutosComponent() {
                                                 </div>
                                                 <div style={{ marginTop: "1rem", marginRight: "1rem" }}>
                                                     {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                                                        <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={() => {handleUpdateAuto(autoModal, auto); setAutoModal(null);}} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' 
+                                                        <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={async () => {
+                                                            const a = await handleUpdateAuto(autoModal, auto); console.log(a); setAutoModal(null);
+                                                        }} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' 
                                                         showPopup={isPopupVisible} popupTitle={popupData.title} popupMessage={popupData.message} content={
                                                             <>
                                                                 <OverlayTrigger

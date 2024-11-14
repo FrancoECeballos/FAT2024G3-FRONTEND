@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import "./auto_complete_select.scss";
 
-function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, width = '95%', defaultValue, showLabel = false, label }) {
+function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, width = '95%', defaultValue, showLabel = false, label, disabled, placeholder, style }) {
   const [inputValue, setInputValue] = useState("");
   const [filteredLists, setFilteredLists] = useState(lists);
   const [isListVisible, setIsListVisible] = useState(false);
@@ -64,7 +64,6 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
     }
   };
 
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredLists.length > 0) {
       if (addNewButton && selectedIndex === filteredLists.length) {
@@ -84,7 +83,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
   };
 
   return (
-    <div className="auto-complete-select">
+    <div className="auto-complete-select" style={style}>
       <Form.Control
         type="text"
         value={inputValue}
@@ -92,8 +91,9 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
         onKeyDown={handleKeyDown}
-        placeholder="Seleccione una Opcion"
+        placeholder={placeholder}
         className="select-input"
+        disabled={disabled}
       />
       {isListVisible && (
         <div className="select-button-container" style={{ position: 'absolute', zIndex: 1000, width: width }}>

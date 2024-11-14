@@ -107,7 +107,6 @@ function Products() {
                         label: `${product.nombre} - ${product.descripcion}`,
                     }));
                     setExcludedProducts(transformedResult);
-                    console.log(transformedResult)
                 });
             });
         });
@@ -115,21 +114,21 @@ function Products() {
         fetchData(`/categoria/${categoriaID}`, token).then((result) => {
             setCurrentCategory(result[0].nombre);
         });
-        setIsLoading(false); 
 
         const img = new Image();
         img.src = defaultImage;
         img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        canvas.toBlob((blob) => {
-            const file = new File([blob], 'no_image.png', { type: 'image/png' });
-            setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
-        });
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob((blob) => {
+                const file = new File([blob], 'no_image.png', { type: 'image/png' });
+                setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
+            });
         };
+        setIsLoading(false); 
 
     }, [token, navigate, stockId, categoriaID]);
 
@@ -307,8 +306,14 @@ function Products() {
     };
 
     const handleDeleteProduct = async (id) => {
+<<<<<<< HEAD
         deleteData(`/EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(() => {
             window.location.reload();
+=======
+        await deleteData(`EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(async () => {
+            await reloadData();
+            setPopupData({"title": 'Producto eliminado', "message": `Se eliminó el producto exitosamente.`});
+>>>>>>> b67b9ded384fdb647b98539e54f39b4a1a222f92
         });
     };
 
@@ -427,12 +432,12 @@ function Products() {
 
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
                     <Modal buttonStyle={{marginTop: '10rem'}} openButtonText='Añadir un producto nuevo' openButtonWidth='15' title='Añadir Producto' saveButtonText={selectedCardId !== 'New' ? 'Agregar' : 'Crear'} handleShowModal={() => setDetalle({id_stock: parseInt(stockId, 10)})}
-                    showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={() => {
+                    showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={async () => {
                         if (cantidadRef.current) {
                             if (selectedCardId === 'New') {
                                 handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
                             } else {
-                                handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId);
+                                await handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);
                             }
                         } else {
                             setAlertMessage('Por favor seleccione un producto');
@@ -547,9 +552,15 @@ function Products() {
                                                         />
                                                     </OverlayTrigger>
                                                 </Col>
-                                                <ConfirmationModal Open={confirmDelete == product.id_producto} onClose={() => setConfirmDelete(null)} 
+                                                <ConfirmationModal 
+                                                    Open={confirmDelete == product.id_producto} 
+                                                    onClose={() => setConfirmDelete(null)} 
                                                     BodyText={`¿Esta seguro que desea borrar el producto ${product.nombre}? Se borrarán todos sus registros`}
-                                                    onClickConfirm={() => handleDeleteProduct(product.id_producto)}/>
+                                                    onClickConfirm={async () => await handleDeleteProduct(product.id_producto)}
+                                                    showPopup={true} 
+                                                    popupTitle={popupData.title} 
+                                                    popupMessage={popupData.message}
+                                                />
                                             </>
                                         )}
                                     </Row>

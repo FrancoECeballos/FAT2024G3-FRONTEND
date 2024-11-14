@@ -13,6 +13,7 @@ import NullToEmpty from '../../../functions/nulltoempty.jsx'
 import SendButton from '../../buttons/send_button/send_button.jsx';
 import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
 import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
+import SelectLocalidad from '../../register/SelectLocalidad.jsx';
 import crearNotificacion from "../../../functions/createNofiticacion.jsx";
 
 const Cuenta = ({ user }) => {
@@ -75,6 +76,7 @@ const Cuenta = ({ user }) => {
     const updateUserState = (result) => {
       const transformedData = NullToEmpty(result);
       setUserData(transformedData);
+      console.log(transformedData);
       setUserDataDefault(transformedData);
     };
 
@@ -123,7 +125,6 @@ const Cuenta = ({ user }) => {
     } else {
       fetchObras(`/user/obrasToken/${token}`);
     }
-
   }, [token, navigate, user]);
 
   const handleLogout = () => {
@@ -164,36 +165,38 @@ const Cuenta = ({ user }) => {
     }
 
     const result = await postData(`user/obras/post/`,
-      { descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`,
+      {
+        descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`,
         fechaingreso: today,
         id_obra: parseInt(selectedObject),
         id_usuario: userData.id_usuario,
-        id_tipousuario: 1 }, token
+        id_tipousuario: 1
+      }, token
 
     ).then(async () => {
-        const fechaCreacion = new Date().toISOString().split('T')[0];
-        const newObra = await fetchData(`obra/${selectedObject}/`, token);
+      const fechaCreacion = new Date().toISOString().split('T')[0];
+      const newObra = await fetchData(`obra/${selectedObject}/`, token);
 
-        const dataNotificacionObra = {
-          titulo: 'Voluntario en Obra',
-          descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${newObra[0].nombre}.`,
-          id_usuario: user.id_usuario,
-          fecha_creacion: fechaCreacion
-        };
+      const dataNotificacionObra = {
+        titulo: 'Voluntario en Obra',
+        descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${newObra[0].nombre}.`,
+        id_usuario: user.id_usuario,
+        fecha_creacion: fechaCreacion
+      };
 
-        const dataNotificacionUser = {
-          titulo: 'Ingreso a Obra',
-          descripcion: `Se te añadió a la obra ${newObra[0].nombre}.`,
-          id_usuario: user.id_usuario,
-          fecha_creacion: fechaCreacion
-        };
+      const dataNotificacionUser = {
+        titulo: 'Ingreso a Obra',
+        descripcion: `Se te añadió a la obra ${newObra[0].nombre}.`,
+        id_usuario: user.id_usuario,
+        fecha_creacion: fechaCreacion
+      };
 
-        return crearNotificacion(dataNotificacionObra, token, 'Obra', newObra[0].id_obra).then(() => {
-          crearNotificacion(dataNotificacionUser, token, 'User', userData.id_usuario).then(() => {
-            window.location.reload();
-          })
-        });
-      })
+      return crearNotificacion(dataNotificacionObra, token, 'Obra', newObra[0].id_obra).then(() => {
+        crearNotificacion(dataNotificacionUser, token, 'User', userData.id_usuario).then(() => {
+          window.location.reload();
+        })
+      });
+    })
   };
 
 
@@ -323,7 +326,7 @@ const Cuenta = ({ user }) => {
     <div className="micuenta">
       <h1>
         <div style={{ marginLeft: '10rem' }}>
-          <UploadImage onFileChange={handleFileChange} usingIcon={true} buttonHidden = {isEditing} />
+          <UploadImage onFileChange={handleFileChange} usingIcon={true} buttonHidden={isEditing} />
         </div>
         <img src={getImageUrl(userData.imagen)} className="fotoperfil" alt="Perfil" />
         {`Bienvenido ${userDataDefault.nombreusuario}`}
@@ -393,11 +396,15 @@ const Cuenta = ({ user }) => {
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
               <InputGroup>
-                <Form.Control
-                  type="text"
+                <SelectLocalidad
+                  style={{ width: '100%' }}
                   name="id_direccion.localidad"
-                  value={userData.id_direccion?.localidad || ''}
+                  type="text"
+                  onBlur={handleInputChange}
                   onChange={handleInputChange}
+                  placeholder={userData.id_direccion?.localidad}
+                  onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
+                  value={userData.id_direccion?.localidad || ''}
                   disabled={!isEditing}
                 />
                 <Form.Control

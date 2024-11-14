@@ -121,3 +121,11 @@ h1 {
     box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.3);
   }
 }
+
+.form-control:disabled {
+  background-color: var(--bs-secondary-bg);
+}
+
+.form-control:enabled {
+  background-color: white;
+}
