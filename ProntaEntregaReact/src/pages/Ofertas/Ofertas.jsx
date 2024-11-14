@@ -63,15 +63,15 @@ function Ofertas() {
 
                 if (userData.is_superuser) {
                     const [stocksData, obrasData] = await Promise.all([
-                        fetchData(`stock/`, token),
-                        fetchData(`obra/`, token)
+                        fetchData(`/stock/`, token),
+                        fetchData(`/obra/`, token)
                     ]);
                     setStocks(stocksData);
                     setObras(obrasData);
                 } else {
                     const [stocksData, obrasData] = await Promise.all([
                         fetchData(`/user/stockToken/${token}`, token),
-                        fetchData(`obra/user/${token}/`, token)
+                        fetchData(`/obra/user/${token}/`, token)
                     ]);
                     setStocks(stocksData);
                     setObras(obrasData);
@@ -79,7 +79,7 @@ function Ofertas() {
 
                 const [ofertasData, userOfertasData] = await Promise.all([
                     fetchData(`/oferta/${token}/`, token),
-                    fetchData(`GetOfertaCreadaPorUsuario/${userData.id_usuario}`, token)
+                    fetchData(`/GetOfertaCreadaPorUsuario/${userData.id_usuario}`, token)
                 ]);
                 setOfertas(ofertasData);
                 setUserOfertas(userOfertasData);
@@ -202,11 +202,11 @@ function Ofertas() {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
 
-            postData('crear_oferta/', ofertaForm, token).then(async () => {
+            postData('/crear_oferta/', ofertaForm, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const producto = await fetchData(`producto/${ofertaForm.id_producto}/`, token);
-                const pendingStock = await fetchData(`stock/${ofertaForm.id_obra}/`, token);
-                const pendingObra = await fetchData(`obra/${ofertaForm.id_obra}/`, token);
+                const producto = await fetchData(`/producto/${ofertaForm.id_producto}/`, token);
+                const pendingStock = await fetchData(`/stock/${ofertaForm.id_obra}/`, token);
+                const pendingObra = await fetchData(`/obra/${ofertaForm.id_obra}/`, token);
 
                 await postData('SubtractDetallestockproducto/', {
                     cantidad: ofertaForm.cantidad,
@@ -251,9 +251,9 @@ function Ofertas() {
         };
 
         try {
-            await postData('crear_detalle_oferta/', data, token).then(async () => {
+            await postData('/crear_detalle_oferta/', data, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const ofertaAportada = await fetchData(`oferta_id/${ofertaId}/`, token);
+                const ofertaAportada = await fetchData(`/oferta_id/${ofertaId}/`, token);
 
                 const dataNotificacion = {
                     titulo: 'Nuevo Aporte',
@@ -271,7 +271,7 @@ function Ofertas() {
     };
 
     const handleDeleteOferta = (ofertaId) => {
-        deleteData(`CancelOferta/${ofertaId}/`, token).then(() => {
+        deleteData(`/CancelOferta/${ofertaId}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error deleting oferta:', error);
@@ -279,7 +279,7 @@ function Ofertas() {
     };
 
     const handleEndOferta = (ofertaId) => {
-        deleteData(`EndOferta/${ofertaId}/`, token).then(() => {
+        deleteData(`/EndOferta/${ofertaId}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error ending oferta:', error);
@@ -287,7 +287,7 @@ function Ofertas() {
     };
 
     const handleRejectAporte = (aporte) => {
-        deleteData(`delete_detalle_oferta/${aporte.id_aportePedido}/`, token).then(() => {
+        deleteData(`/delete_detalle_oferta/${aporte.id_aportePedido}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error ending pedido:', error);

@@ -31,7 +31,7 @@ function NotificationListingCard() {
       const userData = await fetchUser();
       setUser(userData);
 
-      const notifis = await fetchData(`GetNotificacionesObrasDeUsuario/${userData.id_usuario}/`, token);
+      const notifis = await fetchData(`/GetNotificacionesObrasDeUsuario/${userData.id_usuario}/`, token);
       setNotifications(notifis);
       console.log('Notifications: ', notifis);
     } catch (error) {

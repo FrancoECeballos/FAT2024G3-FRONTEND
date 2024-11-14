@@ -32,7 +32,7 @@ const InformeOfertas = () => {
                 navigate('/oferta');
             }
 
-            fetchData('oferta_all/', token).then(data => {
+            fetchData('/oferta_all/', token).then(data => {
                 setOfertas(data);
                 setIsLoading(false);
             });
@@ -78,7 +78,7 @@ const InformeOfertas = () => {
 
     return (
         <div>
-            <FullNavbar selectedPage='Ofertas'/>
+            <FullNavbar selectedPage='/Ofertas'/>
             <div>
                 <OverlayTrigger
                     placement="top"
