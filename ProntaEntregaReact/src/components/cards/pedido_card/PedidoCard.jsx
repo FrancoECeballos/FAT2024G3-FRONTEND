@@ -37,11 +37,11 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     });
 
     useEffect(() => {
-        fetchData('stock/').then((data) => {
+        fetchData('/stock/').then((data) => {
             setObras(data);
         });
 
-        fetchData('categoria/', token).then((result) => {
+        fetchData('/categoria/', token).then((result) => {
             setCategories(result);
         }).catch(error => {
             console.error('Error fetching categories:', error);
@@ -63,7 +63,7 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     };
 
     const handleFetchProducts = (id_stock, id_categoria) => {
-        fetchData(`producto/categoria/${id_categoria}/`, token).then((result) => {
+        fetchData(`/producto/categoria/${id_categoria}/`, token).then((result) => {
             setProducts(result);
         }).catch(error => {
             console.error('Error fetching products:', error);
@@ -219,7 +219,6 @@ const PedidoCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             errors.obras = "Debe seleccionar al menos una obra";
         }
     
-        console.log('Form validation result:', formIsValid, errors);
         return { formIsValid, errors };
     };
 

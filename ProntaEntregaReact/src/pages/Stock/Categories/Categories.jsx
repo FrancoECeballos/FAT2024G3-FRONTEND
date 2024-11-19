@@ -134,7 +134,6 @@ function Categories() {
 
         setFormData((prevData) => {
             const updatedData = { ...prevData, [name]: value };
-            console.log(updatedData);
             return updatedData;
         });
 
@@ -171,7 +170,7 @@ function Categories() {
         data.append('descripcion', formData.descripcion);
     
         try {
-            await postData('crear_categoria/', data, token);
+            await postData('/crear_categoria/', data, token);
             const fechaCreacion = new Date().toISOString().split('T')[0];
     
             const dataNotificacion = {

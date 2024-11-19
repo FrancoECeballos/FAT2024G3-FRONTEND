@@ -11,6 +11,7 @@ import { Form, InputGroup } from 'react-bootstrap';
 import UploadImage from '../../components/buttons/upload_image/uploadImage.jsx';
 import defaultImage from '../../assets/WhiteLogo.png';
 import SelectLocalidad from '../../components/register/SelectLocalidad.jsx';
+import Popup from '../../components/alerts/popup/Popup.jsx'
 
 import fetchData from '../../functions/fetchData.jsx';
 import postData from '../../functions/postData.jsx';
@@ -50,7 +51,15 @@ function Stock() {
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(null);
+    const [popupTitle, setPopupTitle] = useState(null);
+
     useEffect(() => {
+        loadData();
+    }, [token, navigate]);
+
+    const loadData = () => {
         setIsLoading(true);
         fetchUser(navigate).then((result) => {
             if (result.is_superuser) {
@@ -65,7 +74,6 @@ function Stock() {
             } else {
                 fetchData(`/user/obrasEmail/${result.email}/`, token).then((result) => {
                     setObras(result);
-                    console.log(result);
                 }).catch(error => {
                     console.error('Error fetching obras for user', error);
                 }).finally(() => {
@@ -90,7 +98,7 @@ function Stock() {
             console.error('Error fetching user data:', error);
             setIsLoading(false);
         });
-    }, [token, navigate]);
+    };
 
     const filteredObras = obras.filter(obra => {
         return (
@@ -201,7 +209,6 @@ function Stock() {
             return;
         }
         setObraForm({ ...obraForm, [name]: value });
-        console.log(obraForm);
         validateForm(name, value);
     };
 
@@ -210,7 +217,6 @@ function Stock() {
             ...prevObraForm,
             imagen: file,
         }));
-        console.log(obraForm);
     };
 
     const handleSaveObra = async (id = null) => {
@@ -228,6 +234,9 @@ function Stock() {
                 obraForm.imagen = file;
             } catch (error) {
                 console.error('Error fetching image:', error);
+                setPopupTitle('Error');
+                setPopupMessage('Error fetching image.');
+                setShowPopup(true);
                 return;
             }
         }
@@ -249,6 +258,9 @@ function Stock() {
                 id_direc = result.id_direccion;
             } catch (error) {
                 console.error('Error creating direccion:', error);
+                setPopupTitle('Error');
+                setPopupMessage('Error creating direccion.');
+                setShowPopup(true);
                 return;
             }
         } else {
@@ -266,21 +278,37 @@ function Stock() {
         try {
             if (id) {
                 await putData(`/editar_obra/${id}/`, formDataToSend, token);
+                setPopupTitle('Obra actualizada');
+                setPopupMessage('Se actualizó la obra.');
             } else {
                 await postData(`/crear_obra/`, formDataToSend, token);
+                setPopupTitle('Obra creada');
+                setPopupMessage('Se creó la obra.');
             }
-            window.location.reload();
+            setObraModal(null);
+            loadData();
         } catch (error) {
             console.error('Error saving obra:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Hubo un error con la operación.');
+        } finally {
+            setShowPopup(true);
         }
     };
-
+    
     const handleDeleteObra = async (id) => {
         try {
             await deleteData(`/DeleteObra/${id}/`, token);
-            window.location.reload();
+            setPopupTitle('Obra borrada');
+            setPopupMessage('Se borró la obra.');
+            setObraModal(null);
+            loadData();
         } catch (error) {
             console.error('Error deleting obra:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Hubo un error con la operación.');
+        } finally {
+            setShowPopup(true);
         }
     };
 
@@ -327,7 +355,6 @@ function Stock() {
                                                             handleInputChange({ target: { name: 'localidad', value } });
                                                         }
                                                         validateForm('localidad', value);
-                                                        console.log(isValid);
                                                     }}
                                                     onBlur={(value) => {
                                                         const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
@@ -337,7 +364,6 @@ function Stock() {
                                                             handleInputChange({ target: { name: 'localidad', value } });
                                                         }
                                                         validateForm('localidad', value);
-                                                        console.log(isValid);
                                                     }}
                                                     placeholder={obraForm.id_direccion.localidad || 'Ingrese la Localidad'}
                                                     onSelect={(label) => {
@@ -446,7 +472,6 @@ function Stock() {
                                                                             handleInputChange({ target: { name: 'localidad', value } });
                                                                         }
                                                                         validateForm('localidad', value);
-                                                                        console.log(isValid);
                                                                     }}
                                                                     onBlur={(value) => {
                                                                         const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
@@ -456,7 +481,6 @@ function Stock() {
                                                                             handleInputChange({ target: { name: 'localidad', value } });
                                                                         }
                                                                         validateForm('localidad', value);
-                                                                        console.log(isValid);
                                                                     }}
                                                                     placeholder={obraForm.id_direccion.localidad || 'Ingrese la Localidad'}
                                                                     onSelect={(label) => {
@@ -512,6 +536,7 @@ function Stock() {
                         </>
                     )}   
             </div>
+            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
         </div>
     );
 }

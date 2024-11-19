@@ -29,9 +29,9 @@ function GenericModal({ buttonTextColor, buttonColor, tamaño, openButtonText, o
         }
     };
 
-    const handleSaveAndClose = () => {
+    const handleSaveAndClose = async () => {
         try {
-            const saveSuccess = handleSave();
+            const saveSuccess = await handleSave();
             if (saveSuccess) {
                 handleClose();
                 if (showPopup) {

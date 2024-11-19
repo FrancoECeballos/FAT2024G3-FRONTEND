@@ -8,6 +8,7 @@ import LittleCard from '../../components/cards/little_card/LittleCard';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Modal from '../../components/modals/Modal.jsx';
 import EntregaCard from '../../components/cards/entrega_card/EntregaCard.jsx';
+import Popup from '../../components/alerts/popup/Popup.jsx'
 
 import fetchData from '../../functions/fetchData.jsx';
 import postData from '../../functions/postData.jsx';
@@ -36,15 +37,23 @@ const Entregas = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
 
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(null);
+    const [popupTitle, setPopupTitle] = useState(null);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
     useEffect(() => {
+        loadData();
+    }, [token, navigate]);
+    
+    const loadData = async () => {
         if (!token) {
             navigate('/login');
             return;
         }
-
+    
         const fetchUserData = async () => {
             try {
                 const userData = await fetchUser();
@@ -54,15 +63,16 @@ const Entregas = () => {
             }
         };
     
-        fetchUserData().then(() => {
-            fetchData('/entrega/', token).then((result) => {
-                setEntregas(result);
-                setIsLoading(false);
-            }).catch(error => {
-                console.error('Error fetching entregas:', error);
-            });
-        });
-    }, [token, navigate]);
+        try {
+            await fetchUserData();
+            const result = await fetchData('/entrega/', token);
+            setEntregas(result);
+        } catch (error) {
+            console.error('Error fetching entregas:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const filteredEntregas = entregas.filter(entrega => {
         return (
@@ -127,7 +137,7 @@ const Entregas = () => {
         });
     };
 
-    const handleUpdateEntregaAporte = () => {
+    const handleUpdateEntregaAporte = async () => {
         if (estado.newEstado == 2) {
             const data = {
                 ...aporteModal,
@@ -138,133 +148,129 @@ const Entregas = () => {
                 id_aporteOferta: aporteModal.id_aporteOferta ? aporteModal.id_aporteOferta.id_aporteOferta : null,
                 id_usuario: user.id_usuario,
                 id_entrega: aporteModal.id_entrega.id_entrega
-
             };
-            putData(`/editar_entrega_aporte/${data.id_entregaAporte}/`, data, token).then(() => {
+            try {
+                await putData(`/editar_entrega_aporte/${data.id_entregaAporte}/`, data, token);
                 setAporteModal(null);
-                fetchData('/entrega/', token).then(
-                    window.location.reload()
-                ).catch(error => {
-                    console.error('Error fetching entregas:', error);
-                });
-            }).catch(error => {
+                await fetchData('/entrega/', token);
+                setPopupTitle('Entrega Actualizada');
+                setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                setShowPopup(true);
+                loadData();
+            } catch (error) {
                 console.error('Error updating entrega aporte:', error);
-            });
+            }
         } else {
-            postData(`/editar_entrega_aporte_estado/${recorridoModal.id_entregaAporte}/${estado.newEstado}/`, token).then(() => {
-                fetchData('/entrega/', token).then(async () => {
-                    if (estado.newEstado === 4) {
-                        if (recorridoModal.id_usuario.id_usuario === user.id_usuario) {
-                            if (recorridoModal.id_aportePedido) {
-                                await postData('/SubtractDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aportePedido.cantidad,
-                                    id_stock: recorridoModal.id_aportePedido.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
-                                }, token).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                await postData('/AddDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aporteOferta.cantidad,
-                                    id_stock: recorridoModal.id_aporteOferta.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
-                                }, token).then(() => {
-                                    window.location.reload();
-                                });
-                            }
+            try {
+                await postData(`/editar_entrega_aporte_estado/${recorridoModal.id_entregaAporte}/${estado.newEstado}/`, token);
+                await fetchData('/entrega/', token);
+                if (estado.newEstado === 4) {
+                    if (recorridoModal.id_usuario.id_usuario === user.id_usuario) {
+                        if (recorridoModal.id_aportePedido) {
+                            await postData('/SubtractDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aportePedido.cantidad,
+                                id_stock: recorridoModal.id_aportePedido.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
+                            }, token);
+                            setPopupTitle('Entrega Actualizada');
+                            setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                            setShowPopup(true);
+                            setRecorridoModal(null);
+                            loadData();
+                        } else {
+                            await postData('/AddDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aporteOferta.cantidad,
+                                id_stock: recorridoModal.id_aporteOferta.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
+                            }, token);
+                            setPopupTitle('Entrega Actualizada');
+                            setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                            setShowPopup(true);
+                            setRecorridoModal(null);
+                            loadData();
                         }
-                    } else if (estado.newEstado === 5 && recorridoModal.id_estadoEntrega.id_estadoEntrega === 3) {
-                        if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
-                        (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
-                            if (recorridoModal.id_aportePedido) {
-                                await postData('/AddDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aportePedido.cantidad,
-                                    id_stock: selectedEntrega.id_pedido.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
-                                }, token).then(async () => {
-                                    await postData('/SubtractDetallestockproducto/', {
-                                        cantidad: recorridoModal.id_aportePedido.cantidad,
-                                        id_stock: recorridoModal.id_aportePedido.id_obra.id_obra,
-                                        id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
-                                        id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
-                                    }, token).then(() => {
-                                        window.location.reload();
-                                    });
-                                });
-                            } else {
-                                await postData('/SubtractDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aporteOferta.cantidad,
-                                    id_stock: selectedEntrega.id_oferta.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
-                                }, token).then(async () => {
-                                    await postData('/AddDetallestockproducto/', {
-                                        cantidad: recorridoModal.id_aporteOferta.cantidad,
-                                        id_stock: recorridoModal.id_aporteOferta.id_obra.id_obra,
-                                        id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
-                                        id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
-                                    }, token).then(() => {
-                                        window.location.reload();
-                                    });
-                                });
-                            }
-                        }
-                    } else if (estado.newEstado === 5) {
-                        if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
-                        (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
-                            if (recorridoModal.id_aportePedido) {
-                                await postData('/AddDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aportePedido.cantidad,
-                                    id_stock: selectedEntrega.id_pedido.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
-                                }, token).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                await postData('/SubtractDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aporteOferta.cantidad,
-                                    id_stock: selectedEntrega.id_oferta.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
-                                }, token).then(() => {
-                                    window.location.reload();
-                                });
-                            }
-                        } else if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
-                        (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
-                            if (recorridoModal.id_aportePedido) {
-                                await postData('/AddDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aportePedido.cantidad,
-                                    id_stock: selectedEntrega.id_pedido.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
-                                }, token).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                await postData('/SubtractDetallestockproducto/', {
-                                    cantidad: recorridoModal.id_aporteOferta.cantidad,
-                                    id_stock: selectedEntrega.id_oferta.id_obra.id_obra,
-                                    id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
-                                    id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
-                                }, token).then(() => {
-                                    window.location.reload();
-                                });
-                            }
-                        }
-                    } else {
-                        window.location.reload();
                     }
-                }).catch(error => {
-                    console.error('Error fetching entregas:', error);
-                });
-            }).catch(error => {
+                } else if (estado.newEstado === 5 && recorridoModal.id_estadoEntrega.id_estadoEntrega === 3) {
+                    if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
+                        (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
+                        if (recorridoModal.id_aportePedido) {
+                            await postData('/AddDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aportePedido.cantidad,
+                                id_stock: selectedEntrega.id_pedido.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
+                            }, token);
+                            await postData('/SubtractDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aportePedido.cantidad,
+                                id_stock: recorridoModal.id_aportePedido.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
+                            }, token);
+                            setPopupTitle('Entrega Actualizada');
+                            setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                            setShowPopup(true);
+                            setRecorridoModal(null);
+                            loadData();
+                        } else {
+                            await postData('/SubtractDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aporteOferta.cantidad,
+                                id_stock: selectedEntrega.id_oferta.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
+                            }, token);
+                            await postData('/AddDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aporteOferta.cantidad,
+                                id_stock: recorridoModal.id_aporteOferta.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
+                            }, token);
+                            setPopupTitle('Entrega Actualizada');
+                            setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                            setShowPopup(true);
+                            setRecorridoModal(null);
+                            loadData();
+                        }
+                    }
+                } else if (estado.newEstado === 5) {
+                    if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
+                        (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
+                        if (recorridoModal.id_aportePedido) {
+                            await postData('/AddDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aportePedido.cantidad,
+                                id_stock: selectedEntrega.id_pedido.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_pedido.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_pedido.id_usuario.id_usuario
+                            }, token);
+                            setPopupTitle('Entrega Actualizada');
+                            setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                            setShowPopup(true);
+                            setRecorridoModal(null);
+                            loadData();
+                        } else {
+                            await postData('/SubtractDetallestockproducto/', {
+                                cantidad: recorridoModal.id_aporteOferta.cantidad,
+                                id_stock: selectedEntrega.id_oferta.id_obra.id_obra,
+                                id_producto: selectedEntrega.id_oferta.id_producto.id_producto,
+                                id_usuario: selectedEntrega.id_oferta.id_usuario.id_usuario
+                            }, token);
+                            setPopupTitle('Entrega Actualizada');
+                            setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                            setShowPopup(true);
+                            setRecorridoModal(null);
+                            loadData();
+                        }
+                    }
+                } else {
+                    setPopupTitle('Entrega Actualizada');
+                    setPopupMessage('La entrega ha sido actualizada exitosamente.');
+                    setShowPopup(true);
+                    loadData();
+                }
+            } catch (error) {
                 console.error('Error updating entrega aporte:', error);
-            });
+            }
         }
     };
 
@@ -399,6 +405,7 @@ const Entregas = () => {
                     </>
                 )}
             </div>
+            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
         </div>
     );
 };

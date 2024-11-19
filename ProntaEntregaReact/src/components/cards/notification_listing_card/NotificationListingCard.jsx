@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import Loading from '../../../components/loading/loading';
@@ -15,6 +16,7 @@ import SendButton from "../../buttons/send_button/send_button.jsx";
 import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
 
 function NotificationListingCard() {
+  const navigate = useNavigate();
   const token = Cookies.get('token');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,7 +30,7 @@ function NotificationListingCard() {
 
   const fetchDataAsync = async () => {
     try {
-      const userData = await fetchUser();
+      const userData = await fetchUser(navigate);
       setUser(userData);
 
       const notifis = await fetchData(`/GetNotificacionesObrasDeUsuario/${userData.id_usuario}/`, token);

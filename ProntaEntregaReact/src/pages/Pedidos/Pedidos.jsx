@@ -69,7 +69,6 @@ function Pedidos() {
 
                     const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                     setUserPedidos(pedidosData);
-                    console.log(pedidosData);
 
                     const obrasData = await fetchData(`/obra/user/${token}/`, token);
                     setObras(obrasData);
@@ -99,23 +98,22 @@ function Pedidos() {
 
             const userTokenData = await fetchData(`/userToken/${token}`, token);
             if (userTokenData.is_superuser) {
-                const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
+                const pedidosRecibidos = await fetchData(`/get_pedidos_recibidos_for_admin/`, token);
                 setPedidos(pedidosRecibidos);
 
-                const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                 setUserPedidos(pedidosData);
 
-                const obrasData = await fetchData(`obra/`, token);
+                const obrasData = await fetchData(`/obra/`, token);
                 setObras(obrasData);
             } else {
-                const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
+                const pedidosRecibidos = await fetchData(`/get_pedidos_recibidos_for_user/${token}/`, token);
                 setPedidos(pedidosRecibidos);
 
-                const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                 setUserPedidos(pedidosData);
-                console.log(pedidosData);
 
-                const obrasData = await fetchData(`obra/user/${token}/`, token);
+                const obrasData = await fetchData(`/obra/user/${token}/`, token);
                 setObras(obrasData);
             }
         } catch (error) {
@@ -125,18 +123,19 @@ function Pedidos() {
         }
     };
 
-    const handleCreatePedido = () => {
+    const handleCreatePedido = async () => {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-
-            postData('/crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+    
+            try {
+                const result = await postData('/crear_pedido/', pedidoFormWithoutObras, token);
                 const obrasPromises = obras.map(async (obra) => {
                     const fechaCreacion = new Date().toISOString().split('T')[0];
                     const producto = await fetchData(`/producto/${pedidoForm.id_producto}/`, token);
                     const pendingObra = await fetchData(`/obra/${pedidoForm.id_obra}/`, token);
                     const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
-
+    
                     const dataNotificacion = {
                         titulo: 'Nuevo Pedido',
                         descripcion: `Pedido creado por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
@@ -145,24 +144,26 @@ function Pedidos() {
                         id_obra: obra,
                         fecha_creacion: fechaCreacion
                     };
-
+    
                     crearNotificacion(dataNotificacion, token, 'Obra', obra);
                     return postData('/crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                 });
-
-                return Promise.all(obrasPromises).then(() => {
-                    setPopupTitle('Pedido Creado');
-                    setPopupMessage('El pedido ha sido creado exitosamente.');
-                    setShowPopup(true);
-                    window.location.reload();
-                });
-            }).catch((error) => {
+    
+                await Promise.all(obrasPromises);
+                setPopupTitle('Pedido Creado');
+                setPopupMessage('El pedido ha sido creado exitosamente.');
+                setShowPopup(true);
+                fetchDataAsync();
+                return true;
+            } catch (error) {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
                 setPopupTitle('Error');
                 setPopupMessage('Hubo un error al crear el pedido.');
                 setShowPopup(true);
-            });
+                return false;
+            }
         }
+        return false;
     };
 
     const filters = [
@@ -303,20 +304,34 @@ function Pedidos() {
         setShowModal(false);
     };
 
-    const handleDeletePedido = (pedidoId) => {
-        deleteData(`/CancelPedido/${pedidoId}/`, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
+    const handleDeletePedido = async (pedidoId) => {
+        try {
+            await deleteData(`/CancelPedido/${pedidoId}/`, token);
+            setPopupTitle('Pedido Cancelado');
+            setPopupMessage('El pedido ha sido cancelado exitosamente.');
+            setShowPopup(true);
+            setShowModal(false);
+            fetchDataAsync();
+            return true;
+        } catch (error) {
             console.error('Error deleting pedido:', error);
-        });
+            return false;
+        }
     };
-
-    const handleEndPedido = (pedidoId) => {
-        deleteData(`/EndPedido/${pedidoId}/`, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
+    
+    const handleEndPedido = async (pedidoId) => {
+        try {
+            await deleteData(`/EndPedido/${pedidoId}/`, token);
+            setPopupTitle('Pedido Terminado');
+            setPopupMessage('El pedido ha terminado exitosamente.');
+            setShowPopup(true);
+            setShowModal(false);
+            fetchDataAsync();
+            return true;
+        } catch (error) {
             console.error('Error ending pedido:', error);
-        });
+            return false;
+        }
     };
 
     if (obras.length === 0 && !user.is_superuser) {
@@ -379,6 +394,7 @@ function Pedidos() {
                                                     descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente} /></>}
                                                     descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                                     descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
+                                                    descrip5={<><strong>Obras Pedidas:</strong> {pedido.obras.map(obra => obra.nombre).join(', ')}</>}
                                                     children={
                                                         <OverlayTrigger
                                                             placement="top"
@@ -399,7 +415,7 @@ function Pedidos() {
                                 const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
                                     <Tab key={obra.id_obra} eventKey={obra.id_obra} title={<span className="custom-tab-title">{obra.nombre}</span>} style={{ backgroundColor: "transparent" }}>
-                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} obraSelected={obra} user={user} />
+                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} obraSelected={obra} user={user} setShowPopup={setShowPopup} setPopupMessage={setPopupMessage} setPopupTitle={setPopupTitle} reloadData={fetchDataAsync}/>
                                     </Tab>
                                 );
                             })}
@@ -436,6 +452,7 @@ function Pedidos() {
                                 descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
                                 descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
                                 descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
+                                descrip6={<><strong>Obras Pedidas:</strong> {selectedPedido.obras.map(obra => obra.nombre).join(', ')}</>}
                             />
                         )}
                     </div>

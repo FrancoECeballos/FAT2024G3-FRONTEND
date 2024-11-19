@@ -30,7 +30,7 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     });
 
     useEffect(() => {
-        fetchData('categoria/', token).then((result) => {
+        fetchData('/categoria/', token).then((result) => {
             setCategories(result);
         }).catch(error => {
             console.error('Error fetching categories:', error);
@@ -61,9 +61,8 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     };
     
     const handleFetchProducts = (id_stock, id_categoria) => {
-        fetchData(`GetDetallestockproducto_Total/${id_stock}/${id_categoria}/`, token).then((result) => {
+        fetchData(`/GetDetallestockproducto_Total/${id_stock}/${id_categoria}/`, token).then((result) => {
             setProducts(result);
-            console.log(result);
         }).catch(error => {
             console.error('Error fetching products:', error);
         });
@@ -72,8 +71,6 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         let transformedValue = value;
-    
-        console.log('Input change:', name, value);
     
         switch (name) {
             case 'cantidad':
@@ -160,7 +157,6 @@ const OfertaCard = forwardRef(({ productDefault, user, stock, stocksDisponibles 
             errors.id_producto = "Producto es requerido";
         }
     
-        console.log('Form validation result:', formIsValid, errors);
         return { formIsValid, errors };
     };
 

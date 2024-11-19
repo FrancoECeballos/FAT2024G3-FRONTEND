@@ -14,7 +14,7 @@ import fetchData from '../../../../functions/fetchData.jsx';
 import crearNotificacion from '../../../../functions/createNofiticacion.jsx';
 import AutoCompleteSelect from '../../../selects/auto_complete_select/auto_complete_select.jsx';
 
-function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) {
+function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user, setShowPopup, setPopupMessage, setPopupTitle, reloadData }) {
     const token = Cookies.get('token');
 
     const [cantidad, setCantidad] = useState('');
@@ -63,13 +63,21 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
     };
 
     const deletePedido = (stock, pedido) => {
-        deleteData(`delete_detalle_pedido/${stock}/${pedido}/`, token).then(() => {
-            window.location.reload();
+        deleteData(`/delete_detalle_pedido/${stock}/${pedido}/`, token).then(() => {
+            setPopupTitle('Pedido Eliminado');
+            setPopupMessage('El pedido ha sido eliminado exitosamente.');
+            setShowPopup(true);
+            setSelectedPedido({});
+            setCantidad('');
+            reloadData();
         }).catch(error => {
             console.error('Error deleting pedido:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Hubo un error al eliminar el pedido.');
+            setShowPopup(true);
         });
     };
-
+    
     const createAportePedido = async (pedidoId, usuarioId, cantidad, fechaAportado) => {
         const pedido = sortedPedidos.flatMap(obra => obra.pedidos).find(pedido => pedido.id_pedido === pedidoId);
         const cantidadRestante = pedido.cantidad - pedido.progreso;
@@ -83,7 +91,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
             setError('El producto ingresado no es correcto');
             return false;
         }
-
+    
         const data = {
             cantidad: parseInt(cantidad, 10),
             fechaAportado: fechaAportado,
@@ -92,12 +100,12 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
             id_usuario: usuarioId,
             id_obra: selectedObra.id_obra,
         };
-
+    
         try {
-            await postData('crear_aporte_pedido/', data, token).then(async () => {
+            await postData('/crear_aporte_pedido/', data, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const pedidoAportado = await fetchData(`pedido/${pedidoId}/`, token);
-
+                const pedidoAportado = await fetchData(`/pedido/${pedidoId}/`, token);
+    
                 const dataNotificacion = {
                     titulo: 'Nuevo Aporte',
                     descripcion: `Aporte de ${data.cantidad} creado por ${user.nombre} ${user.apellido} a tu pedido de ${pedidoAportado[0].id_producto.nombre}.`,
@@ -105,11 +113,20 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                     fecha_creacion: fechaCreacion
                 };
                 
-                crearNotificacion(dataNotificacion, token, 'User', selectedPedido.id_usuario.id_usuario).then(() => { window.location.reload() });
+                await crearNotificacion(dataNotificacion, token, 'User', selectedPedido.id_usuario.id_usuario);
+                setPopupTitle('Aporte Creado');
+                setPopupMessage('El aporte ha sido creado exitosamente.');
+                setShowPopup(true);
+                setSelectedPedido({});
+                setCantidad('');
+                reloadData();
                 return true;
             });
         } catch (error) {
             console.error('Error creando el aporte del pedido:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Hubo un error al crear el aporte.');
+            setShowPopup(true);
             return false;
         }
     };
@@ -122,7 +139,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 setSelectedObra(filteredObras[0]);
             }
         }
-        await fetchData(`producto/categoria/${pedido.id_producto.id_categoria.id_categoria}/`, token).then((result) => {
+        await fetchData(`/producto/categoria/${pedido.id_producto.id_categoria.id_categoria}/`, token).then((result) => {
             const transformedResult = result.map(product => ({
                 key: product.id_producto,
                 label: `${product.nombre} - ${product.descripcion}`,

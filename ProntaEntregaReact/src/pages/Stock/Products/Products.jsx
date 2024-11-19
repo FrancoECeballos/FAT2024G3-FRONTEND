@@ -21,6 +21,7 @@ import postData from '../../../functions/postData.jsx';
 import deleteData from '../../../functions/deleteData.jsx';
 import fetchUser from '../../../functions/fetchUser.jsx';
 import crearNotificacion from '../../../functions/createNofiticacion.jsx';
+import Popup from '../../../components/alerts/popup/Popup.jsx';
 
 import Modal from '../../../components/modals/Modal.jsx';
 import ConfirmationModal from '../../../components/modals/confirmation_modal/ConfirmationModal.jsx';
@@ -65,6 +66,10 @@ function Products() {
     const [showAlert, setShowAlert] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(null);
 
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(null);
+    const [popupTitle, setPopupTitle] = useState(null);
+
     const [productSearchQuery, setProductSearchQuery] = useState('');
     const [orderCriteria, setOrderCriteria] = useState(null);
 
@@ -76,7 +81,7 @@ function Products() {
 
         const fetchUserData = async () => {
             try {
-                const userData = await fetchUser();
+                const userData = await fetchUser(navigate);
                 setUser(userData);
                 
                 const stockResult = await fetchData(`/stock/${stockId}`, token);
@@ -107,7 +112,6 @@ function Products() {
                         label: `${product.nombre} - ${product.descripcion}`,
                     }));
                     setExcludedProducts(transformedResult);
-                    console.log(transformedResult)
                 });
             });
         });
@@ -228,38 +232,6 @@ function Products() {
           ...prevProduct,
           imagen: file,
         }));
-        console.log(newProduct);
-    };
-
-    const handleCreateProduct = async (cantidad, total) => {
-        try {
-            const data = new FormData();
-            data.append('imagen', newProduct.imagen);
-            data.append('nombre', newProduct.nombre);
-            data.append('descripcion', newProduct.descripcion);
-            data.append('unidadmedida', newProduct.unidadmedida);
-            data.append('id_categoria', newProduct.id_categoria);
-
-            postData(`/crear_productos/`, data, token).then(async (response) => {
-                const fechaCreacion = new Date().toISOString().split('T')[0];
-                
-                const dataNotificacion = {
-                    titulo: 'Nuevo Producto',
-                    descripcion: `Se creó un nuevo producto '${newProduct.nombre}' en la obra ${obra.nombre}.`,
-                    id_usuario: user.id_usuario,
-                    id_obra: obra.id_obra,
-                    fecha_creacion: fechaCreacion
-                };
-            
-                await crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra);
-                handleSave(cantidad, null, response.id_producto);
-            });
-        } catch (error) {
-            console.error('Error creating product:', error);
-            setAlertMessage('Ocurrió un error. Por favor, inténtelo de nuevo.');
-            setShowAlert(true);
-            return false;
-        }
     };
 
     const resetDetail = () => {
@@ -267,8 +239,49 @@ function Products() {
         setSelectedCardId({});
     };
 
-    const handleSave = async (cantidad, total, producto) => {
+    const handleCreateProduct = async (cantidad) => {
         try {
+            const data = new FormData();
+            data.append('imagen', newProduct.imagen);
+            data.append('nombre', newProduct.nombre);
+            data.append('descripcion', newProduct.descripcion);
+            data.append('unidadmedida', newProduct.unidadmedida);
+            data.append('id_categoria', newProduct.id_categoria);
+    
+            const response = await postData(`/crear_productos/`, data, token);
+            const fechaCreacion = new Date().toISOString().split('T')[0];
+    
+            const dataNotificacion = {
+                titulo: 'Nuevo Producto',
+                descripcion: `Se creó un nuevo producto '${newProduct.nombre}' en la obra ${obra.nombre}.`,
+                id_usuario: user.id_usuario,
+                id_obra: obra.id_obra,
+                fecha_creacion: fechaCreacion
+            };
+    
+            await crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra);
+            const saveSuccess = await handleSave(cantidad, null, response.id_producto);
+    
+            if (saveSuccess) {
+                setPopupTitle('Éxito');
+                setPopupMessage('Producto creado exitosamente.');
+                setShowPopup(true);
+                await reloadData();
+                return true;
+            } else {
+                throw new Error('Save operation failed.');
+            }
+        } catch (error) {
+            console.error('Error creating product:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Ocurrió un error. Por favor, inténtelo de nuevo.');
+            setShowPopup(true);
+            return false;
+        }
+    };
+
+    const handleSave = async (cantidad, total, producto) => {
+        try {    
             if (!cantidad || cantidad <= 0 || isNaN(cantidad) || cantidad > Number.MAX_SAFE_FLOAT) {
                 setAlertMessage('Por favor ingrese una cantidad válida');
                 setShowAlert(true);
@@ -279,25 +292,32 @@ function Products() {
                 setShowAlert(true);
                 return false; 
             }
+    
             const updatedDetalle = {
                 ...detalle,
                 ...(producto && { id_producto: producto }),
                 id_usuario: user.id_usuario,
                 cantidad: cantidad,
             };
+    
+            console.log('updatedDetalle:', updatedDetalle);
+    
             if (selectedOperacion === 'sumar' || producto) {
-                await postData(`/AddDetallestockproducto/`, updatedDetalle, token).then(async () => {
-                    await reloadData();
-                    setPopupData({"title": 'Suma exitosa', "message": `Se sumó el valor de ${cantidad} exitosamente.`});
-                });
+                await postData(`/AddDetallestockproducto/`, updatedDetalle, token);
+                await reloadData();
+                setPopupData({ "title": 'Suma exitosa', "message": `Se sumó el valor de ${cantidad} exitosamente.` });
+                console.log('Save operation succeeded.');
                 return true;
             } else if (selectedOperacion === 'restar') {
-                await postData(`/SubtractDetallestockproducto/`, updatedDetalle, token).then(async () => {
-                    await reloadData();
-                    setPopupData({"title": 'Resta exitosa', "message": `Se restó el valor de ${cantidad} exitosamente.`});
-                });
+                await postData(`/SubtractDetallestockproducto/`, updatedDetalle, token);
+                await reloadData();
+                setPopupData({ "title": 'Resta exitosa', "message": `Se restó el valor de ${cantidad} exitosamente.` });
+                console.log('Save operation succeeded.');
                 return true; 
             }
+    
+            console.log('Save operation succeeded.');
+            return true;
         } catch (error) {
             console.error('Error fetching user or posting data:', error);
             setAlertMessage('Ocurrió un error. Por favor, inténtelo de nuevo.');
@@ -307,9 +327,18 @@ function Products() {
     };
 
     const handleDeleteProduct = async (id) => {
-        deleteData(`/EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token).then(() => {
-            window.location.reload();
-        });
+        try {
+            await deleteData(`/EliminarTodosDetalleStockProductoView/${stockId}/${id}/`, token);
+            setPopupTitle('Éxito');
+            setPopupMessage('Producto eliminado exitosamente.');
+            setShowPopup(true);
+            await reloadData();
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Ocurrió un error al eliminar el producto. Por favor, inténtelo de nuevo.');
+            setShowPopup(true);
+        }
     };
 
     const setSelectedNewProduct = (product) => {
@@ -430,7 +459,6 @@ function Products() {
                     showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={async () => {
                         if (cantidadRef.current) {
                             if (selectedCardId === 'New') {
-                                console.log(cantidadRef.current.value);
                                 await handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
                             } else {
                                 await handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);
@@ -564,6 +592,8 @@ function Products() {
                 </div>
             </div>)}
         </div>  
+
+        <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
     </div>
     );
 }

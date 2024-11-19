@@ -11,9 +11,9 @@ const getNestedProperty = (obj, path) => {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 };
 
-const GenericTable = ({ headers, shownHeaders, data, showCreateNew, createNewFunction, minWid = '80rem', maxWid = '80rem', wid = '80rem' }) => {
+const GenericTable = ({ headers, shownHeaders, data, showCreateNew, createNewFunction, minWid, maxWid , wid}) => {
   return (
-    <Table striped bordered hover responsive className="custom-table mt-4" style={{ minWidth: minWid, maxWidth: maxWid, width: wid }}>
+    <Table striped bordered hover responsive className="custom-table mt-4 " style={{ minWidth: minWid, maxWidth: maxWid, width: wid }}>
       <thead>
         <tr>
           {shownHeaders.map((header, index) => (

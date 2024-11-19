@@ -39,7 +39,6 @@ function Stock() {
                     const obraPromises = obraIds.map(id => fetchData(`/stock/${id}`, token));
                     const obras = await Promise.all(obraPromises);
                     const uniqueObras = Array.from(new Set(obras.flat().map(obra => JSON.stringify(obra)))).map(str => JSON.parse(str));
-                    console.log("Fetched Obras:", uniqueObras);
                     setObras(uniqueObras);
                 }
             } catch (error) {

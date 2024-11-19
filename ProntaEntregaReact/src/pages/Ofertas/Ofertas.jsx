@@ -19,6 +19,7 @@ import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
 import LittleCard from '../../components/cards/little_card/LittleCard.jsx';
+import Popup from '../../components/alerts/popup/Popup.jsx'
 
 import './Ofertas.scss';
 
@@ -53,6 +54,10 @@ function Ofertas() {
 
     const [terminarOfertaConfirmation, setTerminarOfertaConfirmation] = useState(false);
     const [cancelarOfertaConfirmation, setCancelarOfertaConfirmation] = useState(false);
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(null);
+    const [popupTitle, setPopupTitle] = useState(null);
 
     useEffect(() => {
         const fetchDataAsync = async () => {
@@ -93,6 +98,39 @@ function Ofertas() {
 
         fetchDataAsync();
     }, [token, navigate]);
+
+    const fetchDataAsync = async () => {
+        try {
+            const userData = await fetchUser(navigate);
+            setUser(userData);
+
+            if (userData.is_superuser) {
+                const [stocksData, obrasData] = await Promise.all([
+                    fetchData(`/stock/`, token),
+                    fetchData(`/obra/`, token)
+                ]);
+                setStocks(stocksData);
+                setObras(obrasData);
+            } else {
+                const [stocksData, obrasData] = await Promise.all([
+                    fetchData(`/user/stockToken/${token}`, token),
+                    fetchData(`/obra/user/${token}/`, token)
+                ]);
+                setStocks(stocksData);
+                setObras(obrasData);
+            }
+
+            const [ofertasData, userOfertasData] = await Promise.all([
+                fetchData(`/oferta/${token}/`, token),
+                fetchData(`/GetOfertaCreadaPorUsuario/${userData.id_usuario}`, token)
+            ]);
+            setOfertas(ofertasData);
+            setUserOfertas(userOfertasData);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -198,23 +236,24 @@ function Ofertas() {
         setSearchQuery(value);
     };
 
-    const handleCreateOferta = () => {
+    const handleCreateOferta = async () => {
         if (ofertaCardRef.current) {
             const ofertaForm = ofertaCardRef.current.getOfertaForm();
-
-            postData('/crear_oferta/', ofertaForm, token).then(async () => {
+    
+            try {
+                await postData('/crear_oferta/', ofertaForm, token);
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const producto = await fetchData(`/producto/${ofertaForm.id_producto}/`, token);
                 const pendingStock = await fetchData(`/stock/${ofertaForm.id_obra}/`, token);
                 const pendingObra = await fetchData(`/obra/${ofertaForm.id_obra}/`, token);
-
-                await postData('SubtractDetallestockproducto/', {
+    
+                await postData('/SubtractDetallestockproducto/', {
                     cantidad: ofertaForm.cantidad,
                     id_stock: pendingStock[0].id_stock,
                     id_producto: ofertaForm.id_producto,
                     id_usuario: user.id_usuario
-                }, token)
-
+                }, token);
+    
                 const dataNotificacion = {
                     titulo: 'Nueva Oferta',
                     descripcion: `Oferta creada por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}. 
@@ -222,26 +261,33 @@ function Ofertas() {
                     id_usuario: user.id_usuario,
                     fecha_creacion: fechaCreacion
                 };
-
-                return crearNotificacion(dataNotificacion, token).then(() => {
-                    window.location.reload();
-                });
-
-            }).catch((error) => {
-                console.error('Error al crear la oferta:', error);
-            });
+    
+                await crearNotificacion(dataNotificacion, token);
+                setPopupTitle('Oferta Creada');
+                setPopupMessage('La oferta ha sido creada exitosamente.');
+                setShowPopup(true);
+                setShowModal(false);
+                fetchDataAsync();
+                return true;
+            } catch (error) {
+                setPopupTitle('Error');
+                setPopupMessage('Hubo un error al crear la oferta.');
+                setShowPopup(true);
+                setShowModal(false);
+                return false;
+            }
         }
     };
 
     const createAporteOferta = async (ofertaId, usuarioId, obra, cantidad, fechaAportado) => {
         const oferta = ofertas.find(oferta => oferta.id_oferta === ofertaId);
         const cantidadRestante = oferta.cantidad - oferta.progreso;
-
+    
         if (parseFloat(cantidad) > parseFloat(cantidadRestante)) {
             setError(`La cantidad ofrecida no puede exceder la cantidad restante de ${cantidadRestante} ${oferta.id_producto.unidadmedida}`);
             return false;
         }
-
+    
         const data = {
             cantidad: parseInt(cantidad, 10),
             fechaAportado: fechaAportado,
@@ -249,50 +295,83 @@ function Ofertas() {
             id_usuario: usuarioId,
             id_obra: obra.id_obra,
         };
-
+    
         try {
             await postData('/crear_detalle_oferta/', data, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
                 const ofertaAportada = await fetchData(`/oferta_id/${ofertaId}/`, token);
-
+    
                 const dataNotificacion = {
                     titulo: 'Nuevo Aporte',
                     descripcion: `Aporte de ${data.cantidad} creado por ${user.nombre} ${user.apellido} a tu oferta de ${ofertaAportada[0].id_producto.nombre}.`,
                     id_obra: selectedOferta.id_obra.id_obra,
                     fecha_creacion: fechaCreacion
                 };
-                crearNotificacion(dataNotificacion, token, 'User', selectedOferta.id_usuario.id_usuario).then(() => window.location.reload());
+                await crearNotificacion(dataNotificacion, token, 'User', selectedOferta.id_usuario.id_usuario);
+                setPopupTitle('Aporte Creado');
+                setPopupMessage('El aporte ha sido creado exitosamente.');
+                setShowPopup(true);
+                setShowTakeOfertaModal(false);
+                setCantidad('');
+                fetchDataAsync();
                 return true;
             });
         } catch (error) {
-            console.error('Error creando el aporte de la oferta:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Hubo un error al crear el aporte.');
+            setShowPopup(true);
+            setShowTakeOfertaModal(false);
+            setCantidad('');
             return false;
         }
     };
 
-    const handleDeleteOferta = (ofertaId) => {
-        deleteData(`/CancelOferta/${ofertaId}/`, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
+    const handleDeleteOferta = async (ofertaId) => {
+        try {
+            await deleteData(`/CancelOferta/${ofertaId.id_oferta}/`, token);
+            const pendingStock = await fetchData(`/stock/${ofertaId.id_obra.id_obra}/`, token);
+
+            await postData(`/AddDetallestockproducto/`, 
+                {   cantidad: ofertaId.cantidad,
+                    id_stock: pendingStock[0].id_stock,
+                    id_producto: ofertaId.id_producto.id_producto,
+                    id_usuario: user.id_usuario
+                }, token);
+
+            setPopupTitle('Oferta Cancelada');
+            setPopupMessage('La oferta ha sido cancelada exitosamente.');
+            setShowPopup(true);
+            setShowUserOfertaModal(false);
+            fetchDataAsync();
+            return true;
+        } catch (error) {
             console.error('Error deleting oferta:', error);
-        });
+            setPopupTitle('Error');
+            setPopupMessage('Hubo un error al cancelar la oferta.');
+            setShowPopup(true);
+            setShowUserOfertaModal(false);
+            return false;
+        }
     };
-
-    const handleEndOferta = (ofertaId) => {
-        deleteData(`/EndOferta/${ofertaId}/`, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
+    
+    const handleEndOferta = async (ofertaId) => {
+        try {
+            await deleteData(`/EndOferta/${ofertaId}/`, token);
+            setPopupTitle('Oferta Terminada');
+            setPopupMessage('La oferta ha terminado exitosamente.');
+            setShowPopup(true);
+            setShowUserOfertaModal(false);
+            fetchDataAsync();
+            return true;
+        } catch (error) {
             console.error('Error ending oferta:', error);
-        });
+            setPopupTitle('Error');
+            setPopupMessage('Hubo un error al terminar la oferta.');
+            setShowPopup(true);
+            setShowUserOfertaModal(false);
+            return false;
+        }
     };
-
-    const handleRejectAporte = (aporte) => {
-        deleteData(`/delete_detalle_oferta/${aporte.id_aportePedido}/`, token).then(() => {
-            window.location.reload();
-        }).catch(error => {
-            console.error('Error ending pedido:', error);
-        });
-    }
 
     if (isLoading) {
         return <div><FullNavbar /><Loading /></div>;
@@ -541,9 +620,7 @@ function Ofertas() {
                 showModal={showAporteModal}
                 title='Detalles del Aporte'
                 showDeleteButton={true}
-                deleteFunction={() => handleRejectAporte(selectedAporte)}
                 saveButtonShown={false}
-                deleteButtonText='Devolver Aporte'
                 handleCloseModal={() => { setShowUserOfertaModal(false); setShowAporteModal(false); }}
                 showButton={false}
                 content={
@@ -562,8 +639,9 @@ function Ofertas() {
                     </div>
                 }
             />
+            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
             <ConfirmationModal Open={terminarOfertaConfirmation} BodyText="Al terminar la oferta se donaran los productos tomados." onClickConfirm={() => handleEndOferta(selectedOferta.id_oferta)} onClose={() => setTerminarOfertaConfirmation(false)} />
-            <ConfirmationModal Open={cancelarOfertaConfirmation} BodyText="Si cancelas la oferta no se donaran los productos tomados ¿Está seguro?" onClickConfirm={() => handleDeleteOferta(selectedOferta.id_oferta)} onClose={() => setCancelarOfertaConfirmation(false)} />
+            <ConfirmationModal Open={cancelarOfertaConfirmation} BodyText="Si cancelas la oferta no se donaran los productos tomados ¿Está seguro?" onClickConfirm={() => handleDeleteOferta(selectedOferta)} onClose={() => setCancelarOfertaConfirmation(false)} />
             
 
             {user.is_superuser && (

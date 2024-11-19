@@ -19,9 +19,9 @@ function ConfirmationModal({ BodyText, Open, CloseButtonText, ConfirmButtonText,
         setShow(false);
     };
 
-    const handleConfirmAndClose = () => {
+    const handleConfirmAndClose = async () => {
         try {
-            const confirmSuccess = onClickConfirm();
+            const confirmSuccess = await onClickConfirm();
             if (confirmSuccess) {
                 handleClose();
                 if (showPopup) {
