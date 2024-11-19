@@ -88,7 +88,7 @@ function OneProduct() {
   }
 
   return (
-    <div style={{overflowX:'hidden'}}>
+    <div>
       <FullNavbar selectedPage={'Stock'}/>
       <BackButton url={`/obra/${stockId}/categoria/${categoriaID}/`}/>
       <div className="product-page">
@@ -127,7 +127,7 @@ function OneProduct() {
           )}
         </div>
       </div>
-      <div style={{marginLeft: '11rem', marginTop: '4rem'}}>
+      <div style={{display: 'flex', flexDirection: 'row', justifyContent:"space-around",marginBottom:"1rem"}}>
         <SendButton
           text="Descargar informe"
           wide='15'
