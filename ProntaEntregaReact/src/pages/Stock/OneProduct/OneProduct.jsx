@@ -123,8 +123,6 @@ function OneProduct() {
               ]}
               data={sortedData}
               showCreateNew={false}
-              maxWid="100%"
-              wid="100rem"
             />
           )}
         </div>
