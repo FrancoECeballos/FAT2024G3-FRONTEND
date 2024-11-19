@@ -15,6 +15,12 @@
     max-width: 100%;
   }
 
+  .botonOne{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
   .custom-table {
     background-color: #ffffff;
     border-radius: 0.5rem;
@@ -44,6 +50,7 @@
   }
   .table-responsive{
     width: 85%;
+    margin-bottom:2rem ;
     @media (max-width: 768px) {
       width: 95%;
       
