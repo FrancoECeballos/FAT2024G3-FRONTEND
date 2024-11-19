@@ -88,7 +88,7 @@ function OneProduct() {
   }
 
   return (
-    <div>
+    <div style={{overflowX:'hidden'}}>
       <FullNavbar selectedPage={'Stock'}/>
       <BackButton url={`/obra/${stockId}/categoria/${categoriaID}/`}/>
       <div className="product-page">
