@@ -76,23 +76,27 @@ const Cuenta = ({ user }) => {
   });
 
   useEffect(() => {
+    loadData();
+  }, [token, navigate, user]);
+  
+  const loadData = () => {
     const updateUserState = (result) => {
       const transformedData = NullToEmpty(result);
       setUserData(transformedData);
       setUserDataDefault(transformedData);
     };
-
+  
     const fetchObras = (url) => {
       fetchData(url, token).then((obrasResult) => {
         setUserObras(obrasResult);
         setObraID([]);
-
+  
         const fetchPromises = obrasResult.map(obra =>
           fetchData(`/obra/${obra.id_obra}`, token).then(obraData => {
             return { ...obraData, id_tipousuario: obra.id_tipousuario };
           })
         );
-
+  
         Promise.all(fetchPromises).then((results) => {
           const flattenedResults = results.map(result => {
             if (result[0]) {
@@ -107,17 +111,17 @@ const Cuenta = ({ user }) => {
         });
       });
     };
-
+  
     if (!token) {
       navigate('/login');
       return;
     }
-
+  
     updateUserState(user.viewedUser);
     fetchData('/direcciones/').then((result) => {
       setDirec(result);
     });
-
+  
     if (user.viewingOtherUser) {
       fetchObras(`/user/obrasEmail/${user.viewedUser.email}`);
       const obrasUrl = user.viewingUser.is_superuser ? `/obra/` : `/obra/user/${token}/`;
@@ -127,7 +131,7 @@ const Cuenta = ({ user }) => {
     } else {
       fetchObras(`/user/obrasToken/${token}`);
     }
-  }, [token, navigate, user]);
+  };
 
   const handleLogout = () => {
     Cookies.remove('token');
@@ -135,10 +139,12 @@ const Cuenta = ({ user }) => {
   };
 
   const handleDeleteUser = async (event) => {
-    event.preventDefault();
-    const url = (`/user/delete/${userData.email}/`);
-    const result = await deleteData(url, token);
-    if (user.viewingOtherUser == false) {
+    if (event) {
+      event.preventDefault();
+    }
+    const url = `/user/delete/${userData.email}/`;
+    await deleteData(url, token);
+    if (user.viewingOtherUser === false) {
       navigate('/login');
     } else {
       navigate('/userlisting');
@@ -154,10 +160,11 @@ const Cuenta = ({ user }) => {
   };
 
   const handleDeleteObraFromUser = async (id) => {
-    const result = await deleteData(`/user/obras/delete/${id}/${user.viewedUser.id_usuario}/`, token);
+    await deleteData(`/user/obras/delete/${id}/${user.viewedUser.id_usuario}/`, token);
     fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
       setUserObras(result);
-      window.location.reload();
+      loadData();
+      setDeleteUserObraConfirmation(false);
     });
   };
 
@@ -166,7 +173,7 @@ const Cuenta = ({ user }) => {
       return;
     }
 
-    const result = await postData(`user/obras/post/`,
+    const result = await postData(`/user/obras/post/`,
       {
         descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`,
         fechaingreso: today,
@@ -177,7 +184,7 @@ const Cuenta = ({ user }) => {
 
     ).then(async () => {
       const fechaCreacion = new Date().toISOString().split('T')[0];
-      const newObra = await fetchData(`obra/${selectedObject}/`, token);
+      const newObra = await fetchData(`/obra/${selectedObject}/`, token);
 
       const dataNotificacionObra = {
         titulo: 'Voluntario en Obra',
@@ -190,12 +197,13 @@ const Cuenta = ({ user }) => {
         titulo: 'Ingreso a Obra',
         descripcion: `Se te añadió a la obra ${newObra[0].nombre}.`,
         id_usuario: user.id_usuario,
+        id_obra: newObra[0].id_obra,
         fecha_creacion: fechaCreacion
       };
 
       return crearNotificacion(dataNotificacionObra, token, 'Obra', newObra[0].id_obra).then(() => {
         crearNotificacion(dataNotificacionUser, token, 'User', userData.id_usuario).then(() => {
-          window.location.reload();
+          loadData();
         })
       });
     })
@@ -231,7 +239,6 @@ const Cuenta = ({ user }) => {
           updatedValue = parseInt(value, 10);
         }
         const updatedData = { ...prevData, [field]: { ...prevData[field], [subfield]: updatedValue } };
-        console.log(updatedData);
         return updatedData;
       }
       else {
@@ -245,7 +252,6 @@ const Cuenta = ({ user }) => {
           const { cai, telnum } = updatedData;
           updatedData.telefono = generatePhone(cai, telnum);
         }
-        console.log(updatedData);
         return updatedData;
       }
     });
@@ -293,10 +299,8 @@ const Cuenta = ({ user }) => {
 
     if (user.viewingOtherUser == true) {
       const result = await putData(`/user/updateEmail/${userData.email}/`, formDataToSend, token);
-      console.log(result);
     } else {
       const result = await putData(`/user/update/${token}/`, formDataToSend, token);
-      console.log(result);
     }
     fetchData('/direcciones/').then((result) => {
       setDirec(result);
@@ -315,7 +319,6 @@ const Cuenta = ({ user }) => {
     setUserData((prevData) => {
       return { ...prevData, imagen: file };
     });
-    console.log(userData);
     setGuardarButtonIsValid(valid);
   };
 
@@ -404,7 +407,6 @@ const Cuenta = ({ user }) => {
                     } else {
                         handleInputChange({ target: { name: 'id_direccion.localidad', value } });
                     }
-                    console.log(isValid);
                 }}
                 placeholder={userData.id_direccion?.localidad}
                 onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
@@ -556,7 +558,7 @@ const Cuenta = ({ user }) => {
             letercolor="white"
             onClick={() => setDeleteUserConfirmation(true)}
           />
-          <ConfirmationModal Open={deleteUserConfirmation} BodyText="¿Está seguro que desea eliminar este usuario?" onClickConfirm={handleDeleteUser} onClose={() => setDeleteUserConfirmation(false)} />
+          <ConfirmationModal Open={deleteUserConfirmation} BodyText="¿Está seguro que desea eliminar este usuario?" onClickConfirm={(event) => handleDeleteUser(event)} onClose={() => setDeleteUserConfirmation(false)} />
         </Col>
         <Col className="text-right">
           {user.viewingOtherUser == false && (

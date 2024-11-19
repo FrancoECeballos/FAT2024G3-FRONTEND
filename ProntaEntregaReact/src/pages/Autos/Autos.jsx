@@ -14,8 +14,8 @@ import deleteData from '../../functions/deleteData';
 import fetchUser from '../../functions/fetchUser';
 
 import SendButton from '../../components/buttons/send_button/send_button.jsx';
-import Loading from '../../components/loading/loading.jsx';
 import crearNotificacion from '../../functions/createNofiticacion.jsx';
+import Popup from '../../components/alerts/popup/Popup.jsx'
 
 import Modal from '../../components/modals/Modal.jsx';
 import defaultImage from '../../assets/no_image.png';
@@ -49,6 +49,10 @@ function AutosComponent() {
         patente: "",
         kilometraje: ""
     });
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(null);
+    const [popupTitle, setPopupTitle] = useState(null);
 
     useEffect(() => {
         const fetchDataAsync = async () => {
@@ -123,34 +127,31 @@ function AutosComponent() {
         const currentStatus = maintenanceStatus[id]?.isMaintained || false;
         const newStatus = !currentStatus;
         const currentDescription = description || '';
-        
-        try {
-            await putData(`/editar_transporte/${id}/`, { necesita_mantenimiento: newStatus, descripcion_mantenimiento: currentDescription }, token).then(async (result) => {
-                console.log(result);
-                const fechaCreacion = new Date().toISOString().split('T')[0];
-                const obraData = await fetchData(`/obra/${obraId}`, token);
     
-                const dataNotificacion = {
-                    titulo: newStatus ? 'Mantenimiento Solicitado' : 'Mantenimiento Realizado',
-                    descripcion: newStatus ? `Se pidió mantenimiento '${currentDescription}' al vehiculo ${auto.marca} ${auto.modelo} de la obra ${obraData[0].nombre}.` : `Se completó el mantenimiento del vehiculo ${auto.marca} ${auto.modelo} de la obra ${obraData[0].nombre}.`,
-                    id_usuario: user.id_usuario,
-                    id_obra: obraData[0].id_obra,
-                    fecha_creacion: fechaCreacion
-                };
-                
-                crearNotificacion(dataNotificacion, token, 'Obra', obraData[0].id_obra).then(() => { 
-                    handleReloadAutos();
-                });
-                setPopupData({
-                    title: newStatus ? 'Mantenimiento Solicitado' : 'Mantenimiento Realizado',
-                    message: newStatus ? `Se solicitó mantenimiento '${currentDescription}' exitosamente.` : `Se completó el mantenimiento del vehiculo ${auto.marca} ${auto.modelo} exitosamente.`
-                });
-                setIsPopupVisible(true);
-            });
+        try {
+            await putData(`/editar_transporte/${id}/`, { necesita_mantenimiento: newStatus, descripcion_mantenimiento: currentDescription }, token);
+            const fechaCreacion = new Date().toISOString().split('T')[0];
+            const obraData = await fetchData(`/obra/${obraId}`, token);
+    
+            const dataNotificacion = {
+                titulo: newStatus ? 'Mantenimiento Solicitado' : 'Mantenimiento Realizado',
+                descripcion: newStatus ? `Se pidió mantenimiento '${currentDescription}' al vehiculo ${auto.marca} ${auto.modelo} de la obra ${obraData[0].nombre}.` : `Se completó el mantenimiento del vehiculo ${auto.marca} ${auto.modelo} de la obra ${obraData[0].nombre}.`,
+                id_usuario: user.id_usuario,
+                id_obra: obraData[0].id_obra,
+                fecha_creacion: fechaCreacion
+            };
+    
+            await crearNotificacion(dataNotificacion, token, 'Obra', obraData[0].id_obra);
+            await handleReloadAutos();
+    
+            setPopupTitle(newStatus ? 'Mantenimiento Solicitado' : 'Mantenimiento Realizado');
+            setPopupMessage(newStatus ? `Se solicitó mantenimiento '${currentDescription}' exitosamente.` : `Se completó el mantenimiento del vehiculo ${auto.marca} ${auto.modelo} exitosamente.`);
+            setShowPopup(true);
         } catch (error) {
             console.error('Error updating maintenance status:', error);
-        } finally {
-            return true;
+            setPopupTitle('Error');
+            setPopupMessage('Ocurrió un error al actualizar el estado de mantenimiento. Por favor, inténtelo de nuevo.');
+            setShowPopup(true);
         }
     };
     
@@ -195,15 +196,19 @@ function AutosComponent() {
                     fecha_creacion: fechaCreacion
                 }
                 
-                crearNotificacion(dataNotificacion, token, 'Obra', obra[0].id_obra).then(() => { 
-                    handleReloadAutos(); 
-                    setPopupData({"title": 'Vehiculo Creado', "message": `Se creó el vehiculo ${formData.marca} ${formData.modelo} de la obra ${obra[0].nombre}.`});
-                    setIsPopupVisible(true);
-                });
-                return true;
+                await crearNotificacion(dataNotificacion, token, 'Obra', obra[0].id_obra);
+                await handleReloadAutos();
+                
+                setPopupTitle('Vehiculo Creado');
+                setPopupMessage(`Se creó el vehiculo ${formData.marca} ${formData.modelo} de la obra ${obra[0].nombre}.`);
+                setAutoModal(null);
+                setShowPopup(true);
             });
         } catch (error) {
             console.error('Error creating auto:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Ocurrió un error al crear el vehiculo. Por favor, inténtelo de nuevo.');
+            setShowPopup(true);
         }
     };
     
@@ -222,43 +227,52 @@ function AutosComponent() {
             };
     
             await crearNotificacion(dataNotificacion, token, 'Obra', obra[0].id_obra);
-            handleReloadAutos();
-            setPopupData({"title": 'Vehiculo Actualizado', "message": `Se actualizó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`});
-            setIsPopupVisible(true);
+            await handleReloadAutos();
+    
+            setPopupTitle('Vehiculo Actualizado');
+            setPopupMessage(`Se actualizó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`);
+            setAutoModal(null);
+            setShowPopup(true);
     
             return true;
         } catch (error) {
             console.error('Error updating auto:', error);
+            setPopupTitle('Error');
+            setPopupMessage('Ocurrió un error al actualizar el vehiculo. Por favor, inténtelo de nuevo.');
+            setShowPopup(true);
             return false;
         }
     };
     
     const handleDeleteAuto = async (auto) => {
         try {
-            await deleteData(`/eliminar_detalle_transporte/${obraId}/${auto.id_transporte}/`,token).then(async () => {
-                const fechaCreacion = new Date().toISOString().split('T')[0];
-                const obra = await fetchData(`/obra/${obraId}`, token);
+            await deleteData(`/eliminar_detalle_transporte/${obraId}/${auto.id_transporte}/`, token);
+            const fechaCreacion = new Date().toISOString().split('T')[0];
+            const obra = await fetchData(`/obra/${obraId}`, token);
     
-                const dataNotificacion = {
-                    titulo: 'Vehiculo Eliminado',
-                    descripcion: `Se eliminó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre}.`,
-                    id_usuario: user.id_usuario,
-                    id_obra: obra[0].id_obra,
-                    fecha_creacion: fechaCreacion
-                };
-                
-                setAutos(prevAutos => prevAutos.filter(auto => auto.id_transporte !== auto.id_transporte));
-                crearNotificacion(dataNotificacion, token, 'Obra', obra[0].id_obra).then(() => { 
-                    handleReloadAutos(); 
-                    setPopupData({"title": 'Vehiculo Eliminado', "message": `Se eliminó el veviculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`});
-                    setIsPopupVisible(true);
-                });
-            });
+            const dataNotificacion = {
+                titulo: 'Vehiculo Eliminado',
+                descripcion: `Se eliminó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre}.`,
+                id_usuario: user.id_usuario,
+                id_obra: obra[0].id_obra,
+                fecha_creacion: fechaCreacion
+            };
+    
+            setAutos(prevAutos => prevAutos.filter(a => a.id_transporte !== auto.id_transporte));
+            await crearNotificacion(dataNotificacion, token, 'Obra', obra[0].id_obra);
+            await handleReloadAutos();
+    
+            setPopupTitle('Vehiculo Eliminado');
+            setPopupMessage(`Se eliminó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`);
+            setShowPopup(true);
         } catch (error) {
             if (error.response && error.response.data && error.response.data.error === "No se encontró un detalle de obra transporte con el ID proporcionado.") {
                 alert("No se encontró un auto con el ID proporcionado.");
             } else {
                 console.error('Error deleting auto:', error);
+                setPopupTitle('Error');
+                setPopupMessage('Ocurrió un error al eliminar el vehiculo. Por favor, inténtelo de nuevo.');
+                setShowPopup(true);
             }
         }
     };
@@ -372,7 +386,7 @@ function AutosComponent() {
                                                 <div>
                                                     {!maintenance.isMaintained ? (
                                                         <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte, auto)}
-                                                        showPopup={isPopupVisible} popupTitle={popupData.title} popupMessage={popupData.message} content={
+                                                        content={
                                                                 <Form.Control
                                                                     as="textarea"
                                                                     rows={3}
@@ -394,9 +408,9 @@ function AutosComponent() {
                                                 <div style={{ marginTop: "1rem", marginRight: "1rem" }}>
                                                     {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
                                                         <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={async () => {
-                                                            const a = await handleUpdateAuto(autoModal, auto); console.log(a); setAutoModal(null);
+                                                            const a = await handleUpdateAuto(autoModal, auto); setAutoModal(null);
                                                         }} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' 
-                                                        showPopup={isPopupVisible} popupTitle={popupData.title} popupMessage={popupData.message} content={
+                                                        content={
                                                             <>
                                                                 <OverlayTrigger
                                                                     placement="top"
@@ -437,6 +451,7 @@ function AutosComponent() {
                     )}
                 </div>
             </div>
+            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
         </div>
     );
 }
