@@ -76,7 +76,7 @@ function Products() {
 
         const fetchUserData = async () => {
             try {
-                const userData = await fetchUser();
+                const userData = await fetchUser(navigate);
                 setUser(userData);
                 
                 const stockResult = await fetchData(`/stock/${stockId}`, token);

@@ -18,7 +18,7 @@ function OfertaListingCard() {
         const userData = await fetchUser();
         setUser(userData);
 
-        const ofertas = await fetchData(`GetOfertasRecientes/${userData.id_usuario}`, token);
+        const ofertas = await fetchData(`/GetOfertasRecientes/${userData.id_usuario}`, token);
         setOfertas(ofertas);
         console.log(ofertas);
       } catch (error) {

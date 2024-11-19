@@ -18,7 +18,7 @@ function PedidoListingCard() {
         const userData = await fetchUser();
         setUser(userData);
 
-        const pedidos = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}`, token);
+        const pedidos = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}`, token);
         setPedidos(pedidos);
         console.log(pedidos);
       } catch (error) {
