@@ -179,12 +179,12 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 showDeleteButton={shouldShowButtons}
                 saveButtonShown={shouldShowButtons}
                 showModal={Object.keys(selectedPedido).length > 0}
-                saveButtonText='Tomar'
+                saveButtonText='Aportar'
                 handleCloseModal={() => {setSelectedPedido({}); setProductos([]);}}
                 handleShowModal={() => console.log(selectedPedido)}
                 deleteFunction={() => deletePedido(selectedObra.id_obra, selectedPedido.id_pedido)}
                 deleteButtonText='Rechazar'
-                title='Tomar Pedido'
+                title='Aportar al Pedido'
                 handleSave={() => createAportePedido(selectedPedido.id_pedido, user.id_usuario, cantidad, new Date().toISOString().split('T')[0])}
                 content={
                     <div>

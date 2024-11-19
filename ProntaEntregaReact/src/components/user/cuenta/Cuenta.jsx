@@ -327,7 +327,7 @@ const Cuenta = ({ user }) => {
   };
 
   return (
-    <div className="micuenta">
+    <div className="micuenta" style={{marginLeft:"0.7rem"}}>
       <h1>
         <div style={{ marginLeft: '10rem' }}>
           <UploadImage onFileChange={handleFileChange} usingIcon={true} buttonHidden={isEditing} />
