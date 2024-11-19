@@ -394,6 +394,7 @@ function Pedidos() {
                                                     descrip2={<><strong>Urgencia:</strong> {pedido.urgente_label} <Semaforo urgencia={pedido.urgente} /></>}
                                                     descrip3={<><strong>Obra:</strong> {pedido.id_obra.nombre}</>}
                                                     descrip4={<><strong>Fecha Vencimiento:</strong> {pedido.fechavencimiento}</>}
+                                                    descrip5={<><strong>Obras Pedidas:</strong> {pedido.obras.map(obra => obra.nombre).join(', ')}</>}
                                                     children={
                                                         <OverlayTrigger
                                                             placement="top"
@@ -451,6 +452,7 @@ function Pedidos() {
                                 descrip3={<><strong>Obra:</strong> {selectedPedido.id_obra.nombre}</>}
                                 descrip4={<><strong>Fecha Vencimiento:</strong> {selectedPedido.fechavencimiento}</>}
                                 descrip5={<><strong>Estado:</strong> {selectedPedido.id_estadoPedido.nombre}</>}
+                                descrip6={<><strong>Obras Pedidas:</strong> {selectedPedido.obras.map(obra => obra.nombre).join(', ')}</>}
                             />
                         )}
                     </div>
