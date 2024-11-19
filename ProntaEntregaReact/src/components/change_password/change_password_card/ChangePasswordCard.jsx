@@ -83,7 +83,7 @@ const ChangePasswordCard = ({ user }) => {
                             <Form onSubmit={handleSubmit}>
                                 <h1 className="font-rubik text-center mb-4">Cambiar Contraseña</h1>
                                 <div className="d-flex align-items-center mb-4">
-                                    <div className="user-image">
+                                    <div className="CPC-user-image">
                                         <img src={getImageUrl(user.imagen)} alt="User" />
                                     </div>
                                     <h2 className="font-rubik mx-3">{user.nombreusuario}</h2>
