@@ -414,7 +414,7 @@ function Pedidos() {
                                 const obraPedidos = sortedPedidos.find((pedido) => pedido.obra.id_obra === obra.id_obra);
                                 return (
                                     <Tab key={obra.id_obra} eventKey={obra.id_obra} title={<span className="custom-tab-title">{obra.nombre}</span>} style={{ backgroundColor: "transparent" }}>
-                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} obraSelected={obra} user={user} />
+                                        <PedidoListing sortedPedidos={obraPedidos ? obraPedidos.pedidos : []} obraSelected={obra} user={user} setShowPopup={setShowPopup} setPopupMessage={setPopupMessage} setPopupTitle={setPopupTitle} reloadData={fetchDataAsync}/>
                                     </Tab>
                                 );
                             })}
