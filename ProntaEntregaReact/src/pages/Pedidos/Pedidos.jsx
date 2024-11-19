@@ -123,18 +123,19 @@ function Pedidos() {
         }
     };
 
-    const handleCreatePedido = () => {
+    const handleCreatePedido = async () => {
         if (pedidoCardRef.current) {
             const pedidoForm = pedidoCardRef.current.getPedidoForm();
             const { obras, ...pedidoFormWithoutObras } = pedidoForm;
-
-            postData('/crear_pedido/', pedidoFormWithoutObras, token).then((result) => {
+    
+            try {
+                const result = await postData('/crear_pedido/', pedidoFormWithoutObras, token);
                 const obrasPromises = obras.map(async (obra) => {
                     const fechaCreacion = new Date().toISOString().split('T')[0];
                     const producto = await fetchData(`/producto/${pedidoForm.id_producto}/`, token);
                     const pendingObra = await fetchData(`/obra/${pedidoForm.id_obra}/`, token);
                     const urgenciaLabel = pedidoForm.urgente === 1 ? 'Ligera' : pedidoForm.urgente === 2 ? 'Moderada' : 'Extrema';
-
+    
                     const dataNotificacion = {
                         titulo: 'Nuevo Pedido',
                         descripcion: `Pedido creado por ${user.nombre} ${user.apellido} de la obra ${pendingObra[0].nombre}.  
@@ -143,24 +144,26 @@ function Pedidos() {
                         id_obra: obra,
                         fecha_creacion: fechaCreacion
                     };
-
+    
                     crearNotificacion(dataNotificacion, token, 'Obra', obra);
                     return postData('/crear_detalle_pedido/', { id_stock: obra, id_pedido: result.id_pedido }, token);
                 });
-
-                return Promise.all(obrasPromises).then(() => {
-                    setPopupTitle('Pedido Creado');
-                    setPopupMessage('El pedido ha sido creado exitosamente.');
-                    setShowPopup(true);
-                    fetchDataAsync();
-                });
-            }).catch((error) => {
+    
+                await Promise.all(obrasPromises);
+                setPopupTitle('Pedido Creado');
+                setPopupMessage('El pedido ha sido creado exitosamente.');
+                setShowPopup(true);
+                fetchDataAsync();
+                return true;
+            } catch (error) {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
                 setPopupTitle('Error');
                 setPopupMessage('Hubo un error al crear el pedido.');
                 setShowPopup(true);
-            });
+                return false;
+            }
         }
+        return false;
     };
 
     const filters = [
@@ -301,30 +304,34 @@ function Pedidos() {
         setShowModal(false);
     };
 
-    const handleDeletePedido = (pedidoId) => {
-        deleteData(`/CancelPedido/${pedidoId}/`, token).then(() => {
+    const handleDeletePedido = async (pedidoId) => {
+        try {
+            await deleteData(`/CancelPedido/${pedidoId}/`, token);
             setPopupTitle('Pedido Cancelado');
             setPopupMessage('El pedido ha sido cancelado exitosamente.');
             setShowPopup(true);
+            setShowModal(false);
             fetchDataAsync();
             return true;
-        }).catch(error => {
+        } catch (error) {
             console.error('Error deleting pedido:', error);
             return false;
-        });
+        }
     };
-
-    const handleEndPedido = (pedidoId) => {
-        deleteData(`/EndPedido/${pedidoId}/`, token).then(() => {
+    
+    const handleEndPedido = async (pedidoId) => {
+        try {
+            await deleteData(`/EndPedido/${pedidoId}/`, token);
             setPopupTitle('Pedido Terminado');
             setPopupMessage('El pedido ha terminado exitosamente.');
             setShowPopup(true);
+            setShowModal(false);
             fetchDataAsync();
             return true;
-        }).catch(error => {
+        } catch (error) {
             console.error('Error ending pedido:', error);
             return false;
-        });
+        }
     };
 
     if (obras.length === 0 && !user.is_superuser) {
