@@ -22,6 +22,7 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     margin-top: 2rem;
     width: 100%;
+    
 
     thead {
       background-color: #007bff;
@@ -40,6 +41,13 @@
 
     tbody tr {
       transition: background-color 0.3s ease;
+    }
+  }
+  .table-responsive{
+    width: 85%;
+    @media (max-width: 768px) {
+      width: 100%;
+      
     }
   }
 }
