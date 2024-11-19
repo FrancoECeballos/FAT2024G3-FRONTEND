@@ -63,7 +63,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
     };
 
     const deletePedido = (stock, pedido) => {
-        deleteData(`delete_detalle_pedido/${stock}/${pedido}/`, token).then(() => {
+        deleteData(`/delete_detalle_pedido/${stock}/${pedido}/`, token).then(() => {
             window.location.reload();
         }).catch(error => {
             console.error('Error deleting pedido:', error);
@@ -96,7 +96,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
         try {
             await postData('crear_aporte_pedido/', data, token).then(async () => {
                 const fechaCreacion = new Date().toISOString().split('T')[0];
-                const pedidoAportado = await fetchData(`pedido/${pedidoId}/`, token);
+                const pedidoAportado = await fetchData(`/pedido/${pedidoId}/`, token);
 
                 const dataNotificacion = {
                     titulo: 'Nuevo Aporte',
@@ -122,7 +122,7 @@ function PedidoListing({ sortedPedidos, obraSelected, obrasDisponibles, user }) 
                 setSelectedObra(filteredObras[0]);
             }
         }
-        await fetchData(`producto/categoria/${pedido.id_producto.id_categoria.id_categoria}/`, token).then((result) => {
+        await fetchData(`/producto/categoria/${pedido.id_producto.id_categoria.id_categoria}/`, token).then((result) => {
             const transformedResult = result.map(product => ({
                 key: product.id_producto,
                 label: `${product.nombre} - ${product.descripcion}`,

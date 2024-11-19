@@ -107,7 +107,6 @@ function Products() {
                         label: `${product.nombre} - ${product.descripcion}`,
                     }));
                     setExcludedProducts(transformedResult);
-                    console.log(transformedResult)
                 });
             });
         });
@@ -228,7 +227,6 @@ function Products() {
           ...prevProduct,
           imagen: file,
         }));
-        console.log(newProduct);
     };
 
     const handleCreateProduct = async (cantidad, total) => {
@@ -430,7 +428,6 @@ function Products() {
                     showPopup={true} popupTitle={popupData.title} popupMessage={popupData.message} handleSave={async () => {
                         if (cantidadRef.current) {
                             if (selectedCardId === 'New') {
-                                console.log(cantidadRef.current.value);
                                 await handleCreateProduct(parseFloat(cantidadRef.current.value), products.total);
                             } else {
                                 await handleSave(parseFloat(cantidadRef.current.value), products.total, selectedCardId.key);

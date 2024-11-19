@@ -69,7 +69,6 @@ function Pedidos() {
 
                     const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                     setUserPedidos(pedidosData);
-                    console.log(pedidosData);
 
                     const obrasData = await fetchData(`/obra/user/${token}/`, token);
                     setObras(obrasData);
@@ -99,23 +98,22 @@ function Pedidos() {
 
             const userTokenData = await fetchData(`/userToken/${token}`, token);
             if (userTokenData.is_superuser) {
-                const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_admin/`, token);
+                const pedidosRecibidos = await fetchData(`/get_pedidos_recibidos_for_admin/`, token);
                 setPedidos(pedidosRecibidos);
 
-                const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                 setUserPedidos(pedidosData);
 
-                const obrasData = await fetchData(`obra/`, token);
+                const obrasData = await fetchData(`/obra/`, token);
                 setObras(obrasData);
             } else {
-                const pedidosRecibidos = await fetchData(`get_pedidos_recibidos_for_user/${token}/`, token);
+                const pedidosRecibidos = await fetchData(`/get_pedidos_recibidos_for_user/${token}/`, token);
                 setPedidos(pedidosRecibidos);
 
-                const pedidosData = await fetchData(`GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
+                const pedidosData = await fetchData(`/GetPedidoCreadoPorUsuario/${userData.id_usuario}/`, token);
                 setUserPedidos(pedidosData);
-                console.log(pedidosData);
 
-                const obrasData = await fetchData(`obra/user/${token}/`, token);
+                const obrasData = await fetchData(`/obra/user/${token}/`, token);
                 setObras(obrasData);
             }
         } catch (error) {
@@ -154,7 +152,7 @@ function Pedidos() {
                     setPopupTitle('Pedido Creado');
                     setPopupMessage('El pedido ha sido creado exitosamente.');
                     setShowPopup(true);
-                    window.location.reload();
+                    fetchDataAsync();
                 });
             }).catch((error) => {
                 console.error('Error al crear el pedido, los detalles del pedido o la notificación:', error);
@@ -305,17 +303,27 @@ function Pedidos() {
 
     const handleDeletePedido = (pedidoId) => {
         deleteData(`/CancelPedido/${pedidoId}/`, token).then(() => {
-            window.location.reload();
+            setPopupTitle('Pedido Cancelado');
+            setPopupMessage('El pedido ha sido cancelado exitosamente.');
+            setShowPopup(true);
+            fetchDataAsync();
+            return true;
         }).catch(error => {
             console.error('Error deleting pedido:', error);
+            return false;
         });
     };
 
     const handleEndPedido = (pedidoId) => {
         deleteData(`/EndPedido/${pedidoId}/`, token).then(() => {
-            window.location.reload();
+            setPopupTitle('Pedido Terminado');
+            setPopupMessage('El pedido ha terminado exitosamente.');
+            setShowPopup(true);
+            fetchDataAsync();
+            return true;
         }).catch(error => {
             console.error('Error ending pedido:', error);
+            return false;
         });
     };
 
