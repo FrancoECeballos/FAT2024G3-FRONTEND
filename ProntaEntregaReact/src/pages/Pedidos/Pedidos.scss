@@ -1,30 +1,32 @@
 .custom-tab-title {
-    color: rgb(50, 46, 46) !important;
-    font-size: 1.4rem !important;
-    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  color: rgb(50, 46, 46) !important;
+  font-size: 1.4rem !important;
+  transition:
+    color 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
 
-    &:hover {
-        background-color: rgba(200, 200, 200, 0.5) !important;
-    }
+  &:hover {
+    background-color: rgba(200, 200, 200, 0.5) !important;
+  }
 }
 
 .nav-link.active .custom-tab-title:hover {
-    background-color: transparent !important;
+  background-color: transparent !important;
 }
 
 .scroll-horizontal-entregas {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 1rem;
-    padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .scroll-horizontal-entregas::-webkit-scrollbar {
-    height: 0.75rem;
+  height: 0.75rem;
 }
 
 .scroll-horizontal-entregas::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 1rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 1rem;
 }

@@ -2,7 +2,21 @@ import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import "./auto_complete_select.scss";
 
-function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false, onInputChange, onBlur, width = '95%', defaultValue, showLabel = false, label, disabled, placeholder, style }) {
+function AutoCompleteSelect({
+  lists,
+  selectedKey,
+  onClick,
+  addNewButton = false,
+  onInputChange,
+  onBlur,
+  width = "95%",
+  defaultValue,
+  showLabel = false,
+  label,
+  disabled,
+  placeholder,
+  style,
+}) {
   const [inputValue, setInputValue] = useState("");
   const [filteredLists, setFilteredLists] = useState(lists);
   const [isListVisible, setIsListVisible] = useState(false);
@@ -11,7 +25,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
   useEffect(() => {
     setSelectedIndex(-1);
     if (defaultValue && lists.length > 0) {
-      const defaultItem = lists.find(item => item.key === defaultValue);
+      const defaultItem = lists.find((item) => item.key === defaultValue);
       if (defaultItem) {
         setInputValue(defaultItem.label);
       }
@@ -23,7 +37,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
     setInputValue(value);
 
     const newFilteredLists = lists.filter((item) =>
-      item.label.toLowerCase().includes(value.toLowerCase())
+      item.label.toLowerCase().includes(value.toLowerCase()),
     );
 
     setFilteredLists(newFilteredLists);
@@ -51,18 +65,18 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
       const selectedItem = filteredLists[index];
       setInputValue(selectedItem.label);
       setIsListVisible(false);
-      if (typeof onClick === 'function') {
+      if (typeof onClick === "function") {
         onClick(selectedItem);
       } else {
-        console.error('onClick is not a function');
+        console.error("onClick is not a function");
       }
     } else if (index === filteredLists.length && addNewButton) {
       setInputValue("Nuevo Producto");
       setIsListVisible(false);
-      if (typeof onClick === 'function') {
-        onClick('New');
+      if (typeof onClick === "function") {
+        onClick("New");
       } else {
-        console.error('onClick is not a function');
+        console.error("onClick is not a function");
       }
     }
   };
@@ -70,7 +84,7 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredLists.length > 0) {
       if (addNewButton && selectedIndex === filteredLists.length) {
-        onClick('New');
+        onClick("New");
         setInputValue("Nuevo Producto");
       } else if (selectedIndex >= 0 && selectedIndex < filteredLists.length) {
         const selectedItem = filteredLists[selectedIndex];
@@ -79,9 +93,16 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
       }
       setIsListVisible(false);
     } else if (e.key === "ArrowDown") {
-      setSelectedIndex((prevIndex) => (prevIndex + 1) % (filteredLists.length + (addNewButton ? 1 : 0)));
+      setSelectedIndex(
+        (prevIndex) =>
+          (prevIndex + 1) % (filteredLists.length + (addNewButton ? 1 : 0)),
+      );
     } else if (e.key === "ArrowUp") {
-      setSelectedIndex((prevIndex) => (prevIndex - 1 + (filteredLists.length + (addNewButton ? 1 : 0))) % (filteredLists.length + (addNewButton ? 1 : 0)));
+      setSelectedIndex(
+        (prevIndex) =>
+          (prevIndex - 1 + (filteredLists.length + (addNewButton ? 1 : 0))) %
+          (filteredLists.length + (addNewButton ? 1 : 0)),
+      );
     }
   };
 
@@ -99,10 +120,17 @@ function AutoCompleteSelect({ lists, selectedKey, onClick, addNewButton = false,
         disabled={disabled}
       />
       {isListVisible && (
-        <div className="select-button-container" style={{ position: 'absolute', zIndex: 1000, width: width }}>
+        <div
+          className="select-button-container"
+          style={{ position: "absolute", zIndex: 1000, width: width }}
+        >
           <ul>
             {showLabel && label && (
-              <li className="select-button" style={{ color: 'grey', pointerEvents: 'none' }} disabled>
+              <li
+                className="select-button"
+                style={{ color: "grey", pointerEvents: "none" }}
+                disabled
+              >
                 <strong>{label}</strong>
               </li>
             )}

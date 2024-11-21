@@ -1,48 +1,47 @@
 .custom-modal {
-    border-radius: 1rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal-body-text {
-    font-size: 1.2rem;
-    font-family: 'Rubik', sans-serif;
-    color: #333;
-  }
-  
-  .modal-footer-custom {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-    border-top: none;
-  }
-  
-  .custom-cancel-button {
-    border-radius: 0.5rem;
-    padding: 0.5rem 1.5rem;
-    font-size: 1rem;
-    transition: 
-        background-color 1s ease,
-        color 0.5s ease;
-    background-color: #ffffff;
-    border-color: #d40000;
-    color: #d40000;
-  }
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
 
-  .custom-confirm-button{
-    border-radius: 0.5rem;
-    padding: 0.5rem 1.5rem;
-    font-size: 1rem;
-    transition: background-color 0.5s ease;
-    background-color: #3e4692;
-  }
+.modal-body-text {
+  font-size: 1.2rem;
+  font-family: "Rubik", sans-serif;
+  color: #333;
+}
 
-  .custom-confirm-button:hover {
-    background-color: #0067ce;
-    border-color: #0067ce;
-  }
-  
-  .custom-cancel-button:hover {
-    background-color: #d40000;
-    border-color: #d40000;
-  }
-  
+.modal-footer-custom {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  border-top: none;
+}
+
+.custom-cancel-button {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  transition:
+    background-color 1s ease,
+    color 0.5s ease;
+  background-color: #ffffff;
+  border-color: #d40000;
+  color: #d40000;
+}
+
+.custom-confirm-button {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  transition: background-color 0.5s ease;
+  background-color: #3e4692;
+}
+
+.custom-confirm-button:hover {
+  background-color: #0067ce;
+  border-color: #0067ce;
+}
+
+.custom-cancel-button:hover {
+  background-color: #d40000;
+  border-color: #d40000;
+}
