@@ -131,7 +131,21 @@ function OneProduct() {
         <SendButton
           text="Descargar informe"
           wide='15'
-          onClick={() => window.location.href = `http://127.0.0.1:8000/informe-stock-pdf/${productoId}/${stockId}/${token}`}
+          onClick={() => {
+            const url = `http://127.0.0.1:8000/informe-stock-pdf/${productoId}/${stockId}/${token}`;
+            const headers = token ? { 'Authorization': `Token ${token}` } : {};
+        
+            fetch(url, { headers }).then(response => response.blob()).then(blob => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = url;
+              a.download = 'informe-stock.pdf';
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+            }).catch(error => console.error('Error:', error));
+          }}
         />
       </div>
     </div>
