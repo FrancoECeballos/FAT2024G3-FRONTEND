@@ -99,16 +99,6 @@ const Sidebar = ({ selectedPage, user }) => {
             }
           />
           <SelectableButton
-            selected={selectedPage === "datos_personales"}
-            texto="Datos Personales"
-            link="/perfil/datos_personales"
-            locationStore={
-              user.viewingOtherUser
-                ? { user_email: viewedUser.email }
-                : undefined
-            }
-          />
-          <SelectableButton
             selected={selectedPage === "obras"}
             texto="Obras"
             link="/obras"
