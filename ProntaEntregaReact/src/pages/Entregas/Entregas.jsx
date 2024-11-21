@@ -373,7 +373,7 @@ const Entregas = () => {
 
   return (
     <div>
-      <FullNavbar selectedPage="/Entregas" />
+      <FullNavbar selectedPage="Entregas" />
       <div className="margen-arriba">
         {isLoading ? (
           <Loading />

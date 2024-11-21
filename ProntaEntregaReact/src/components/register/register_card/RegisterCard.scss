@@ -82,9 +82,8 @@
 
   .botreg {
     display: flex;
-    justify-content: end;
-    @media (max-width: 800px) {
-      justify-content: space-around;
-    }
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5%;
   }
 }

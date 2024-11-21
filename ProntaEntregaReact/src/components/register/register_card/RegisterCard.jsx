@@ -745,7 +745,14 @@ const RegisterCard = () => {
                 </Col>
               </Row>
             </Form>
-            <div className="botreg" style={{ marginTop: "5%" }}>
+            <div className="botreg" style={{ marginTop: "5%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <a
+                href="/login"
+                className="text-decoration-none"
+                style={{ color: "#007bff", fontSize: "1rem" }}
+              >
+                ¿Ya tienes una cuenta?
+              </a>
               <SendButton
                 onClick={handleSendData}
                 text="Registrar"
