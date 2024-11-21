@@ -139,29 +139,28 @@ function Products() {
           setExcludedProducts(transformedResult);
         });
       });
-    });
-
-    fetchData(`/categoria/${categoriaID}`, token).then((result) => {
-      setCurrentCategory(result[0].nombre);
-    });
-    setIsLoading(false);
-
+      fetchData(`/categoria/${categoriaID}`, token).then((result) => {
+        setCurrentCategory(result[0].nombre);
+        setIsLoading(false);
+    
         const img = new Image();
         img.src = defaultImage;
         img.onload = () => {
-              const canvas = document.createElement("canvas");
-              canvas.width = img.width;
-              canvas.height = img.height;
-              const ctx = canvas.getContext("2d");
-              ctx.drawImage(img, 0, 0);
-              canvas.toBlob((blob) => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob((blob) => {
                 const file = new File([blob], "no_image.png", { type: "image/png" });
                 setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
-              });
+            });
         };
+        img.src = defaultImage;
         }).finally(() => {
             setIsLoading(false); 
-        });  }, [token, navigate, stockId, categoriaID]);
+        });
+    })}, [token, navigate, stockId, categoriaID]);
 
   useEffect(() => {
     if (pedidoOrOferta === "pedido") {
