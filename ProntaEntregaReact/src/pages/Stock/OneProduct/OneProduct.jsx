@@ -131,7 +131,7 @@ function OneProduct() {
         <SendButton
           text="Descargar informe"
           wide='15'
-          onClick={() => window.location.href = `http://127.0.0.1:8000/informe-stock-pdf/${productoId}/${stockId}/${token}`}
+          onClick={() => window.location.href = `https://fat2024g3-frontend.onrender.com/informe-stock-pdf/${productoId}/${stockId}/${token}`}
         />
       </div>
     </div>
