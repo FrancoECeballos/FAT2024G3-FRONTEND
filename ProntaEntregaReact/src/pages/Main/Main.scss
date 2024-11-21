@@ -11,6 +11,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: 30%;
+  margin-top: 1rem;
   margin-left: 3rem;
   margin-right: 3rem;
 }
@@ -30,10 +31,6 @@
 @media (max-width: 768px) {
   .background {
     background-size: 50%; /* Ajusta el tamaño del fondo en pantallas medianas */
-  }
-
-  .margen-arriba {
-    margin-top: 1rem; /* Reduce el margen superior */
   }
 
   .container-fluid {
