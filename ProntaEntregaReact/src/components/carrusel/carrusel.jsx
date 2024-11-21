@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import Carousel from 'react-bootstrap/Carousel';
-import './carrusel.scss';
+import { useState } from "react";
+import Carousel from "react-bootstrap/Carousel";
+import "./carrusel.scss";
 
-function ControlledCarousel({foto1, foto2, foto3}) {
+function ControlledCarousel({ foto1, foto2, foto3 }) {
   const [index, setIndex] = useState(0);
 
   const handleSelect = (selectedIndex) => {
@@ -10,52 +10,48 @@ function ControlledCarousel({foto1, foto2, foto3}) {
   };
 
   return (
-    <Carousel fade 
-    activeIndex={index} 
-    onSelect={handleSelect} 
-    controls={false} 
-    indicators={false} 
-    wrap={true} 
-    slide={true}
-    interval={2000}>
+    <Carousel
+      fade
+      activeIndex={index}
+      onSelect={handleSelect}
+      controls={false}
+      indicators={false}
+      wrap={true}
+      slide={true}
+      interval={2000}
+    >
       <Carousel.Item>
-        <img 
-          className='imagen' 
-          src={foto1} 
-          style={{ 
-            width: '100%', 
-            objectFit: 'cover' 
-          }} 
+        <img
+          className="imagen"
+          src={foto1}
+          style={{
+            width: "100%",
+            objectFit: "cover",
+          }}
         />
-        <Carousel.Caption>
-
-        </Carousel.Caption>
+        <Carousel.Caption></Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
-        <img 
-          className='imagen' 
-          src={foto2} 
-          style={{ 
-            width: '100%', 
-            objectFit: 'cover' 
-          }} 
+        <img
+          className="imagen"
+          src={foto2}
+          style={{
+            width: "100%",
+            objectFit: "cover",
+          }}
         />
-        <Carousel.Caption>
-
-        </Carousel.Caption>
+        <Carousel.Caption></Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
-        <img 
-          className='imagen' 
-          src={foto3} 
-          style={{ 
-            width: '100%', 
-            objectFit: 'cover' 
-          }} 
+        <img
+          className="imagen"
+          src={foto3}
+          style={{
+            width: "100%",
+            objectFit: "cover",
+          }}
         />
-        <Carousel.Caption>
-            
-        </Carousel.Caption>
+        <Carousel.Caption></Carousel.Caption>
       </Carousel.Item>
     </Carousel>
   );

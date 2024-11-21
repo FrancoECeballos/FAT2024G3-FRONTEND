@@ -1,108 +1,109 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
-import { Form, InputGroup, Row, Col } from 'react-bootstrap';
-import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
+import { Form, InputGroup, Row, Col } from "react-bootstrap";
+import Cookies from "js-cookie";
 
-import fetchData from '../../../functions/fetchData';
-import postData from '../../../functions/postData.jsx';
-import putData from '../../../functions/putData.jsx';
-import deleteData from '../../../functions/deleteData.jsx';
-import './Cuenta.scss';
+import fetchData from "../../../functions/fetchData";
+import postData from "../../../functions/postData.jsx";
+import putData from "../../../functions/putData.jsx";
+import deleteData from "../../../functions/deleteData.jsx";
+import "./Cuenta.scss";
 
-import NullToEmpty from '../../../functions/nulltoempty.jsx'
-import SendButton from '../../buttons/send_button/send_button.jsx';
-import UploadImage from '../../buttons/upload_image/uploadImage.jsx';
+import NullToEmpty from "../../../functions/nulltoempty.jsx";
+import SendButton from "../../buttons/send_button/send_button.jsx";
+import UploadImage from "../../buttons/upload_image/uploadImage.jsx";
 import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal.jsx";
-import SelectLocalidad from '../../register/SelectLocalidad.jsx';
+import SelectLocalidad from "../../register/SelectLocalidad.jsx";
 import crearNotificacion from "../../../functions/createNofiticacion.jsx";
 
-import { PhoneInput } from 'react-international-phone';
-import 'react-international-phone/style.css';
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 
 const Cuenta = ({ user }) => {
   const navigate = useNavigate();
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
   const [isEditing, setIsEditing] = useState(false);
   const [direc, setDirec] = useState([]);
   const [userObras, setUserObras] = useState([]);
   const [obras, setObras] = useState([]);
   const [obraID, setObraID] = useState([]);
-  const [selectedObject, setSelectedObject] = useState('');
-  const today = new Date().toISOString().split('T')[0];
+  const [selectedObject, setSelectedObject] = useState("");
+  const today = new Date().toISOString().split("T")[0];
   const [GuardarButtonIsValid, setGuardarButtonIsValid] = useState(false);
   const [AñadirButtonIsValid, setAñadirButtonIsValid] = useState(false);
   const [deleteUserConfirmation, setDeleteUserConfirmation] = useState(false);
-  const [deleteUserObraConfirmation, setDeleteUserObraConfirmation] = useState(false);
+  const [deleteUserObraConfirmation, setDeleteUserObraConfirmation] =
+    useState(false);
 
   const [logOutConfirmation, setLogOutConfirmation] = useState(false);
 
   const [userData, setUserData] = useState({
-    "id_usuario": "",
-    "nombre": "",
-    "apellido": "",
-    "nombreusuario": "",
-    "password": "",
-    "documento": "",
-    "telefono": "",
-    "email": "",
-    "genero": "",
-    "id_direccion": {
-      "id_direccion": "",
-      "localidad": "",
-      "calle": "",
-      "numero": "",
+    id_usuario: "",
+    nombre: "",
+    apellido: "",
+    nombreusuario: "",
+    password: "",
+    documento: "",
+    telefono: "",
+    email: "",
+    genero: "",
+    id_direccion: {
+      id_direccion: "",
+      localidad: "",
+      calle: "",
+      numero: "",
     },
-    "id_tipodocumento": "",
-    "imagen": ""
+    id_tipodocumento: "",
+    imagen: "",
   });
   const [userDataDefault, setUserDataDefault] = useState({
-    "id_usuario": "",
-    "nombre": "",
-    "apellido": "",
-    "nombreusuario": "",
-    "password": "",
-    "documento": "",
-    "telefono": "",
-    "email": "",
-    "genero": "",
-    "id_direccion": {
-      "id_direccion": "",
-      "localidad": "",
-      "calle": "",
-      "numero": "",
+    id_usuario: "",
+    nombre: "",
+    apellido: "",
+    nombreusuario: "",
+    password: "",
+    documento: "",
+    telefono: "",
+    email: "",
+    genero: "",
+    id_direccion: {
+      id_direccion: "",
+      localidad: "",
+      calle: "",
+      numero: "",
     },
-    "id_tipodocumento": "",
-    "imagen": ""
+    id_tipodocumento: "",
+    imagen: "",
   });
 
   useEffect(() => {
     loadData();
   }, [token, navigate, user]);
-  
+
   const loadData = () => {
     const updateUserState = (result) => {
       const transformedData = NullToEmpty(result);
       setUserData(transformedData);
       setUserDataDefault(transformedData);
     };
-  
+
     const fetchObras = (url) => {
       fetchData(url, token).then((obrasResult) => {
         setUserObras(obrasResult);
         setObraID([]);
-  
-        const fetchPromises = obrasResult.map(obra =>
-          fetchData(`/obra/${obra.id_obra}`, token).then(obraData => {
+
+        const fetchPromises = obrasResult.map((obra) =>
+          fetchData(`/obra/${obra.id_obra}`, token).then((obraData) => {
             return { ...obraData, id_tipousuario: obra.id_tipousuario };
-          })
+          }),
         );
-  
+
         Promise.all(fetchPromises).then((results) => {
-          const flattenedResults = results.map(result => {
+          const flattenedResults = results.map((result) => {
             if (result[0]) {
               return {
                 ...result[0],
-                id_tipousuario: result.id_tipousuario
+                id_tipousuario: result.id_tipousuario,
               };
             }
             return result;
@@ -111,20 +112,22 @@ const Cuenta = ({ user }) => {
         });
       });
     };
-  
+
     if (!token) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
-  
+
     updateUserState(user.viewedUser);
-    fetchData('/direcciones/').then((result) => {
+    fetchData("/direcciones/").then((result) => {
       setDirec(result);
     });
-  
+
     if (user.viewingOtherUser) {
       fetchObras(`/user/obrasEmail/${user.viewedUser.email}`);
-      const obrasUrl = user.viewingUser.is_superuser ? `/obra/` : `/obra/user/${token}/`;
+      const obrasUrl = user.viewingUser.is_superuser
+        ? `/obra/`
+        : `/obra/user/${token}/`;
       fetchData(obrasUrl, token).then((result) => {
         setObras(result);
       });
@@ -134,8 +137,8 @@ const Cuenta = ({ user }) => {
   };
 
   const handleLogout = () => {
-    Cookies.remove('token');
-    navigate('/login');
+    Cookies.remove("token");
+    navigate("/login");
   };
 
   const handleDeleteUser = async (event) => {
@@ -145,22 +148,29 @@ const Cuenta = ({ user }) => {
     const url = `/user/delete/${userData.email}/`;
     await deleteData(url, token);
     if (user.viewingOtherUser === false) {
-      navigate('/login');
+      navigate("/login");
     } else {
-      navigate('/userlisting');
+      navigate("/userlisting");
     }
   };
 
   const handleUpdateUserObra = async (event, obra) => {
     const { value } = event.target;
-    const result = await putData(`/user/obras/update/${obra.id_obra}/${userData.id_usuario}/`, { id_tipousuario: value }, token);
+    const result = await putData(
+      `/user/obras/update/${obra.id_obra}/${userData.id_usuario}/`,
+      { id_tipousuario: value },
+      token,
+    );
     fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
       setUserObras(result);
     });
   };
 
   const handleDeleteObraFromUser = async (id) => {
-    await deleteData(`/user/obras/delete/${id}/${user.viewedUser.id_usuario}/`, token);
+    await deleteData(
+      `/user/obras/delete/${id}/${user.viewedUser.id_usuario}/`,
+      token,
+    );
     fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
       setUserObras(result);
       loadData();
@@ -173,42 +183,52 @@ const Cuenta = ({ user }) => {
       return;
     }
 
-    const result = await postData(`/user/obras/post/`,
+    const result = await postData(
+      `/user/obras/post/`,
       {
         descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${selectedObject}`,
         fechaingreso: today,
         id_obra: parseInt(selectedObject),
         id_usuario: userData.id_usuario,
-        id_tipousuario: 1
-      }, token
-
+        id_tipousuario: 1,
+      },
+      token,
     ).then(async () => {
-      const fechaCreacion = new Date().toISOString().split('T')[0];
+      const fechaCreacion = new Date().toISOString().split("T")[0];
       const newObra = await fetchData(`/obra/${selectedObject}/`, token);
 
       const dataNotificacionObra = {
-        titulo: 'Voluntario en Obra',
+        titulo: "Voluntario en Obra",
         descripcion: `Añadido ${userData.nombre} ${userData.apellido} a la obra ${newObra[0].nombre}.`,
         id_usuario: user.id_usuario,
-        fecha_creacion: fechaCreacion
+        fecha_creacion: fechaCreacion,
       };
 
       const dataNotificacionUser = {
-        titulo: 'Ingreso a Obra',
+        titulo: "Ingreso a Obra",
         descripcion: `Se te añadió a la obra ${newObra[0].nombre}.`,
         id_usuario: user.id_usuario,
         id_obra: newObra[0].id_obra,
-        fecha_creacion: fechaCreacion
+        fecha_creacion: fechaCreacion,
       };
 
-      return crearNotificacion(dataNotificacionObra, token, 'Obra', newObra[0].id_obra).then(() => {
-        crearNotificacion(dataNotificacionUser, token, 'User', userData.id_usuario).then(() => {
+      return crearNotificacion(
+        dataNotificacionObra,
+        token,
+        "Obra",
+        newObra[0].id_obra,
+      ).then(() => {
+        crearNotificacion(
+          dataNotificacionUser,
+          token,
+          "User",
+          userData.id_usuario,
+        ).then(() => {
           loadData();
-        })
+        });
       });
-    })
+    });
   };
-
 
   const handleEdit = () => {
     if (isEditing) {
@@ -224,12 +244,12 @@ const Cuenta = ({ user }) => {
     if (cai && telnum) {
       return `${cai} ${telnum}`;
     }
-    return '';
+    return "";
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    const [field, subfield] = name.split('.');
+    const [field, subfield] = name.split(".");
     let valid = true;
 
     setUserData((prevData) => {
@@ -238,11 +258,18 @@ const Cuenta = ({ user }) => {
         if (subfield === "numero") {
           updatedValue = parseInt(value, 10);
         }
-        const updatedData = { ...prevData, [field]: { ...prevData[field], [subfield]: updatedValue } };
+        const updatedData = {
+          ...prevData,
+          [field]: { ...prevData[field], [subfield]: updatedValue },
+        };
         return updatedData;
-      }
-      else {
-        if (field === "genero" || field === "id_direccion" || field === "id_tipodocumento" || field === "numero") {
+      } else {
+        if (
+          field === "genero" ||
+          field === "id_direccion" ||
+          field === "id_tipodocumento" ||
+          field === "numero"
+        ) {
           updatedValue = parseInt(value, 10);
         }
 
@@ -256,7 +283,13 @@ const Cuenta = ({ user }) => {
       }
     });
 
-    if (field === "nombre" || field === "apellido" || field === "telefono" || field === "id_direccion" || field === "genero") {
+    if (
+      field === "nombre" ||
+      field === "apellido" ||
+      field === "telefono" ||
+      field === "id_direccion" ||
+      field === "genero"
+    ) {
       valid = value !== "";
     }
     setGuardarButtonIsValid(valid);
@@ -266,7 +299,7 @@ const Cuenta = ({ user }) => {
     event.preventDefault();
     let id_direc = null;
 
-    if (typeof userData.id_direccion.localidad === 'object') {
+    if (typeof userData.id_direccion.localidad === "object") {
       userData.id_direccion.localidad = userData.id_direccion.localidad.label;
     }
 
@@ -274,35 +307,47 @@ const Cuenta = ({ user }) => {
       (d) =>
         d.calle === userData.id_direccion.calle &&
         d.numero === userData.id_direccion.numero &&
-        d.localidad === userData.id_direccion.localidad
+        d.localidad === userData.id_direccion.localidad,
     );
-    
+
     if (!existingDireccion) {
-        const result = await postData('/crear_direccion/', userData.id_direccion);
-        id_direc = result.id_direccion;
+      const result = await postData("/crear_direccion/", userData.id_direccion);
+      id_direc = result.id_direccion;
     } else {
-        id_direc = existingDireccion.id_direccion;
+      id_direc = existingDireccion.id_direccion;
     }
 
-    const updatedUserData = { ...userData, id_direccion: id_direc, id_tipodocumento: userData.id_tipodocumento.id_tipodocumento };
+    const updatedUserData = {
+      ...userData,
+      id_direccion: id_direc,
+      id_tipodocumento: userData.id_tipodocumento.id_tipodocumento,
+    };
     setUserDataDefault(userData);
     setIsEditing(false);
 
     const formDataToSend = new FormData();
     Object.entries(updatedUserData).forEach(([key, value]) => {
-      if (key === 'imagen' && typeof value === 'string') {
-        null
+      if (key === "imagen" && typeof value === "string") {
+        null;
       } else {
         formDataToSend.append(key, value);
       }
     });
 
     if (user.viewingOtherUser == true) {
-      const result = await putData(`/user/updateEmail/${userData.email}/`, formDataToSend, token);
+      const result = await putData(
+        `/user/updateEmail/${userData.email}/`,
+        formDataToSend,
+        token,
+      );
     } else {
-      const result = await putData(`/user/update/${token}/`, formDataToSend, token);
+      const result = await putData(
+        `/user/update/${token}/`,
+        formDataToSend,
+        token,
+      );
     }
-    fetchData('/direcciones/').then((result) => {
+    fetchData("/direcciones/").then((result) => {
       setDirec(result);
     });
   };
@@ -311,7 +356,11 @@ const Cuenta = ({ user }) => {
     let valid = true;
 
     for (const key in userData) {
-      if (userData[key] === '' || userData[key] === null || userData[key] === undefined) {
+      if (
+        userData[key] === "" ||
+        userData[key] === null ||
+        userData[key] === undefined
+      ) {
         valid = false;
         break;
       }
@@ -330,12 +379,20 @@ const Cuenta = ({ user }) => {
   };
 
   return (
-    <div className="micuenta" style={{marginLeft:"0.7rem"}}>
+    <div className="micuenta" style={{ marginLeft: "0.7rem" }}>
       <h1>
-        <div style={{ marginLeft: '10rem' }}>
-          <UploadImage onFileChange={handleFileChange} usingIcon={true} buttonHidden={isEditing} />
+        <div style={{ marginLeft: "10rem" }}>
+          <UploadImage
+            onFileChange={handleFileChange}
+            usingIcon={true}
+            buttonHidden={isEditing}
+          />
         </div>
-        <img src={getImageUrl(userData.imagen)} className="fotoperfil" alt="Perfil" />
+        <img
+          src={getImageUrl(userData.imagen)}
+          className="fotoperfil"
+          alt="Perfil"
+        />
         {`Bienvenido ${userDataDefault.nombreusuario}`}
       </h1>
 
@@ -347,7 +404,7 @@ const Cuenta = ({ user }) => {
               <Form.Control
                 type="text"
                 name="nombre"
-                value={userData.nombre || ''}
+                value={userData.nombre || ""}
                 onChange={handleInputChange}
                 disabled={!isEditing}
               />
@@ -358,7 +415,7 @@ const Cuenta = ({ user }) => {
               <Form.Control
                 type="text"
                 name="apellido"
-                value={userData.apellido || ''}
+                value={userData.apellido || ""}
                 onChange={handleInputChange}
                 disabled={!isEditing}
               />
@@ -369,7 +426,7 @@ const Cuenta = ({ user }) => {
               <Form.Control
                 type="email"
                 name="email"
-                value={userData.email || ''}
+                value={userData.email || ""}
                 onChange={handleInputChange}
                 disabled={true}
               />
@@ -384,9 +441,13 @@ const Cuenta = ({ user }) => {
               <PhoneInput
                 defaultCountry="ar"
                 value={userData.telefono}
-                onChange={(phone) => handleInputChange({ target: { name: 'telefono', value: phone } })}
-                style={{ width: '100%', display: 'flex', height: '2.4rem' }} 
-                inputStyle={{ width: '95%' }}
+                onChange={(phone) =>
+                  handleInputChange({
+                    target: { name: "telefono", value: phone },
+                  })
+                }
+                style={{ width: "100%", display: "flex", height: "2.4rem" }}
+                inputStyle={{ width: "95%" }}
                 charAfterDialCode=" "
                 disableFormatting={true}
                 disabled={!isEditing}
@@ -396,34 +457,44 @@ const Cuenta = ({ user }) => {
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
               <InputGroup>
-              <SelectLocalidad
-                style={{ width: '100%' }}
-                name="id_direccion.localidad"
-                type="text"
-                onChange={(value) => {
-                    const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                <SelectLocalidad
+                  style={{ width: "100%" }}
+                  name="id_direccion.localidad"
+                  type="text"
+                  onChange={(value) => {
+                    const isValid = SelectLocalidad.Localidades.some(
+                      (localidad) => localidad.label === value,
+                    );
                     if (!isValid) {
-                        handleInputChange({ target: { name: 'id_direccion.localidad', value: '' } });
+                      handleInputChange({
+                        target: { name: "id_direccion.localidad", value: "" },
+                      });
                     } else {
-                        handleInputChange({ target: { name: 'id_direccion.localidad', value } });
+                      handleInputChange({
+                        target: { name: "id_direccion.localidad", value },
+                      });
                     }
-                }}
-                placeholder={userData.id_direccion?.localidad}
-                onSelect={(label) => handleInputChange({ target: { name: 'id_direccion.localidad', value: label } })}
-                value={userData.id_direccion?.localidad || ''}
-                disabled={!isEditing}
-              />
+                  }}
+                  placeholder={userData.id_direccion?.localidad}
+                  onSelect={(label) =>
+                    handleInputChange({
+                      target: { name: "id_direccion.localidad", value: label },
+                    })
+                  }
+                  value={userData.id_direccion?.localidad || ""}
+                  disabled={!isEditing}
+                />
                 <Form.Control
                   type="text"
                   name="id_direccion.calle"
-                  value={userData.id_direccion?.calle || ''}
+                  value={userData.id_direccion?.calle || ""}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                 />
                 <Form.Control
                   type="number"
                   name="id_direccion.numero"
-                  value={userData.id_direccion?.numero || ''}
+                  value={userData.id_direccion?.numero || ""}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                 />
@@ -447,8 +518,14 @@ const Cuenta = ({ user }) => {
           </div>
         </Col>
 
-        <Col style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: '2rem' }}>
+        <Col
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ display: "flex", gap: "2rem" }}>
             <SendButton
               onClick={handleEdit}
               text={isEditing ? "Cancelar" : "Editar"}
@@ -472,42 +549,66 @@ const Cuenta = ({ user }) => {
 
       <Row className="filaobras">
         <Col>
-          <div className="obras-container" style={{ marginTop: '1rem' }}>
+          <div className="obras-container" style={{ marginTop: "1rem" }}>
             <h3>Obras del Usuario</h3>
             <ul>
               {userData.is_superuser ? (
-                <p>Este usuario es un administrador, por lo que tiene acceso a todas las obras</p>
+                <p>
+                  Este usuario es un administrador, por lo que tiene acceso a
+                  todas las obras
+                </p>
+              ) : obraID.length === 0 ? (
+                <p>Este usuario no pertenece a ninguna obra</p>
               ) : (
-                obraID.length === 0 ? (
-                  <p>Este usuario no pertenece a ninguna obra</p>
-                ) : (
-                  obraID.map(userobra => (
-                    <li key={userobra.id_obra}>
-                      {userobra.nombre}
-                      {user.viewingOtherUser == true && (
-                        <>
-                          <div>
-                            <label style={{ paddingRight: "1rem" }}>
-                              <input type="radio" name={`role_${userobra.id_obra}`} value="1" defaultChecked={userobra.id_tipousuario === 1} onChange={(event) => handleUpdateUserObra(event, userobra)} />
-                              Voluntario
-                            </label>
-                            <label>
-                              <input type="radio" name={`role_${userobra.id_obra}`} value="2" defaultChecked={userobra.id_tipousuario === 2} onChange={(event) => handleUpdateUserObra(event, userobra)} />
-                              Moderador
-                            </label>
-                          </div>
-                          <SendButton
-                            text="Eliminar"
-                            backcolor="#D10000"
-                            letercolor="white"
-                            onClick={() => setDeleteUserObraConfirmation(true)}
-                          />
-                          <ConfirmationModal Open={deleteUserObraConfirmation} BodyText="¿Está seguro que desea eliminar la obra de este usuario?" onClickConfirm={() => handleDeleteObraFromUser(userobra.id_obra)} onClose={() => setDeleteUserObraConfirmation(false)} />
-                        </>
-                      )}
-                    </li>
-                  ))
-                )
+                obraID.map((userobra) => (
+                  <li key={userobra.id_obra}>
+                    {userobra.nombre}
+                    {user.viewingOtherUser == true && (
+                      <>
+                        <div>
+                          <label style={{ paddingRight: "1rem" }}>
+                            <input
+                              type="radio"
+                              name={`role_${userobra.id_obra}`}
+                              value="1"
+                              defaultChecked={userobra.id_tipousuario === 1}
+                              onChange={(event) =>
+                                handleUpdateUserObra(event, userobra)
+                              }
+                            />
+                            Voluntario
+                          </label>
+                          <label>
+                            <input
+                              type="radio"
+                              name={`role_${userobra.id_obra}`}
+                              value="2"
+                              defaultChecked={userobra.id_tipousuario === 2}
+                              onChange={(event) =>
+                                handleUpdateUserObra(event, userobra)
+                              }
+                            />
+                            Moderador
+                          </label>
+                        </div>
+                        <SendButton
+                          text="Eliminar"
+                          backcolor="#D10000"
+                          letercolor="white"
+                          onClick={() => setDeleteUserObraConfirmation(true)}
+                        />
+                        <ConfirmationModal
+                          Open={deleteUserObraConfirmation}
+                          BodyText="¿Está seguro que desea eliminar la obra de este usuario?"
+                          onClickConfirm={() =>
+                            handleDeleteObraFromUser(userobra.id_obra)
+                          }
+                          onClose={() => setDeleteUserObraConfirmation(false)}
+                        />
+                      </>
+                    )}
+                  </li>
+                ))
               )}
             </ul>
             {user.viewingOtherUser == true && (
@@ -516,7 +617,7 @@ const Cuenta = ({ user }) => {
                   as="select"
                   aria-label="Select object"
                   value={selectedObject}
-                  onChange={e => {
+                  onChange={(e) => {
                     setSelectedObject(e.target.value);
                     setAñadirButtonIsValid(e.target.value !== "");
                   }}
@@ -524,16 +625,26 @@ const Cuenta = ({ user }) => {
                   <option disabled hidden value="">
                     Selecciona una obra para añadir
                   </option>
-                  {obras.filter(obra => !obraID.some(obraID => obraID.id_obra === obra.id_obra)).length === 0 ? (
+                  {obras.filter(
+                    (obra) =>
+                      !obraID.some((obraID) => obraID.id_obra === obra.id_obra),
+                  ).length === 0 ? (
                     <option disabled value="">
                       No puede añadir este usuario a ninguna obra
                     </option>
                   ) : (
-                    obras.filter(obra => !obraID.some(obraID => obraID.id_obra === obra.id_obra)).map(obra => (
-                      <option key={obra.id_obra} value={obra.id_obra}>
-                        {obra.nombre}
-                      </option>
-                    ))
+                    obras
+                      .filter(
+                        (obra) =>
+                          !obraID.some(
+                            (obraID) => obraID.id_obra === obra.id_obra,
+                          ),
+                      )
+                      .map((obra) => (
+                        <option key={obra.id_obra} value={obra.id_obra}>
+                          {obra.nombre}
+                        </option>
+                      ))
                   )}
                 </Form.Control>
                 <SendButton
@@ -558,7 +669,12 @@ const Cuenta = ({ user }) => {
             letercolor="white"
             onClick={() => setDeleteUserConfirmation(true)}
           />
-          <ConfirmationModal Open={deleteUserConfirmation} BodyText="¿Está seguro que desea eliminar este usuario?" onClickConfirm={(event) => handleDeleteUser(event)} onClose={() => setDeleteUserConfirmation(false)} />
+          <ConfirmationModal
+            Open={deleteUserConfirmation}
+            BodyText="¿Está seguro que desea eliminar este usuario?"
+            onClickConfirm={(event) => handleDeleteUser(event)}
+            onClose={() => setDeleteUserConfirmation(false)}
+          />
         </Col>
         <Col className="text-right">
           {user.viewingOtherUser == false && (
@@ -570,7 +686,12 @@ const Cuenta = ({ user }) => {
             />
           )}
         </Col>
-        <ConfirmationModal Open={logOutConfirmation} BodyText="¿Estas seguro de querer cerrar sesion?" onClickConfirm={handleLogout} onClose={() => setLogOutConfirmation(false)} />
+        <ConfirmationModal
+          Open={logOutConfirmation}
+          BodyText="¿Estas seguro de querer cerrar sesion?"
+          onClickConfirm={handleLogout}
+          onClose={() => setLogOutConfirmation(false)}
+        />
       </Row>
     </div>
   );

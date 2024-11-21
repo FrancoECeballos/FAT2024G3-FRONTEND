@@ -1,11 +1,11 @@
 import { React, useState, useEffect } from "react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import "./Sidebar_perfil.scss";
 
 import SelectableButton from "../../buttons/selectable_button/selectable_button.jsx";
 import Loading from "../../loading/loading.jsx";
 
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col } from "react-bootstrap";
 import fetchData from "../../../functions/fetchData.jsx";
 
 const Sidebar = ({ selectedPage, user }) => {
@@ -14,7 +14,7 @@ const Sidebar = ({ selectedPage, user }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
 
   useEffect(() => {
     console.log(user);
@@ -29,7 +29,10 @@ const Sidebar = ({ selectedPage, user }) => {
         }
 
         const obrasResult = await fetchData(`/user/obrasToken/${token}`, token);
-        const isAdmin = obrasResult.is_superuser || user.viewingUser.is_superuser || obrasResult.some(item => item.id_tipousuario === 2);
+        const isAdmin =
+          obrasResult.is_superuser ||
+          user.viewingUser.is_superuser ||
+          obrasResult.some((item) => item.id_tipousuario === 2);
         setIsAdmin(isAdmin);
       } catch (err) {
         setError(err);
@@ -42,7 +45,7 @@ const Sidebar = ({ selectedPage, user }) => {
   }, [token, user]);
 
   if (loading) {
-    return <Loading></Loading>
+    return <Loading></Loading>;
   }
 
   if (error) {
@@ -52,43 +55,63 @@ const Sidebar = ({ selectedPage, user }) => {
   return (
     <Row>
       <Col className="sidebar">
-        <div className="top" style={{marginTop:"2rem"}}>
-        {!user.viewingOtherUser && (
-          <h1 className="user-info">
-            <img src={viewingUser.imagen} className="fotoperfil" alt="Perfil" />
-            <span>{viewingUser.nombreusuario}</span>
-          </h1>
-        )}
-        {user.viewingOtherUser && (
-          <h1 className="user-info-viewing">
-            <img src={viewedUser.imagen} className="fotoperfil" alt="Perfil" />
-            <span>Viendo a: {viewedUser.nombreusuario}</span>
-          </h1>
-        )}
+        <div className="top" style={{ marginTop: "2rem" }}>
+          {!user.viewingOtherUser && (
+            <h1 className="user-info">
+              <img
+                src={viewingUser.imagen}
+                className="fotoperfil"
+                alt="Perfil"
+              />
+              <span>{viewingUser.nombreusuario}</span>
+            </h1>
+          )}
+          {user.viewingOtherUser && (
+            <h1 className="user-info-viewing">
+              <img
+                src={viewedUser.imagen}
+                className="fotoperfil"
+                alt="Perfil"
+              />
+              <span>Viendo a: {viewedUser.nombreusuario}</span>
+            </h1>
+          )}
         </div>
         <div className="content">
-          <SelectableButton 
+          <SelectableButton
             selected={selectedPage === "micuenta"}
-            texto="Cuenta" 
+            texto="Cuenta"
             link="/perfil/micuenta"
-            locationStore={user.viewingOtherUser ? { user_email: viewedUser.email } : undefined}
+            locationStore={
+              user.viewingOtherUser
+                ? { user_email: viewedUser.email }
+                : undefined
+            }
           />
           <SelectableButton
             selected={selectedPage === "seguridad"}
             texto="Cambiar Contraseña"
             link="/perfil/seguridad"
-            locationStore={user.viewingOtherUser ? { user_email: viewedUser.email } : undefined}
+            locationStore={
+              user.viewingOtherUser
+                ? { user_email: viewedUser.email }
+                : undefined
+            }
           />
           <SelectableButton
             selected={selectedPage === "datos_personales"}
             texto="Datos Personales"
             link="/perfil/datos_personales"
-            locationStore={user.viewingOtherUser ? { user_email: viewedUser.email } : undefined}
+            locationStore={
+              user.viewingOtherUser
+                ? { user_email: viewedUser.email }
+                : undefined
+            }
           />
-          <SelectableButton 
+          <SelectableButton
             selected={selectedPage === "obras"}
-            texto="Obras" 
-            link="/obras" 
+            texto="Obras"
+            link="/obras"
           />
           {isAdmin && (
             <SelectableButton
