@@ -350,7 +350,7 @@ function AutosComponent() {
         error.response &&
         error.response.data &&
         error.response.data.error ===
-          "No se encontró un detalle de obra transporte con el ID proporcionado."
+        "No se encontró un detalle de obra transporte con el ID proporcionado."
       ) {
         alert("No se encontró un auto con el ID proporcionado.");
       } else {
@@ -460,27 +460,51 @@ function AutosComponent() {
                       onFileChange={handleFileChange}
                       defaultImage={defaultImage}
                     />
+                    <Form.Label
+                      className="font-rubik"
+                    >
+                      Marca:
+                    </Form.Label>
                     <Form.Control
                       name="marca"
                       type="text"
+                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
                       placeholder="Marca"
                       onChange={handleInputChange}
                     />
+                    <Form.Label
+                      className="font-rubik"
+                    >
+                      Modelo:
+                    </Form.Label>
                     <Form.Control
                       name="modelo"
                       type="text"
+                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
                       placeholder="Modelo"
                       onChange={handleInputChange}
                     />
+                    <Form.Label
+                      className="font-rubik"
+                    >
+                      Patente:
+                    </Form.Label>
                     <Form.Control
                       name="patente"
                       type="text"
+                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
                       placeholder="Patente"
                       onChange={handleInputChange}
                     />
+                    <Form.Label
+                      className="font-rubik"
+                    >
+                      Kilometros:
+                    </Form.Label>
                     <Form.Control
                       name="kilometraje"
                       type="number"
+                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
                       placeholder="Kilometros"
                       onChange={handleInputChange}
                       min="0"
@@ -590,54 +614,78 @@ function AutosComponent() {
                         <Col xs={12} md={6} style={{ marginTop: "1rem" }}>
                           {(!obra.id_tipousuario ||
                             obra.id_tipousuario === 2) && (
-                            <Modal
-                              openButtonWidth="15"
-                              openButtonText="Actualizar Vehículo"
-                              title="Actualizar Vehículo"
-                              handleShowModal={() => handleEditAutoClick(auto)}
-                              handleSave={async () => {
-                                await handleUpdateAuto(autoModal, auto);
-                              }}
-                              showDeleteButton={true}
-                              deleteFunction={() => handleDeleteAuto(auto)}
-                              wide="100rem"
-                              content={
-                                <>
-                                  <Form.Control
-                                    name="marca"
-                                    type="text"
-                                    defaultValue={auto.marca}
-                                    onChange={handleInputChange}
-                                  />
-                                  <Form.Control
-                                    name="modelo"
-                                    type="text"
-                                    defaultValue={auto.modelo}
-                                    onChange={handleInputChange}
-                                  />
-                                  <Form.Control
-                                    name="patente"
-                                    type="text"
-                                    defaultValue={auto.patente}
-                                    onChange={handleInputChange}
-                                  />
-                                  <Form.Control
-                                    name="kilometraje"
-                                    type="number"
-                                    placeholder="Kilometros"
-                                    onChange={handleInputChange}
-                                    defaultValue={auto.kilometraje}
-                                    min="0"
-                                    onBeforeInput={(event) => {
-                                      if (!/^[0-9]*$/.test(event.data)) {
-                                        event.preventDefault();
-                                      }
-                                    }}
-                                  />
-                                </>
-                              }
-                            />
-                          )}
+                              <Modal
+                                openButtonWidth="15"
+                                openButtonText="Actualizar Vehículo"
+                                title="Actualizar Vehículo"
+                                handleShowModal={() => handleEditAutoClick(auto)}
+                                handleSave={async () => {
+                                  await handleUpdateAuto(autoModal, auto);
+                                }}
+                                showDeleteButton={true}
+                                deleteFunction={() => handleDeleteAuto(auto)}
+                                wide="100rem"
+                                content={
+                                  <>
+                                    <Form.Label
+                                      className="font-rubik"
+                                    >
+                                      Marca:
+                                    </Form.Label>
+                                    <Form.Control
+                                      name="marca"
+                                      type="text"
+                                      style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
+                                      defaultValue={auto.marca}
+                                      onChange={handleInputChange}
+                                    />
+                                    <Form.Label
+                                      className="font-rubik"
+                                    >
+                                      Modelo:
+                                    </Form.Label>
+                                    <Form.Control
+                                      name="modelo"
+                                      type="text"
+                                      style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
+                                      defaultValue={auto.modelo}
+                                      onChange={handleInputChange}
+                                    />
+                                    <Form.Label
+                                      className="font-rubik"
+                                    >
+                                      Patente:
+                                    </Form.Label>
+                                    <Form.Control
+                                      name="patente"
+                                      type="text"
+                                      style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
+                                      defaultValue={auto.patente}
+                                      onChange={handleInputChange}
+                                    />
+                                    <Form.Label
+                                      className="font-rubik"
+                                    >
+                                      Kilometros:
+                                    </Form.Label>
+                                    <Form.Control
+                                      name="kilometraje"
+                                      type="number"
+                                      style={{ marginTop: "0.5rem" }}
+                                      placeholder="Kilometros"
+                                      onChange={handleInputChange}
+                                      defaultValue={auto.kilometraje}
+                                      min="0"
+                                      onBeforeInput={(event) => {
+                                        if (!/^[0-9]*$/.test(event.data)) {
+                                          event.preventDefault();
+                                        }
+                                      }}
+                                    />
+                                  </>
+                                }
+                              />
+                            )}
                         </Col>
                       </Row>
                     </div>
