@@ -25,6 +25,7 @@ import crearNotificacion from "../../functions/createNofiticacion.jsx";
 import Popup from "../../components/alerts/popup/Popup.jsx";
 
 import Modal from "../../components/modals/Modal.jsx";
+import ConfirmationModal from "../../components/modals/confirmation_modal/ConfirmationModal.jsx";
 import defaultImage from "../../assets/no_image.png";
 
 import "./Autos.scss";
@@ -40,8 +41,7 @@ function AutosComponent() {
   const [obra, setObra] = useState(false);
 
   const [autoModal, setAutoModal] = useState(null);
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [popupData, setPopupData] = useState({});
+  const [deleteAutoModal, setDeleteAutoModal] = useState(null);
 
   const [autos, setAutos] = useState([]);
   const [maintenanceStatus, setMaintenanceStatus] = useState({});
@@ -449,9 +449,6 @@ function AutosComponent() {
                 handleSave={handleCreateAuto}
                 openButtonWidth="15"
                 openButtonText="Añadir un vehiculo nuevo"
-                showPopup={isPopupVisible}
-                popupTitle={popupData.title}
-                popupMessage={popupData.message}
                 content={
                   <>
                     <UploadImage
@@ -599,7 +596,7 @@ function AutosComponent() {
                                 await handleUpdateAuto(autoModal, auto);
                               }}
                               showDeleteButton={true}
-                              deleteFunction={() => handleDeleteAuto(auto)}
+                              deleteFunction={() => setDeleteAutoModal(auto)}
                               wide="100rem"
                               content={
                                 <>
@@ -657,6 +654,13 @@ function AutosComponent() {
         setShow={setShowPopup}
         message={popupMessage}
         title={popupTitle}
+      />
+
+      <ConfirmationModal
+        Open={deleteAutoModal}
+        BodyText="¿Está seguro que desea eliminar este Vehiculo?"
+        onClickConfirm={() => {handleDeleteAuto(deleteAutoModal); setDeleteAutoModal(null);}}
+        onClose={() => setDeleteAutoModal(null)}
       />
     </div>
   );

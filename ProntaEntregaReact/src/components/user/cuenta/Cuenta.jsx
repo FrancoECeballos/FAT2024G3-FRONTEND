@@ -688,7 +688,7 @@ const Cuenta = ({ user }) => {
         </Col>
         <ConfirmationModal
           Open={logOutConfirmation}
-          BodyText="¿Estas seguro de querer cerrar sesion?"
+          BodyText="¿Estas seguro que quieres cerrar sesión?"
           onClickConfirm={handleLogout}
           onClose={() => setLogOutConfirmation(false)}
         />
