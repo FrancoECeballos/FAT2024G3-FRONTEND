@@ -36,6 +36,7 @@ function OneProduct() {
     
     const fetchProductData = async () => {
         try {
+            setIsLoading(true);
             const productResult = await fetchData(`/producto/${parseInt(productoId, 10)}`, token);
             setProduct(productResult[0]);
 

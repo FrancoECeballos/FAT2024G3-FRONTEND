@@ -50,6 +50,7 @@ function Pedidos() {
     useEffect(() => {
         const fetchDataAsync = async () => {
             try {
+                setIsLoading(true);
                 const userData = await fetchUser(navigate);
                 setUser(userData);
 

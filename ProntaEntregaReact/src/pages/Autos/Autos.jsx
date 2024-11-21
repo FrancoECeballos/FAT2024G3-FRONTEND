@@ -360,7 +360,17 @@ function AutosComponent() {
                                     <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
                                     <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
                                     <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
-                                    <Form.Control name="kilometraje" type="text" placeholder="Kilometros" onChange={handleInputChange} className="input-autos" />
+                                    <Form.Control
+                                        name="kilometraje"
+                                        type="number"
+                                        placeholder="Kilometros"
+                                        onChange={handleInputChange}
+                                        className="input-autos"
+                                        min="1"
+                                        onInput={(event) => {
+                                            event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                                        }}
+                                    />
                                 </>
                             } />
                         </div>
@@ -434,7 +444,17 @@ function AutosComponent() {
                                                                     placement="top"
                                                                     overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-kilometraje">Kilometraje del vehículo</Tooltip>}
                                                                 >
-                                                                    <Form.Control name="kilometraje" type="text" defaultValue={auto.kilometraje} onChange={handleInputChange} className="input-autos" />
+                                                                    <Form.Control
+                                                                        name="kilometraje"
+                                                                        type="number"
+                                                                        placeholder="Kilometros"
+                                                                        onChange={handleInputChange}
+                                                                        className="input-autos"
+                                                                        min="1"
+                                                                        onInput={(event) => {
+                                                                            event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                                                                        }}
+                                                                    />
                                                                 </OverlayTrigger>
                                                             </>
                                                         } />

@@ -81,6 +81,7 @@ function Products() {
 
         const fetchUserData = async () => {
             try {
+                setIsLoading(true);
                 const userData = await fetchUser(navigate);
                 setUser(userData);
                 
@@ -114,27 +115,26 @@ function Products() {
                     setExcludedProducts(transformedResult);
                 });
             });
-        });
+            fetchData(`/categoria/${categoriaID}`, token).then((result) => {
+                setCurrentCategory(result[0].nombre);
+            });
 
-        fetchData(`/categoria/${categoriaID}`, token).then((result) => {
-            setCurrentCategory(result[0].nombre);
+            const img = new Image();
+            img.src = defaultImage;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'no_image.png', { type: 'image/png' });
+                    setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
+                });
+            };
+        }).finally(() => {
+            setIsLoading(false); 
         });
-        setIsLoading(false); 
-
-        const img = new Image();
-        img.src = defaultImage;
-        img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        canvas.toBlob((blob) => {
-            const file = new File([blob], 'no_image.png', { type: 'image/png' });
-            setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
-        });
-        };
-
     }, [token, navigate, stockId, categoriaID]);
 
     useEffect(() => {
@@ -476,7 +476,7 @@ function Products() {
                             </div>
                             {selectedCardId && selectedCardId !== 'New' && selectedCardId !== -1 &&
                                 <InputGroup className="mb-2">
-                                    <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad inicial' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                    <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad inicial' min='1' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                 </InputGroup>
                             }
                             {selectedCardId && selectedCardId === 'New' && selectedCardId !== -1 &&
@@ -495,7 +495,7 @@ function Products() {
                                         <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleProductInputChange} onChange={handleProductInputChange} className="descripcion-input" />
                                     </InputGroup>
                                     <InputGroup className="mb-2">
-                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad inicial' ref={cantidadRef} className="cantidad-input" onKeyDown={(event) => { if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) { event.preventDefault(); } }} />
+                                        <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad inicial' min='1' ref={cantidadRef} className="cantidad-input" onKeyDown={(event) => { if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) { event.preventDefault(); } }} />
                                     </InputGroup>
                                 </>
                             }
@@ -524,7 +524,7 @@ function Products() {
                                                         <p className='centered'>{product.descripcion}</p>
                                                         <Form.Label style={{ marginLeft: '1rem' }}>Cantidad Actual: {product.total} {product.unidadmedida}</Form.Label>
                                                         <InputGroup className="mb-2">
-                                                            <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad a modificar' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
+                                                            <Form.Control name="cantidad" type="number" placeholder='Ingrese la cantidad a modificar' min='1' ref={cantidadRef} onChange={fetchSelectedObject} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)' }} onKeyDown={(event) => {if (!/[0-9.]/.test(event.key) && !['Backspace', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) {event.preventDefault();}}}/>
                                                         </InputGroup>
                                                         <InputGroup className="mb-2">
                                                             <Button variant='outline-success' className={`unified-input unified-input-left ${selectedOperacion === 'sumar' ? 'selected' : ''} añadir-button`} style={{ borderBlockColor: '#3E4692', marginTop: '1rem', flex: 1 }} tabIndex="0" onClick={() => setSelectedOperacion('sumar')}> Añadir </Button>

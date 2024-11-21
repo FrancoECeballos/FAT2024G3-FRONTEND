@@ -27,6 +27,7 @@ function Stock() {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
+                setIsLoading(true);
                 const userData = await fetchUser(navigate);
                 setIsAdmin(userData.is_superuser);
                 const email = userData.email;

@@ -61,8 +61,8 @@ function Ofertas() {
 
     useEffect(() => {
         const fetchDataAsync = async () => {
-            setIsLoading(true);
             try {
+                setIsLoading(true);
                 const userData = await fetchUser(navigate);
                 setUser(userData);
 
