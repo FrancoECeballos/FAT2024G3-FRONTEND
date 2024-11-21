@@ -95,7 +95,7 @@ const Cuenta = ({ user }) => {
         const fetchPromises = obrasResult.map((obra) =>
           fetchData(`/obra/${obra.id_obra}`, token).then((obraData) => {
             return { ...obraData, id_tipousuario: obra.id_tipousuario };
-          }),
+          })
         );
 
         Promise.all(fetchPromises).then((results) => {
@@ -159,7 +159,7 @@ const Cuenta = ({ user }) => {
     const result = await putData(
       `/user/obras/update/${obra.id_obra}/${userData.id_usuario}/`,
       { id_tipousuario: value },
-      token,
+      token
     );
     fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
       setUserObras(result);
@@ -169,7 +169,7 @@ const Cuenta = ({ user }) => {
   const handleDeleteObraFromUser = async (id) => {
     await deleteData(
       `/user/obras/delete/${id}/${user.viewedUser.id_usuario}/`,
-      token,
+      token
     );
     fetchData(`/user/obrasEmail/${userData.email}`, token).then((result) => {
       setUserObras(result);
@@ -192,7 +192,7 @@ const Cuenta = ({ user }) => {
         id_usuario: userData.id_usuario,
         id_tipousuario: 1,
       },
-      token,
+      token
     ).then(async () => {
       const fechaCreacion = new Date().toISOString().split("T")[0];
       const newObra = await fetchData(`/obra/${selectedObject}/`, token);
@@ -216,13 +216,13 @@ const Cuenta = ({ user }) => {
         dataNotificacionObra,
         token,
         "Obra",
-        newObra[0].id_obra,
+        newObra[0].id_obra
       ).then(() => {
         crearNotificacion(
           dataNotificacionUser,
           token,
           "User",
-          userData.id_usuario,
+          userData.id_usuario
         ).then(() => {
           loadData();
         });
@@ -307,7 +307,7 @@ const Cuenta = ({ user }) => {
       (d) =>
         d.calle === userData.id_direccion.calle &&
         d.numero === userData.id_direccion.numero &&
-        d.localidad === userData.id_direccion.localidad,
+        d.localidad === userData.id_direccion.localidad
     );
 
     if (!existingDireccion) {
@@ -338,13 +338,13 @@ const Cuenta = ({ user }) => {
       const result = await putData(
         `/user/updateEmail/${userData.email}/`,
         formDataToSend,
-        token,
+        token
       );
     } else {
       const result = await putData(
         `/user/update/${token}/`,
         formDataToSend,
-        token,
+        token
       );
     }
     fetchData("/direcciones/").then((result) => {
@@ -463,7 +463,7 @@ const Cuenta = ({ user }) => {
                   type="text"
                   onChange={(value) => {
                     const isValid = SelectLocalidad.Localidades.some(
-                      (localidad) => localidad.label === value,
+                      (localidad) => localidad.label === value
                     );
                     if (!isValid) {
                       handleInputChange({
@@ -547,7 +547,7 @@ const Cuenta = ({ user }) => {
         </Col>
       </Row>
 
-      <Row className="filaobras">
+      <Row className="filaobras full-width">
         <Col>
           <div className="obras-container" style={{ marginTop: "1rem" }}>
             <h3>Obras del Usuario</h3>
@@ -627,7 +627,7 @@ const Cuenta = ({ user }) => {
                   </option>
                   {obras.filter(
                     (obra) =>
-                      !obraID.some((obraID) => obraID.id_obra === obra.id_obra),
+                      !obraID.some((obraID) => obraID.id_obra === obra.id_obra)
                   ).length === 0 ? (
                     <option disabled value="">
                       No puede añadir este usuario a ninguna obra
@@ -637,8 +637,8 @@ const Cuenta = ({ user }) => {
                       .filter(
                         (obra) =>
                           !obraID.some(
-                            (obraID) => obraID.id_obra === obra.id_obra,
-                          ),
+                            (obraID) => obraID.id_obra === obra.id_obra
+                          )
                       )
                       .map((obra) => (
                         <option key={obra.id_obra} value={obra.id_obra}>
@@ -661,7 +661,7 @@ const Cuenta = ({ user }) => {
         </Col>
       </Row>
 
-      <Row className="filabuton">
+      <Row className="filabuton full-width">
         <Col>
           <SendButton
             text="Borrar Usuario"
@@ -676,7 +676,7 @@ const Cuenta = ({ user }) => {
             onClose={() => setDeleteUserConfirmation(false)}
           />
         </Col>
-        <Col className="text-right">
+        <Col>
           {user.viewingOtherUser == false && (
             <SendButton
               text="Cerrar Sesión"
