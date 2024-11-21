@@ -102,16 +102,16 @@ function Products() {
         if (userData.is_superuser) {
           const obrasResult = await fetchData("/obra/", token);
           const filteredResult = obrasResult.filter(
-            (item) => item.id_obra === stockResult[0].id_obra.id_obra,
+            (item) => item.id_obra === stockResult[0].id_obra.id_obra
           );
           setObra(filteredResult[0]);
         } else {
           const obrasResult = await fetchData(
             `/user/obrasToken/${token}/`,
-            token,
+            token
           );
           const filteredResult = obrasResult.filter(
-            (item) => item.id_obra === stockResult[0].id_obra.id_obra,
+            (item) => item.id_obra === stockResult[0].id_obra.id_obra
           );
           setObra(filteredResult[0]);
         }
@@ -123,14 +123,14 @@ function Products() {
     fetchUserData().then(() => {
       fetchData(
         `/GetDetallestockproducto_Total/${stockId}/${categoriaID}/`,
-        token,
+        token
       ).then((result) => {
         setProducts(result);
         const productsID = result.map((product) => product.id_producto);
         postData(
           `/GetProductosPorCategoriaExcluidos/${categoriaID}/`,
           { excluded_ids: productsID },
-          token,
+          token
         ).then((result) => {
           const transformedResult = result.map((product) => ({
             key: product.id_producto,
@@ -139,28 +139,36 @@ function Products() {
           setExcludedProducts(transformedResult);
         });
       });
-      fetchData(`/categoria/${categoriaID}`, token).then((result) => {
-        setCurrentCategory(result[0].nombre);
-        setIsLoading(false);
-    
-        const img = new Image();
-        img.src = defaultImage;
-        img.onload = () => {
+      fetchData(`/categoria/${categoriaID}`, token)
+        .then((result) => {
+          setCurrentCategory(result[0].nombre);
+          setIsLoading(false);
+
+          const img = new Image();
+          img.src = defaultImage;
+          img.onload = () => {
             const canvas = document.createElement("canvas");
             canvas.width = img.width;
             canvas.height = img.height;
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0);
             canvas.toBlob((blob) => {
-                const file = new File([blob], "no_image.png", { type: "image/png" });
-                setNewProduct((prevProduct) => ({ ...prevProduct, imagen: file }));
+              const file = new File([blob], "no_image.png", {
+                type: "image/png",
+              });
+              setNewProduct((prevProduct) => ({
+                ...prevProduct,
+                imagen: file,
+              }));
             });
-        };
-        img.src = defaultImage;
-        }).finally(() => {
-            setIsLoading(false); 
+          };
+          img.src = defaultImage;
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
-    })}, [token, navigate, stockId, categoriaID]);
+    });
+  }, [token, navigate, stockId, categoriaID]);
 
   useEffect(() => {
     if (pedidoOrOferta === "pedido") {
@@ -184,14 +192,14 @@ function Products() {
     try {
       const productsResult = await fetchData(
         `/GetDetallestockproducto_Total/${stockId}/${categoriaID}/`,
-        token,
+        token
       );
       setProducts(productsResult);
       const productsID = productsResult.map((product) => product.id_producto);
       const excludedProductsResult = await postData(
         `/GetProductosPorCategoriaExcluidos/${categoriaID}/`,
         { excluded_ids: productsID },
-        token,
+        token
       );
       const transformedResult = excludedProductsResult.map((product) => ({
         key: product.id_producto,
@@ -201,7 +209,7 @@ function Products() {
 
       const categoryResult = await fetchData(
         `/categoria/${categoriaID}`,
-        token,
+        token
       );
       setCurrentCategory(categoryResult[0].nombre);
     } catch (error) {
@@ -254,7 +262,7 @@ function Products() {
 
       if (isSimilar) {
         setAlertMessage(
-          "El nombre del producto es similar o igual a uno existente. Por favor, verifica.",
+          "El nombre del producto es similar o igual a uno existente. Por favor, verifica."
         );
         setShowAlert(true);
       } else {
@@ -304,7 +312,7 @@ function Products() {
       const saveSuccess = await handleSave(
         cantidad,
         null,
-        response.id_producto,
+        response.id_producto
       );
 
       if (saveSuccess) {
@@ -386,7 +394,7 @@ function Products() {
     try {
       await deleteData(
         `/EliminarTodosDetalleStockProductoView/${stockId}/${id}/`,
-        token,
+        token
       );
       setPopupTitle("Éxito");
       setPopupMessage("Producto eliminado exitosamente.");
@@ -396,7 +404,7 @@ function Products() {
       console.error("Error deleting product:", error);
       setPopupTitle("Error");
       setPopupMessage(
-        "Ocurrió un error al eliminar el producto. Por favor, inténtelo de nuevo.",
+        "Ocurrió un error al eliminar el producto. Por favor, inténtelo de nuevo."
       );
       setShowPopup(true);
     }
@@ -426,18 +434,18 @@ function Products() {
               const fechaCreacion = new Date().toISOString().split("T")[0];
               const producto = await fetchData(
                 `/producto/${pedidoForm.id_producto}/`,
-                token,
+                token
               );
               const pendingObra = await fetchData(
                 `/obra/${pedidoForm.id_obra}/`,
-                token,
+                token
               );
               const urgenciaLabel =
                 pedidoForm.urgente === 1
                   ? "Ligera"
                   : pedidoForm.urgente === 2
-                    ? "Moderada"
-                    : "Extrema";
+                  ? "Moderada"
+                  : "Extrema";
 
               const dataNotificacion = {
                 titulo: "Nuevo Pedido",
@@ -452,7 +460,7 @@ function Products() {
                 postData(
                   "/crear_detalle_pedido/",
                   { id_stock: obra, id_pedido: result.id_pedido },
-                  token,
+                  token
                 );
                 crearNotificacion(dataNotificacion, token, "Obra", obra);
               });
@@ -469,7 +477,7 @@ function Products() {
             .catch((error) => {
               console.error(
                 "Error al crear el pedido o los detalles del pedido:",
-                error,
+                error
               );
               reject(false);
             });
@@ -483,15 +491,15 @@ function Products() {
               const fechaCreacion = new Date().toISOString().split("T")[0];
               const producto = await fetchData(
                 `producto/${ofertaForm.id_producto}/`,
-                token,
+                token
               );
               const pendingStock = await fetchData(
                 `stock/${ofertaForm.id_obra}/`,
-                token,
+                token
               );
               const pendingObra = await fetchData(
                 `obra/${ofertaForm.id_obra}/`,
-                token,
+                token
               );
 
               await postData(
@@ -502,7 +510,7 @@ function Products() {
                   id_producto: ofertaForm.id_producto,
                   id_usuario: user.id_usuario,
                 },
-                token,
+                token
               );
 
               const dataNotificacion = {
@@ -521,7 +529,7 @@ function Products() {
                   });
                   await reloadData();
                   resolve(true);
-                },
+                }
               );
             })
             .catch((error) => {
@@ -537,7 +545,7 @@ function Products() {
     return existingProducts.some(
       (product) =>
         product.nombre.toLowerCase() === newName.toLowerCase() ||
-        product.nombre.toLowerCase().includes(newName.toLowerCase()),
+        product.nombre.toLowerCase().includes(newName.toLowerCase())
     );
   };
 
@@ -596,13 +604,13 @@ function Products() {
                     if (selectedCardId === "New") {
                       await handleCreateProduct(
                         parseFloat(cantidadRef.current.value),
-                        products.total,
+                        products.total
                       );
                     } else {
                       await handleSave(
                         parseFloat(cantidadRef.current.value),
                         products.total,
-                        selectedCardId.key,
+                        selectedCardId.key
                       );
                     }
                   } else {
@@ -659,6 +667,7 @@ function Products() {
                             name="cantidad"
                             type="number"
                             placeholder="Ingrese la cantidad inicial"
+                            min="1"
                             ref={cantidadRef}
                             onChange={fetchSelectedObject}
                             style={{
@@ -728,6 +737,7 @@ function Products() {
                               name="cantidad"
                               type="number"
                               placeholder="Ingrese la cantidad inicial"
+                              min="1"
                               ref={cantidadRef}
                               className="cantidad-input"
                               onKeyDown={(event) => {
@@ -794,7 +804,7 @@ function Products() {
                                 handleSave={() =>
                                   handleSave(
                                     parseFloat(cantidadRef.current.value),
-                                    product.total,
+                                    product.total
                                   )
                                 }
                                 showPopup={true}
@@ -826,6 +836,7 @@ function Products() {
                                         name="cantidad"
                                         type="number"
                                         placeholder="Ingrese la cantidad a modificar"
+                                        min="1"
                                         ref={cantidadRef}
                                         onChange={fetchSelectedObject}
                                         style={{
@@ -852,7 +863,11 @@ function Products() {
                                     <InputGroup className="mb-2">
                                       <Button
                                         variant="outline-success"
-                                        className={`unified-input unified-input-left ${selectedOperacion === "sumar" ? "selected" : ""} añadir-button`}
+                                        className={`unified-input unified-input-left ${
+                                          selectedOperacion === "sumar"
+                                            ? "selected"
+                                            : ""
+                                        } añadir-button`}
                                         style={{
                                           borderBlockColor: "#3E4692",
                                           marginTop: "1rem",
@@ -868,7 +883,11 @@ function Products() {
                                       </Button>
                                       <Button
                                         variant="outline-danger"
-                                        className={`unified-input unified-input-right ${selectedOperacion === "restar" ? "selected" : ""} quitar-button`}
+                                        className={`unified-input unified-input-right ${
+                                          selectedOperacion === "restar"
+                                            ? "selected"
+                                            : ""
+                                        } quitar-button`}
                                         style={{
                                           borderBlockColor: "#3E4692",
                                           marginTop: "1rem",
@@ -977,7 +996,7 @@ function Products() {
                                           id_stock: stockId,
                                           id_categoria: categoriaID,
                                         },
-                                      },
+                                      }
                                     )
                                   }
                                 />

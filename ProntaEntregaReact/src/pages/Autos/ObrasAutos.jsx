@@ -28,6 +28,7 @@ function ObrasAutos() {
       navigate("/login");
       return;
     }
+    setIsLoading(true);
     fetchUser()
       .then((result) => {
         setIsAdmin(result.is_superuser);

@@ -558,6 +558,7 @@ const PedidoCard = forwardRef(
                     <Form.Control
                       name="cantidad"
                       type="number"
+                      min="1"
                       onBlur={handleInputChange}
                       onChange={handleInputChange}
                       placeholder="Ingrese la cantidad pedida"

@@ -444,6 +444,7 @@ const OfertaCard = forwardRef(
                   style={{ width: "100%", border: "1px solid grey" }}
                   name="cantidad"
                   type="number"
+                  min="1"
                   onBlur={handleInputChange}
                   onChange={handleInputChange}
                   placeholder="Ingrese la cantidad ofrecida"

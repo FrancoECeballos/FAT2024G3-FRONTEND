@@ -62,6 +62,7 @@ function AutosComponent() {
 
   useEffect(() => {
     const fetchDataAsync = async () => {
+      setIsLoading(true);
       const userData = await fetchUser(navigate);
       setUser(userData);
 
@@ -74,16 +75,16 @@ function AutosComponent() {
         if (userData.is_superuser) {
           const obrasResult = await fetchData("/obra/", token);
           const filteredResult = obrasResult.filter(
-            (item) => item.id_obra === parseInt(obraId, 10),
+            (item) => item.id_obra === parseInt(obraId, 10)
           );
           setObra(filteredResult[0]);
         } else {
           const obrasResult = await fetchData(
             `/user/obrasToken/${token}/`,
-            token,
+            token
           );
           const filteredResult = obrasResult.filter(
-            (item) => item.id_obra === parseInt(obraId, 10),
+            (item) => item.id_obra === parseInt(obraId, 10)
           );
           setObra(filteredResult[0]);
         }
@@ -150,7 +151,7 @@ function AutosComponent() {
           necesita_mantenimiento: newStatus,
           descripcion_mantenimiento: currentDescription,
         },
-        token,
+        token
       );
       const fechaCreacion = new Date().toISOString().split("T")[0];
       const obraData = await fetchData(`/obra/${obraId}`, token);
@@ -171,24 +172,24 @@ function AutosComponent() {
         dataNotificacion,
         token,
         "Obra",
-        obraData[0].id_obra,
+        obraData[0].id_obra
       );
       await handleReloadAutos();
 
       setPopupTitle(
-        newStatus ? "Mantenimiento Solicitado" : "Mantenimiento Realizado",
+        newStatus ? "Mantenimiento Solicitado" : "Mantenimiento Realizado"
       );
       setPopupMessage(
         newStatus
           ? `Se solicitó mantenimiento '${currentDescription}' exitosamente.`
-          : `Se completó el mantenimiento del vehiculo ${auto.marca} ${auto.modelo} exitosamente.`,
+          : `Se completó el mantenimiento del vehiculo ${auto.marca} ${auto.modelo} exitosamente.`
       );
       setShowPopup(true);
     } catch (error) {
       console.error("Error updating maintenance status:", error);
       setPopupTitle("Error");
       setPopupMessage(
-        "Ocurrió un error al actualizar el estado de mantenimiento. Por favor, inténtelo de nuevo.",
+        "Ocurrió un error al actualizar el estado de mantenimiento. Por favor, inténtelo de nuevo."
       );
       setShowPopup(true);
     }
@@ -218,7 +219,7 @@ function AutosComponent() {
     data.append("patente", formData.patente);
     data.append(
       "kilometraje",
-      formData.kilometraje === "" ? 0 : formData.kilometraje,
+      formData.kilometraje === "" ? 0 : formData.kilometraje
     );
 
     try {
@@ -229,7 +230,7 @@ function AutosComponent() {
       await postData(
         `/crear_detalle_transporte/`,
         { id_obra: obraId, id_transporte: result.id_transporte },
-        token,
+        token
       ).then(async () => {
         const fechaCreacion = new Date().toISOString().split("T")[0];
         const obra = await fetchData(`/obra/${obraId}`, token);
@@ -246,13 +247,13 @@ function AutosComponent() {
           dataNotificacion,
           token,
           "Obra",
-          obra[0].id_obra,
+          obra[0].id_obra
         );
         await handleReloadAutos();
 
         setPopupTitle("Vehiculo Creado");
         setPopupMessage(
-          `Se creó el vehiculo ${formData.marca} ${formData.modelo} de la obra ${obra[0].nombre}.`,
+          `Se creó el vehiculo ${formData.marca} ${formData.modelo} de la obra ${obra[0].nombre}.`
         );
         setAutoModal(null);
         setShowPopup(true);
@@ -261,7 +262,7 @@ function AutosComponent() {
       console.error("Error creating auto:", error);
       setPopupTitle("Error");
       setPopupMessage(
-        "Ocurrió un error al crear el vehiculo. Por favor, inténtelo de nuevo.",
+        "Ocurrió un error al crear el vehiculo. Por favor, inténtelo de nuevo."
       );
       setShowPopup(true);
     }
@@ -286,7 +287,7 @@ function AutosComponent() {
 
       setPopupTitle("Vehiculo Actualizado");
       setPopupMessage(
-        `Se actualizó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`,
+        `Se actualizó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`
       );
       setAutoModal(null);
       setShowPopup(true);
@@ -296,7 +297,7 @@ function AutosComponent() {
       console.error("Error updating auto:", error);
       setPopupTitle("Error");
       setPopupMessage(
-        "Ocurrió un error al actualizar el vehiculo. Por favor, inténtelo de nuevo.",
+        "Ocurrió un error al actualizar el vehiculo. Por favor, inténtelo de nuevo."
       );
       setShowPopup(true);
       return false;
@@ -307,7 +308,7 @@ function AutosComponent() {
     try {
       await deleteData(
         `/eliminar_detalle_transporte/${obraId}/${auto.id_transporte}/`,
-        token,
+        token
       );
       const fechaCreacion = new Date().toISOString().split("T")[0];
       const obra = await fetchData(`/obra/${obraId}`, token);
@@ -321,14 +322,14 @@ function AutosComponent() {
       };
 
       setAutos((prevAutos) =>
-        prevAutos.filter((a) => a.id_transporte !== auto.id_transporte),
+        prevAutos.filter((a) => a.id_transporte !== auto.id_transporte)
       );
       await crearNotificacion(dataNotificacion, token, "Obra", obra[0].id_obra);
       await handleReloadAutos();
 
       setPopupTitle("Vehiculo Eliminado");
       setPopupMessage(
-        `Se eliminó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`,
+        `Se eliminó el vehiculo ${auto.marca} ${auto.modelo} de la obra ${obra[0].nombre} exitosamente.`
       );
       setShowPopup(true);
     } catch (error) {
@@ -343,7 +344,7 @@ function AutosComponent() {
         console.error("Error deleting auto:", error);
         setPopupTitle("Error");
         setPopupMessage(
-          "Ocurrió un error al eliminar el vehiculo. Por favor, inténtelo de nuevo.",
+          "Ocurrió un error al eliminar el vehiculo. Por favor, inténtelo de nuevo."
         );
         setShowPopup(true);
       }
@@ -468,11 +469,15 @@ function AutosComponent() {
                       className="input-autos"
                     />
                     <Form.Control
-                      name="kilometraje"
-                      type="text"
-                      placeholder="Kilometros"
-                      onChange={handleInputChange}
-                      className="input-autos"
+                        name="kilometraje"
+                        type="number"
+                        placeholder="Kilometros"
+                        onChange={handleInputChange}
+                        className="input-autos"
+                        min="1"
+                        onInput={(event) => {
+                            event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                        }}
                     />
                   </>
                 }
@@ -532,7 +537,7 @@ function AutosComponent() {
                               handleSave={() =>
                                 handleMaintenanceRequest(
                                   auto.id_transporte,
-                                  auto,
+                                  auto
                                 )
                               }
                               content={
@@ -559,7 +564,7 @@ function AutosComponent() {
                               onClick={() =>
                                 handleMaintenanceRequest(
                                   auto.id_transporte,
-                                  auto,
+                                  auto
                                 )
                               }
                             />
@@ -576,7 +581,285 @@ function AutosComponent() {
                               handleSave={async () => {
                                 const a = await handleUpdateAuto(
                                   autoModal,
-                                  auto,
+                                  auto
+                                );
+                                setAutoModal(null);
+                              }}
+                              showDeleteButton={true}
+                              deleteFunction={() => handleDeleteAuto(auto)}
+                              wide="100rem"
+                              content={
+                                <>
+                                  <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                      <Tooltip
+                                        style={{ fontSize: "100%" }}
+                                        id="tooltip-marca"
+                                      >
+                                        Marca del vehículo
+                                      </Tooltip>
+                                    }
+                                  >
+                                    <Form.Control
+                                      name="marca"
+                                      type="text"
+                                      defaultValue={auto.marca}
+                                      onChange={handleInputChange}
+                                      className="input-autos"
+                                    />
+                                  </OverlayTrigger>
+                                  <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                      <Tooltip
+                                        style={{ fontSize: "100%" }}
+                                        id="tooltip-modelo"
+                                      >
+                                        Modelo del vehículo
+                                      </Tooltip>
+                                    }
+                                  >
+                                    <Form.Control
+                                      name="modelo"
+                                      type="text"
+                                      defaultValue={auto.modelo}
+                                      onChange={handleInputChange}
+                                      className="input-autos"
+                                    />
+                                  </OverlayTrigger>
+                                  <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                      <Tooltip
+                                        style={{ fontSize: "100%" }}
+                                        id="tooltip-patente"
+                                      >
+                                        Patente del vehículo
+                                      </Tooltip>
+                                    }
+                                  >
+                                    <Form.Control
+                                      name="patente"
+                                      type="text"
+                                      defaultValue={auto.patente}
+                                      onChange={handleInputChange}
+                                      className="input-autos"
+                                    />
+                                  </OverlayTrigger>
+                                  <OverlayTrigger
+                                        placement="top"
+                                        overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-kilometraje">Kilometraje del vehículo</Tooltip>}
+                                    >
+                                        <Form.Control
+                                            name="kilometraje"
+                                            type="number"
+                                            placeholder="Kilometros"
+                                            onChange={handleInputChange}
+                                            defaultValue={auto.kilometraje}
+                                            className="input-autos"
+                                            min="1"
+                                            onInput={(event) => {
+                                                event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                                            }}
+                                        />
+                                    </OverlayTrigger>
+                                </>
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  }
+                />
+              );
+            })
+          ) : (
+            <p style={{ marginLeft: "7rem", marginTop: "1rem" }}>
+              No hay vehiculos disponibles.
+            </p>
+          )}
+        </div>
+      </div>
+      <Popup
+        show={showPopup}
+        setShow={setShowPopup}
+        message={popupMessage}
+        title={popupTitle}
+      />
+    </div>
+  );
+  return (
+    <div>
+      <FullNavbar selectedPage="Autos" />
+      <div className="margen-arriba">
+        <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
+          <Breadcrumb.Item href="/vehiculos">Vehículos</Breadcrumb.Item>
+          <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
+        </Breadcrumb>
+        <SearchBar
+          onSearchChange={handleSearchChange}
+          onOrderChange={setOrderCriteria}
+          filters={filters}
+        />
+        <div className="auto-list">
+          {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
+            <div className="auto-modal">
+              <Modal
+                title="Nuevo Vehículo"
+                handleSave={handleCreateAuto}
+                openButtonWidth="15"
+                openButtonText="Añadir un vehiculo nuevo"
+                showPopup={isPopupVisible}
+                popupTitle={popupData.title}
+                popupMessage={popupData.message}
+                content={
+                  <>
+                    <UploadImage
+                      wide="13"
+                      titulo="Imagen del Producto"
+                      onFileChange={handleFileChange}
+                      defaultImage={defaultImage}
+                    />
+                    <Form.Control
+                      name="marca"
+                      type="text"
+                      placeholder="Marca"
+                      onChange={handleInputChange}
+                      className="input-autos"
+                    />
+                    <Form.Control
+                      name="modelo"
+                      type="text"
+                      placeholder="Modelo"
+                      onChange={handleInputChange}
+                      className="input-autos"
+                    />
+                    <Form.Control
+                      name="patente"
+                      type="text"
+                      placeholder="Patente"
+                      onChange={handleInputChange}
+                      className="input-autos"
+                    />
+                    <Form.Control
+                      name="kilometraje"
+                      type="number"
+                      placeholder="Kilometros"
+                      onChange={handleInputChange}
+                      className="input-autos"
+                      min="1"
+                      onInput={(event) => {
+                        event.target.value = event.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                      }}
+                    />
+                  </>
+                }
+              />
+            </div>
+          )}
+          {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
+            sortedAutos.map((auto) => {
+              const maintenance = maintenanceStatus[auto.id_transporte] || {};
+              const cardStyle = maintenance.isMaintained
+                ? { backgroundColor: "lightgray" }
+                : {};
+              const imageStyle = maintenance.isMaintained
+                ? { filter: "grayscale(100%)" }
+                : {};
+              return (
+                <GenericCard
+                  key={auto.id_transporte}
+                  foto={auto.imagen}
+                  titulo={
+                    <>
+                      <strong>Marca:</strong> {auto.marca} -{" "}
+                      <strong>Modelo:</strong> {auto.modelo}
+                    </>
+                  }
+                  descrip1={
+                    <>
+                      <strong>Patente:</strong> {auto.patente}
+                    </>
+                  }
+                  descrip2={
+                    <>
+                      <strong>Kilometraje:</strong> {auto.kilometraje} km
+                    </>
+                  }
+                  descrip3={
+                    auto.descripcion_mantenimiento !== "" && (
+                      <>
+                        <strong>Mantenimiento:</strong>{" "}
+                        {auto.descripcion_mantenimiento}
+                      </>
+                    )
+                  }
+                  cardStyle={cardStyle}
+                  imageStyle={imageStyle}
+                  children={
+                    <>
+                      <div>
+                        <div>
+                          {!maintenance.isMaintained ? (
+                            <Modal
+                              buttonTextColor="black"
+                              buttonColor="#D9D9D9"
+                              title="Solicitar Mantenimiento"
+                              openButtonWidth="15"
+                              openButtonText="Solicitar Mantenimiento"
+                              handleSave={() =>
+                                handleMaintenanceRequest(
+                                  auto.id_transporte,
+                                  auto
+                                )
+                              }
+                              content={
+                                <Form.Control
+                                  as="textarea"
+                                  rows={3}
+                                  defaultValue={description}
+                                  onChange={(e) =>
+                                    setDescription(e.target.value)
+                                  }
+                                  placeholder="Descripción del mantenimiento"
+                                />
+                              }
+                            />
+                          ) : (
+                            <SendButton
+                              wide="15"
+                              text={
+                                maintenance.buttonText ||
+                                "Mantenimiento realizado"
+                              }
+                              backcolor={maintenance.buttonColor || "green"}
+                              letercolor="white"
+                              onClick={() =>
+                                handleMaintenanceRequest(
+                                  auto.id_transporte,
+                                  auto
+                                )
+                              }
+                            />
+                          )}
+                        </div>
+                        <div style={{ marginTop: "1rem", marginRight: "1rem" }}>
+                          {(!obra.id_tipousuario ||
+                            obra.id_tipousuario === 2) && (
+                            <Modal
+                              openButtonWidth="15"
+                              openButtonText="Actualizar Vehículo"
+                              title="Actualizar Vehículo"
+                              handleShowModal={() => handleEditAutoClick(auto)}
+                              handleSave={async () => {
+                                const a = await handleUpdateAuto(
+                                  autoModal,
+                                  auto
                                 );
                                 setAutoModal(null);
                               }}
@@ -655,10 +938,18 @@ function AutosComponent() {
                                   >
                                     <Form.Control
                                       name="kilometraje"
-                                      type="text"
-                                      defaultValue={auto.kilometraje}
+                                      type="number"
+                                      placeholder="Kilometros"
                                       onChange={handleInputChange}
                                       className="input-autos"
+                                      min="1"
+                                      onInput={(event) => {
+                                        event.target.value =
+                                          event.target.value.replace(
+                                            /[^0-9]/g,
+                                            ""
+                                          );
+                                      }}
                                     />
                                   </OverlayTrigger>
                                 </>
@@ -687,139 +978,6 @@ function AutosComponent() {
       />
     </div>
   );
-    return (
-        <div>
-            <FullNavbar selectedPage='Autos' />
-            <div className='margen-arriba'>
-                <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
-                    <Breadcrumb.Item href="/vehiculos">Vehículos</Breadcrumb.Item>
-                    <Breadcrumb.Item active>{currentObra}</Breadcrumb.Item>
-                </Breadcrumb>
-                <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                <div className='auto-list'>
-                    {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                        <div className="auto-modal">
-                            <Modal title='Nuevo Vehículo' handleSave={handleCreateAuto} openButtonWidth='15' openButtonText='Añadir un vehiculo nuevo' 
-                            showPopup={isPopupVisible} popupTitle={popupData.title} popupMessage={popupData.message} content={
-                                <>
-                                    <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage} />
-                                    <Form.Control name="marca" type="text" placeholder="Marca" onChange={handleInputChange} className="input-autos" />
-                                    <Form.Control name="modelo" type="text" placeholder="Modelo" onChange={handleInputChange} className="input-autos" />
-                                    <Form.Control name="patente" type="text" placeholder="Patente" onChange={handleInputChange} className="input-autos" />
-                                    <Form.Control
-                                        name="kilometraje"
-                                        type="number"
-                                        placeholder="Kilometros"
-                                        onChange={handleInputChange}
-                                        className="input-autos"
-                                        min="1"
-                                        onInput={(event) => {
-                                            event.target.value = event.target.value.replace(/[^0-9]/g, '');
-                                        }}
-                                    />
-                                </>
-                            } />
-                        </div>
-                    )}
-                    {Array.isArray(sortedAutos) && sortedAutos.length > 0 ? (
-                        sortedAutos.map(auto => {
-                            const maintenance = maintenanceStatus[auto.id_transporte] || {};
-                            const cardStyle = maintenance.isMaintained ? { backgroundColor: 'lightgray' } : {};
-                            const imageStyle = maintenance.isMaintained ? { filter: 'grayscale(100%)' } : {};
-                            return (
-                                <GenericCard
-                                    key={auto.id_transporte}
-                                    foto={auto.imagen}
-                                    titulo={<><strong>Marca:</strong> {auto.marca} - <strong>Modelo:</strong> {auto.modelo}</>}
-                                    descrip1={<><strong>Patente:</strong> {auto.patente}</>}
-                                    descrip2={<><strong>Kilometraje:</strong> {auto.kilometraje} km</>}
-                                    descrip3={auto.descripcion_mantenimiento !== '' && (<><strong>Mantenimiento:</strong> {auto.descripcion_mantenimiento}</>)}
-                                    cardStyle={cardStyle}
-                                    imageStyle={imageStyle}
-                                    children={
-                                        <>
-                                            <div>
-                                                <div>
-                                                    {!maintenance.isMaintained ? (
-                                                        <Modal buttonTextColor="black" buttonColor="#D9D9D9" title='Solicitar Mantenimiento' openButtonWidth='15' openButtonText='Solicitar Mantenimiento' handleSave={() => handleMaintenanceRequest(auto.id_transporte, auto)}
-                                                        content={
-                                                                <Form.Control
-                                                                    as="textarea"
-                                                                    rows={3}
-                                                                    defaultValue={description}
-                                                                    onChange={(e) => setDescription(e.target.value)}
-                                                                    placeholder="Descripción del mantenimiento"
-                                                                />
-                                                            } />
-                                                    ) : (
-                                                        <SendButton
-                                                            wide='15'
-                                                            text={maintenance.buttonText || 'Mantenimiento realizado'}
-                                                            backcolor={maintenance.buttonColor || 'green'}
-                                                            letercolor='white'
-                                                            onClick={() => handleMaintenanceRequest(auto.id_transporte, auto)}
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div style={{ marginTop: "1rem", marginRight: "1rem" }}>
-                                                    {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                                                        <Modal openButtonWidth='15' openButtonText='Actualizar Vehículo' title='Actualizar Vehículo' handleShowModal={() => handleEditAutoClick(auto)} handleSave={async () => {
-                                                            const a = await handleUpdateAuto(autoModal, auto); setAutoModal(null);
-                                                        }} showDeleteButton={true} deleteFunction={() => handleDeleteAuto(auto)} wide='100rem' 
-                                                        content={
-                                                            <>
-                                                                <OverlayTrigger
-                                                                    placement="top"
-                                                                    overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-marca">Marca del vehículo</Tooltip>}
-                                                                >
-                                                                    <Form.Control name="marca" type="text" defaultValue={auto.marca} onChange={handleInputChange} className="input-autos" />
-                                                                </OverlayTrigger>
-                                                                <OverlayTrigger
-                                                                    placement="top"
-                                                                    overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-modelo">Modelo del vehículo</Tooltip>}
-                                                                >
-                                                                    <Form.Control name="modelo" type="text" defaultValue={auto.modelo} onChange={handleInputChange} className="input-autos" />
-                                                                </OverlayTrigger>
-                                                                <OverlayTrigger
-                                                                    placement="top"
-                                                                    overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-patente">Patente del vehículo</Tooltip>}
-                                                                >
-                                                                    <Form.Control name="patente" type="text" defaultValue={auto.patente} onChange={handleInputChange} className="input-autos" />
-                                                                </OverlayTrigger>
-                                                                <OverlayTrigger
-                                                                    placement="top"
-                                                                    overlay={<Tooltip style={{ fontSize: '100%' }} id="tooltip-kilometraje">Kilometraje del vehículo</Tooltip>}
-                                                                >
-                                                                    <Form.Control
-                                                                        name="kilometraje"
-                                                                        type="number"
-                                                                        placeholder="Kilometros"
-                                                                        onChange={handleInputChange}
-                                                                        className="input-autos"
-                                                                        min="1"
-                                                                        onInput={(event) => {
-                                                                            event.target.value = event.target.value.replace(/[^0-9]/g, '');
-                                                                        }}
-                                                                    />
-                                                                </OverlayTrigger>
-                                                            </>
-                                                        } />
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </>
-                                    }
-                                />
-                            );
-                        })
-                    ) : (
-                        <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay vehiculos disponibles.</p>
-                    )}
-                </div>
-            </div>
-            <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
-        </div>
-    );
 }
 
 export default AutosComponent;
