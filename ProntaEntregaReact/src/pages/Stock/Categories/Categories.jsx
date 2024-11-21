@@ -265,6 +265,11 @@ function Categories() {
                         onFileChange={handleFileChange}
                         defaultImage={defaultImage}
                       />
+                      <Form.Label
+                        className="font-rubik"
+                      >
+                        Nombre de la categoría:
+                      </Form.Label>
                       <Form.Control
                         name="nombre"
                         type="text"
@@ -276,7 +281,7 @@ function Categories() {
                           backgroundColor: "#F5F5F5",
                           boxShadow:
                             "0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)",
-                          marginTop: "1rem",
+                          marginTop: "0.2rem", marginBottom: "0.7rem"
                         }}
                       />
                       <Form.Label
@@ -289,6 +294,11 @@ function Categories() {
                       >
                         {errors.nombre}
                       </Form.Label>
+                      <Form.Label
+                        className="font-rubik"
+                      >
+                        Descripción:
+                      </Form.Label>
                       <Form.Control
                         name="descripcion"
                         type="text"
@@ -300,7 +310,7 @@ function Categories() {
                           backgroundColor: "#F5F5F5",
                           boxShadow:
                             "0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)",
-                          marginTop: "1rem",
+                          marginTop: "0.2rem"
                         }}
                       />
                       <Form.Label
