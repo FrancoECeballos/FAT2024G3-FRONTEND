@@ -1,10 +1,10 @@
 import React from "react";
 import "./selectable_button.scss";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const SelectableButton = ({ texto, link, selected, locationStore }) => {
   const navigate = useNavigate();
-  
+
   const handleClick = (event) => {
     event.preventDefault();
     if (locationStore) {

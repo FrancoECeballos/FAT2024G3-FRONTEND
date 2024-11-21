@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { Container, Row, Col } from 'react-bootstrap';
-import './Main.scss';
-import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
-import NotificationListingCard from '../../components/cards/notification_listing_card/NotificationListingCard';
-import OfertaListingCard from '../../components/cards/oferta_listing_card/OfertaListingCard';
-import PedidoListingCard from '../../components/cards/pedido_listing_card/PedidoListingCard';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { Container, Row, Col } from "react-bootstrap";
+import "./Main.scss";
+import FullNavbar from "../../components/navbar/full_navbar/FullNavbar";
+import NotificationListingCard from "../../components/cards/notification_listing_card/NotificationListingCard";
+import OfertaListingCard from "../../components/cards/oferta_listing_card/OfertaListingCard";
+import PedidoListingCard from "../../components/cards/pedido_listing_card/PedidoListingCard";
 
 function Main() {
   const navigate = useNavigate();
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
 
   useEffect(() => {
     if (!token) {
-      navigate('/landing');
+      navigate("/landing");
       return;
     }
   }, [token, navigate]);
@@ -30,8 +30,7 @@ function Main() {
                 <NotificationListingCard />
               </div>
             </Col>
-            <Col xs={12} md={4} className="d-flex mb-3 mb-md-0">
-            </Col>
+            <Col xs={12} md={4} className="d-flex mb-3 mb-md-0"></Col>
             <Col xs={12} md={4}>
               <Row className="h-50 d-flex mb-3 mb-md-0">
                 <Col>

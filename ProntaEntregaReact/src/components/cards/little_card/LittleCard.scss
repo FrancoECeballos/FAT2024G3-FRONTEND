@@ -2,7 +2,7 @@
   width: 18rem;
   flex: 0 0 auto;
   border-style: solid;
-  box-shadow: 0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3);
+  box-shadow: 0.1rem 0.3rem 0.2rem rgba(0, 0, 0, 0.3);
   transition: transform 0.2s;
 
   &.selected {
@@ -11,7 +11,7 @@
   }
 
   &.not-selected {
-    border-color: #ECECEC;
+    border-color: #ececec;
     border-width: 1px;
   }
 
@@ -50,7 +50,7 @@
   }
 }
 
-.scroll-down{
+.scroll-down {
   overflow-y: scroll;
   overflow-x: hidden;
 }

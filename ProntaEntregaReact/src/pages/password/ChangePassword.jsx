@@ -1,13 +1,13 @@
-import React from 'react';
-import BaseNavbar from '../../components/navbar/base_navbar/BaseNavbar.jsx';
-import ChangePasswordCard from '../../components/change_password/change_password_card/ChangePasswordCard.jsx';
+import React from "react";
+import BaseNavbar from "../../components/navbar/base_navbar/BaseNavbar.jsx";
+import ChangePasswordCard from "../../components/change_password/change_password_card/ChangePasswordCard.jsx";
 
-function ChangePassword (){
-    return (
-        <div style={{backgroundColor: '#ECECEC'}}>
-            <BaseNavbar />
-            <ChangePasswordCard />
-        </div>
-    );
+function ChangePassword() {
+  return (
+    <div style={{ backgroundColor: "#ECECEC" }}>
+      <BaseNavbar />
+      <ChangePasswordCard />
+    </div>
+  );
 }
 export default ChangePassword;
