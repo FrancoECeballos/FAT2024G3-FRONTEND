@@ -371,7 +371,7 @@ const RegisterCard = () => {
             />
             <Form>
               <Row>
-                <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
+                <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6} className="borderright">
                   <Form.Group
                     className="mb-2"
                     style={{ maxHeight: "6.2979rem" }}
@@ -443,6 +443,33 @@ const RegisterCard = () => {
                     />
                     <Form.Label
                       id="errorNombreusuario"
+                      className="font-rubik"
+                      style={{ fontSize: "0.8rem", color: "red" }}
+                    >
+                      &nbsp;
+                    </Form.Label>
+                  </Form.Group>
+
+                  <Form.Group
+                    className="mb-2"
+                    style={{ maxHeight: "6.2979rem" }}
+                  >
+                    <Form.Label
+                      className="font-rubik"
+                      style={{ fontSize: "0.8rem" }}
+                    >
+                      Email (*)
+                    </Form.Label>
+                    <Form.Control
+                      style={{ height: "2.4rem" }}
+                      name="email"
+                      type="email"
+                      onBlur={handleInputChange}
+                      onChange={handleInputChange}
+                      placeholder="Ingrese su email"
+                    />
+                    <Form.Label
+                      id="errorEmail"
                       className="font-rubik"
                       style={{ fontSize: "0.8rem", color: "red" }}
                     >
@@ -543,7 +570,8 @@ const RegisterCard = () => {
                       &nbsp;
                     </Form.Label>
                   </Form.Group>
-
+                </Col>
+                <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
                   <Form.Group
                     className="mb-2"
                     style={{ maxHeight: "6.2979rem" }}
@@ -571,8 +599,6 @@ const RegisterCard = () => {
                       &nbsp;
                     </Form.Label>
                   </Form.Group>
-                </Col>
-                <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
                   <Form.Group
                     className="mb-2"
                     style={{ maxHeight: "6.2979rem" }}
@@ -620,33 +646,6 @@ const RegisterCard = () => {
                     />
                     <Form.Label
                       id="errorNumero"
-                      className="font-rubik"
-                      style={{ fontSize: "0.8rem", color: "red" }}
-                    >
-                      &nbsp;
-                    </Form.Label>
-                  </Form.Group>
-
-                  <Form.Group
-                    className="mb-2"
-                    style={{ maxHeight: "6.2979rem" }}
-                  >
-                    <Form.Label
-                      className="font-rubik"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      Email (*)
-                    </Form.Label>
-                    <Form.Control
-                      style={{ height: "2.4rem" }}
-                      name="email"
-                      type="email"
-                      onBlur={handleInputChange}
-                      onChange={handleInputChange}
-                      placeholder="Ingrese su email"
-                    />
-                    <Form.Label
-                      id="errorEmail"
                       className="font-rubik"
                       style={{ fontSize: "0.8rem", color: "red" }}
                     >
@@ -750,9 +749,8 @@ const RegisterCard = () => {
                 onClick={handleSendData}
                 text="Registrar"
                 wide="10"
-                backcolor="#02005D"
+                backcolor="#3e4692"
                 letercolor="white"
-                radius="0.2"
                 shadow="none"
               />
             </div>

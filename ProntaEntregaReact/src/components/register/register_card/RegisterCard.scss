@@ -13,6 +13,11 @@
   @media (max-width: 800px) {
     width: 100%;
   }
+  @media (min-width: 992px) {
+    .borderright{
+      border-right: 2px solid #e7e7e7;
+    }
+  }
 }
 
 .register-container {

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importa los íconos
+import { Form, Card, Container } from "react-bootstrap";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import GenericAlert from "../../alerts/generic_alert/GenericAlert.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./LoginCard.scss";
+import SendButton from "../../buttons/send_button/send_button.jsx"
 
 import { useNavigate } from "react-router-dom";
 import postData from "../../../functions/postData.jsx";
@@ -19,7 +17,7 @@ const LoginCard = () => {
     user: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false); // Nuevo estado para mostrar/ocultar contraseña
+  const [showPassword, setShowPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -81,7 +79,6 @@ const LoginCard = () => {
               </Form.Label>
               <Form.Control
                 style={{ width: "100%", marginLeft: "0" }}
-                className="input-field"
                 name="user"
                 type="text"
                 onChange={handleInputChange}
@@ -99,7 +96,6 @@ const LoginCard = () => {
               >
                 <Form.Control
                   style={{ width: "100%", marginLeft: "0" }}
-                  className="input-field"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   onChange={handleInputChange}
@@ -131,14 +127,15 @@ const LoginCard = () => {
             </Form.Group>
 
             <div className="d-flex justify-content-center">
-              <Button
+              <SendButton
                 className="login-btn"
-                variant="primary"
                 type="submit"
                 onClick={handleLogin}
-              >
-                Ingresar
-              </Button>
+                text="Ingresar"
+                backcolor="#3e4692"
+                letercolor="white"
+                wide="17"
+              />
             </div>
           </Form>
           <div className="text-center mt-4">
