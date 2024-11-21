@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Card, Carousel } from "react-bootstrap";
-import Cookies from 'js-cookie';
-import Loading from '../../loading/loading';
-import fetchUser from '../../../functions/fetchUser';
+import Cookies from "js-cookie";
+import Loading from "../../loading/loading";
+import fetchUser from "../../../functions/fetchUser";
 import fetchData from "../../../functions/fetchData";
-import './OfertaListingCard.scss';
+import "./OfertaListingCard.scss";
 
 function OfertaListingCard() {
   const [user, setUser] = useState({});
   const [ofertas, setOfertas] = useState([]);
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,11 +18,14 @@ function OfertaListingCard() {
         const userData = await fetchUser();
         setUser(userData);
 
-        const ofertas = await fetchData(`/GetOfertasRecientes/${userData.id_usuario}`, token);
+        const ofertas = await fetchData(
+          `/GetOfertasRecientes/${userData.id_usuario}`,
+          token,
+        );
         setOfertas(ofertas);
         console.log(ofertas);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -33,19 +36,24 @@ function OfertaListingCard() {
   return (
     <div>
       {isLoading ? (
-        <Card className="ol-card w-100 h-100 centered" style={{ minWidth: '100%', minHeight: '100%' }}>
+        <Card
+          className="ol-card w-100 h-100 centered"
+          style={{ minWidth: "100%", minHeight: "100%" }}
+        >
           <Loading />
         </Card>
       ) : (
         <Card className="ol-card w-100 h-100 centered">
-          <Card.Title>Ofertas Recientes <hr /></Card.Title>
+          <Card.Title>
+            Ofertas Recientes <hr />
+          </Card.Title>
           <Card.Body>
             <Carousel indicators={false}>
               {Array.isArray(ofertas) && ofertas.length > 0 ? (
                 ofertas.map((oferta, index) => (
                   <Carousel.Item key={index}>
                     <div className="carousel-item-content">
-                      <img 
+                      <img
                         src={oferta.id_producto.imagen}
                         alt=""
                         className="carousel-image"
@@ -53,7 +61,9 @@ function OfertaListingCard() {
                       <div className="ol-derecha">
                         <div className="text-content">
                           <Card.Title>{oferta.id_obra.nombre}</Card.Title>
-                          <Card.Text>{oferta.id_producto.descripcion}</Card.Text>
+                          <Card.Text>
+                            {oferta.id_producto.descripcion}
+                          </Card.Text>
                           <Card.Text>{oferta.fechavencimiento}</Card.Text>
                         </div>
                       </div>

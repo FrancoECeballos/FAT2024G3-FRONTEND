@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Toast, ToastContainer, ProgressBar } from 'react-bootstrap';
-import './Popup.scss';
+import React, { useState, useEffect } from "react";
+import { Toast, ToastContainer, ProgressBar } from "react-bootstrap";
+import "./Popup.scss";
 
 function Popup({ show, setShow, message, title }) {
   const [progress, setProgress] = useState(100);
@@ -8,7 +8,7 @@ function Popup({ show, setShow, message, title }) {
   useEffect(() => {
     if (show) {
       let interval = setInterval(() => {
-        setProgress(prev => (prev > 0 ? prev - 1 : 0));
+        setProgress((prev) => (prev > 0 ? prev - 1 : 0));
       }, 30);
 
       const timer = setTimeout(() => setShow(false), 3000);
@@ -30,11 +30,7 @@ function Popup({ show, setShow, message, title }) {
         </Toast.Header>
         <Toast.Body>
           {message}
-          <ProgressBar
-            now={progress}
-            className="toast-progress-bar"
-            animated
-          />
+          <ProgressBar now={progress} className="toast-progress-bar" animated />
         </Toast.Body>
       </Toast>
     </ToastContainer>

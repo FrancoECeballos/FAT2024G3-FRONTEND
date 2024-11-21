@@ -1,43 +1,42 @@
 .notification-card {
-    width: 14rem;
-    min-height: 1rem;
-    flex: 0 0 auto;
-    margin-top: 1rem;
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-    cursor: pointer;
-  
-    &:hover {
-      transform: translateY(-0.25rem);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      background-color: #e2e6ea;
-    }
-  
-    &:focus,
-    &:active {
-      background-color: #f8f9fa !important;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      outline: none;
-      border-color: #e9ecef;
-    }
-  
-    .notification-title {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #343a40;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  
-    .notification-description {
-      font-size: 0.9rem;
-      color: #6c757d;
-      white-space: normal;
-      overflow-wrap: break-word;
-    }
+  width: 14rem;
+  min-height: 1rem;
+  flex: 0 0 auto;
+  margin-top: 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background-color: #e2e6ea;
   }
-  
+
+  &:focus,
+  &:active {
+    background-color: #f8f9fa !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    outline: none;
+    border-color: #e9ecef;
+  }
+
+  .notification-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #343a40;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .notification-description {
+    font-size: 0.9rem;
+    color: #6c757d;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+}
