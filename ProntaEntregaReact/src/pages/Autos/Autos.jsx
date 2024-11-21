@@ -607,89 +607,41 @@ function AutosComponent() {
                               wide="100rem"
                               content={
                                 <>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                      <Tooltip
-                                        style={{ fontSize: "100%" }}
-                                        id="tooltip-marca"
-                                      >
-                                        Marca del vehículo
-                                      </Tooltip>
-                                    }
-                                  >
-                                    <Form.Control
-                                      name="marca"
-                                      type="text"
-                                      defaultValue={auto.marca}
-                                      onChange={handleInputChange}
-                                      className="input-autos"
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                      <Tooltip
-                                        style={{ fontSize: "100%" }}
-                                        id="tooltip-modelo"
-                                      >
-                                        Modelo del vehículo
-                                      </Tooltip>
-                                    }
-                                  >
-                                    <Form.Control
-                                      name="modelo"
-                                      type="text"
-                                      defaultValue={auto.modelo}
-                                      onChange={handleInputChange}
-                                      className="input-autos"
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                      <Tooltip
-                                        style={{ fontSize: "100%" }}
-                                        id="tooltip-patente"
-                                      >
-                                        Patente del vehículo
-                                      </Tooltip>
-                                    }
-                                  >
-                                    <Form.Control
-                                      name="patente"
-                                      type="text"
-                                      defaultValue={auto.patente}
-                                      onChange={handleInputChange}
-                                      className="input-autos"
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                      <Tooltip
-                                        style={{ fontSize: "100%" }}
-                                        id="tooltip-kilometraje"
-                                      >
-                                        Kilometraje del vehículo
-                                      </Tooltip>
-                                    }
-                                  >
-                                    <Form.Control
-                                      name="kilometraje"
-                                      type="number"
-                                      placeholder="Kilometros"
-                                      onChange={handleInputChange}
-                                      defaultValue={auto.kilometraje}
-                                      className="input-autos"
-                                      min="0"
-                                      onBeforeInput={(event) => {
-                                        if (!/^[0-9]*$/.test(event.data)) {
-                                          event.preventDefault();
-                                        }
-                                      }}
-                                    />
-                                  </OverlayTrigger>
+                                  <Form.Control
+                                    name="marca"
+                                    type="text"
+                                    defaultValue={auto.marca}
+                                    onChange={handleInputChange}
+                                    className="input-autos"
+                                  />
+                                  <Form.Control
+                                    name="modelo"
+                                    type="text"
+                                    defaultValue={auto.modelo}
+                                    onChange={handleInputChange}
+                                    className="input-autos"
+                                  />
+                                  <Form.Control
+                                    name="patente"
+                                    type="text"
+                                    defaultValue={auto.patente}
+                                    onChange={handleInputChange}
+                                    className="input-autos"
+                                  />
+                                  <Form.Control
+                                    name="kilometraje"
+                                    type="number"
+                                    placeholder="Kilometros"
+                                    onChange={handleInputChange}
+                                    defaultValue={auto.kilometraje}
+                                    className="input-autos"
+                                    min="0"
+                                    onBeforeInput={(event) => {
+                                      if (!/^[0-9]*$/.test(event.data)) {
+                                        event.preventDefault();
+                                      }
+                                    }}
+                                  />
                                 </>
                               }
                             />
