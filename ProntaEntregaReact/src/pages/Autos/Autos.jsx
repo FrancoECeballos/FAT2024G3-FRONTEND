@@ -465,28 +465,24 @@ function AutosComponent() {
                       type="text"
                       placeholder="Marca"
                       onChange={handleInputChange}
-                      className="input-autos"
                     />
                     <Form.Control
                       name="modelo"
                       type="text"
                       placeholder="Modelo"
                       onChange={handleInputChange}
-                      className="input-autos"
                     />
                     <Form.Control
                       name="patente"
                       type="text"
                       placeholder="Patente"
                       onChange={handleInputChange}
-                      className="input-autos"
                     />
                     <Form.Control
                       name="kilometraje"
                       type="number"
                       placeholder="Kilometros"
                       onChange={handleInputChange}
-                      className="input-autos"
                       min="0"
                       onBeforeInput={(event) => {
                         if (!/^[0-9]*$/.test(event.data)) {
@@ -612,21 +608,18 @@ function AutosComponent() {
                                     type="text"
                                     defaultValue={auto.marca}
                                     onChange={handleInputChange}
-                                    className="input-autos"
                                   />
                                   <Form.Control
                                     name="modelo"
                                     type="text"
                                     defaultValue={auto.modelo}
                                     onChange={handleInputChange}
-                                    className="input-autos"
                                   />
                                   <Form.Control
                                     name="patente"
                                     type="text"
                                     defaultValue={auto.patente}
                                     onChange={handleInputChange}
-                                    className="input-autos"
                                   />
                                   <Form.Control
                                     name="kilometraje"
@@ -634,7 +627,6 @@ function AutosComponent() {
                                     placeholder="Kilometros"
                                     onChange={handleInputChange}
                                     defaultValue={auto.kilometraje}
-                                    className="input-autos"
                                     min="0"
                                     onBeforeInput={(event) => {
                                       if (!/^[0-9]*$/.test(event.data)) {
