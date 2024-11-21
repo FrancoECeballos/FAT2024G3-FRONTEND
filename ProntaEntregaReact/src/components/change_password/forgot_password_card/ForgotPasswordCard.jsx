@@ -14,7 +14,7 @@ const ForgotPasswordCard = () => {
   return (
     <Container
       style={{ display: "flex" }}
-      className="d-flex justify-content-center align-items-center vh-100 forgot-password-container"
+      className="d-flex justify-content-center align-items-center forgot-password-container"
     >
       <Card
         style={{
