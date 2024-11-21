@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
-import GenericTable from '../../components/tables/generic_table/GenericTable.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Loading from '../../components/loading/loading.jsx';
+import BackButton from '../../components/buttons/back_button/back_button.jsx'
 
 import fetchUser from '../../functions/fetchUser.jsx';
 import fetchData from '../../functions/fetchData.jsx';
@@ -27,7 +27,7 @@ const InformeOfertas = () => {
 
             if (!userData) {
                 navigate('/login');
-            } 
+            }
             if (!userData.is_superuser) {
                 navigate('/oferta');
             }
@@ -78,21 +78,13 @@ const InformeOfertas = () => {
 
     return (
         <div>
-            <FullNavbar selectedPage='/Ofertas'/>
-            <div>
-                <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip style={{ fontSize: '100%' }}>Volver a Ofertas</Tooltip>}
-                >
-                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", color: "#858585", marginTop: '1rem', marginLeft: '1rem', transition: "transform 0.3s" }} 
-                        icon="line-md:chevron-left" onClick={() => navigate('/oferta')}/>
-                </OverlayTrigger>
-            </div>
-            <h1>Esta es una lista de todas las Ofertas</h1>
+            <FullNavbar selectedPage='/Ofertas' />
+            <BackButton />
+            <h1 style={{ marginTop: "1rem" }}>Esta es una lista de todas las Ofertas</h1>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <SearchBar 
-                    onSearchChange={handleSearchChange} 
-                    onOrderChange={handleOrderChange} 
+                <SearchBar
+                    onSearchChange={handleSearchChange}
+                    onOrderChange={handleOrderChange}
                     filters={[
                         { type: 'id_oferta asc', label: 'ID' },
                         { type: 'id_producto.nombre asc', label: 'Orden del Producto' },
@@ -112,40 +104,40 @@ const InformeOfertas = () => {
                         <p style={{ marginTop: '1rem' }}>No hay ofertas disponibles.</p>
                     ) : (
                         <div className="table-container">
-                        <table className="generic-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Imagen</th>
-                                    <th>Producto</th>
-                                    <th>Fecha de Inicio</th>
-                                    <th>Fecha de Vencimiento</th>
-                                    <th>Obra</th>
-                                    <th>Usuario</th>
-                                    <th>Estado</th>
-                                    <th>Cantidad Ofrecida</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sortedData.map((oferta, index) => (
-                                    <tr key={oferta.id}>
-                                        <td>{oferta.id_oferta}</td>
-                                        <td><img src={oferta.id_producto.imagen} alt={oferta.id_producto.nombre} style={{ width: '50px', height: '50px' }} /></td>
-                                        <td>{oferta.id_producto.nombre}</td>
-                                        <td>{oferta.fechainicio}</td>
-                                        <td>{oferta.fechavencimiento}</td>
-                                        <td>{oferta.id_obra.nombre}</td>
-                                        <td>{`${oferta.id_usuario.nombre} ${oferta.id_usuario.apellido}`}</td>
-                                        <td>{oferta.id_estadoOferta.nombre}</td>
-                                        <td>{oferta.cantidad}</td>
+                            <table className="generic-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Imagen</th>
+                                        <th>Producto</th>
+                                        <th>Fecha de Inicio</th>
+                                        <th>Fecha de Vencimiento</th>
+                                        <th>Obra</th>
+                                        <th>Usuario</th>
+                                        <th>Estado</th>
+                                        <th>Cantidad Ofrecida</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {sortedData.map((oferta, index) => (
+                                        <tr key={oferta.id}>
+                                            <td>{oferta.id_oferta}</td>
+                                            <td><img src={oferta.id_producto.imagen} alt={oferta.id_producto.nombre} style={{ width: '50px', height: '50px' }} /></td>
+                                            <td>{oferta.id_producto.nombre}</td>
+                                            <td>{oferta.fechainicio}</td>
+                                            <td>{oferta.fechavencimiento}</td>
+                                            <td>{oferta.id_obra.nombre}</td>
+                                            <td>{`${oferta.id_usuario.nombre} ${oferta.id_usuario.apellido}`}</td>
+                                            <td>{oferta.id_estadoOferta.nombre}</td>
+                                            <td>{oferta.cantidad}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
                 </div>
-            </div> 
+            </div>
         </div>
     );
 };

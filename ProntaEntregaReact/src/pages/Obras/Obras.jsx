@@ -133,9 +133,9 @@ function Stock() {
     const validateForm = (name, value) => {
         let formErrors = { ...errors };
         let isValid = true;
-    
+
         const trimmedValue = typeof value === 'string' ? value.trim() : '';
-    
+
         if (obraForm.nombre.trim() === '') {
             isValid = false;
         }
@@ -152,7 +152,7 @@ function Stock() {
         if (isNaN(parseInt(obraForm.id_direccion.numero, 10))) {
             isValid = false;
         }
-    
+
         if (name === 'nombre') {
             if (trimmedValue === '') {
                 formErrors.nombre = 'El nombre es obligatorio';
@@ -185,7 +185,7 @@ function Stock() {
                 formErrors.numero = '';
             }
         }
-    
+
         setErrors(formErrors);
         setIsFormValid(isValid);
     };
@@ -221,11 +221,11 @@ function Stock() {
 
     const handleSaveObra = async (id = null) => {
         let id_direc = null;
-    
+
         if (typeof obraForm.id_direccion.localidad === 'object') {
             obraForm.id_direccion.localidad = obraForm.id_direccion.localidad.label;
         }
-    
+
         if (typeof obraForm.imagen === 'string') {
             try {
                 const response = await fetch(obraForm.imagen);
@@ -240,16 +240,16 @@ function Stock() {
                 return;
             }
         }
-    
+
         const direc = await fetchData('/direcciones/', token);
-    
+
         const existingDireccion = direc.find(
             (d) =>
                 d.calle === obraForm.id_direccion.calle &&
                 d.numero === obraForm.id_direccion.numero &&
                 d.localidad === obraForm.id_direccion.localidad
         );
-    
+
         if (!existingDireccion) {
             const url = '/crear_direccion/';
             const body = obraForm.id_direccion;
@@ -266,15 +266,15 @@ function Stock() {
         } else {
             id_direc = existingDireccion.id_direccion;
         }
-    
+
         const updatedObraForm = { ...obraForm, id_direccion: id_direc };
         setObraForm(updatedObraForm);
-    
+
         const formDataToSend = new FormData();
         Object.entries(updatedObraForm).forEach(([key, value]) => {
             formDataToSend.append(key, value);
         });
-    
+
         try {
             if (id) {
                 await putData(`/editar_obra/${id}/`, formDataToSend, token);
@@ -295,7 +295,7 @@ function Stock() {
             setShowPopup(true);
         }
     };
-    
+
     const handleDeleteObra = async (id) => {
         try {
             await deleteData(`/DeleteObra/${id}/`, token);
@@ -316,31 +316,33 @@ function Stock() {
         <div>
             <FullNavbar />
             <div className='margen-arriba'>
-            {isLoading ? (
+                {isLoading ? (
                     <Loading />
                 ) : (
                     <>
-                            <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
-                            {isAdmin && (
-                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem'}}>
-                                    <Modal openButtonText='Crear una nueva obra' openButtonWidth='12' title='Nueva Obra' saveButtonText='Crear' 
-                                    saveButtonEnabled={isFormValid} handleSave={() => handleSaveObra()} handleShowModal={() => {setObraForm({
-                                        nombre: '',
-                                        descripcion: '',
-                                        imagen: defaultImage,
-                                        id_direccion: {
-                                            localidad: '',
-                                            calle: '',
-                                            numero: '',
-                                        },
-                                    }); setIsFormValid(false);}} content={
+                        <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
+                        {isAdmin && (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
+                                <Modal openButtonText='Crear una nueva obra' openButtonWidth='12' title='Nueva Obra' saveButtonText='Crear'
+                                    saveButtonEnabled={isFormValid} handleSave={() => handleSaveObra()} handleShowModal={() => {
+                                        setObraForm({
+                                            nombre: '',
+                                            descripcion: '',
+                                            imagen: defaultImage,
+                                            id_direccion: {
+                                                localidad: '',
+                                                calle: '',
+                                                numero: '',
+                                            },
+                                        }); setIsFormValid(false);
+                                    }} content={
                                         <div>
-                                            <UploadImage onFileChange={handleFileChange} defaultImage={defaultImage}/>
+                                            <UploadImage onFileChange={handleFileChange} defaultImage={defaultImage} />
                                             <Form.Label style={{ marginTop: '1rem' }}>Informació Básica:</Form.Label>
                                             <Form.Control name="nombre" type="text" placeholder='Nombre de la obra' onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
-                                            <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                                            <Form.Label id='errorNombre' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
                                             <Form.Control name="descripcion" type="text" placeholder='Descripcion de la obra' onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
-                                            <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
+                                            <Form.Label id='errorDescripcion' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
                                             <Form.Group controlId="direccion">
                                                 <Form.Label style={{ marginTop: '1rem' }}>Dirección:</Form.Label>
                                                 <SelectLocalidad
@@ -374,26 +376,26 @@ function Stock() {
                                                 />
                                                 <InputGroup>
                                                     <Form.Control
-                                                        type="text" 
-                                                        name="calle" 
-                                                        placeholder='Calle' 
-                                                        onChange={handleInputChange} 
-                                                        onBlur={handleInputChange} 
-                                                        style={{borderRadius:'0', boxShadow:'none'}}
+                                                        type="text"
+                                                        name="calle"
+                                                        placeholder='Calle'
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleInputChange}
+                                                        style={{ borderRadius: '0', boxShadow: 'none' }}
                                                     />
                                                     <Form.Control
-                                                        type="number" 
-                                                        name="numero" 
-                                                        placeholder='Número' 
-                                                        onChange={handleInputChange} 
-                                                        onBlur={handleInputChange} 
-                                                        style={{borderRadius:'0', boxShadow:'none'}}
+                                                        type="number"
+                                                        name="numero"
+                                                        placeholder='Número'
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleInputChange}
+                                                        style={{ borderRadius: '0', boxShadow: 'none' }}
                                                     />
                                                 </InputGroup>
                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                                <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
-                                                    {errors.localidad}
-                                                </Form.Label>
+                                                    <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                        {errors.localidad}
+                                                    </Form.Label>
                                                     <Form.Label id='errorCalle' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
                                                         {errors.calle}
                                                     </Form.Label>
@@ -404,137 +406,138 @@ function Stock() {
                                             </Form.Group>
                                         </div>
                                     }></Modal>
-                                </div>
-                            )}
-                            {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
-                                sortedObras.map(obra => (
-                                    <GenericCard
-                                        key={obra.id_obra}
-                                        foto={obra.imagen}
-                                        titulo={obra.nombre}
-                                        descrip1={`Usuarios Registrados: ${obra.usuarios_registrados}`}
-                                        descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
-                                        hoverable={!obra.id_tipousuario || obra.id_tipousuario === 2}
-                                        children={
-                                            <>
-                                                {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
-                                                    <Icon
-                                                        icon="line-md:edit-twotone"
-                                                        className="hoverable-icon"
-                                                        style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
-                                                        onClick={() => {
-                                                            const { imagen, ...obraWithoutImagen } = obra;
-                                                            setObraForm({ ...obraWithoutImagen });
-                                                            setIsFormValid(true);
-                                                            setErrors({
-                                                                nombre: '',
-                                                                descripcion: '',
-                                                                localidad: '',
-                                                                calle: '',
-                                                                numero: '',
-                                                            });
-                                                            setObraModal(obra.id_obra);
-                                                        }}
-                                                    />
-                                                )}
-                                                <Modal
-                                                    showButton={false}
-                                                    showModal={obraModal == obra.id_obra}
-                                                    handleShowModal={() => {
+                            </div>
+                        )}
+                        {Array.isArray(sortedObras) && sortedObras.length > 0 ? (
+                            sortedObras.map(obra => (
+                                <GenericCard
+                                    key={obra.id_obra}
+                                    foto={obra.imagen}
+                                    titulo={obra.nombre}
+                                    descrip1={`Usuarios Registrados: ${obra.usuarios_registrados}`}
+                                    descrip2={`${obra.id_direccion.localidad}, ${obra.id_direccion.calle}, ${obra.id_direccion.numero}`}
+                                    hoverable={!obra.id_tipousuario || obra.id_tipousuario === 2}
+                                    children={
+                                        <>
+                                            {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
+                                                <Icon
+                                                    icon="line-md:edit-twotone"
+                                                    className="hoverable-icon"
+                                                    style={{ width: "2.5rem", height: "2.5rem", position: "absolute", top: "1rem", right: "1rem", color: "#02005E", transition: "transform 1s" }}
+                                                    onClick={() => {
                                                         const { imagen, ...obraWithoutImagen } = obra;
-                                                        setObraForm({ ...obraWithoutImagen });}}
-                                                    handleCloseModal={() => setObraModal(null)}
-                                                    handleSave={() => handleSaveObra(obra.id_obra)}
-                                                    saveButtonText={'Guardar'}
-                                                    title={'Editar Obra'}
-                                                    saveButtonEnabled={isFormValid}
-                                                    showDeleteButton={true}
-                                                    deleteFunction={() => handleDeleteObra(obra.id_obra)}
-                                                    content={
-                                                        <>
-                                                            <UploadImage defaultImage={obra.imagen} onFileChange={handleFileChange} />
-                                                            <Form.Label style={{ marginTop: '1rem' }}>Informació Básica:</Form.Label>
-                                                            <Form.Control name="nombre" type="text" placeholder='Nombre de la obra' value={obraForm.nombre} onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
-                                                            <Form.Label id='errorNombre' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
-                                                            <Form.Control name="descripcion" type="text" placeholder='Descripcion de la obra' value={obraForm.descripcion} onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
-                                                            <Form.Label id='errorDescripcion' style={{ marginBottom:"0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
-                                                            <Form.Group controlId="direccion">
-                                                                <Form.Label style={{ marginTop: '1rem' }}>Dirección:</Form.Label>
-                                                                <SelectLocalidad
-                                                                    style={{ width: '100%' }}
-                                                                    name="localidad"
+                                                        setObraForm({ ...obraWithoutImagen });
+                                                        setIsFormValid(true);
+                                                        setErrors({
+                                                            nombre: '',
+                                                            descripcion: '',
+                                                            localidad: '',
+                                                            calle: '',
+                                                            numero: '',
+                                                        });
+                                                        setObraModal(obra.id_obra);
+                                                    }}
+                                                />
+                                            )}
+                                            <Modal
+                                                showButton={false}
+                                                showModal={obraModal == obra.id_obra}
+                                                handleShowModal={() => {
+                                                    const { imagen, ...obraWithoutImagen } = obra;
+                                                    setObraForm({ ...obraWithoutImagen });
+                                                }}
+                                                handleCloseModal={() => setObraModal(null)}
+                                                handleSave={() => handleSaveObra(obra.id_obra)}
+                                                saveButtonText={'Guardar'}
+                                                title={'Editar Obra'}
+                                                saveButtonEnabled={isFormValid}
+                                                showDeleteButton={true}
+                                                deleteFunction={() => handleDeleteObra(obra.id_obra)}
+                                                content={
+                                                    <>
+                                                        <UploadImage defaultImage={obra.imagen} onFileChange={handleFileChange} />
+                                                        <Form.Label style={{ marginTop: '1rem' }}>Informació Básica:</Form.Label>
+                                                        <Form.Control name="nombre" type="text" placeholder='Nombre de la obra' value={obraForm.nombre} onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
+                                                        <Form.Label id='errorNombre' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
+                                                        <Form.Control name="descripcion" type="text" placeholder='Descripcion de la obra' value={obraForm.descripcion} onChange={handleInputChange} onBlur={handleInputChange} className="input-obra" />
+                                                        <Form.Label id='errorDescripcion' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
+                                                        <Form.Group controlId="direccion">
+                                                            <Form.Label style={{ marginTop: '0.3rem' }}>Dirección:</Form.Label>
+                                                            <SelectLocalidad
+                                                                style={{ width: '100%', marginBottom: "1rem" }}
+                                                                name="localidad"
+                                                                type="text"
+                                                                onChange={(value) => {
+                                                                    const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                                                                    if (!isValid) {
+                                                                        handleInputChange({ target: { name: 'localidad', value: '' } });
+                                                                    } else {
+                                                                        handleInputChange({ target: { name: 'localidad', value } });
+                                                                    }
+                                                                    validateForm('localidad', value);
+                                                                }}
+                                                                onBlur={(value) => {
+                                                                    const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
+                                                                    if (!isValid) {
+                                                                        handleInputChange({ target: { name: 'localidad', value: '' } });
+                                                                    } else {
+                                                                        handleInputChange({ target: { name: 'localidad', value } });
+                                                                    }
+                                                                    validateForm('localidad', value);
+                                                                }}
+                                                                placeholder={obraForm.id_direccion.localidad || 'Ingrese la Localidad'}
+                                                                onSelect={(label) => {
+                                                                    handleInputChange({ target: { name: 'localidad', value: label } });
+                                                                    validateForm('localidad', label);
+                                                                }}
+                                                                value={obraForm.id_direccion.localidad || ''}
+                                                            />
+                                                            <InputGroup>
+                                                                <Form.Control
                                                                     type="text"
-                                                                    onChange={(value) => {
-                                                                        const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
-                                                                        if (!isValid) {
-                                                                            handleInputChange({ target: { name: 'localidad', value: '' } });
-                                                                        } else {
-                                                                            handleInputChange({ target: { name: 'localidad', value } });
-                                                                        }
-                                                                        validateForm('localidad', value);
-                                                                    }}
-                                                                    onBlur={(value) => {
-                                                                        const isValid = SelectLocalidad.Localidades.some(localidad => localidad.label === value);
-                                                                        if (!isValid) {
-                                                                            handleInputChange({ target: { name: 'localidad', value: '' } });
-                                                                        } else {
-                                                                            handleInputChange({ target: { name: 'localidad', value } });
-                                                                        }
-                                                                        validateForm('localidad', value);
-                                                                    }}
-                                                                    placeholder={obraForm.id_direccion.localidad || 'Ingrese la Localidad'}
-                                                                    onSelect={(label) => {
-                                                                        handleInputChange({ target: { name: 'localidad', value: label } });
-                                                                        validateForm('localidad', label);
-                                                                    }}
-                                                                    value={obraForm.id_direccion.localidad || ''}
+                                                                    name="calle"
+                                                                    placeholder='Calle'
+                                                                    value={obraForm.id_direccion.calle}
+                                                                    onChange={handleInputChange}
+                                                                    onBlur={handleInputChange}
+                                                                    style={{ borderRadius: '0', boxShadow: 'none' }}
                                                                 />
-                                                                <InputGroup>
-                                                                    <Form.Control
-                                                                        type="text" 
-                                                                        name="calle" 
-                                                                        placeholder='Calle' 
-                                                                        value={obraForm.id_direccion.calle} 
-                                                                        onChange={handleInputChange} 
-                                                                        onBlur={handleInputChange}
-                                                                        style={{borderRadius:'0', boxShadow:'none'}}
-                                                                    />
-                                                                    <Form.Control
-                                                                        type="number" 
-                                                                        name="numero" 
-                                                                        placeholder='Número' 
-                                                                        value={obraForm.id_direccion.numero} 
-                                                                        onChange={handleInputChange} 
-                                                                        onBlur={handleInputChange}
-                                                                        style={{borderRadius:'0', boxShadow:'none'}}
-                                                                    />
-                                                                </InputGroup>
-                                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                                <Form.Control
+                                                                    type="number"
+                                                                    name="numero"
+                                                                    placeholder='Número'
+                                                                    value={obraForm.id_direccion.numero}
+                                                                    onChange={handleInputChange}
+                                                                    onBlur={handleInputChange}
+                                                                    style={{ borderRadius: '0', boxShadow: 'none' }}
+                                                                />
+                                                            </InputGroup>
+                                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                                 <Form.Label id='errorLocalidad' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
                                                                     {errors.localidad}
                                                                 </Form.Label>
-                                                                    <Form.Label id='errorCalle' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
-                                                                        {errors.calle}
-                                                                    </Form.Label>
-                                                                    <Form.Label id='errorNumero' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
-                                                                        {errors.numero}
-                                                                    </Form.Label>
-                                                                </div>
-                                                            </Form.Group>
-                                                        </>
-                                                    } />
-                                            </>
-                                        }
-                                    />
-                                ))
-                            ) : (
-                                <>
-                                    <br/>
-                                    <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
-                                </>
-                            )}
-                        </>
-                    )}   
+                                                                <Form.Label id='errorCalle' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                                    {errors.calle}
+                                                                </Form.Label>
+                                                                <Form.Label id='errorNumero' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>
+                                                                    {errors.numero}
+                                                                </Form.Label>
+                                                            </div>
+                                                        </Form.Group>
+                                                    </>
+                                                } />
+                                        </>
+                                    }
+                                />
+                            ))
+                        ) : (
+                            <>
+                                <br />
+                                <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay obras disponibles.</p>
+                            </>
+                        )}
+                    </>
+                )}
             </div>
             <Popup show={showPopup} setShow={setShowPopup} message={popupMessage} title={popupTitle} />
         </div>

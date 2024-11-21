@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
-import {Breadcrumb, Form, Col, Row} from 'react-bootstrap';
+import { Breadcrumb, Form, Col, Row } from 'react-bootstrap';
 
 import FullNavbar from '../../components/navbar/full_navbar/FullNavbar';
 import GenericCard from '../../components/cards/generic_card/GenericCard';
@@ -47,13 +47,13 @@ const Entregas = () => {
     useEffect(() => {
         loadData();
     }, [token, navigate]);
-    
+
     const loadData = async () => {
         if (!token) {
             navigate('/login');
             return;
         }
-    
+
         const fetchUserData = async () => {
             try {
                 const userData = await fetchUser();
@@ -62,7 +62,7 @@ const Entregas = () => {
                 console.error('Error fetching user data:', error);
             }
         };
-    
+
         try {
             await fetchUserData();
             const result = await fetchData('/entrega/', token);
@@ -77,13 +77,13 @@ const Entregas = () => {
     const filteredEntregas = entregas.filter(entrega => {
         return (
             entrega.fechaCreacion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (entrega.id_pedido ? 
+            (entrega.id_pedido ?
                 (
                     entrega.id_pedido.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     entrega.id_pedido.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     entrega.id_pedido.id_usuario.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     entrega.id_pedido.id_usuario.apellido?.toLowerCase().includes(searchQuery.toLowerCase())
-                ) : 
+                ) :
                 (
                     entrega.id_oferta.id_producto.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     entrega.id_oferta.id_obra.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -193,7 +193,7 @@ const Entregas = () => {
                         }
                     }
                 } else if (estado.newEstado === 5 && recorridoModal.id_estadoEntrega.id_estadoEntrega === 3) {
-                    if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
+                    if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) ||
                         (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
                         if (recorridoModal.id_aportePedido) {
                             await postData('/AddDetallestockproducto/', {
@@ -234,7 +234,7 @@ const Entregas = () => {
                         }
                     }
                 } else if (estado.newEstado === 5) {
-                    if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) || 
+                    if ((selectedEntrega.id_pedido && selectedEntrega.id_pedido.id_usuario.id_usuario === user.id_usuario) ||
                         (selectedEntrega.id_oferta && selectedEntrega.id_oferta.id_usuario.id_usuario === user.id_usuario)) {
                         if (recorridoModal.id_aportePedido) {
                             await postData('/AddDetallestockproducto/', {
@@ -282,16 +282,16 @@ const Entregas = () => {
         <div>
             <FullNavbar selectedPage='/Entregas' />
             <div className='margen-arriba'>
-                
+
                 {isLoading ? (
                     <Loading />
                 ) : (
                     <>
                         <Breadcrumb style={{ marginLeft: "8%", fontSize: "1.2rem" }}>
-                    <Breadcrumb.Item active>Entregas</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <SearchBar filters={filters} onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} />
-                        <div style={{marginTop: '2.5rem'}}>
+                            <Breadcrumb.Item active>Entregas</Breadcrumb.Item>
+                        </Breadcrumb>
+                        <SearchBar filters={filters} onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} />
+                        <div style={{ marginTop: '2.5rem' }}>
                             {sortedEntregas.length === 0 ? (
                                 <p style={{ marginLeft: '7rem', marginTop: '1rem' }}>No hay entregas disponibles.</p>
                             ) : (
@@ -317,10 +317,10 @@ const Entregas = () => {
                                                                     {aporte.id_aportePedido === null ? aporte.id_aporteOferta?.id_obra?.nombre : aporte.id_aportePedido?.id_obra?.nombre}
                                                                     <br />
                                                                     <strong>
-                                                                        {aporte.id_estadoEntrega?.id_estadoEntrega === 5 ? 
-                                                                            "Este aporte fue entregado" : 
-                                                                            (aporte.id_estadoEntrega?.id_estadoEntrega === 1 ? 
-                                                                                "Click para tomar Entrega" : 
+                                                                        {aporte.id_estadoEntrega?.id_estadoEntrega === 5 ?
+                                                                            "Este aporte fue entregado" :
+                                                                            (aporte.id_estadoEntrega?.id_estadoEntrega === 1 ?
+                                                                                "Click para tomar Entrega" :
                                                                                 "Click para ver el recorrido"
                                                                             )
                                                                         }
@@ -348,11 +348,11 @@ const Entregas = () => {
                                 })
                             )}
                             <Modal
-                                showButton = {false}
-                                showModal = {aporteModal != null}
+                                showButton={false}
+                                showModal={aporteModal != null}
                                 handleCloseModal={() => setAporteModal(null)}
                                 handleSave={() => handleUpdateEntregaAporte()}
-                                title = 'Tomar Aporte'
+                                title='Tomar Aporte'
                                 saveButtonText={'Tomar'}
                                 content={
                                     <>
@@ -365,6 +365,7 @@ const Entregas = () => {
                                             min={new Date().toISOString().split('T')[0]}
                                             value={fechaEntrega || null}
                                             onChange={(e) => setFechaEntrega(e.target.value)}
+                                            style={{ marginBottom: "1.5rem" }}
                                         />
                                         <Form.Label className="font-rubik" style={{ fontSize: '0.8rem' }}>
                                             Ingrese el vehiculo con el que se realizará la entrega (Opcional)
@@ -377,7 +378,7 @@ const Entregas = () => {
                                         >
                                             <option value="medios_propios">Medios Propios</option>
                                             {vehiculos && (
-                                                vehiculos.map(vehiculo => 
+                                                vehiculos.map(vehiculo =>
                                                     <option key={vehiculo.id_transporte} value={vehiculo.id_transporte}>{vehiculo.marca}, {vehiculo.modelo} {vehiculo.patente}</option>
                                                 )
                                             )}
@@ -386,17 +387,17 @@ const Entregas = () => {
                                 }
                             />
                             <Modal
-                                showButton = {false}
-                                showModal = {recorridoModal != null}
+                                showButton={false}
+                                showModal={recorridoModal != null}
                                 handleCloseModal={() => setRecorridoModal(null)}
                                 handleSave={() => handleUpdateEntregaAporte()}
-                                title = 'Información de la Entrega'
+                                title='Información de la Entrega'
                                 saveButtonText={estado.boton}
                                 saveButtonShown={estado.enable}
                                 content={
                                     <>
                                         {recorridoModal && (
-                                            <EntregaCard recorridoModal={recorridoModal} entrega={selectedEntrega} user={user} estado={estado} setEstado={setEstado}/>
+                                            <EntregaCard recorridoModal={recorridoModal} entrega={selectedEntrega} user={user} estado={estado} setEstado={setEstado} />
                                         )}
                                     </>
                                 }

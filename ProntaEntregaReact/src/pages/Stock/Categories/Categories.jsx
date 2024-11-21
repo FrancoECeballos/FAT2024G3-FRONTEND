@@ -163,29 +163,29 @@ function Categories() {
             console.error('No image file selected');
             return false;
         }
-    
+
         const data = new FormData();
         data.append('imagen', formData.imagen);
         data.append('nombre', formData.nombre);
         data.append('descripcion', formData.descripcion);
-    
+
         try {
             await postData('/crear_categoria/', data, token);
             const fechaCreacion = new Date().toISOString().split('T')[0];
-    
+
             const dataNotificacion = {
                 titulo: 'Nueva Categoría',
                 descripcion: `Se creo una nueva categoría '${formData.nombre}' en la obra ${obra.nombre}.`,
                 id_usuario: user.id_usuario,
                 fecha_creacion: fechaCreacion
             };
-    
+
             await crearNotificacion(dataNotificacion, token, 'Obra', obra.id_obra);
-            setPopupData({"title": 'Categoría Creada', "message": `La categoría ${formData.nombre} ha sido creada con éxito.`});
+            setPopupData({ "title": 'Categoría Creada', "message": `La categoría ${formData.nombre} ha sido creada con éxito.` });
             return true;
         } catch (error) {
             console.error('Error creating category:', error);
-            setPopupData({"title": 'Error', "message": 'Ha ocurrido un error al crear la categoría.'});
+            setPopupData({ "title": 'Error', "message": 'Ha ocurrido un error al crear la categoría.' });
             return false;
         } finally {
             fetchDataAsync();
@@ -214,20 +214,20 @@ function Categories() {
                         <SearchBar onSearchChange={handleSearchChange} onOrderChange={setOrderCriteria} filters={filters} />
                         {(!obra.id_tipousuario || obra.id_tipousuario === 2) && (
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem', marginTop: '2rem' }}>
-                                <Modal 
-                                    openButtonText='Añadir una categoria nueva' 
-                                    openButtonWidth='15' 
-                                    title='Crear Categoria' 
-                                    saveButtonText='Crear' 
-                                    handleSave={newcategory} 
-                                    saveButtonEnabled={isFormValid} 
+                                <Modal
+                                    openButtonText='Añadir una categoria nueva'
+                                    openButtonWidth='15'
+                                    title='Crear Categoria'
+                                    saveButtonText='Crear'
+                                    handleSave={newcategory}
+                                    saveButtonEnabled={isFormValid}
                                     content={
                                         <div>
                                             <h2 className='centered'> Nueva Categoria </h2>
                                             <UploadImage wide='13' titulo='Imagen del Producto' onFileChange={handleFileChange} defaultImage={defaultImage} />
-                                            <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                            <Form.Control name="nombre" type="text" placeholder="Nombre" onBlur={handleInputChange} onChange={handleInputChange} style={{}} />
                                             <Form.Label id='errorNombre' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.nombre}</Form.Label>
-                                            <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{ borderRadius: '10rem', backgroundColor: '#F5F5F5', boxShadow: '0.10rem 0.3rem 0.20rem rgba(0, 0, 0, 0.3)', marginTop: '1rem' }} />
+                                            <Form.Control name="descripcion" type="text" placeholder="Descripción" onBlur={handleInputChange} onChange={handleInputChange} style={{}} />
                                             <Form.Label id='errorDescripcion' style={{ marginBottom: "0px", fontSize: '0.8rem', color: 'red' }}>{errors.descripcion}</Form.Label>
                                         </div>
                                     }

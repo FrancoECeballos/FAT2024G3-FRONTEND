@@ -9,6 +9,8 @@ import FullNavbar from '../../components/navbar/full_navbar/FullNavbar.jsx';
 import GenericTable from '../../components/tables/generic_table/GenericTable.jsx';
 import SearchBar from '../../components/searchbar/searchbar.jsx';
 import Loading from '../../components/loading/loading.jsx';
+import BackButton from '../../components/buttons/back_button/back_button.jsx'
+
 
 import fetchUser from '../../functions/fetchUser.jsx';
 import fetchData from '../../functions/fetchData.jsx';
@@ -31,7 +33,7 @@ const InformePedidos = () => {
 
             if (!userData) {
                 navigate('/login');
-            } 
+            }
             if (!userData.is_superuser) {
                 navigate('/pedidos');
             }
@@ -82,21 +84,13 @@ const InformePedidos = () => {
 
     return (
         <div>
-            <FullNavbar selectedPage='/Pedidos'/>
-            <div>
-                <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip style={{ fontSize: '100%' }}>Volver a Pedidos</Tooltip>}
-                >
-                    <Icon className="hoverable-icon" style={{ width: "2.5rem", height: "2.5rem", color: "#858585", marginTop: '1rem', marginLeft: '1rem', transition: "transform 0.3s" }} 
-                        icon="line-md:chevron-left" onClick={() => navigate('/pedidos')}/>
-                </OverlayTrigger>
-            </div>
-            <h1>Esta es una lista de todos los Pedidos</h1>
+            <FullNavbar selectedPage='/Pedidos' />
+            <BackButton />
+            <h1 style={{ marginTop: "1rem" }}>Esta es una lista de todos los Pedidos</h1>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <SearchBar 
-                    onSearchChange={handleSearchChange} 
-                    onOrderChange={handleOrderChange} 
+                <SearchBar
+                    onSearchChange={handleSearchChange}
+                    onOrderChange={handleOrderChange}
                     filters={[
                         { type: 'id_pedido asc', label: 'ID' },
                         { type: 'id_producto.nombre asc', label: 'Orden del Producto' },
@@ -113,40 +107,40 @@ const InformePedidos = () => {
             <div>
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                     {sortedData.length === 0 ? (
-                    <p style={{ marginTop: '1rem' }}>No hay pedidos disponibles.</p>
+                        <p style={{ marginTop: '1rem' }}>No hay pedidos disponibles.</p>
                     ) : (
-                    <div className="table-container">
-                        <table className="generic-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Imagen</th>
-                                    <th>Producto</th>
-                                    <th>Fecha de Inicio</th>
-                                    <th>Fecha de Vencimiento</th>
-                                    <th>Obra</th>
-                                    <th>Usuario</th>
-                                    <th>Estado</th>
-                                    <th>Cantidad Pedida</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sortedData.map((pedido, index) => (
-                                    <tr key={pedido.id}>
-                                        <td>{pedido.id_pedido}</td>
-                                        <td><img src={pedido.id_producto.imagen} alt={pedido.id_producto.nombre} style={{ width: '50px', height: '50px' }} /></td>
-                                        <td>{pedido.id_producto.nombre}</td>
-                                        <td>{pedido.fechainicio}</td>
-                                        <td>{pedido.fechavencimiento}</td>
-                                        <td>{pedido.id_obra.nombre}</td>
-                                        <td>{`${pedido.id_usuario.nombre} ${pedido.id_usuario.apellido}`}</td>
-                                        <td>{pedido.id_estadoPedido.nombre}</td>
-                                        <td>{pedido.cantidad}</td>
+                        <div className="table-container">
+                            <table className="generic-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Imagen</th>
+                                        <th>Producto</th>
+                                        <th>Fecha de Inicio</th>
+                                        <th>Fecha de Vencimiento</th>
+                                        <th>Obra</th>
+                                        <th>Usuario</th>
+                                        <th>Estado</th>
+                                        <th>Cantidad Pedida</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {sortedData.map((pedido, index) => (
+                                        <tr key={pedido.id}>
+                                            <td>{pedido.id_pedido}</td>
+                                            <td><img src={pedido.id_producto.imagen} alt={pedido.id_producto.nombre} style={{ width: '50px', height: '50px' }} /></td>
+                                            <td>{pedido.id_producto.nombre}</td>
+                                            <td>{pedido.fechainicio}</td>
+                                            <td>{pedido.fechavencimiento}</td>
+                                            <td>{pedido.id_obra.nombre}</td>
+                                            <td>{`${pedido.id_usuario.nombre} ${pedido.id_usuario.apellido}`}</td>
+                                            <td>{pedido.id_estadoPedido.nombre}</td>
+                                            <td>{pedido.cantidad}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
                 </div>
             </div>
