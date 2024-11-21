@@ -76,15 +76,13 @@ const ChangePasswordCard = ({ user }) => {
 
     return (
         <Container className="d-flex justify-content-center align-items-center change-password-container">
-            <Card className="outer-card">
-                <Card.Body>
-                    <Card className="inner-card">
-                        <Card.Body>
-                            <Form onSubmit={handleSubmit}>
+                    <Card className="segu-card">
+                        <Card.Body style={{display:"flex",justifyContent:"center",alignItems:"center",width:"100%"}}>
+                            <Form style={{width:"100%"}} onSubmit={handleSubmit}>
                                 <h1 className="font-rubik text-center mb-4">Cambiar Contraseña</h1>
                                 <div className="d-flex align-items-center mb-4">
                                     <div className="CPC-user-image">
-                                        <img src={getImageUrl(user.imagen)} alt="User" />
+                                        <img className="imgsegu" src={getImageUrl(user.imagen)} alt="User" />
                                     </div>
                                     <h2 className="font-rubik mx-3">{user.nombreusuario}</h2>
                                 </div>
@@ -138,8 +136,6 @@ const ChangePasswordCard = ({ user }) => {
                             </Form>
                         </Card.Body>
                     </Card>
-                </Card.Body>
-            </Card>
         </Container>
     );
 };

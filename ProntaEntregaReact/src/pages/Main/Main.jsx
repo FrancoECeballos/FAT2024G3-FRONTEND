@@ -22,7 +22,7 @@ function Main() {
   return (
     <div className="full-height-container">
       <FullNavbar />
-      <div className="h-100 background margen-arriba">
+      <div className="h-100 background">
         <Container fluid className="h-100">
           <Row className="h-100">
             <Col xs={12} md={4} className="d-flex mb-3 mb-md-0">
