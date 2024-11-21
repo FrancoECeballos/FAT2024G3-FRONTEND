@@ -3,8 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   Breadcrumb,
   Form,
-  OverlayTrigger,
-  Tooltip,
   Row,
   Col,
 } from "react-bootstrap";
@@ -13,6 +11,7 @@ import FullNavbar from "../../components/navbar/full_navbar/FullNavbar.jsx";
 import GenericCard from "../../components/cards/generic_card/GenericCard.jsx";
 import SearchBar from "../../components/searchbar/searchbar.jsx";
 import UploadImage from "../../components/buttons/upload_image/uploadImage.jsx";
+import Loading from "../../components/loading/loading.jsx";
 
 import fetchData from "../../functions/fetchData";
 import postData from "../../functions/postData";

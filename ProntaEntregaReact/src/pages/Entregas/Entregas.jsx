@@ -70,6 +70,7 @@ const Entregas = () => {
     };
 
     try {
+      setIsLoading(true);
       await fetchUserData();
       const result = await fetchData("/entrega/", token);
       setEntregas(result);
@@ -370,6 +371,15 @@ const Entregas = () => {
   const handleSearchChange = (value) => {
     setSearchQuery(value);
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <FullNavbar />
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div>

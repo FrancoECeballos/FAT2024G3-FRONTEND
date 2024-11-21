@@ -495,6 +495,13 @@ const Cuenta = ({ user }) => {
                   type="number"
                   name="id_direccion.numero"
                   value={userData.id_direccion?.numero || ""}
+                  min="0"
+                  max="999999"
+                  onBeforeInput={(event) => {
+                    if (!/^[0-9]*$/.test(event.data) || (event.target.value + event.data).length > 6) {
+                      event.preventDefault();
+                    }
+                  }}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                 />
