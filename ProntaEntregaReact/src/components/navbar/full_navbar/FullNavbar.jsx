@@ -17,6 +17,7 @@ import blueLogo from "../../../assets/BlueLogo.png";
 
 import NotificationCard from "../../notifications/notification_card/NotificationCard";
 import GenericModal from "../../modals/Modal";
+import ConfirmationModal from "../../modals/confirmation_modal/ConfirmationModal";
 
 import "./FullNavbar.scss";
 
@@ -28,6 +29,7 @@ function FullNavbar({ selectedPage }) {
 
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
 
   const handleNotificationClick = (notification) => {
     setSelectedNotification(notification);
@@ -423,13 +425,19 @@ function FullNavbar({ selectedPage }) {
                     fontWeight: "bold",
                   }}
                 >
-                  <Nav.Link onClick={handleLogout}>Cerrar Sesión</Nav.Link>
+                  <Nav.Link onClick={() => setLogoutModal(true)}>Cerrar Sesión</Nav.Link>
                 </div>
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </div>
       </Container>
+      <ConfirmationModal
+        Open={logoutModal}
+        BodyText="¿Está seguro que quieres cerrar sesión?"
+        onClickConfirm={() => {handleLogout(); setLogoutModal(false);}}
+        onClose={() => setLogoutModal(false)}
+      />
     </Navbar>
   );
 }

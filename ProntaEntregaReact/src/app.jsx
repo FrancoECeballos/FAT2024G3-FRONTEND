@@ -18,7 +18,6 @@ import InformeOfertas from "./pages/Informes/InformeOfertas.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Main from "./pages/Main/Main.jsx";
-import DatosPersonales from "./pages/Perfil/DatosPersonales.jsx";
 import Obras from "./pages/Obras/Obras.jsx";
 import ObrasAutos from "./pages/Autos/ObrasAutos.jsx";
 import Autos from "./pages/Autos/Autos.jsx";
@@ -37,7 +36,6 @@ function App() {
         <Route path="/change_password" element={<ChangePassword />} />
         <Route path="/perfil/micuenta" element={<MiCuenta />} />
         <Route path="/perfil/seguridad" element={<SeguridadYPrivacidad />} />
-        <Route path="/perfil/datos_personales" element={<DatosPersonales />} />
         <Route path="/userlisting" element={<UserListing />} />
         <Route path="/stock" element={<Stock />} />
         <Route path="/obra/:stockId/categoria" element={<Categories />} />
