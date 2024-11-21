@@ -620,7 +620,7 @@ function AutosComponent() {
                                   await handleUpdateAuto(autoModal, auto);
                                 }}
                                 showDeleteButton={true}
-                                deleteFunction={() => handleDeleteAuto(auto)}
+                                deleteFunction={() => setDeleteAutoModal(auto)}
                                 wide="100rem"
                                 content={
                                   <>

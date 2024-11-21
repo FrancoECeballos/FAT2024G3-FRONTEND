@@ -436,7 +436,7 @@ function FullNavbar({ selectedPage }) {
         Open={logoutModal}
         BodyText="¿Está seguro que quieres cerrar sesión?"
         onClickConfirm={() => {handleLogout(); setLogoutModal(false);}}
-        onClose={() => setLogoutModal(false)}
+        onClose={() => {setLogoutModal(false); setShowOffcanvas(false);}}
       />
     </Navbar>
   );
