@@ -42,6 +42,7 @@ function AutosComponent() {
 
   const [autoModal, setAutoModal] = useState(null);
   const [deleteAutoModal, setDeleteAutoModal] = useState(null);
+  const [isValid, setIsValid] = useState(false);
 
   const [autos, setAutos] = useState([]);
   const [maintenanceStatus, setMaintenanceStatus] = useState({});
@@ -410,12 +411,53 @@ function AutosComponent() {
     setSearchQuery(value);
   };
 
+  const [errors, setErrors] = useState({
+    marca: "",
+    modelo: "",
+    patente: "",
+    kilometraje: "",
+  });
+  
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData({
+    const updatedFormData = {
       ...formData,
       [name]: value,
+    };
+    setFormData(updatedFormData);
+  
+    let error = "";
+    if (value.trim() === "") {
+      switch (name) {
+        case "marca":
+          error = "La marca es obligatoria";
+          break;
+        case "modelo":
+          error = "El modelo es obligatorio";
+          break;
+        case "patente":
+          error = "La patente es obligatoria";
+          break;
+        case "kilometraje":
+          error = "El kilometraje es obligatorio";
+          break;
+        default:
+          error = "Este campo es obligatorio";
+      }
+    }
+  
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+  
+    const isFormValid = Object.values(updatedFormData).every((field) => {
+      if (typeof field === "string") {
+        return field.trim() !== "";
+      }
+      return field !== "";
     });
+    setIsValid(isFormValid);
   };
 
   const handleEditAutoClick = (auto) => {
@@ -447,8 +489,11 @@ function AutosComponent() {
               <Modal
                 title="Nuevo Vehículo"
                 handleSave={handleCreateAuto}
+                handleShowModal={() => setIsValid(false)}
                 openButtonWidth="15"
                 openButtonText="Añadir un vehiculo nuevo"
+                saveButtonEnabled={isValid}
+                handleCloseModal={() => setErrors({ marca: "", modelo: "", patente: "", kilometraje: "", })}
                 content={
                   <>
                     <UploadImage
@@ -457,60 +502,108 @@ function AutosComponent() {
                       onFileChange={handleFileChange}
                       defaultImage={defaultImage}
                     />
-                    <Form.Label
-                      className="font-rubik"
-                    >
-                      Marca:
-                    </Form.Label>
-                    <Form.Control
-                      name="marca"
-                      type="text"
-                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
-                      placeholder="Marca"
-                      onChange={handleInputChange}
-                    />
-                    <Form.Label
-                      className="font-rubik"
-                    >
-                      Modelo:
-                    </Form.Label>
-                    <Form.Control
-                      name="modelo"
-                      type="text"
-                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
-                      placeholder="Modelo"
-                      onChange={handleInputChange}
-                    />
-                    <Form.Label
-                      className="font-rubik"
-                    >
-                      Patente:
-                    </Form.Label>
-                    <Form.Control
-                      name="patente"
-                      type="text"
-                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
-                      placeholder="Patente"
-                      onChange={handleInputChange}
-                    />
-                    <Form.Label
-                      className="font-rubik"
-                    >
-                      Kilometros:
-                    </Form.Label>
-                    <Form.Control
-                      name="kilometraje"
-                      type="number"
-                      style={{ marginTop: "0.2rem", marginBottom: "0.7rem" }}
-                      placeholder="Kilometros"
-                      onChange={handleInputChange}
-                      min="0"
-                      onBeforeInput={(event) => {
-                        if (!/^[0-9]*$/.test(event.data)) {
-                          event.preventDefault();
-                        }
-                      }}
-                    />
+                    <div>
+                      <Form.Label
+                        className="font-rubik"
+                      >
+                        Marca:
+                      </Form.Label>
+                      <Form.Control
+                        name="marca"
+                        type="text"
+                        style={{ marginBottom: "0.7rem" }}
+                        placeholder="Marca"
+                        onChange={handleInputChange}
+                        onBlur={handleInputChange}
+                      />
+                      <Form.Label
+                        id="errorMarca"
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "red",
+                        }}
+                      >
+                        {errors.marca}
+                      </Form.Label>
+                    </div>
+                    <div>
+                      <Form.Label
+                        className="font-rubik"
+                      >
+                        Modelo:
+                      </Form.Label>
+                      <Form.Control
+                        name="modelo"
+                        type="text"
+                        style={{ marginTop: "0.2rem" }}
+                        placeholder="Modelo"
+                        onChange={handleInputChange}
+                        onBlur={handleInputChange}
+                      />
+                      <Form.Label
+                        id="errorModelo"
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "red",
+                        }}
+                      >
+                        {errors.modelo}
+                      </Form.Label>
+                    </div>
+                    <div>
+                      <Form.Label
+                        className="font-rubik"
+                      >
+                        Patente:
+                      </Form.Label>
+                      <Form.Control
+                        name="patente"
+                        type="text"
+                        style={{ marginTop: "0.2rem" }}
+                        placeholder="Patente"
+                        onChange={handleInputChange}
+                        onBlur={handleInputChange}
+                      />
+                      <Form.Label
+                        id="errorPatente"
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "red",
+                        }}
+                      >
+                        {errors.patente}
+                      </Form.Label>
+                    </div>
+                    <div>
+                      <Form.Label
+                        className="font-rubik"
+                      >
+                        Kilometros:
+                      </Form.Label>
+                      <Form.Control
+                        name="kilometraje"
+                        type="number"
+                        style={{ marginTop: "0.2rem" }}
+                        placeholder="Kilometros"
+                        onChange={handleInputChange}
+                        onBlur={handleInputChange}
+                        min="0"
+                        onBeforeInput={(event) => {
+                          if (!/^[0-9]*$/.test(event.data)) {
+                            event.preventDefault();
+                          }
+                        }}
+                      />
+                      <Form.Label
+                        id="errorKilometraje"
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "red",
+                        }}
+                      >
+                        {errors.kilometraje}
+                      </Form.Label>
+                    </div>
                   </>
                 }
               />
@@ -615,70 +708,119 @@ function AutosComponent() {
                                 openButtonWidth="15"
                                 openButtonText="Actualizar Vehículo"
                                 title="Actualizar Vehículo"
-                                handleShowModal={() => handleEditAutoClick(auto)}
+                                handleShowModal={() => {handleEditAutoClick(auto); setIsValid(true);}}
+                                handleCloseModal={() => setErrors({ marca: "", modelo: "", patente: "", kilometraje: "", })}
                                 handleSave={async () => {
                                   await handleUpdateAuto(autoModal, auto);
                                 }}
                                 showDeleteButton={true}
                                 deleteFunction={() => setDeleteAutoModal(auto)}
+                                saveButtonEnabled={isValid}
                                 wide="100rem"
                                 content={
                                   <>
-                                    <Form.Label
-                                      className="font-rubik"
-                                    >
-                                      Marca:
-                                    </Form.Label>
-                                    <Form.Control
-                                      name="marca"
-                                      type="text"
-                                      style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
-                                      defaultValue={auto.marca}
-                                      onChange={handleInputChange}
-                                    />
-                                    <Form.Label
-                                      className="font-rubik"
-                                    >
-                                      Modelo:
-                                    </Form.Label>
-                                    <Form.Control
-                                      name="modelo"
-                                      type="text"
-                                      style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
-                                      defaultValue={auto.modelo}
-                                      onChange={handleInputChange}
-                                    />
-                                    <Form.Label
-                                      className="font-rubik"
-                                    >
-                                      Patente:
-                                    </Form.Label>
-                                    <Form.Control
-                                      name="patente"
-                                      type="text"
-                                      style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
-                                      defaultValue={auto.patente}
-                                      onChange={handleInputChange}
-                                    />
-                                    <Form.Label
-                                      className="font-rubik"
-                                    >
-                                      Kilometros:
-                                    </Form.Label>
-                                    <Form.Control
-                                      name="kilometraje"
-                                      type="number"
-                                      style={{ marginTop: "0.5rem" }}
-                                      placeholder="Kilometros"
-                                      onChange={handleInputChange}
-                                      defaultValue={auto.kilometraje}
-                                      min="0"
-                                      onBeforeInput={(event) => {
-                                        if (!/^[0-9]*$/.test(event.data)) {
-                                          event.preventDefault();
-                                        }
-                                      }}
-                                    />
+                                    <div>
+                                      <Form.Label
+                                        className="font-rubik"
+                                      >
+                                        Marca:
+                                      </Form.Label>
+                                      <Form.Control
+                                        name="marca"
+                                        type="text"
+                                        style={{ marginTop: "0.5rem" }}
+                                        defaultValue={auto.marca}
+                                        onChange={handleInputChange}
+                                        onBlur={handleInputChange}
+                                      />
+                                      <Form.Label
+                                        id="errorMarca"
+                                        style={{
+                                          fontSize: "0.8rem",
+                                          color: "red",
+                                        }}
+                                      >
+                                        {errors.marca}
+                                      </Form.Label>
+                                    </div>
+                                    <div>
+                                      <Form.Label
+                                        className="font-rubik"
+                                      >
+                                        Modelo:
+                                      </Form.Label>
+                                      <Form.Control
+                                        name="modelo"
+                                        type="text"
+                                        style={{ marginTop: "0.5rem" }}
+                                        defaultValue={auto.modelo}
+                                        onChange={handleInputChange}
+                                        onBlur={handleInputChange}
+                                      />
+                                      <Form.Label
+                                        id="errorModelo"
+                                        style={{
+                                          fontSize: "0.8rem",
+                                          color: "red",
+                                        }}
+                                      >
+                                        {errors.modelo}
+                                      </Form.Label>
+                                    </div>
+                                    <div>
+                                      <Form.Label
+                                        className="font-rubik"
+                                      >
+                                        Patente:
+                                      </Form.Label>
+                                      <Form.Control
+                                        name="patente"
+                                        type="text"
+                                        style={{ marginTop: "0.5rem" }}
+                                        defaultValue={auto.patente}
+                                        onChange={handleInputChange}
+                                        onBlur={handleInputChange}
+                                      />
+                                      <Form.Label
+                                        id="errorPatente"
+                                        style={{
+                                          fontSize: "0.8rem",
+                                          color: "red",
+                                        }}
+                                      >
+                                        {errors.patente}
+                                      </Form.Label>
+                                    </div>
+                                    <div>
+                                      <Form.Label
+                                        className="font-rubik"
+                                      >
+                                        Kilometros:
+                                      </Form.Label>
+                                      <Form.Control
+                                        name="kilometraje"
+                                        type="number"
+                                        placeholder="Kilometros"
+                                        onChange={handleInputChange}
+                                        onBlur={handleInputChange}
+                                        defaultValue={auto.kilometraje}
+                                        min="0"
+                                        onBeforeInput={(event) => {
+                                          if (!/^[0-9]*$/.test(event.data)) {
+                                            event.preventDefault();
+                                          }
+                                        }}
+                                      />
+                                      <Form.Label
+                                        id="errorKilometraje"
+                                        style={{
+                                          fontSize: "0.8rem",
+                                          color: "red",
+                                        }}
+                                      >
+                                        {errors.kilometraje}
+                                      </Form.Label>
+                                    </div>
                                   </>
                                 }
                               />

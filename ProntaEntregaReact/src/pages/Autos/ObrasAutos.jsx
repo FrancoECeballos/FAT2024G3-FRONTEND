@@ -96,7 +96,7 @@ function ObrasAutos() {
 
   const filters = [
     { type: "nombre", label: "Nombre Alfabético" },
-    { type: "usuarios_registrados", label: "Usuarios Registrados" },
+    { type: "autos_registrados", label: "Vehiculos Registrados" },
   ];
 
   const handleSearchChange = (value) => {
