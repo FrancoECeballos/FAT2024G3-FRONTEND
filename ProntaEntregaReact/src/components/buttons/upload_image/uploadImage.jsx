@@ -77,7 +77,7 @@ function UploadImage({
             onClick={handleFileButtonClick}
             text="Seleccionar Archivo"
             wide={wide}
-            backcolor="#02005D"
+            backcolor="#3e4692"
             letercolor="white"
             radius="0.5rem"
             shadow="none"
